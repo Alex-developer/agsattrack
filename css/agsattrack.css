@@ -1,0 +1,126 @@
+body {
+	background: #000;
+	font-family: sans-serif;
+	font-size: 9pt;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+
+.loading-indicator {
+	height: 80px;
+	width: 80px;
+	background: url( '/images/loading.gif' );
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.loading-indicator-overlay {
+	background-color: #FFFFFF;
+	opacity: 0.6;
+	filter: alpha(opacity = 60);
+}
+
+#pagecontainer {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+.fullsize {
+	display: block;
+	top: 0;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 100%;
+}
+
+#menu {
+	height: 42px;
+}
+
+#jqxMainMenu {
+	visibility: hidden;
+}
+
+#canvas {
+	background: #000;
+}
+
+#horizoncanvas1 {
+	background: #000;
+}
+
+.satinfo th {
+	text-align: left;
+	font-size: 1.2em;
+	font-weight: bold;
+	padding-top: 10px;
+}
+
+#listviewtable th {
+	text-align: left;
+}
+
+.green {
+	color: green;
+}
+
+.bold {
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+#toolbar {
+	padding: 4px 1px;
+	clear: both;
+	margin-top: 2px;
+	display: none;
+}
+
+#videwtabs.easyui-tabs div.tabs-header div.tabs-wrap {
+	display: none;
+}
+
+#satselector {
+
+}
+
+.satwrapper {
+	width:170px;
+	height: 40px;
+	font-size: 12px;
+	float: left;
+	margin: 5px;
+	text-align: left;
+	border: 1px solid transparent;
+}
+
+.satwrapper:hover {
+	border: 1px solid #F1C43F;
+	background: #fdeeb3;
+	cursor: pointer;	
+}
+
+.satname {
+ 	font-size: 0.8em;
+    font-weight: bold;
+    height: 14px;
+    overflow: hidden;
+    width: 150px;
+}
+
+.satinfo {
+	font-size: 0.8em;
+}
+
+
+.imageanchor {
+	vertical-align: text-bottom;
+}

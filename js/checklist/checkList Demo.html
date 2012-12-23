@@ -1,0 +1,79 @@
+<html>
+	<head>
+		<script src="jquery-1.8.0.min.js"></script>
+		<script src="jquery-ui-1.8.23.custom.min.js"></script>
+		<script src="jquery.ui.checkList.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="ui-lightness/jquery-ui-1.8.23.custom.css" />
+		<link rel="stylesheet" type="text/css" href="checkList.css" />
+		<style type='text/css'> 	
+			body {
+				font-family: 'Segoe UI',Tahoma,Arial,Helvetica,sans-serif;
+				vertical-align: top;
+				font-size: .813em;
+				line-height: 1.4em;
+				color: #44525E;
+			}
+
+			#myCheckList, #selected{
+				display: block;
+				margin-bottom: 10px;
+				width: 250px;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h2>checkList Demo</h2>
+		<h3>What do you want to have in your toast?</h3>
+		<div id='myCheckList'></div>
+
+		<br/>
+		<h3>Selection</h3>
+		<div id='selectedItems'></div>
+
+		<br/><br/>
+		<a href='#' id='populate'>Populate Beverages</a>
+
+		<script type="text/javascript">
+			$(function() {
+				var items = [{text: 'Onion', value: '1'},
+							 {text: 'Ketchup', value: '2'},
+							 {text: 'Mayonnaise', value: '3'},
+							 {text: 'Pickles', value: '4'},
+							 {text: 'Tomato', value: '5'},
+							 {text: 'Patatoes', value: '6'},
+							 {text: 'Sausage', value: '7'},
+							 {text: 'Lettuce', value: '8'},
+							 {text: 'Pepper', value: '9'}
+							];
+
+				$('#myCheckList').checkList({
+					listItems: items,
+					onChange: selChange
+				});
+
+				function selChange(){
+					var selection = $('#myCheckList').checkList('getSelection');
+					
+					$('#selectedItems').text(JSON.stringify(selection));
+				}
+
+				$('#populate').click(function(){
+					var bevs =  [{text: 'Coca Cola', value: '1'},
+								 {text: 'Pepsi', value: '2'},
+								 {text: 'Sprite', value: '3'},
+								 {text: 'Fanta', value: '4'},
+								 {text: 'Dr Pepper', value: '5'},
+								 {text: 'Mineral Water', value: '6'},
+								 {text: 'Tea', value: '7'},
+								 {text: 'Ice-tea', value: '8'},
+								 {text: 'Ayran', value: '9'}
+								];
+					$('#myCheckList').checkList('setData', bevs);
+				});
+			});
+		</script>
+	</body>
+</html>
