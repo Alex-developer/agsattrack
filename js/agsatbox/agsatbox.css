@@ -1,0 +1,73 @@
+.agsatbox {
+	display: block;
+	overflow: hidden;
+}
+
+.agsatbox .toolbar{
+	background-color: #eee;
+	border-bottom: 1px solid #ccc;
+	padding: 3px;
+	overflow: hidden;
+}
+
+.agsatbox .toolbar .txtFilter{
+	width: 120px;
+	margin-left: 3px;
+	border:1px solid #ccc;
+}
+
+.agsatbox .toolbar .filterbox{
+	display: inline-block;
+	float: right;
+}
+
+.agsatbox .toolbar .chkAll{
+	margin-top: 7px;
+	border-right: 1px solid #ccc;
+}
+
+.agsatbox .table{
+	border-spacing: 0;
+	overflow: hidden;
+}
+
+.agsatbox .tableleft{
+	border-spacing: 0;
+	border: 1px solid red;
+	overflow: auto;
+}
+
+.agsatbox .tablecenter{
+	border-spacing: 0;
+	border: 1px solid blue;
+
+}
+
+.agsatbox .tableright{
+	border-spacing: 0;
+	border: 1px solid green;
+	overflow: auto;
+}
+
+.agsatbox .tableleft > table, .agsatbox .tableright > table {
+	display: block;
+	overflow: auto;
+}
+
+.agsatbox .table td{
+	padding: 2px;
+	border-bottom: 1px solid #eee;
+}
+
+.agsatbox tr td:first-child{
+	width: 16px;
+}
+
+.agsatbox tr td label{
+	display: inline-block;
+	width: 100%;
+}
+
+.highlight{
+	background-color: #FFC;
+}
