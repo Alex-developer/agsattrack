@@ -1,6 +1,6 @@
-agsattrack
+AgSatTrack
 ==========
 
-agsattrack
+![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/master/screenshot.png)
 
-Online Satellite tracking
+AgSatTrack is a web based satellite tracking program.
