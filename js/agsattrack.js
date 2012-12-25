@@ -44,11 +44,11 @@ var agsattrack = function() {
 	
 
         var _views = {
-        /*'3d' : {
+        '3d' : {
             classname : 'AG3DVIEW',
             active : false,
             index: 1
-        },*/
+        },
         'passes' : {
             classname : 'AGPASSESVIEW',
             active : false,
