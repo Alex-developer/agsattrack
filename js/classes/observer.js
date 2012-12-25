@@ -16,9 +16,9 @@ Copyright 2012 Alex Greenland
 var AGOBSERVER = function() {
     'use strict';
     
-    var _lat = null;
-    var _lon = null;
-    var _alt = null;
+    var _lat = 0;
+    var _lon = 0;
+    var _alt = 0;
     
 	var _name = 'Home';
 	var _ready = false;
