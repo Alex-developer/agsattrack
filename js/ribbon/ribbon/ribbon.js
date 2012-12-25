@@ -212,6 +212,11 @@
 			}
 		}
 
+        
+        $.fn.AddMenuEntry = function(options) {
+            
+        }
+        
 		that.init(id);
 		this.show();
 		$.fn.ribbon = that;

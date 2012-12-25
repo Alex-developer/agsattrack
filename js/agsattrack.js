@@ -1,9 +1,25 @@
+/*
+Copyright 2012 Alex Greenland
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */  
 var agsattrack = function() {
 	'use strict';
 
 	var _observers = [];
 	var _tles = new AGTLES();
 	var ui = null;
+    var _views = null;
 	var _selected = null;
 	var refreshCounter = 0;
 	var refreshInterval = 1;
@@ -26,47 +42,45 @@ var agsattrack = function() {
 				};
 	})();
 	
-	/**
-	 * Define the views available
-	 */
-	var VIEWS = {
-		'3d' : {
-			classname : 'AG3DVIEW',
-			active : false,
-			index: 1
-		},
-		'passes' : {
-			classname : 'AGPASSESVIEW',
-			active : false,
-			index: 2
-		},
-		'sky' : {
-			classname : 'AGSKYVIEW',
-			active : false,
-			index: 4
-		},
-		'polar' : {
-			classname : 'AGPOLARVIEW',
-			active : false,
-			index: 3
-		},
-		'list' : {
-			classname : 'AGLISTVIEW',
-			active : false,
-			index: 0
-		},
-		'timeline' : {
-			classname : 'AGTIMELINE',
-			active : true,
-			index: 5
-		},
-		'options' : {
-			classname : 'AGOPTIONS',
-			active : false,
-			index: 6
-		}		
-	};
 
+        var _views = {
+        /*'3d' : {
+            classname : 'AG3DVIEW',
+            active : false,
+            index: 1
+        },*/
+        'passes' : {
+            classname : 'AGPASSESVIEW',
+            active : false,
+            index: 2
+        },
+        'sky' : {
+            classname : 'AGSKYVIEW',
+            active : false,
+            index: 4
+        },
+        'polar' : {
+            classname : 'AGPOLARVIEW',
+            active : false,
+            index: 3
+        },
+        'list' : {
+            classname : 'AGLISTVIEW',
+            active : false,
+            index: 0
+        },
+        'timeline' : {
+            classname : 'AGTIMELINE',
+            active : true,
+            index: 5
+        },
+        'options' : {
+            classname : 'AGOPTIONS',
+            active : false,
+            index: 6
+        }        
+    };
+    
 	function bindEvents() {	
 		/**
 		 * Listen for an event to load a new set of elements
@@ -81,15 +95,15 @@ var agsattrack = function() {
 		 */
 		jQuery(document).bind('agsattrack.changeview', function(event, view) {
 	
-			jQuery.each(VIEWS, function(view, options) {
+			jQuery.each(_views, function(view, options) {
 				if (options.active) {
 					options.active = false;
 					options.instance.stopRender();
 				}
 			});
 	
-			VIEWS[view].active = true;
-			VIEWS[view].instance.startRender();
+			_views[view].active = true;
+			_views[view].instance.startRender();
 	
 			if (_initComplete) {
 				calculate(true);
@@ -214,22 +228,24 @@ var agsattrack = function() {
 		init : function() {
 			var _active = 0;
 			
-			/**
-			 * Fire up the user Inerface
-			 */
-			ui = new AGUI();
-
+            
 			/**
 			 * Create instances of the views
 			 */
-			jQuery.each(VIEWS, function(view, options) {
-				options.instance = new window[options.classname]('pass');
+			jQuery.each(_views, function(view, options) {
+				options.instance = new window[options.classname];
 				options.instance.init();
 				if (options.active) {
 					_active = view;
 				}
 			});
 
+            /**
+             * Fire up the user Inerface
+             */
+            ui = new AGUI();
+
+            
 			/**
 			 * Setup the first observer, this will be the 'Home' observer
 			 */
@@ -237,7 +253,7 @@ var agsattrack = function() {
 
 			bindEvents();
 			
-			jQuery('#viewtabs').tabs('select',VIEWS[_active].index);
+			jQuery('#viewtabs').tabs('select',_views[_active].index);
 
 			
 		}

@@ -1,16 +1,4 @@
 
-var TESTCLASS = function() {
-	var _iamprivate;
-	
-	return {
-		
-		getvar : function() {
-			return _iamprivate;
-		}
-	}
-}
-
-
 // Orbital Propagation Model 'SGP4' for NORAD mean element sets
 // Felix R. Hoots, Ronald L. Roehrich, "Space Track Report No.3 : Models for Propagation of NORAD Elements Sets"
 // JavaScript version by KASHIWAI, Isana (isana at lizard-tail dot com)
