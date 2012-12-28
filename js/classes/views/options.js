@@ -27,36 +27,49 @@ var AGOPTIONS = function() {
 	function setupOptions() {
 		jQuery('#window-preferences-calc-timer').numberspinner('setValue', AGSETTINGS.getRefreshTimerInterval() /1000);
 		jQuery('#window-preferences-aos').numberspinner('setValue', AGSETTINGS.getAosEl());
+        if (AGSETTINGS.getSwitchViewOnTabClick()) {
+            jQuery('#switchtabonclick').prop('checked', true);
+        } else {
+            jQuery('#switchtabonclick').prop('checked', false);
+        }
 	}
 	
+    jQuery('#switchtabonclick').on('click', function(e){
+        enableSave();        
+    });
+    
 	jQuery('#window-preferences-calc-timer').numberspinner({
 		onSpinUp : function() {
-			spinnerChanged();
+			enableSave();
 		},
 		onSpinDown : function() {
-			spinnerChanged();
+			enableSave();
 		}
 	});
 	jQuery('#window-preferences-aos').numberspinner({
 		onSpinUp : function() {
-			spinnerChanged();
+			enableSave();
 		},
 		onSpinDown : function() {
-			spinnerChanged();
+			enableSave();
 		}
 	});	
-	function spinnerChanged() {
+	function enableSave() {
 		jQuery('#options-save').enable();
 	}
 	
 	jQuery('#options-save').click(function(){
-		var temp = jQuery('#window-preferences-calc-timer').numberspinner('getValue') * 1000;
+        var temp;
+        
+		temp = jQuery('#window-preferences-calc-timer').numberspinner('getValue') * 1000;
 		AGSETTINGS.setRefreshTimerInterval(temp)
 
-		var temp = jQuery('#window-preferences-aos').numberspinner('getValue');
+		temp = jQuery('#window-preferences-aos').numberspinner('getValue');
 		AGSETTINGS.setAosEl(temp)
 
-		
+        temp = jQuery('#switchtabonclick').prop('checked');
+        AGSETTINGS.setSwitchViewOnTabClick(temp)
+        
 		jQuery('#options-save').disable();
 	});
 	
@@ -70,7 +83,10 @@ var AGOPTIONS = function() {
 		},
 		
 		init : function() {
-			
+            jQuery(document).bind('agsattrack.setupoptions',
+                function(e) {
+                setupOptions();
+            });			
 		}
 	}
 }

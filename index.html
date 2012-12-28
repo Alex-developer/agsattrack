@@ -215,10 +215,18 @@
 
             </div>
             <div class="ribbon-tab" id="list-tab">
-                <span class="ribbon-title">List View</span>
+                <span class="ribbon-title" data-tab="0">List View</span>
+                
                 <div class="ribbon-section">
-                    <span class="section-title">View Options</span>
-                    <div class="ribbon-button ribbon-button-small ribbon-button-small-active" id="list-view-show-aos" unselectable="on" data-type="togglebutton" data-event="agsattrack.showaos">
+                    <span class="section-title">View Options</span>                
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="0">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
+                    </div>
+
+                    <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" id="list-view-show-aos" unselectable="on" data-type="togglebutton" data-event="agsattrack.showaos">
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/disabled/arrow_up.png" />
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/disabled/arrow_up.png" />
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/arrow_up.png" />
@@ -228,24 +236,28 @@
             </div>
 
             <div class="ribbon-tab" id="3d-tab">
-                <span class="ribbon-title">3D View</span>
+                <span class="ribbon-title" data-tab="1">3D View</span>
                 
                 <div class="ribbon-section">                
 
                 </div>
                                                     
                 <div class="ribbon-section">
-                    <span class="section-title">View</span>
-                    
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="1">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                                        
                     <div class="ribbon-button ribbon-button-large view-reset">
                         <span class="button-title">Reset<br />View
-                        </span> <span class="button-help"></span> <img
-                            class="ribbon-icon ribbon-normal"
-                            src="js/ribbon/icons/normal/reset.png" /> <img
-                            class="ribbon-icon ribbon-hot"
-                            src="js/ribbon/icons/hot/reset.png" /> <img
-                            class="ribbon-icon ribbon-disabled"
-                            src="js/ribbon/icons/disabled/reset.png" />
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
                     </div>
                                         
                     <div class="ribbon-button ribbon-button-large" id="3d-projection" data-type="dropdownmenu">
@@ -302,30 +314,111 @@
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/orbit.png" />
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/orbit.png" />
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/orbit.png" />
-                    </div>                    
+                    </div>
+                                                         
                 </div>
                 
             </div>
 
             <div class="ribbon-tab" id="passes-tab">
-                <span class="ribbon-title">Passes View</span>
+                <span class="ribbon-title" data-tab="2">Passes View</span>
+                
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="2">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                    
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset<br />View
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
+                    </div>  
+                                        
+                 </div>                
             </div>
 
             <div class="ribbon-tab" id="polar-tab">
-                <span class="ribbon-title">Polar View</span>
+                <span class="ribbon-title" data-tab="3">Polar View</span>
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="3">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                    
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset<br />View
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
+                    </div>  
+                                        
+                 </div>                
             </div>
 
             <div class="ribbon-tab" id="sky-tab">
-                <span class="ribbon-title">Sky View</span>
+                <span class="ribbon-title" data-tab="4">Sky View</span>
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="4">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                    
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset<br />View
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
+                    </div>  
+                                        
+                 </div>                
             </div>
 
+            <div class="ribbon-tab" id="timeline-tab">
+                <span class="ribbon-title" data-tab="5">Timeline View</span>
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="5">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                    
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset<br />View
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
+                    </div>  
+                                        
+                 </div>                
+            </div>            
         </div>
 
 
 
 
 	</div>
-	<div data-options="region:'west',split:true" style="width: 270px;">
+	<div data-options="region:'west',split:true" title="Information" style="width: 270px;">
 		<div id="satinfot" class="easyui-tabs" data-options="fit:true">
 			<div title="Sat Info" style="overflow: auto; padding: 5px;">
                 <div id="sat-info-selector"></div>
@@ -503,7 +596,9 @@
 							</fieldset>
 						</form>
 					</div>
-					<div title="Views" data-options="" style="padding: 20px;"></div>
+					<div title="Views" data-options="" style="padding: 20px;">
+                        <span>Switch to view on tab select <input type="checkbox" id="switchtabonclick" value="on"></span>
+                    </div>
 				</div>
 			</div>
 		</div>

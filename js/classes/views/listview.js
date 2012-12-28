@@ -124,7 +124,7 @@ var AGLISTVIEW = function() {
 		},
 		
 		init : function() {
-
+            
 		}
 	}
 }

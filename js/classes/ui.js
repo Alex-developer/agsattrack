@@ -41,6 +41,7 @@ var AGUI = function() {
 	});
 
 	jQuery('#options').click(function() {
+        jQuery(document).trigger('agsattrack.setupoptions');
 		jQuery('#viewtabs').tabs('select', 6);
 	});
 
@@ -52,6 +53,22 @@ var AGUI = function() {
 		jQuery('#viewtabs').tabs('select', parseInt(newTab));
 	});
 
+    
+    jQuery('.viewswitcher').on('click', function(e){
+        var newTab = jQuery(this).attr('data-tab')
+        jQuery('#viewtabs').tabs('select', parseInt(newTab));                
+    });
+
+    jQuery('.ribbon-tab-header').on('click', function(e){
+        if (AGSETTINGS.getSwitchViewOnTabClick()) {
+            var newTab = jQuery(this).find('span').attr('data-tab');
+            if (typeof newTab !== 'undefined') {
+                jQuery('#viewtabs').tabs('select', parseInt(newTab));                
+            }
+        }
+    });    
+    
+                
 	/**
 	 * Bind to the 3D view menu options and fire and event to select the view.
 	 */

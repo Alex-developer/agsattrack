@@ -17,11 +17,19 @@ var AGSETTINGS = (function(element) {
 	var _aosEl = 5;
 	var _refreshTimerInterval = 5000;
 	var _haveCanvas = true;
+    var _switchViewOnTabClick = false;
     
 	return {
 		init: function() {
 		},
-		
+
+        getSwitchViewOnTabClick : function() {
+            return _switchViewOnTabClick;
+        },
+        setSwitchViewOnTabClick : function(value) {
+            _switchViewOnTabClick = value;    
+        },
+        		
         getHaveCanvas : function() {
             return _haveCanvas;
         },
