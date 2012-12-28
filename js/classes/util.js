@@ -37,6 +37,11 @@ var AGUTIL = (function() {
     	}
     }
 
+    function pad(num, size) {
+        var s = "00" + num;
+        return s.substr(s.length-size);
+    }
+    
 	return {
 		convertDecDegLat: function(lat) {
 	        dir = (lat>0?'N':'S');
@@ -55,11 +60,11 @@ var AGUTIL = (function() {
 			var shortDate = '';
 			
 			shortDate += date.getFullYear() + '/';
-			shortDate += date.getMonth() + '/';
-			shortDate += date.getDate() + ' ';
-			shortDate += date.getHours() + ':';
-			shortDate += date.getMinutes() + ':';
-			shortDate += date.getSeconds();
+			shortDate += pad(date.getMonth(),2) + '/';
+			shortDate += pad(date.getDate(),2) + ' ';
+			shortDate += pad(date.getHours(),2) + ':';
+			shortDate += pad(date.getMinutes(),2) + ':';
+			shortDate += pad(date.getSeconds(),2);
 			
 			return shortDate;
 		}		

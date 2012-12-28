@@ -1,167 +1,249 @@
-(function($) {
-	$.widget("ui.agsatbox", {	
-		options: {
-			listItems : [],
-			selectedItems: [],
-			effect: 'blink',
-			onChange: {},
-			objTable: '',
-			objSrcTable: '',			
-			objButtonTable: '',
-			icount: 0,
-			width: 600,
-			height: 500
-		},
-		
-		_create: function() {
-			var self = this, o = self.options, el = self.element;
-			var html = '';
-			
-			// generate outer div
-			var container = $('<div/>').addClass('agsatbox');
+;(function($) {
+    var pluginName = 'agsatbox';
 
-			$(container).width(o.width);
-			$(container).height(o.height);
-			
-			
-			
-			html += '<div class="toolbar">Toolbar</div>';
-			html += '<div class="wrapper">';
-			html += '	<div class="left">';
-			html += '	</div>';
-			html += '	<div class="center">';
-			html += '		<table width="100%" height="100%">';
-			html += '        	<tr>';
-			html += '        		<td valign="center" align="center">';
-			html += '                    <button id="to2" type="button">&nbsp;&gt;&nbsp;</button>';
-			html += '                    <button id="allTo2" type="button">&nbsp;&gt;&gt;&nbsp;</button>';
-			html += '                    <button id="to1" type="button">&nbsp;&lt;&nbsp;</button>';
-			html += '                    <button id="allTo1" type="button">&nbsp;&lt;&lt;&nbsp;</button>';
-			html += '                </td>';
-			html += '			</tr>';
-			html += '		</table>';
-			html += '	</div>';
-			html += '	<div class="right">';
-			html += '	</div>';
-			html += '</div>';
-			
-			// generate toolbar
-			var toolbar = $('<div/>').addClass('toolbar');
-			var chkAll = $('<input/>').attr('type','checkbox').addClass('chkAll').click(function(){
-				var state = $(this).attr('checked');
-				var setState = false;
-				
-				setState = (state==undefined) ? false : true;
+    function Plugin(element, options) {
+        var el = element;
+        var $el = $(element);
+        var divLeft;
+        var divRight;
+        var _ignoreEvents = false;
+        
+        options = $.extend({}, $.fn[pluginName].defaults, options);
 
-				o.objTable.find('.chk:visible').attr('checked', setState);
+        function init() {
 
-				self._selChange();
-			});
-			var txtfilter = $('<input/>').attr('type','text').addClass('txtFilter').keyup(function(){
-				self._filter($(this).val());
-			});
-			toolbar.append(chkAll);
-			toolbar.append($('<div/>').addClass('filterbox').text('filter').append(txtfilter));
+            var leftSource = [
+            ];
+            var rightSource = [
+            ];
 
-			var tableWidth = parseInt((o.width - 50)/2);
-			var tableHeight = o.height - 30;
 
-			// generate list table object
-			o.objTable = $('<table/>').width(tableWidth).height(tableHeight);
-			o.objSrcTable = $('<table/>').width(tableWidth).height(tableHeight);
-			o.objButtonTable = $('<table/>').width(5);
-			
-			var left = $('<td/>').addClass('tableleft').append(o.objSrcTable);
-			var center = $('<td/>').addClass('tablecenter').append(o.objButtonTable);
-			var right = $('<td/>').addClass('tableright').append(o.objTable);
-			
-			var row = $('<tr/>').append(left).append(center).append(right);
-			var wrapper = $('<table/>').addClass('table').append(row);
-			
-			container.append(toolbar);
-			container.append(wrapper);
-			//container.append(o.objTable);
-			el.append(container);
-			self.loadList();
-		},
+            var divWrapper = $('<div style="width:555px" />');
+            divLeft = $('<div style="float:left;" />');
+            var divCenter = $('<div style="float:left;" />');
+            divRight = $('<div style="float:left;" />');
+            divLeft.jqxListBox({ source: leftSource, width: 250, height: 400, allowDrop: true, allowDrag: true, multipleextended: true,
+                dragEnd: function (dragItem, dropItem) {
+                    SendMoveEvents();                    
+                    return true;
+                }                                   
+            });
+            divRight.jqxListBox({ source: rightSource, checkboxes: true, width: 250, height: 400, allowDrop: true, allowDrag: true, multipleextended: true,
+                dragEnd: function (dragItem, dropItem) {
+                    SendMoveEvents();                    
+                    return true;
+                }
+            });
 
-		_addItem: function(listItem){
-			var self = this, o = self.options, el = self.element;
+            var buttonPrefix =  $el.attr('id')+'Button';
+            var selectorHTML = '        \
+            <div style="position:relative; height:200px;width: 50px">   \
+            <div style="position: absolute;top: 35%;">    \
+            <button class="'+buttonPrefix+' all left" type="button"><<</button>     \
+            <button class="'+buttonPrefix+' all right" type="button">>></button>     \
+            </div>    \
+            </div>';
 
-			var itemId = 'itm' + (o.icount++);	// generate item id
-			var itm = $('<tr/>');
-			var chk = $('<input/>').attr('type','checkbox').attr('id',itemId)
-					.addClass('chk')
-					.attr('data-text',listItem.text)
-					.attr('data-value',listItem.value);
-			
-			itm.append($('<td/>').append(chk));
-			var label = $('<label/>').attr('for',itemId).text(listItem.text);
-			itm.append($('<td/>').append(label));
-			o.objTable.append(itm);
+            divCenter.append(selectorHTML);
+            divLeft.jqxListBox.bind('select', function (e) {
+                var args = e.args;
 
-			// bind selection-change
-			//el.delegate('.chk','click', function(){self._selChange()});
-			el.delegate('#'+itemId,'click', function(){self._selChange()});
-		},
+            });
+            divRight.jqxListBox.bind('select', function (e) {
 
-		loadList: function(){
-			var self = this, o = self.options, el = self.element;
+            });
 
-			o.objTable.empty();
-			$.each(o.listItems,function(){
-				//console.log(JSON.stringify(this));
-				self._addItem(this);
-			});
-		},
+            divWrapper.append(divLeft);
+            divWrapper.append(divCenter);
+            divWrapper.append(divRight);
+            $el.append(divWrapper);                         
 
-		_selChange: function(){
-			var self = this, o = self.options, el = self.element;
+            $('.' + buttonPrefix).on('click', function(e){
+                var el = $(e.target);
+                var direction = el.hasClass('right') ? 'right' : 'left';
 
-			// empty selection
-			o.selectedItems = [];
+                if (direction === 'right') {
+                    var leftItems = divLeft.jqxListBox('getItems');
+                    var rightItems = divRight.jqxListBox('getItems');
+                    var sourceData = [];
+                    if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
+                        for (var i=0;i<rightItems.length;i++) {
+                            sourceData.push(rightItems[i].value);    
+                        }
+                    }
+                    if (typeof leftItems !== 'undefined' && leftItems.length > 0) {
+                        for (var i=0;i<leftItems.length;i++) {
+                            sourceData.push(leftItems[i].value);    
+                        }
+                    }
 
-			// scan elements, find checked ones
-			o.objTable.find('.chk').each(function(){	
-				if($(this).attr('checked')){
-					o.selectedItems.push({
-						text: $(this).attr('data-text'),
-						value: $(this).attr('data-value')
-					});
-					$(this).parent().addClass('highlight').siblings().addClass('highlight');
-				}else{
-					$(this).parent().removeClass('highlight').siblings().removeClass('highlight');
-				}
-			});
+                    jQuery(document).trigger('agsattrack.satsselected', {
+                        selections : sourceData
+                    }); 
+                    jQuery(document).trigger('agsattrack.forceupdate', {});                                        
 
-			// fire onChange event
-			o.onChange.call();
-		},
+                    divLeft.jqxListBox('clear');
+                    divRight.jqxListBox({ source: sourceData});
 
-		_filter: function(filter){
-			var self = this, o = self.options, el = self.element;
+                } else {
+                    var leftItems = divLeft.jqxListBox('getItems');
+                    var rightItems = divRight.jqxListBox('getItems');
+                    var sourceData = [];
+                    if (typeof leftItems !== 'undefined' && leftItems.length > 0) {
+                        for (var i=0;i<leftItems.length;i++) {
+                            sourceData.push(leftItems[i].value);    
+                        }
+                    }
+                    if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
+                        for (var i=0;i<rightItems.length;i++) {
+                            sourceData.push(rightItems[i].value);    
+                        }
+                    }
+                    divRight.jqxListBox('clear');
+                    divLeft.jqxListBox({ source: sourceData});
 
-			o.objTable.find('.chk').each(function(){	
-				if($(this).attr('data-text').toLowerCase().indexOf(filter.toLowerCase())>-1)
-				{
-					$(this).parent().parent().show(o.effect);
-				}
-				else{
-					$(this).parent().parent().hide(o.effect);
-				}
-			});
-		},
+                    jQuery(document).trigger('agsattrack.satsselected', {
+                        selections : []
+                    }); 
+                    jQuery(document).trigger('agsattrack.forceupdate', {});                                        
 
-		getSelection: function(){
-			var self = this, o = self.options, el = self.element;
-			return o.selectedItems;
-		},
+                }
+                divRight.jqxListBox('clearSelection'); 
+                divLeft.jqxListBox('clearSelection'); 
+                e.stopImmediatePropagation();
+            });
 
-		setData: function(dataModel){
-			var self = this, o = self.options, el = self.element;
-			o.listItems = dataModel;
-			self.loadList();
-			self._selChange();
-		}
-	});
-})(jQuery); 
+            divRight.on('checkChange', function (event) {
+                if (!_ignoreEvents) {
+                    var args = event.args;
+                    if (args.checked) {
+                        jQuery(document).trigger('agsattrack.satclicked', {
+                            index : args.value,
+                            state: true
+                        });
+                    } else {
+                        jQuery(document).trigger('agsattrack.satclicked', {
+                            index : args.value,
+                            state: false
+                        });                    
+                    }
+                }
+            });  
+            
+            jQuery(document).bind('agsattrack.newsatselected', function(event, params) {
+                _ignoreEvents = true;
+                divRight.jqxListBox('uncheckAll');
+                var rightItems = divRight.jqxListBox('getItems');
+                for (var i=0; i<params.satellites.length; i++) {
+                    for (var j=0; j<rightItems.length;j++) {
+                        if (rightItems[j].value === params.satellites[i].getName()) {
+                            divRight.jqxListBox('checkIndex', rightItems[j].index);
+                            break;    
+                        }
+                    }    
+                }
+                _ignoreEvents = false;    
+            });
+                   
+            hook('onInit');
+        }
+
+        function SendMoveEvents() {
+            var sourceData = [];
+            var rightItems = divRight.jqxListBox('getItems'); 
+            if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
+                for (var i=0;i<rightItems.length;i++) {
+                    sourceData.push(rightItems[i].value);    
+                }
+            }
+            jQuery(document).trigger('agsattrack.satsselected', {
+                selections : sourceData
+            });                     
+        }
+
+        function clear() {
+            divLeft.jqxListBox('clear');
+            divRight.jqxListBox('clear');
+        }
+
+        function setData(tles) {
+            clear(); 
+            for (var i=0; i < tles.getCount(); i++) {          
+                var sat = tles.getSatellite(i);        
+                if (sat.isDisplaying()) {
+                    divRight.jqxListBox('addItem', sat.getName());    
+                } else {
+                    divLeft.jqxListBox('addItem', sat.getName());    
+                }
+            }    
+        }
+
+
+        function option (key, val) {
+            if (val) {
+                options[key] = val;
+            } else {
+                return options[key];
+            }
+        }
+
+        function destroy() {
+            $el.each(function() {
+                var el = this;
+                var $el = $(this);
+
+                // Add code to restore the element to its original state...
+
+                hook('onDestroy');
+                $el.removeData('plugin_' + pluginName);
+            });
+        }
+
+        function hook(hookName) {
+            if (options[hookName] !== undefined) {
+                options[hookName].call(el);
+            }
+        }
+
+        init();
+
+        return {
+            option: option,
+            destroy: destroy,
+            clear: clear,
+            setData: setData
+        };
+    }
+
+    $.fn[pluginName] = function(options) {
+        if (typeof arguments[0] === 'string') {
+            var methodName = arguments[0];
+            var args = Array.prototype.slice.call(arguments, 1);
+            var returnVal;
+            this.each(function() {
+                if ($.data(this, 'plugin_' + pluginName) && typeof $.data(this, 'plugin_' + pluginName)[methodName] === 'function') {
+                    returnVal = $.data(this, 'plugin_' + pluginName)[methodName].apply(this, args);
+                } else {
+                    throw new Error('Method ' +  methodName + ' does not exist on jQuery.' + pluginName);
+                }
+            });
+            if (returnVal !== undefined){
+                return returnVal;
+            } else {
+                return this;
+            }
+        } else if (typeof options === "object" || !options) {
+            return this.each(function() {
+                if (!$.data(this, 'plugin_' + pluginName)) {
+                    $.data(this, 'plugin_' + pluginName, new Plugin(this, options));
+                }
+            });
+        }
+    };
+
+    $.fn[pluginName].defaults = {
+        onInit: function() {},
+        onDestroy: function() {}
+    };
+
+})(jQuery);

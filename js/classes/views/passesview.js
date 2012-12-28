@@ -21,10 +21,11 @@ var AGPASSESVIEW = function() {
 		jQuery('#passesgrid').datagrid('resize');
 	});
 	
-	jQuery(document).bind('agsattrack.newsatselected', function(event, selected) {
+	jQuery(document).bind('agsattrack.newsatselected1', function(event, selected) {
 
 		var selected = AGSatTrack.getSelected();
-		var data = [];
+		var selected = null;
+        var data = [];
 		if (selected !== null) {
 			var satData = AGSatTrack.getSatellite(selected.index).getOrbitData();
 			for (var i=0; i < satData.length; i++) {
@@ -46,7 +47,8 @@ var AGPASSESVIEW = function() {
 	function getData(){
 		var rows = [];
 
-		var selected = AGSatTrack.getSelected();
+	//	var selected = AGSatTrack.getSelected();
+    var selected = null;
 		if (selected !== null) {
 			var satData = AGSatTrack.getSatellite(selected.index).getOrbitData();
 			debugger;

@@ -109,8 +109,8 @@ var AG3DVIEW = function() {
 	 * for performance reasons.
 	 */
 	jQuery(document).bind('agsattrack.satclicked', function(event, selected) {
-		_selected = selected;
-		setupOrbit();
+	//	_selected = selected;
+	//	setupOrbit();
 	});
 	
 	/**
@@ -128,14 +128,14 @@ var AG3DVIEW = function() {
 				}
 			});
 
-	jQuery(document).bind('agsattrack.tlesloaded', function(event, group) {
-		// resetOrbit();
-		// populateSatelliteBillboard();
-	});
 	jQuery(document).bind('agsattrack.satsselected', function(event, group) {
-		resetOrbit();
-		populateSatelliteBillboard();
+		// resetOrbit();
+		 populateSatelliteBillboard();
 	});
+	//jQuery(document).bind('agsattrack.satsselected', function(event, group) {
+//		resetOrbit();
+//		populateSatelliteBillboard();
+//	});
 
 	jQuery(document).bind('agsattrack.updatesatdata',
 			function(event, selected) {
@@ -323,59 +323,61 @@ var AG3DVIEW = function() {
 	}
 
 	function setupOrbit() {
-		var orbit = _selected.sat.getOrbitData();
-		var plottingAos = false;
-		
-		if (typeof (orbit[0]) !== 'undefined') {
+        if (_selected.sat !== null) {
+		    var orbit = _selected.sat.getOrbitData();
+		    var plottingAos = false;
+		    
+		    if (typeof (orbit[0]) !== 'undefined') {
 
-			var now = new Cesium.JulianDate();
-			orbitLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-					Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-					Cesium.Cartesian3.ZERO);
+			    var now = new Cesium.JulianDate();
+			    orbitLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+					    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+					    Cesium.Cartesian3.ZERO);
 
-			orbitLines.removeAll();
-			var points = [];
-			var pointsAOS = [];
-			for ( var i = 0; i < orbit.length; i++) {
-				points.push(new Cesium.Cartesian3(orbit[i].x * 1000,
-						orbit[i].y * 1000, orbit[i].z * 1000));
-				
-				if (orbit[i].el >= AGSETTINGS.getAosEl()) {
-					pointsAOS.push(new Cesium.Cartesian3(orbit[i].x * 1000,
-							orbit[i].y * 1000, orbit[i].z * 1000));
-					plottingAos = true;
-				}
-				
-				if (plottingAos && orbit[i].el <= AGSETTINGS.getAosEl()) {
-					plottingAos = false;
-					orbitLines.add({
-						positions : pointsAOS,
-						width : 3,
-						color : Cesium.Color.GREEN
-					});
-					pointsAOS = [];
-				}
-				
-				
-			}
-			
-		//	var segments = Cesium.PolylinePipeline.wrapLongitude(ellipsoid, points);
-		//	for (var i=0; i < segments.length; i++) {
-				orbitLines.add({
-					positions : points,
-					width : 1,
-					color : Cesium.Color.RED
-				});
-		//	}
-			if (plottingAos) {
-				orbitLines.add({
-					positions : pointsAOS,
-					width : 3,
-					color : Cesium.Color.GREEN
-				});
-			}
+			    orbitLines.removeAll();
+			    var points = [];
+			    var pointsAOS = [];
+			    for ( var i = 0; i < orbit.length; i++) {
+				    points.push(new Cesium.Cartesian3(orbit[i].x * 1000,
+						    orbit[i].y * 1000, orbit[i].z * 1000));
+				    
+				    if (orbit[i].el >= AGSETTINGS.getAosEl()) {
+					    pointsAOS.push(new Cesium.Cartesian3(orbit[i].x * 1000,
+							    orbit[i].y * 1000, orbit[i].z * 1000));
+					    plottingAos = true;
+				    }
+				    
+				    if (plottingAos && orbit[i].el <= AGSETTINGS.getAosEl()) {
+					    plottingAos = false;
+					    orbitLines.add({
+						    positions : pointsAOS,
+						    width : 3,
+						    color : Cesium.Color.GREEN
+					    });
+					    pointsAOS = [];
+				    }
+				    
+				    
+			    }
+			    
+		    //	var segments = Cesium.PolylinePipeline.wrapLongitude(ellipsoid, points);
+		    //	for (var i=0; i < segments.length; i++) {
+				    orbitLines.add({
+					    positions : points,
+					    width : 1,
+					    color : Cesium.Color.RED
+				    });
+		    //	}
+			    if (plottingAos) {
+				    orbitLines.add({
+					    positions : pointsAOS,
+					    width : 3,
+					    color : Cesium.Color.GREEN
+				    });
+			    }
 
-		}
+		    }
+        }
 	}
 
 	jQuery('<canvas/>', {

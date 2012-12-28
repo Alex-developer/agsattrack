@@ -54,13 +54,14 @@ var AGPOLARVIEW = function() {
 		}
 	});
 	
-	jQuery(window).resize( function() {
-		
-	//	var parent = jQuery('#polar');
-		
-	//	stage.setSize(parent.width(), parent.height());
-	//	drawBackground();
-	});
+    /**
+     * Listen for an event telling us a new set of data is available
+     */
+    jQuery(document).bind('agsattrack.updatesatdata', function(event) {
+        if (_render) {
+            drawPolarView();
+        }
+    });
 	
 		
 	/**
@@ -71,10 +72,6 @@ var AGPOLARVIEW = function() {
 		_satLabels = [];
 		_satLayer.clear();
 	});
-
-	// var polarCanvasJq = jQuery('#polarcanvas');
-	// var polarCanvas = polarCanvasJq[0];
-	// var polarContext = polarCanvas.getContext('2d');
 
 	jQuery('#polarcanvas').mousemove(
 			function(e) {
@@ -364,23 +361,27 @@ var AGPOLARVIEW = function() {
 	_objectLayer.add(_mousePosTextEl);
 
 	var _naflag = false;
+    
+    
+    function drawMousePos() {
+        if (_mousePos.show) {
+            _mousePosTextAz.setText(_mousePos.az.toFixed(0));
+            _mousePosTextEl.setText(_mousePos.el.toFixed(0));
+            _naflag = false;
+            _objectLayer.draw();
+        } else {
+            if (_naflag === false) {
+                _mousePosTextAz.setText('N/A');
+                _mousePosTextEl.setText('N/A');
+                _naflag = true;
+                _objectLayer.draw();
+            }
+        }        
+    }
+    
 	function drawPolarView() {
 
 		setDimensions();
-
-		if (_mousePos.show) {
-			_mousePosTextAz.setText(_mousePos.az.toFixed(0));
-			_mousePosTextEl.setText(_mousePos.el.toFixed(0));
-			_naflag = false;
-			_objectLayer.draw();
-		} else {
-			if (_naflag === false) {
-				_mousePosTextAz.setText('N/A');
-				_mousePosTextEl.setText('N/A');
-				_naflag = true;
-				_objectLayer.draw();
-			}
-		}
 
 
 		var _moonPos = AGSatTrack.getMoon();
@@ -405,7 +406,6 @@ var AGPOLARVIEW = function() {
 		}
 		
 		var satellites = AGSatTrack.getSatellites();
-		var selected = AGSatTrack.getSelected();
 		jQuery.each(satellites, function(index, satellite) {
 			if (satellite.isDisplaying()) {
 				var data = satellite.getData();
@@ -434,7 +434,7 @@ var AGPOLARVIEW = function() {
 					var pos = convertAzEltoXY(az, el);
 					var _style = 'normal';
 
-					if (selected !== null && index === selected.index) {
+					if (satellite.getSelected()) {
 						_style = 'bold';
 					}
 
@@ -469,15 +469,12 @@ var AGPOLARVIEW = function() {
 							image : _satImage,
 							width : 16,
 							height : 16,
-							id : index
+							id : satellite.getName()
 						});
 						_sats[index].on('mouseup', function(e) {
 							var selected = e.shape.getId();
-							AGSatTrack.setSelected(selected);
-							var satDetails = AGSatTrack.getSatellite(selected);
 							jQuery(document).trigger('agsattrack.satclicked', {
-								index : selected,
-								sat : satDetails
+								index : selected
 							});
 						});
 						_satLayer.add(_sats[index]);
@@ -493,7 +490,7 @@ var AGPOLARVIEW = function() {
 
 	function animate() {
 		if (_render) {
-			drawPolarView();
+			drawMousePos();
 		}
 		requestAnimFrame(animate);
 	}

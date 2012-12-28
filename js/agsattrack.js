@@ -20,7 +20,6 @@ var agsattrack = function() {
 	var _tles = new AGTLES();
 	var ui = null;
     var _views = null;
-	var _selected = null;
 	var refreshCounter = 0;
 	var refreshInterval = 1;
 	var _moonPos = null;
@@ -66,12 +65,12 @@ var agsattrack = function() {
         },
         'list' : {
             classname : 'AGLISTVIEW',
-            active : false,
+            active : true,
             index: 0
         },
         'timeline' : {
             classname : 'AGTIMELINE',
-            active : true,
+            active : false,
             index: 5
         },
         'options' : {
@@ -129,10 +128,20 @@ var agsattrack = function() {
 			calculationLoop();		
 		});
 		
-		jQuery(document).bind('agsattrack.satclicked', function(event, selected) {
-			_selected = selected;
+		jQuery(document).bind('agsattrack.satclicked', function(event, params) {
+            if (typeof params.index === 'string') {
+                params.index = _tles.getSatelliteIndex(params.index);    
+            }
+            
+            if (typeof params.state !== 'undefined') {
+                _tles.getSatellite(params.index).setSelected(params.state);                    
+            } else {
+                _tles.getSatellite(params.index).toggleSelected();
+            }
+            
+            var _selected = _tles.getSelected();
 			calculate(true);
-			jQuery(document).trigger('agsattrack.newsatselected', {selected: _selected});
+			jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
 		});
 	
 		jQuery(document).bind('agsattrack.forceupdate', function(event) {
@@ -161,17 +170,17 @@ var agsattrack = function() {
 		
 		calculateSunAndMoon();
 		
-		if (_tles.getTotalSelected() > 0) {
+		if (_tles.getTotalDisplaying() > 0) {
 			var date = new Date();
-			_tles.calcAll(date, _observers[0], _selected);
+			_tles.calcAll(date, _observers[0]);
 		
 			refreshCounter++;
 			if (refreshCounter >= refreshInterval || forceRefresh) {
 				refreshCounter = 0;
-				jQuery(document).trigger('agsattrack.updatesatdata', {selected: _selected});
+				jQuery(document).trigger('agsattrack.updatesatdata', {});
 			}
 		} else {
-			jQuery(document).trigger('agsattrack.updatesatdata', {selected: _selected});
+			jQuery(document).trigger('agsattrack.updatesatdata', {});
 		}
 	}
 	
@@ -186,6 +195,10 @@ var agsattrack = function() {
 				{latitude: _observers[0].getLat(), longitude: _observers[0].getLon()});	
 	}
 	
+    function setSelected(index) {
+        _tles.getSatellite(index).setSelected(true);        
+    }
+    
 	return {
 
 		getMoon: function() {
@@ -202,12 +215,9 @@ var agsattrack = function() {
 			return _sunMoon.getMoonPhase(julianDate);
 		},
 		
-		setSelected : function(selected) {
-			_selected = selected;
-		},
-		getSelected : function() {
-			return _selected;
-		},
+		getDisplaying : function() {
+            return _tles.getDisplaying();
+        },
 		
 		getTles : function() {
 			return _tles;
@@ -220,7 +230,16 @@ var agsattrack = function() {
 		getSatellite : function(index) {
 			return _tles.getSatellite(index);
 		},
-		
+
+        getSatelliteIndex : function(name) {
+            return _tles.getSatelliteIndex(name);
+        },
+        
+        getSatelliteByName : function(name) {
+            var index = _tles.getSatelliteIndex(name);
+            return _tles.getSatellite(index);
+        },
+                		
 		getObservers : function() {
 			return _observers;
 		},

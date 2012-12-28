@@ -52,14 +52,56 @@ var AGTLES = function() {
 		}
 		if (typeof selection.selections !== 'undefined') {
 			for (var i=0; i < selection.selections.length; i++) {
-				satellites[selection.selections[i].value].setDisplaying(true);
+                var index = getSatelliteIndex(selection.selections[i]);
+				satellites[index].setDisplaying(true);
 			}
 		}
+        var selectedSatellites = getSelected();
+        jQuery(document).trigger('agsattrack.satsselectedcomplete', {selected: selectedSatellites});        
 	});
+
+    function getSatelliteIndex(name) {
+        var index = -1;
+        for (var i=0; i < satellites.length; i++) {
+            if (satellites[i].getName() === name) {
+                index = i;
+                break;
+            }
+        } 
+        return index;           
+    }
+
+    function getSelected() {
+        var satelliteList = [];
+        for (var i=0; i < satellites.length; i++) {
+            if (satellites[i].isDisplaying() && satellites[i].getSelected()) {
+                satelliteList.push(satellites[i]);
+            }
+        }
+        return satelliteList;           
+    }
 	
 	return {
-		
-		getTotalSelected : function() {
+	
+        getSelected : function() {
+            return getSelected();
+        },
+        
+        getDisplaying : function() {
+            var satelliteList = [];
+            for (var i=0; i < satellites.length; i++) {
+                if (satellites[i].isDisplaying()) {
+                    satelliteList.push(satellites[i]);
+                }
+            }
+            return satelliteList;            
+        },
+                
+        getCount : function() {
+            return satellites.length;    
+        },
+        
+		getTotalDisplaying : function() {
 			var total = 0;
 			for (var i=0; i < satellites.length; i++) {
 				if (satellites[i].isDisplaying()) {
@@ -69,17 +111,28 @@ var AGTLES = function() {
 			return total;
 		},
 		
-		calcAll: function(date, observer, selected) {
+		calcAll: function(date, observer) {
 			for (var i=0; i < satellites.length; i++) {
 				if (satellites[i].isDisplaying()) {
 					satellites[i].calc(date, observer);
-					if (selected !== null && i === selected.index) {
+					if (satellites[i].getSelected()) {
 						satellites[i].calculateOrbit(observer);
 					}
 				}
 			}
 		},
 		
+        resetAll : function() {
+            for (var i=0; i < satellites.length; i++) {
+                satellites[i].setSelected(false);
+                satellites[i].setDisplaying(false);
+            }            
+        },
+        
+        getSatelliteIndex : function(name) {
+            return getSatelliteIndex(name);          
+        },
+        
 		getSatellites : function() {
 			return satellites;
 		},

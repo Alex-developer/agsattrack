@@ -23,6 +23,9 @@ var AGUI = function() {
 	
 	jQuery('#ribbon').ribbon();
 
+    jQuery("#sat-info-selector").jqxDropDownList({width: '200', height: '25', animationType: 'none', autoOpen: true});
+    jQuery("#sat-info-selector").hide();
+    
 	jQuery('#ag-satselector').agsatbox({
 		width : 600,
 		height : 400
@@ -92,42 +95,6 @@ var AGUI = function() {
 			filename : file
 		});
 	}
-
-	jQuery('#sats').checkList({
-		effect : null,
-		onChange : function() {
-			var selection = $('#sats').checkList('getSelection');
-			jQuery(document).trigger('agsattrack.satsselected', {
-				selections : selection
-			});
-			jQuery(document).trigger('agsattrack.forceupdate', {});
-		}
-	});
-	jQuery(document)
-			.bind(
-					'agsattrack.tlesloaded',
-					function(e, group) {
-						var names = AGSatTrack.getTles().getNames();
-						var items = [];
-						var html = '';
-
-						for ( var i = 0; i < names.length; i++) {
-							var item = {
-								text : names[i],
-								value : i
-							};
-							items.push(item);
-
-							html += '<div class="satwrapper"><div class="satimage"></div><div class="satname">'
-									+ names[i]
-									+ '</div><div class="satinfo">Some Info</div></div>';
-						}
-						jQuery('#sats').checkList('setData', items);
-						jQuery('#satselector').html(html);
-						jQuery('#ag-satselector').agsatbox('updateSatelliteData', AGSatTrack.getTles());						
-					});
-
-
 	
 	jQuery('#viewtabs').tabs({
 		onSelect : function(title, index) {
@@ -139,63 +106,138 @@ var AGUI = function() {
 		}
 	});
 
-	jQuery(document).bind(
-			'agsattrack.satclicked',
-			function(e, selected) {
-				jQuery('#nextpass').html('');
-
-				var table = '<table>';
-				table += '<tr>';
-				table += '<th>Time</th>';
-				table += '<th>Az</th>';
-				table += '<th>El</th>';
-				table += '</tr>';
-
-				var orbitData = selected.sat.getOrbitData();
-				for ( var i = 0; i < orbitData.length; i++) {
-					if (orbitData[i].el > AGSETTINGS.getAosEl()) {
-						table += '<tr>';
-						table += '<td>' + AGUTIL.shortdate(orbitData[i].date)
-								+ '</td>';
-						table += '<td>' + orbitData[i].az.toFixed(0) + '</td>';
-						table += '<td>' + orbitData[i].el.toFixed(0) + '</td>';
-						table += '</tr>'
-					}
-				}
-				table += '</table>';
-
-				jQuery('#nextpass').html(table);
-			});
+    /**
+    * Listen for a new set of TLE's being loaded. When they are reset stuff
+    */
+	jQuery(document).bind('agsattrack.tlesloaded',
+		function(e, group) {
+            jQuery('#sat-info-selector').jqxDropDownList('clear');
+            clearDataPane();
+            jQuery('#ag-satselector').agsatbox('setData', AGSatTrack.getTles());
+	});
 
 	/**
 	 * Listen for events to update the data grid
 	 */
-	jQuery(document).bind('agsattrack.updatesatdata', function(e, params) {
-		if (params.selected !== null) {
-			var data = params.selected.sat.getData();
-
-			jQuery('#latitude').html(AGUTIL.convertDecDegLat(data.latitude));
-			jQuery('#longitude').html(AGUTIL.convertDecDegLon(data.longitude));
-			jQuery('#altitude').html(data.altitude.toFixed(3));
-			jQuery('#velocity').html(data.velocity.toFixed(3));
-			jQuery('#range').html(data.range.toFixed(3));
-			jQuery('#footprint').html(data.footprint.toFixed(3));
-			jQuery('#elevation').html(data.elevation.toFixed(3));
-			jQuery('#azimuth').html(data.azimuth.toFixed(3));
-		}
+	jQuery(document).bind('agsattrack.updatesatdata', function(e) {
+        var selectedItem = jQuery('#sat-info-selector').jqxDropDownList('getSelectedItem');
+        if (selectedItem !== null) {
+            var selectedSatellite = AGSatTrack.getSatelliteByName(selectedItem.value);    
+			updateSatelliteInfo(selectedSatellite);
+            updateNextpass(selectedSatellite); 
+        }
 
 	});
 
-	jQuery(document).bind('agsattrack.satclicked', function(e, selectedInfo) {
-		var noradId = selectedInfo.sat.getNoradId();
-		var url = 'ajax.php?id=' + noradId;
-		jQuery.getJSON(url, function(data) {
-			for ( var i = 0; i < data.length; i++) {
-				jQuery('#' + data[i].field).html(data[i].value);
-			}
-		});
+    /**
+    * When a satellite is selected in the drop down go get its details from the server.
+    */
+	jQuery('#sat-info-selector').bind('select', function(e) {
+        var args = e.args;
+        var selectedSatellite = AGSatTrack.getSatelliteByName(args.item.value); 
+        UpdateSatelliteData(selectedSatellite);
 	});
 
+    /**
+    * When a new satellite is selected update the satellite information pane.
+    * TODO: There must be a better way to manage the selection in the drop down. Re selecting the
+    * item is causing the ajax request for the satellite data to be reloaded whenever the drop down
+    * is updated.
+    */
+    jQuery(document).bind('agsattrack.newsatselected', function(e, selectedInfo) {
+        jQuery('#sat-info-selector').jqxListBox('beginUpdate');
+        clearDataPane();        
+        var selectedItem = jQuery('#sat-info-selector').jqxDropDownList('getSelectedItem');
+        jQuery('#sat-info-selector').jqxDropDownList('clear');
+        if (selectedInfo.satellites.length > 1 ) {
+            for (var i=0; i < selectedInfo.satellites.length; i++) {
+                var satelliteName = selectedInfo.satellites[i].getName();
+                jQuery('#sat-info-selector').jqxDropDownList('addItem', satelliteName);    
+            }
+            if (selectedItem !== null) {
+                var items = jQuery('#sat-info-selector').jqxDropDownList('getItems');
+                if (items !== null) {
+                    for (var i=0; i<items.length; i++) {
+                        if (items[i].value === selectedItem.value) {
+                            jQuery('#sat-info-selector').jqxDropDownList('selectIndex', items[i].index);
+                            break;
+                        }
+                    }
+                }
+            }
+            jQuery('#sat-info-selector').show(); 
+        } else {
+            if (selectedInfo.satellites.length > 0) {
+                var satelliteName = selectedInfo.satellites[0].getName();
+                jQuery('#sat-info-selector').jqxDropDownList('addItem', satelliteName);    
+                jQuery('#sat-info-selector').jqxDropDownList('selectIndex', 0);
+                jQuery('#sat-info-selector').hide();
+                UpdateSatelliteData(selectedInfo.satellites[0]);
+            }           
+        }
+        jQuery('#sat-info-selector').jqxListBox('endUpdate');        
+    });    
+
+    function UpdateSatelliteData(satellite) {
+        var noradId = satellite.getNoradId();
+        var url = 'ajax.php?id=' + noradId;
+        jQuery.getJSON(url, function(data) {
+            for ( var i = 0; i < data.length; i++) {
+                jQuery('#' + data[i].field).html(data[i].value);
+            }
+        });
+        updateSatelliteInfo(satellite);
+        updateNextpass(satellite); 
+    }
+    
+    function clearDataPane() {
+        jQuery('.sat-info').html('');      
+    }
+    
+    function updateSatelliteInfo(satellite) {
+        var data = satellite.getData();
+        jQuery('#latitude').html(AGUTIL.convertDecDegLat(data.latitude));
+        jQuery('#longitude').html(AGUTIL.convertDecDegLon(data.longitude));
+        jQuery('#altitude').html(data.altitude.toFixed(3));
+        jQuery('#velocity').html(data.velocity.toFixed(3));
+        jQuery('#range').html(data.range.toFixed(3));
+        jQuery('#footprint').html(data.footprint.toFixed(3));
+        jQuery('#elevation').html(data.elevation.toFixed(3));
+        jQuery('#azimuth').html(data.azimuth.toFixed(3));      
+    }
+    
+    function updateNextpass(satellite) {
+        var selectedItem = jQuery('#sat-info-selector').jqxDropDownList('getSelectedItem');
+        if (selectedItem !== null) {
+            var selectedSatellite = AGSatTrack.getSatelliteByName(selectedItem.value); 
+
+            jQuery('#nextpass').html('');
+
+            var table = '<table>';
+            table += '<tr>';
+            table += '<th>Time</th>';
+            table += '<th>Az</th>';
+            table += '<th>El</th>';
+            table += '</tr>';
+
+            var orbitData = selectedSatellite.getOrbitData();
+            for ( var i = 0; i < orbitData.length; i++) {
+                if (orbitData[i].el > AGSETTINGS.getAosEl()) {
+                    table += '<tr>';
+                    table += '<td>' + AGUTIL.shortdate(orbitData[i].date) + '</td>';
+                    table += '<td>' + orbitData[i].az.toFixed(0) + '</td>';
+                    table += '<td>' + orbitData[i].el.toFixed(0) + '</td>';
+                    table += '</tr>'
+                }
+            }
+            table += '</table>';
+
+            jQuery('#nextpass').html(table);
+        } else {
+            jQuery('#nextpass').html('Not Available');  
+        }        
+    }
+    
 	return {
 		updateSatelliteInfo : function(noradId) {
 			var url = 'ajax.php?id=' + noradId;

@@ -22,6 +22,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     var orbit = [];
     var _calcOrbitEvery = 50;
     var _orbitCalcCounter = 0;
+    var _selected = false;
     
     sgp4 = new SGP4(tle.getElements());
     orbitSgp4 = new SGP4(tle.getElements());
@@ -81,7 +82,19 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 		},
 		setDisplaying: function(displaying) {
 			tle.setDisplaying(displaying);
-		},		
+		},
+        
+        getSelected: function() {
+            return _selected;
+        },
+        setSelected: function(value) {
+            _selected = value;
+        },
+        toggleSelected : function() {
+            _selected = !_selected;
+            return _selected;    
+        },
+                    		
 		getName: function() {
 			return tle.getName();
 		},

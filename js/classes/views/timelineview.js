@@ -46,7 +46,6 @@ var AGTIMELINE = function() {
 		var totalLeft = 1440 - total;
 		
 		_pixelsPerMin = _width / totalLeft;
-		debugger;
 	}	
 
 	function drawBackground() {

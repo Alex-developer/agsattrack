@@ -33,6 +33,7 @@ var AGSKYVIEW = function() {
 	var _stage = null;
 	var _backgroundLayer = null;
 	var _mousePosLayer = null;
+    var _orbitLayer = null;
 	var _sunMoonLayer = null;
 	var _satLayer = null;
 	var _infoGroup = null;
@@ -51,7 +52,7 @@ var AGSKYVIEW = function() {
 	/**
 	 * Listen for an event telling us a new set of elements were loaded
 	 */
-	jQuery(document).bind('agsattrack.updatesatdata', function(event, selected) {
+	jQuery(document).bind('agsattrack.updatesatdata', function(event) {
 		_sats = [];
 		_satLabels = [];
 		_satLayer.removeChildren();
@@ -219,7 +220,6 @@ var AGSKYVIEW = function() {
 
 	function drawSatellites() {
 		var satellites = AGSatTrack.getSatellites();
-		var selected = AGSatTrack.getSelected();
 
 		jQuery.each(satellites, function(index, satellite) {
 			if (satellite.isDisplaying()) {
@@ -233,7 +233,7 @@ var AGSKYVIEW = function() {
 					var pos = convertAzEltoScreen(az, el);
 					var _style = 'normal';
 
-					if (selected !== null && index === selected.index) {
+					if (satellite.getSelected()) {
 						_style = 'bold';
 					}
 
@@ -268,15 +268,12 @@ var AGSKYVIEW = function() {
 							image : _satImage,
 							width : 16,
 							height : 16,
-							id : index
+							id : satellite.getName()
 						});
 						_sats[index].on('mouseup', function(e) {
 							var selected = e.shape.getId();
-							AGSatTrack.setSelected(selected);
-							var satDetails = AGSatTrack.getSatellite(selected);
 							jQuery(document).trigger('agsattrack.satclicked', {
-								index : selected,
-								sat : satDetails
+								index : selected
 							});
 						});
 						_satLayer.add(_sats[index]);
@@ -290,12 +287,60 @@ var AGSKYVIEW = function() {
 		_satLayer.draw();
 	}
 
+    function drawOrbits() {
+        var pos;
+        var orbitData;
+        var points;
+        
+        getDimensions()
+        _orbitLayer.removeChildren();
+        var satellites = AGSatTrack.getSatellites();
+
+        jQuery.each(satellites, function(index, satellite) {
+            if (satellite.isDisplaying() && satellite.getSelected()) {
+                orbitData = satellite.getOrbitData();
+                points = [];
+                for (var i=0; i<orbitData.length;i++) {
+                    if (orbitData[i].el > -10) {
+                        pos = convertAzEltoScreen(orbitData[i].az, orbitData[i].el);
+                        points.push(pos.x);
+                        points.push(pos.y);
+                        
+                        if (pos.x <= 0 || pos.x >= _width || pos.y >= _height) {
+                            _orbitLayer.add(new Kinetic.Line({
+                                    points: points,
+                                    stroke: 'red',
+                                    strokeWidth: 1,
+                                    lineCap: 'round',
+                                    lineJoin: 'round'
+                                })
+                            );
+                            points = [];                            
+                        }
+                    }    
+                }
+                
+                if (points.length > 0) {
+                    _orbitLayer.add(new Kinetic.Line({
+                            points: points,
+                            stroke: 'red',
+                            strokeWidth: 1,
+                            lineCap: 'round',
+                            lineJoin: 'round'
+                        })
+                    );
+                }
+            }
+        });
+        _orbitLayer.draw();        
+    }
+    
 	function drawSkyView() {
 		getDimensions();
 
-		drawMousePos();
 		drawSunAndMoon();
-		drawSatellites()
+		drawSatellites();
+        drawOrbits();
 	}
 
 	return {
@@ -326,6 +371,9 @@ var AGSKYVIEW = function() {
 			_satLayer = new Kinetic.Layer();
 			_stage.add(_satLayer);
 
+            _orbitLayer = new Kinetic.Layer();
+            _stage.add(_orbitLayer);
+                        
 			_infoGroup = new Kinetic.Group({
 		        draggable: true
 		      });

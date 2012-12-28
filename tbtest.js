@@ -12,6 +12,8 @@ var TBTEST = function() {
 		}
 	});
 
+    jQuery('#ag-satselector').agsatbox('clear');
+    
 	jQuery('#ribbon').ribbon();
 
 	jQuery(document).on('click', function(e) {
@@ -23,19 +25,7 @@ var TBTEST = function() {
 	
 
 	jQuery(document).bind('agsattrack.tlesloaded', function(e, group) {
-		var names = _tles.getNames();
-		var items = [];
-
-		for ( var i = 0; i < names.length; i++) {
-			var item = {
-				text : names[i],
-				value : i
-			};
-			items.push(item);
-
-		}
-
-		jQuery('#ag-satselector').agsatbox('setData', items);	
+		jQuery('#ag-satselector').agsatbox('setData', _tles);	
 	});
 
 	return {
