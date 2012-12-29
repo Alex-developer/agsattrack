@@ -27,7 +27,8 @@ let me know and I will add the appropriate credit.
 			objTable: '',
 			icount: 0,
             showCheckAll: false,
-            filterText: 'Filter'
+            filterText: 'Filter',
+            fit: true
 		},
 		
 		_create: function() {
@@ -35,7 +36,6 @@ let me know and I will add the appropriate credit.
 
 			// generate outer div
 			var container = $('<div/>').addClass('checkList');
-
 			// generate toolbar
 			var toolbar = $('<div/>').addClass('toolbar');
 			if (o.showCheckAll) {

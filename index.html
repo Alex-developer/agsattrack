@@ -56,6 +56,9 @@
 <script type="text/javascript" src="js/jqwidgets/jqxdropdownlist.js"></script>
 <link rel="stylesheet" href="js/jqwidgets/styles/jqx.base.css" type="text/css" />
 
+<script type="text/javascript" src="js/joyride/jquery.joyride-2.0.2.js"></script>
+<link href="js/joyride/joyride-2.0.2.css" rel="stylesheet" type="text/css" />
+
 <script src="js/startup.js"></script>
    
 </head>
@@ -99,7 +102,7 @@
 
                 <div class="ribbon-section">
                     <span class="section-title">View</span>
-                    <div class="ribbon-button ribbon-button-large" id="sat-reload" data-type="dropdownmenu">
+                    <div class="ribbon-button ribbon-button-large" id="view-select" data-type="dropdownmenu">
                         <span class="button-title">Views <img src="js/ribbon/arrow_down.png"></span> 
                         <span class="button-help">Selects the main view.</span>
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/new-table.png" /> 
@@ -132,7 +135,7 @@
 
                 <div class="ribbon-section">
                     <span class="section-title">Satellites</span>
-                    <div style="float: left;">
+                    <div style="float: left;" id="groupselectortour">
                         Group <input id="groupselector" style="width: 180px;" />
                     </div>
                     <div class="ribbon-button ribbon-button-large" id="sat-selector"  data-type="dropdownmenustay">
@@ -186,29 +189,6 @@
                     </div>
                 </div>
 
-                <div class="ribbon-section">
-                    <span class="section-title">Observers</span>
-                    <div class="ribbon-button ribbon-button-large" id="home-observer">
-                        <span class="button-title">Set Home<br />Location
-                        </span> <span class="button-help"></span> <img
-                            class="ribbon-icon ribbon-normal"
-                            src="js/ribbon/icons/normal/location.png" /> <img
-                            class="ribbon-icon ribbon-hot"
-                            src="js/ribbon/icons/hot/location.png" /> <img
-                            class="ribbon-icon ribbon-disabled"
-                            src="js/ribbon/icons/disabled/location.png" />
-                    </div>
-                    <div class="ribbon-button ribbon-button-large" id="add-table-btn">
-                        <span class="button-title">Set 2nd<br />Location
-                        </span> <span class="button-help"></span> <img
-                            class="ribbon-icon ribbon-normal"
-                            src="js/ribbon/icons/normal/location.png" /> <img
-                            class="ribbon-icon ribbon-hot"
-                            src="js/ribbon/icons/hot/location.png" /> <img
-                            class="ribbon-icon ribbon-disabled"
-                            src="js/ribbon/icons/disabled/location.png" />
-                    </div>
-                </div>
 
                 <div class="ribbon-section">
                     <span class="section-title">Settings</span>
@@ -235,6 +215,26 @@
                     </div>
                 </div>
 
+                <div class="ribbon-section">
+                    <span class="section-title">Help</span>
+                    <div style="float:left">
+                        <div class="ribbon-button ribbon-button-large" id="help">
+                            <span class="button-title">Help</span> 
+                                <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/help.png" /> 
+                                <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/help.png" /> 
+                                <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/help.png" />
+                        </div>
+                    </div>
+                    <div style="float:left">                    
+                        <div class="ribbon-button ribbon-button-small" id="help-tour" unselectable="on">
+                            <span class="button-help" unselectable="on"></span>
+                            <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/tour.png" />
+                            <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/tour.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/tour.png" />
+                            <span class="button-title" unselectable="on">Tour</span>
+                        </div>
+                    </div>
+                </div>                
 
             </div>
             <div class="ribbon-tab" id="list-tab">
@@ -631,6 +631,34 @@
 		</div>
 	</div>
 
+    <ol id="joyRideTipContent">
+      <li data-id="groupselectortour" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
+        <h2>Select a Group</h2>
+        <p>This drop down contains the groups you can use. One is selected by default</p>
+      </li>
+      <li data-id="sat-selector" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
+        <h2>Select satellites</h2>
+        <p>Select the satellites you wish to view</p>
+      </li>
+      <li data-id="view-select" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
+        <h2>Switch View</h2>
+        <p>Select the view to display</p>
+      </li>      
+      <li data-id="ribbon-tab-header-strip" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
+        <h2>View Tabs</h2>
+        <p>Each view has customisable options</p>
+      </li> 
+      <li data-id="satinfot" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
+        <h2>Satellite Information</h2>
+        <p>The left hand pane contains details about the selected satellite</p>
+      </li>       
+      <li data-id="options" data-button="Close" data-options="tipLocation:top;tipAnimation:fade">
+        <h2>Program Options</h2>
+        <p>Setup Agsattrack how you like it</p>
+      </li>  
+           
+    </ol>
+        
 <!-- 
 	<script type="text/javascript">
 		var _gaq = _gaq || [];

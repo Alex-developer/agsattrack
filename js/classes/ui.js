@@ -47,6 +47,11 @@ var AGUI = function() {
 		jQuery('#viewtabs').tabs('select', 6);
 	});
 
+    jQuery('#help-tour').click(function() {
+        jQuery('#joyRideTipContent').joyride();
+    });    
+    
+
 	/**
 	 * Bind to the view menu options and select the appropriate tab
 	 */
