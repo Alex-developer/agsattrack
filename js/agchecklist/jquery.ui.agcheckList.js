@@ -77,11 +77,11 @@ let me know and I will add the appropriate credit.
                 
             $(document).bind('agsattrack.newsatselected', function(e, satellites) {
                 var list = container.find('input');
-                for (var i=0;i<satellites.length;i++) {
-                    var name = satellites[i].getName();
+                for (var i=0;i<satellites.satellites.length;i++) {
+                    var name = satellites.satellites[i].getName();
                     $.each(list, function(index, el) {
                         if ($(el).attr('data-text') === name) {
-                            $(el).prop('checked', satellite[i].getSelected());
+                            $(el).prop('checked', satellites.satellites[i].getSelected());
                             self._selChange(true, el);
                         }
                     });
