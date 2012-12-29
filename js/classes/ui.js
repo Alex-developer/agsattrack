@@ -50,8 +50,23 @@ var AGUI = function() {
     jQuery('#help-tour').click(function() {
         jQuery('#joyRideTipContent').joyride();
     });    
-    
+    jQuery('#help-contact').click(function() {
+        jQuery('#contact-window').window('open');
+    });    
+    jQuery('#help-help').click(function() {
+        jQuery('#help-window').window('open');
+    }); 
+    jQuery('.tree-help-item').on('click', function(e){
+        e.preventDefault();
+        var href = jQuery(e.target).attr('href');
+        jQuery('#help-content').load(href, function(response, status, xhr){
+            if (status === 'error') {
+                jQuery('#help-content').html('<h2>Page Not Found</h2>');    
+            }
+        }); 
+    });
 
+        
 	/**
 	 * Bind to the view menu options and select the appropriate tab
 	 */

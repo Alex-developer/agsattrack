@@ -214,7 +214,7 @@
                 <div class="ribbon-section">
                     <span class="section-title">Help</span>
                     <div style="float:left">
-                        <div class="ribbon-button ribbon-button-large" id="help">
+                        <div class="ribbon-button ribbon-button-large" id="help-help">
                             <span class="button-title">Help</span> 
                                 <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/help.png" /> 
                                 <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/help.png" /> 
@@ -223,12 +223,23 @@
                     </div>
                     <div style="float:left">                    
                         <div class="ribbon-button ribbon-button-small" id="help-tour" unselectable="on">
-                            <span class="button-help" unselectable="on"></span>
                             <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/tour.png" />
                             <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/tour.png" />
                             <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/tour.png" />
                             <span class="button-title" unselectable="on">Tour</span>
                         </div>
+                        <div class="ribbon-button ribbon-button-small" id="help-contact" unselectable="on">
+                            <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/email.png" />
+                            <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/email.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/email.png" />
+                            <span class="button-title" unselectable="on">Contact</span>
+                        </div>
+                        <div class="ribbon-button ribbon-button-small disabled" id="help-forum" unselectable="on">
+                            <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/forum.png" />
+                            <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/forum.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/forum.png" />
+                            <span class="button-title" unselectable="on">Community</span>
+                        </div>                                                  
                     </div>
                 </div>                
 
@@ -627,6 +638,59 @@
 		</div>
 	</div>
 
+    <div id="contact-window" class="easyui-window" data-options="title:'Contact',closed:true, resizable:false, minimizable:false,maximizable:false, collapsible: false" style="width:500px;height:200px;padding:5px;">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center',border:false" style="padding:10px;background:#fff;border:1px solid #ccc;">
+                <h2>Contact</h2>
+                <p>To contact me please send an email to alex AT agsattrack.com</p>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0;">
+                <a class="easyui-linkbutton" href="javascript:void(0)" onclick="jQuery('#contact-window').window('close');">Ok</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="help-window" class="easyui-window" data-options="title:'Help',closed:true, resizable:false, minimizable:false,maximizable:false, collapsible: false" style="width:900px;height:600px;padding:0px">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center',border:false" style="background:#fff;border:1px solid #ccc;">
+                <div class="easyui-layout" data-options="fit:true">
+                    <div data-options="region:'west',split:true,title:'Topics'" style="width:200px;overflow:auto">
+                        <ul id="help-tree" class="easyui-tree">  
+                            <li>  
+                                <span>Help Topics</span>  
+                                <ul>  
+                                    <li>  
+                                        <span>Introduction</span>  
+                                        <ul>  
+                                            <li>  
+                                                <span><a href="help/whatis.html" class="tree-help-item">What is AgSatTrack</a></span>  
+                                            </li>   
+                                        </ul>                  
+                                    </li>
+                                    <li>  
+                                        <span>How To</span>  
+                                        <ul>  
+                                            <li>  
+                                                <span><a href="help/loadgroups.html" class="tree-help-item">Load Groups</a></span>  
+                                            </li>  
+                                        </ul>                  
+                                    </li>                
+                                </ul>  
+                            </li>  
+                        </ul>                    
+                    </div>
+                    <div data-options="region:'center',title:'Help'">
+                        <div id="help-content" style="padding:2px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0;">
+                <a class="easyui-linkbutton" href="javascript:void(0)" onclick="jQuery('#help-window').window('close');">Ok</a>
+            </div>
+        </div>
+    </div>
+            
     <ol id="joyRideTipContent">
       <li data-id="groupselectortour" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
         <h2>Select a Group</h2>
