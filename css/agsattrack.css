@@ -88,6 +88,12 @@ body {
 	display: none;
 }
 
+.layout-panel-north .panel-header  {
+    z-index: 9999;
+    background: none;
+    border: 0px solid #fff;
+}
+
 #satselector {
 
 }
