@@ -143,7 +143,7 @@ var agsattrack = function() {
 			calculate(true);
 			jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
 		});
-	
+	    
 		jQuery(document).bind('agsattrack.forceupdate', function(event) {
 			calculate(true);
 		});

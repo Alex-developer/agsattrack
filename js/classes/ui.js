@@ -12,7 +12,7 @@ Copyright 2012 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
 var AGUI = function() {
 	'use strict';
 
@@ -31,22 +31,7 @@ var AGUI = function() {
 		height : 400
 	});
 	
-    jQuery('#quick-sat-selector').checkList({
-        onChange: function(e) {
-            
-        }
-    });
-    jQuery(document).bind('agsattrack.satsselected', function(e, selected) {
-        var data = [];
-        for (var i=0; i < selected.selections.length; i++) {
-            data.push({text: selected.selections[i], value: selected.selections[i]});    
-        }
-        jQuery('#quick-sat-selector').checkList('setData', data);        
-    });
-    jQuery(document).bind('agsattrack.satclicked', function(e, clicked) {
-        debugger;        
-    });
-        
+    jQuery('#quick-sat-selector').agcheckList();       
             
 	jQuery('.view-reset').click(function() {
 		jQuery(document).trigger('agsattrack.resetview');
