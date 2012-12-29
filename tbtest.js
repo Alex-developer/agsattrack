@@ -12,6 +12,7 @@ var TBTEST = function() {
 		}
 	});
 
+        
     jQuery('#ag-satselector').agsatbox('clear');
     
 	jQuery('#ribbon').ribbon();

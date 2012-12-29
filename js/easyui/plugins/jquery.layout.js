@@ -1,4 +1,4 @@
-﻿/**
+/**
  * jQuery EasyUI 1.3.1
  * 
  * Licensed under the GPL terms

@@ -88,10 +88,18 @@ body {
 	display: none;
 }
 
-.layout-panel-north .panel-header  {
-    z-index: 9999;
+.layout-panel-north .panel-header {
     background: none;
-    border: 0px solid #fff;
+    border: 0px solid #D3D3D3;
+    color: #3F3F3F;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 15px;
+    padding: 5px;
+    position: relative;
+    z-index: 99999;
+    width: 25px !important;
+    float:right;
 }
 
 #satselector {

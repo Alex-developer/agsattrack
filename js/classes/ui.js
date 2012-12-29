@@ -31,6 +31,10 @@ var AGUI = function() {
 		height : 400
 	});
 	
+    jQuery('#north-toggle').on('click', function(e){
+        debugger;    
+    });
+        
 	jQuery('.view-reset').click(function() {
 		jQuery(document).trigger('agsattrack.resetview');
 	});
