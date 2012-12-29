@@ -19,7 +19,6 @@ var agsattrack = function() {
 	var _observers = [];
 	var _tles = new AGTLES();
 	var ui = null;
-    var _views = null;
 	var refreshCounter = 0;
 	var refreshInterval = 1;
 	var _moonPos = null;
@@ -41,44 +40,6 @@ var agsattrack = function() {
 				};
 	})();
 	
-
-        var _views = {
-        '3d' : {
-            classname : 'AG3DVIEW',
-            active : false,
-            index: 1
-        },
-        'passes' : {
-            classname : 'AGPASSESVIEW',
-            active : false,
-            index: 2
-        },
-        'sky' : {
-            classname : 'AGSKYVIEW',
-            active : false,
-            index: 4
-        },
-        'polar' : {
-            classname : 'AGPOLARVIEW',
-            active : false,
-            index: 3
-        },
-        'list' : {
-            classname : 'AGLISTVIEW',
-            active : true,
-            index: 0
-        },
-        'timeline' : {
-            classname : 'AGTIMELINE',
-            active : false,
-            index: 5
-        },
-        'options' : {
-            classname : 'AGOPTIONS',
-            active : false,
-            index: 6
-        }        
-    };
     
 	function bindEvents() {	
 		/**
@@ -94,6 +55,8 @@ var agsattrack = function() {
 		 */
 		jQuery(document).bind('agsattrack.changeview', function(event, view) {
 	
+            var _views = AGVIEWS.getViews();
+            
 			jQuery.each(_views, function(view, options) {
 				if (options.active) {
 					options.active = false;
@@ -247,7 +210,8 @@ var agsattrack = function() {
 		init : function() {
 			var _active = 0;
 			
-            
+            var _views = AGVIEWS.getViews();
+
 			/**
 			 * Create instances of the views
 			 */

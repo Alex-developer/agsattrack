@@ -29,11 +29,19 @@ var AGTIMELINE = function() {
 			show : false
 		};
 	
-	jQuery(window).resize(function() {
+    function resize(width, height) {
+        if (typeof width === 'undefined' || typeof height === 'undefined') {
+            var parent = jQuery('#timeline');
+            width = parent.width();
+            height = parent.height();
+        }
 
-	});
-
-
+        if (width !== 0 && height !== 0) {
+            _stage.setSize(width, height);
+            drawBackground();
+        }          
+    }
+    
 	function getDimensions() {
 		_width = _stage.getWidth();
 		_height = _stage.getHeight();
@@ -90,12 +98,17 @@ var AGTIMELINE = function() {
 	return {
 		startRender : function() {
 			_render = true;
+            resize();             
 		},
 
 		stopRender : function() {
 			_render = false;
 		},
 
+        resizeView : function(width, height) {
+            resize(width, height);     
+        },
+        
 		init : function() {
 			_stage = new Kinetic.Stage({
 				container : 'timeline',

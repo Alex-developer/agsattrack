@@ -76,7 +76,7 @@ let me know and I will add the appropriate credit.
             }); 
                 
             $(document).bind('agsattrack.newsatselected', function(e, satellites) {
-                var list = container.find('input');
+                var list = container.find('input').prop('checked', false);
                 for (var i=0;i<satellites.satellites.length;i++) {
                     var name = satellites.satellites[i].getName();
                     $.each(list, function(index, el) {

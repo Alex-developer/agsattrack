@@ -16,6 +16,7 @@ Copyright 2012 Alex Greenland
 var AGPOLARVIEW = function() {
 	'use strict';
 	var _render = false;
+    var _stage;
 	var _sats = [];
 	var _satLabels = [];
 	var _mousePos = {
@@ -41,18 +42,19 @@ var AGPOLARVIEW = function() {
 	var _de2ra = 0.0174532925;
 	var _satImage = new Image();
 	var _moonImage = new Image();
-	
-	
-	
-	jQuery('#center-panel').panel({
-		onResize : function(width, height) {
-			var parent = jQuery('#polar');
-			if (parent.width() !== 0 && parent.height() !== 0) {
-				stage.setSize(parent.width(), parent.height());
-				drawBackground();
-			}			
-		}
-	});
+
+    function resize(width, height) {
+        if (typeof width === 'undefined' || typeof height === 'undefined') {
+            var parent = jQuery('#polar');
+            width = parent.width();
+            height = parent.height();
+        }
+
+        if (width !== 0 && height !== 0) {
+            _stage.setSize(width, height);
+            drawBackground();
+        }          
+    }
 	
     /**
      * Listen for an event telling us a new set of data is available
@@ -160,8 +162,8 @@ var AGPOLARVIEW = function() {
 		// _height = polarCanvas.height;
 		// _width = polarCanvas.width;
 
-		_height = stage.getHeight();
-		_width = stage.getWidth();
+		_height = _stage.getHeight();
+		_width = _stage.getWidth();
 
 		var size;
 
@@ -179,27 +181,27 @@ var AGPOLARVIEW = function() {
 		_halfMargin = (0.5 + (_margin / 2)) | 0;
 	}
 
-	var stage = new Kinetic.Stage({
-		container : 'polarview',
+	_stage = new Kinetic.Stage({
+		container : 'polar',
 		width : 1000,
 		height : 600
 	});
 
 	var layer = new Kinetic.Layer();
-	stage.add(layer);
+	_stage.add(layer);
 
 	var _objectLayer = new Kinetic.Layer();
-	stage.add(_objectLayer);
+	_stage.add(_objectLayer);
 
 	var _satLayer = new Kinetic.Layer();
-	stage.add(_satLayer);
+	_stage.add(_satLayer);
 
 	var _moonLayer = new Kinetic.Layer();
-	stage.add(_moonLayer);
+	_stage.add(_moonLayer);
 	var _moon = null;
 	
-	stage.on('mousemove', function() {
-		_mousePos = stage.getMousePosition();
+	_stage.on('mousemove', function() {
+		_mousePos = _stage.getMousePosition();
 		convertMousePos();
 	});
 
@@ -510,6 +512,7 @@ var AGPOLARVIEW = function() {
 	return {
 		startRender : function() {
 			_render = true;
+            resize();
 			_satLayer.clear();
 		},
 
@@ -517,6 +520,10 @@ var AGPOLARVIEW = function() {
 			_render = false;
 		},
 
+        resizeView : function(width, height) {
+            resize(width, height);     
+        },
+                
 		init : function() {
 
 		}

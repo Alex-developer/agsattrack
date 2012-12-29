@@ -277,6 +277,22 @@ var AGUI = function() {
         }        
     }
     
+    
+    jQuery('#center-panel').panel({
+        onResize : function(width, height) {
+        
+            var tab = jQuery('#viewtabs').tabs('getSelected');
+            var index = jQuery('#viewtabs').tabs('getTabIndex',tab);
+            var view = AGVIEWS.getViewFromIndex(index);
+            
+            if (view !== null) {
+                if (view.instance.resizeView instanceof Function) {       
+                    view.instance.resizeView(width, height);
+                }
+            }  
+        }
+    });
+        
 	return {
 		updateSatelliteInfo : function(noradId) {
 			var url = 'ajax.php?id=' + noradId;

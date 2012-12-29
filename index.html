@@ -39,6 +39,7 @@
 <script type="text/javascript" src="js/classes/sunmoon.js"></script>
 <script type="text/javascript" src="js/classes/date.js"></script>
 <script type="text/javascript" src="js/classes/util.js"></script>
+<script type="text/javascript" src="js/classes/views.js"></script>
 <script type="text/javascript" src="js/agsatbox/agsatbox.js"></script>
             
 <link href="js/ribbon/ribbon/ribbon.css" rel="stylesheet" type="text/css" />
@@ -557,9 +558,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div title="3D View" style="padding: 1px;" id="3d">
-				<div id="cesiumContainer"></div>
-			</div>
+			<div title="3D View" style="padding: 1px;" id="3d"></div>
 			<div title="Passes" style="overflow: auto; padding: 1px;" id="passes">
 
 
@@ -584,13 +583,10 @@
 
 
 			</div>
-			<div title="Polar View" style="padding: 1px;" id="polar">
-				<div id="polarview"></div>
-			</div>
+			<div title="Polar View" style="padding: 1px;" id="polar"></div>
 			<div title="Sky View" style="padding: 1px;" width=1000 height=600 id="sky"></div>
 			<div title="Timeline View" style="padding: 1px;" width=1000 height=600 id="timeline"></div>			
-			<div title="Settings" style="padding: 1px;" width=1000 height=600
-				id="sky">
+			<div title="Settings" style="padding: 1px;" width=1000 height=600 id="sky">
 				<div id="window-preferences-tabs" class="easyui-tabs"
 					data-options="fit:true">
 					<div title="Observer" data-options="" style="padding: 20px;">
