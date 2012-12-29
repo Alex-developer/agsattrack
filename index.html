@@ -16,25 +16,48 @@
 <script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
 
 
-<script src="js/modernizer.js"></script>
-<script src="js/startup.js"></script>
+<script type="text/javascript" src="js/cesium/Cesium.js"></script>
+<script type="text/javascript" src="js/kinetic/kinetic.js"></script>
+<script type="text/javascript" src="js/agsattrack.js"></script>
+<script type="text/javascript" src="js/cookies/jquery.cookies.js"></script>
+<script type="text/javascript" src="js/classes/settings.js"></script>
+<script type="text/javascript" src="js/checklist/jquery.ui.checkList.js"></script>
 
+<script type="text/javascript" src="js/classes/views/passesview.js"></script>
+<script type="text/javascript" src="js/classes/views/3dview.js"></script>
+<script type="text/javascript" src="js/classes/views/polarview.js"></script>
+<script type="text/javascript" src="js/classes/views/skyview.js"></script>
+<script type="text/javascript" src="js/classes/views/timelineview.js"></script>
+<script type="text/javascript" src="js/classes/views/listview.js"></script>
+<script type="text/javascript" src="js/classes/views/options.js"></script>
+<script type="text/javascript" src="js/classes/tle.js"></script>
+<script type="text/javascript" src="js/classes/observer.js"></script>
+<script type="text/javascript" src="js/classes/satellite.js"></script>
+<script type="text/javascript" src="js/classes/ui.js"></script>
+<script type="text/javascript" src="js/classes/tles.js"></script>
+<script type="text/javascript" src="js/classes/sgp4.js"></script>
+<script type="text/javascript" src="js/classes/sunmoon.js"></script>
+<script type="text/javascript" src="js/classes/date.js"></script>
+<script type="text/javascript" src="js/classes/util.js"></script>
+<script type="text/javascript" src="js/agsatbox/agsatbox.js"></script>
+            
 <link href="js/ribbon/ribbon/ribbon.css" rel="stylesheet" type="text/css" />
 <link href="js/ribbon/soft_button.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/ribbon/ribbon/ribbon.js"></script>
 <script type="text/javascript" src="js/ribbon/ribbon/jquery.tooltip.min.js"></script>
 
-<script type="text/javascript" src="js/showloading.js"></script>
 
-    <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="js/jqwidgets/jqxscrollbar.js"></script>
-    <script type="text/javascript" src="js/jqwidgets/jqxlistbox.js"></script>
-    <script type="text/javascript" src="js/jqwidgets/jqxcheckbox.js"></script>
+<script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
+<script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
+<script type="text/javascript" src="js/jqwidgets/jqxscrollbar.js"></script>
+<script type="text/javascript" src="js/jqwidgets/jqxlistbox.js"></script>
+<script type="text/javascript" src="js/jqwidgets/jqxcheckbox.js"></script>
 <script type="text/javascript" src="js/jqwidgets/jqxdragdrop.js"></script>  
-  <script type="text/javascript" src="js/jqwidgets/jqxdropdownlist.js"></script>
-    <link rel="stylesheet" href="js/jqwidgets/styles/jqx.base.css" type="text/css" />
-    
+<script type="text/javascript" src="js/jqwidgets/jqxdropdownlist.js"></script>
+<link rel="stylesheet" href="js/jqwidgets/styles/jqx.base.css" type="text/css" />
+
+<script src="js/startup.js"></script>
+   
 </head>
 <body class='easyui-layout default' " id="body">
 	<div data-options="region:'north', title:'&nbsp;'" style="height: 120px;">
@@ -500,6 +523,10 @@
 			<div title="Next pass" style="padding: 5px;">
 				<div id="nextpass"></div>
 			</div>
+
+            <div title="Quick Select" style="padding: 5px;">
+                <div id="quick-sat-selector"></div>
+            </div>            
 		</div>
 	</div>
 	<div data-options="region:'center'" id="center-panel">

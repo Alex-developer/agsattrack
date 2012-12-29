@@ -31,10 +31,23 @@ var AGUI = function() {
 		height : 400
 	});
 	
-    jQuery('#north-toggle').on('click', function(e){
-        debugger;    
+    jQuery('#quick-sat-selector').checkList({
+        onChange: function(e) {
+            
+        }
+    });
+    jQuery(document).bind('agsattrack.satsselected', function(e, selected) {
+        var data = [];
+        for (var i=0; i < selected.selections.length; i++) {
+            data.push({text: selected.selections[i], value: selected.selections[i]});    
+        }
+        jQuery('#quick-sat-selector').checkList('setData', data);        
+    });
+    jQuery(document).bind('agsattrack.satclicked', function(e, clicked) {
+        debugger;        
     });
         
+            
 	jQuery('.view-reset').click(function() {
 		jQuery(document).trigger('agsattrack.resetview');
 	});
