@@ -114,6 +114,33 @@
 									'ribbon-implicit-disabled');
 						}
 
+                        $(this).tooltip({
+                                bodyHandler: function () {
+                                    if (!$(this).isEnabled()) { 
+                                        $('#tooltip').css('visibility', 'hidden');
+                                        return '';
+                                    }
+
+                                    var tor = '';
+
+                                    if (jQuery(this).children('.button-help').size() > 0)
+                                        tor = (jQuery(this).children('.button-help').html());
+                                    else
+                                        tor = '';
+
+                                    if (tor == '') {
+                                        $('#tooltip').css('visibility', 'hidden');
+                                        return '';
+                                    }
+
+                                    $('#tooltip').css('visibility', 'visible');
+
+                                    return tor;
+                                },
+                                delay: 1000,
+                                extraClass: 'ribbon-tooltip'
+                            });
+                                        
 						if (buttonType == 'dropdownmenu' || buttonType == 'dropdownmenustay') {
 							el.click(function(e){
 								$(menu).toggleClass('ribbon-menu-closed');

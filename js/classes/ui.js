@@ -26,12 +26,78 @@ var AGUI = function() {
     jQuery("#sat-info-selector").jqxDropDownList({width: '200', height: '25', animationType: 'none', autoOpen: true});
     jQuery("#sat-info-selector").hide();
     
-	jQuery('#ag-satselector').agsatbox({
-		width : 600,
-		height : 400
-	});
-	
+    /**
+    * Satellite ribbon section
+    */
+    jQuery('#ag-satselector').agsatbox({
+        width : 600,
+        height : 400
+    });  
+
+    function loadAvailablesatellites(item) {
+        if (typeof item === 'undefined') {
+            item = jQuery("#sat-group-selector-listbox").jqxListBox('getSelectedItem');
+            debugger;
+        }
+        jQuery(document).trigger('agsattrack.loadelements', {
+            filename : item
+        });
+    }
+   
+    
+    var source =
+    {
+        datatype: "json",
+        datafields: [
+            { name: 'id' },
+            { name: 'name' }
+        ],
+        id: 'id',
+        url: 'ajax.php'
+    };
+    
+    var dataAdapter = new jQuery.jqx.dataAdapter(source,
+        {
+            loadComplete: function (records) {
+                loadAvailablesatellites('amateur');    
+            }
+        }
+    );
+        
+    jQuery('#sat-group-selector-listbox').jqxListBox({
+        source: dataAdapter,
+        displayMember: 'name', 
+        valueMember: 'id',
+        width: 300, 
+        height: 250
+    });       
+    jQuery('#sat-group-selector-listbox').on('change', function (event) {
+        var args = event.args;
+        if (args) {
+            var item = args.item;
+            loadAvailablesatellites(item.value);
+        }
+    });
+    
+    jQuery('#sat-display-all').on('click', function(e){
+        jQuery(this).disable();
+        AGSatTrack.getTles().displayAll();        
+        jQuery(this).enable();
+    });
+    jQuery('#sat-display-none').on('click', function(e){
+        jQuery(this).disable();
+        AGSatTrack.getTles().displayNone();
+        jQuery(this).enable();                
+    });    
+    /**
+    * End satellite ribbon section
+    */    
+      
     jQuery('#quick-sat-selector').agcheckList();       
+    
+    
+    
+    
             
 	jQuery('.view-reset').click(function() {
 		jQuery(document).trigger('agsattrack.resetview');
@@ -106,34 +172,8 @@ var AGUI = function() {
 		var provider = jQuery(this).attr('data-options')
 		jQuery(document).trigger('agsattrack.changetile', provider);
 	});
+     
 
-	jQuery('#groupselector').combobox({
-		url : 'ajax.php',
-		valueField : 'id',
-		textField : 'name',
-		editable : false,
-		onLoadSuccess : function(a, b) {
-			loadAvailablesatellites({
-				id : 'amateur'
-			}); // BUG
-		},
-		onSelect : function(item) {
-			loadAvailablesatellites(item);
-		}
-	});
-
-	function loadAvailablesatellites(item) {
-		var file = '';
-		if (typeof item === 'undefined') {
-			file = jQuery('#groupselector').combobox('getValue');
-		} else {
-			file = item.id;
-		}
-
-		jQuery(document).trigger('agsattrack.loadelements', {
-			filename : file
-		});
-	}
 	
 	jQuery('#viewtabs').tabs({
 		onSelect : function(title, index) {

@@ -399,7 +399,7 @@ body
 	-moz-border-radius: 2px 2px 2px 2px;
 	border-radius: 2px 2px 2px 2px;
 	width: 200px;
-	top: 150px !important;
+	top: 100px !important;
 }
 
 
@@ -478,4 +478,12 @@ body
 
 .ribbon-fl {
     float: left;
+}
+
+.ribbon-button-small-width1 {
+    width: 30px;
+}
+
+.ribbon-help-small {
+    vertical-align:middle;
 }

@@ -49,6 +49,7 @@
 
 
 <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
+<script type="text/javascript" src="js/jqwidgets/jqxdata.js"></script>
 <script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
 <script type="text/javascript" src="js/jqwidgets/jqxscrollbar.js"></script>
 <script type="text/javascript" src="js/jqwidgets/jqxlistbox.js"></script>
@@ -99,16 +100,16 @@
             </div>
             
             <div class="ribbon-tab" id="format-tab">
-                <span class="ribbon-title">Basic</span>
+                <span class="ribbon-title">Home</span>
 
                 <div class="ribbon-section">
                     <span class="section-title">View</span>
                     <div class="ribbon-button ribbon-button-large" id="view-select" data-type="dropdownmenu">
-                        <span class="button-title">Views <img src="js/ribbon/arrow_down.png"></span> 
-                        <span class="button-help">Selects the main view.</span>
-                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/new-table.png" /> 
-                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/new-table.png" /> 
-                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/new-table.png" />
+                        <span class="button-title">Select <img src="js/ribbon/arrow_down.png"></span> 
+                        <span class="button-help"><strong>Select view.</strong><br /><br />Selects the view you wish to display.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/view.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/view.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/view.png" />
                         <div class="ribbon-menu ribbon-menu-closed">
                             <div class="title">Select View</div>
                             <ul>
@@ -122,7 +123,8 @@
                         </div>
                     </div>
                     <div class="ribbon-button ribbon-button-large view-reset">
-                        <span class="button-title">Reset<br />View</span> 
+                        <span class="button-title">Reset</span>
+                        <span class="button-help"><strong>Reset view.</strong><br /><br />Resets the current view to its defaults.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
@@ -132,26 +134,54 @@
 
                 <div class="ribbon-section">
                     <span class="section-title">Satellites</span>
-                    <div style="float: left;" id="groupselectortour">
-                        Group <input id="groupselector" style="width: 140px;" />
-                    </div>
-                    <div class="ribbon-button ribbon-button-large" id="sat-selector"  data-type="dropdownmenustay">
-                        <span class="button-title">Satellites <img src="js/ribbon/arrow_down.png" /></span> 
-                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/new-table.png" /> 
-                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/new-table.png" /> 
-                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/new-table.png" />
-                        <div class="ribbon-menu ribbon-menu-closed">
-                            <div class="title">Select Satellite <small>(Drag and drop satellites)</small></div>
-                            <div id="ag-satselector"> </div>
+                    
+                    <div class="ribbon-fl">
+                        <div class="ribbon-button ribbon-button-large" id="sat-group-selector"  data-type="dropdownmenu">
+                            <span class="button-title">Groups <img src="js/ribbon/arrow_down.png"></span> 
+                            <span class="button-help"><strong>Select Satellite Group.</strong><br /><br />Selects the group of satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/group.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/group.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/group.png" />
+                            <div class="ribbon-menu ribbon-menu-closed">
+                                <div class="title">Select Group</div>
+                                <div id="sat-group-selector-listbox"></div>
+                            </div>
+                        </div>
+                        <div class="ribbon-button ribbon-button-large" id="sat-selector" data-type="dropdownmenustay">
+                            <span class="button-title">Select <img src="js/ribbon/down.png" /></span> 
+                            <span class="button-help"><strong>Select Satellites.</strong><br /><br />Selects the satellites to display and show orbits for.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/satellite.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/satellite.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/satellite.png" />
+                            <div class="ribbon-menu ribbon-menu-closed">
+                                <div class="title">Select Satellite <small>(Drag and drop satellites)</small></div>
+                                <div id="ag-satselector"> </div>
+                            </div>                        
                         </div>
                     </div>
+                    <div class="ribbon-fl">
+                        <div class="ribbon-button ribbon-button-small" id="sat-display-all">
+                            <span class="button-title"></span>
+                            <span class="button-help"><strong>Display All Satellites.</strong><br /><br />Display all satellites in the current group.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/satellite_all.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/satellite_all.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/satellite_all.png" />
+                        </div>
+                        <div class="ribbon-button ribbon-button-small" id="sat-display-none">
+                            <span class="button-title"></span> 
+                            <span class="button-help"><strong>Remove All Satellites.</strong><br /><br />Remove all satellites from display.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/satellite_delete_all.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/satellite_delete_all.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/satellite_delete_all.png" />
+                        </div>                     
+                    </div>                  
                 </div>
 
                 <div class="ribbon-section">
                     <span class="section-title">View Speed</span>
 
                     <div class="ribbon-button ribbon-button-large" id="speed-fast-back" data-group="speed-group" data-type="buttongroup">
-                        <span class="button-title">Back<br /> Fast</span> 
+                        <span class="button-title">Back<br /> Fast</span>
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/backfast.png" /> 
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/backfast.png" /> 
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/backfast.png" />
@@ -262,6 +292,7 @@
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/disabled/arrow_up.png" />
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/arrow_up.png" />
                         <span class="button-title" unselectable="on">Show AoS</span>
+                        <span class="button-help"><strong>Show AoS.</strong><br /><br />Show Aquisition of Satellite times in the list display.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
                     </div>
                 </div>
             </div>
@@ -284,52 +315,41 @@
                     </div>
                                         
                     <div class="ribbon-button ribbon-button-large view-reset">
-                        <span class="button-title">Reset<br />View
-                        </span> <span class="button-help"></span> 
+                        <span class="button-title">Reset</span> 
+                        <span class="button-help"><strong>Reset view.</strong><br /><br />Resets the 3d view to its defaults.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
                     </div>
                                         
                     <div class="ribbon-button ribbon-button-large" id="3d-projection" data-type="dropdownmenu">
-                        <span class="button-title">Views <img
-                            src="js/ribbon/arrow_down.png"></span> <span class="button-help"></span>
-                        <img class="ribbon-icon ribbon-normal"
-                            src="js/ribbon/icons/normal/new-table.png" /> <img
-                            class="ribbon-icon ribbon-hot"
-                            src="js/ribbon/icons/hot/new-table.png" /> <img
-                            class="ribbon-icon ribbon-disabled"
-                            src="js/ribbon/icons/disabled/new-table.png" />
+                        <span class="button-title">Views <img src="js/ribbon/arrow_down.png"></span> <span class="button-help"></span>
+                        <span class="button-help"><strong>Select view.</strong><br /><br />Choose from 3d, 2d or 2.5d views.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/new-table.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/new-table.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/new-table.png" />
                         <div class="ribbon-menu ribbon-menu-closed">
                             <div class="title">Select View</div>
                             <ul>
-                                <li class="3dview" data-options="twod"><img
-                                    src="images/ribbon/list.png"><span>2D View</span></li>
-                                <li class="3dview" data-options="twopointfived"><img
-                                    src="images/ribbon/table.png"><span>2.5D View</span></li>
-                                <li class="3dview" data-options="threed"><img
-                                    src="images/ribbon/globe.png"><span>3D View</span></li>
+                                <li class="3dview" data-options="twod"><img src="images/ribbon/list.png"><span>2D View</span></li>
+                                <li class="3dview" data-options="twopointfived"><img src="images/ribbon/table.png"><span>2.5D View</span></li>
+                                <li class="3dview" data-options="threed"><img src="images/ribbon/globe.png"><span>3D View</span></li>
                             </ul>
                         </div>
                     </div>
                     
                     <div class="ribbon-button ribbon-button-large" id="3d-provider" data-type="dropdownmenu">
-                        <span class="button-title">Provider <img
-                            src="js/ribbon/arrow_down.png"></span> <span class="button-help"></span>
-                        <img class="ribbon-icon ribbon-normal"
-                            src="js/ribbon/icons/normal/tile.png" /> <img
-                            class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/tile.png" />
-                        <img class="ribbon-icon ribbon-disabled"
-                            src="js/ribbon/icons/disabled/tile.png" />
+                        <span class="button-title">Provider <img src="js/ribbon/arrow_down.png"></span> 
+                        <span class="button-help"><strong>Map Provider.</strong><br /><br />Select the provider for the globe rendering.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/tile.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/tile.png" />
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/tile.png" />
                         <div class="ribbon-menu ribbon-menu-closed">
                             <div class="title">Select Provider</div>
                             <ul>
-                                <li class="tile" data-options="static"><img
-                                    src="images/ribbon/list.png"><span>Static Image</span></li>
-                                <li class="tile" data-options="bing"><img
-                                    src="images/ribbon/table.png"><span>Bing maps</span></li>
-                                <li class="tile" data-options="osm"><img
-                                    src="images/ribbon/globe.png"><span>Open StreetMap</span></li>
+                                <li class="tile" data-options="static"><img src="images/ribbon/list.png"><span>Static Image</span></li>
+                                <li class="tile" data-options="bing"><img src="images/ribbon/table.png"><span>Bing maps</span></li>
+                                <li class="tile" data-options="osm"><img src="images/ribbon/globe.png"><span>Open StreetMap</span></li>
                             </ul>
                         </div>
                     </div>
@@ -341,7 +361,7 @@
                     <span class="section-title">Satellite</span>
                     <div class="ribbon-button ribbon-button-large view-reset"  data-type="togglebutton" data-event="agsattrack.followsatellite">
                         <span class="button-title">Follow<br />Selected</span> 
-                        <span class="button-help"></span> 
+                        <span class="button-help"><strong>Follow Satellite.</strong><br /><br />Follows the selected satellite, looking at your location.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/orbit.png" />
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/orbit.png" />
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/orbit.png" />
@@ -688,29 +708,29 @@
     </div>
             
     <ol id="joyRideTipContent">
-      <li data-id="groupselectortour" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
+      <li data-id="sat-group-selector" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
         <h2>Select a Group</h2>
-        <p>This drop down contains the groups you can use. One is selected by default</p>
+        <p>This drop down contains the groups you can use. Amateur is loaded by default. Selecting another group will load the satellites from that group.</p>
       </li>
       <li data-id="sat-selector" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
-        <h2>Select satellites</h2>
-        <p>Select the satellites you wish to view</p>
+        <h2>Select Satellites</h2>
+        <p>Select the satellites you wish to display. Satellites in the right hand listbox will be displayed. Checking the checkbox will also display the orbit and footprint.</p>
       </li>
       <li data-id="view-select" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
         <h2>Switch View</h2>
-        <p>Select the view to display</p>
+        <p>Select the view to display. You can also set the ribbon bar to switch view when you click on a tab, look in the settings under views.</p>
       </li>      
       <li data-id="ribbon-tab-header-strip" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
         <h2>View Tabs</h2>
         <p>Each view has customisable options</p>
       </li> 
-      <li data-id="satinfot" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
+      <li data-id="satinfot" data-button="Next" data-options="tipLocation:right;tipAnimation:fade">
         <h2>Satellite Information</h2>
-        <p>The left hand pane contains details about the selected satellite</p>
+        <p>The left hand pane contains details about the selected satellite. If multiple satellites are selected then a drop down will be available to select which satellite to show data for.</p>
       </li>       
       <li data-id="options" data-button="Close" data-options="tipLocation:top;tipAnimation:fade">
         <h2>Program Options</h2>
-        <p>Setup Agsattrack how you like it</p>
+        <p>Setup Agsattrack how you like it :-)</p>
       </li>  
            
     </ol>

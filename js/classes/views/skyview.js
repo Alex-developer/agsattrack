@@ -305,7 +305,16 @@ var AGSKYVIEW = function() {
                         pos = convertAzEltoScreen(orbitData[i].az, orbitData[i].el);
                         points.push(pos.x);
                         points.push(pos.y);
-                        
+                        /*
+                        _orbitLayer.add(new Kinetic.Text({
+                            x : pos.x - 8,
+                            y : pos.y - 20,
+                            text : AGUTIL.shortdate(orbitData[i].date),
+                            fontSize : 10,
+                            fontFamily : 'Verdana',
+                            textFill : 'green'
+                        }));
+                        */                            
                         if (pos.x <= 0 || pos.x >= _width || pos.y >= _height) {
                             _orbitLayer.add(new Kinetic.Line({
                                     points: points,
