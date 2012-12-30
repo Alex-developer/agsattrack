@@ -81,12 +81,12 @@ var AGUI = function() {
     
     jQuery('#sat-display-all').on('click', function(e){
         jQuery(this).disable();
-        AGSatTrack.getTles().displayAll();        
+        jQuery('#ag-satselector').agsatbox('moveAllSats','right');
         jQuery(this).enable();
     });
     jQuery('#sat-display-none').on('click', function(e){
         jQuery(this).disable();
-        AGSatTrack.getTles().displayNone();
+        jQuery('#ag-satselector').agsatbox('moveAllSats','left');
         jQuery(this).enable();                
     });    
     /**

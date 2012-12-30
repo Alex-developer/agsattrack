@@ -62,54 +62,8 @@
                 var el = $(e.target);
                 var direction = el.hasClass('right') ? 'right' : 'left';
 
-                if (direction === 'right') {
-                    var leftItems = divLeft.jqxListBox('getItems');
-                    var rightItems = divRight.jqxListBox('getItems');
-                    var sourceData = [];
-                    if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
-                        for (var i=0;i<rightItems.length;i++) {
-                            sourceData.push(rightItems[i].value);    
-                        }
-                    }
-                    if (typeof leftItems !== 'undefined' && leftItems.length > 0) {
-                        for (var i=0;i<leftItems.length;i++) {
-                            sourceData.push(leftItems[i].value);    
-                        }
-                    }
-
-                    jQuery(document).trigger('agsattrack.satsselected', {
-                        selections : sourceData
-                    }); 
-                    jQuery(document).trigger('agsattrack.forceupdate', {});                                        
-
-                    divLeft.jqxListBox('clear');
-                    divRight.jqxListBox({ source: sourceData});
-
-                } else {
-                    var leftItems = divLeft.jqxListBox('getItems');
-                    var rightItems = divRight.jqxListBox('getItems');
-                    var sourceData = [];
-                    if (typeof leftItems !== 'undefined' && leftItems.length > 0) {
-                        for (var i=0;i<leftItems.length;i++) {
-                            sourceData.push(leftItems[i].value);    
-                        }
-                    }
-                    if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
-                        for (var i=0;i<rightItems.length;i++) {
-                            sourceData.push(rightItems[i].value);    
-                        }
-                    }
-                    divRight.jqxListBox('clear');
-                    divLeft.jqxListBox({ source: sourceData});
-
-                    jQuery(document).trigger('agsattrack.satsselected', {
-                        selections : []
-                    }); 
-                    jQuery(document).trigger('agsattrack.forceupdate', {});                                        
-
-                }
-                divRight.jqxListBox('clearSelection'); 
-                divLeft.jqxListBox('clearSelection'); 
+                moveAllSats(direction);
+                
                 e.stopImmediatePropagation();
             });
 
@@ -148,6 +102,57 @@
             hook('onInit');
         }
 
+        function moveAllSats(direction) {
+            if (direction === 'right') {
+                var leftItems = divLeft.jqxListBox('getItems');
+                var rightItems = divRight.jqxListBox('getItems');
+                var sourceData = [];
+                if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
+                    for (var i=0;i<rightItems.length;i++) {
+                        sourceData.push(rightItems[i].value);    
+                    }
+                }
+                if (typeof leftItems !== 'undefined' && leftItems.length > 0) {
+                    for (var i=0;i<leftItems.length;i++) {
+                        sourceData.push(leftItems[i].value);    
+                    }
+                }
+
+                jQuery(document).trigger('agsattrack.satsselected', {
+                    selections : sourceData
+                }); 
+                jQuery(document).trigger('agsattrack.forceupdate', {});                                        
+
+                divLeft.jqxListBox('clear');
+                divRight.jqxListBox({ source: sourceData});
+
+            } else {
+                var leftItems = divLeft.jqxListBox('getItems');
+                var rightItems = divRight.jqxListBox('getItems');
+                var sourceData = [];
+                if (typeof leftItems !== 'undefined' && leftItems.length > 0) {
+                    for (var i=0;i<leftItems.length;i++) {
+                        sourceData.push(leftItems[i].value);    
+                    }
+                }
+                if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
+                    for (var i=0;i<rightItems.length;i++) {
+                        sourceData.push(rightItems[i].value);    
+                    }
+                }
+                divRight.jqxListBox('clear');
+                divLeft.jqxListBox({ source: sourceData});
+
+                jQuery(document).trigger('agsattrack.satsselected', {
+                    selections : []
+                }); 
+                jQuery(document).trigger('agsattrack.forceupdate', {});                                        
+
+            }
+            divRight.jqxListBox('clearSelection'); 
+            divLeft.jqxListBox('clearSelection');             
+        }
+        
         function SendMoveEvents() {
             var sourceData = [];
             var rightItems = divRight.jqxListBox('getItems'); 
@@ -211,7 +216,8 @@
             option: option,
             destroy: destroy,
             clear: clear,
-            setData: setData
+            setData: setData,
+            moveAllSats : moveAllSats
         };
     }
 
