@@ -15,6 +15,11 @@ Copyright 2012 Alex Greenland
  */
 jQuery(document).ready(function() {
     opsmode = 'i';
+    
+    //var planets = new AGPLANETS();
+    
+   // var pos = planets.PlanetAlt();
+   
         
     Modernizr.load({
       test: Modernizr.webgl,
@@ -26,5 +31,5 @@ jQuery(document).ready(function() {
           AGSatTrack.init();            
       }
     });
-
+       
 });

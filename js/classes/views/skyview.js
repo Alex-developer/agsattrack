@@ -43,11 +43,18 @@ var AGSKYVIEW = function() {
 	var _moon = null;
 	var _moonText = null;
 
-	jQuery(window).resize(function() {
-		var parent = jQuery('#viewtabs').tabs('getTab', 0);
-		_stage.setSize(parent.width(), parent.height());
-		drawBackground();
-	});
+    function resize(width, height) {
+        if (typeof width === 'undefined' || typeof height === 'undefined') {
+            var parent = jQuery('#polar');
+            width = parent.width();
+            height = parent.height();
+        }
+
+        if (width !== 0 && height !== 0) {
+            _stage.setSize(width, height);
+            drawBackground();
+        }          
+    }
 
 	/**
 	 * Listen for an event telling us a new set of elements were loaded
@@ -354,6 +361,7 @@ var AGSKYVIEW = function() {
 
 	return {
 		startRender : function() {
+            resize();            
 			_render = true;
 		},
 
@@ -361,6 +369,10 @@ var AGSKYVIEW = function() {
 			_render = false;
 		},
 
+        resizeView : function(width, height) {
+            resize(width, height);     
+        },
+                   
 		init : function() {
 
 			_stage = new Kinetic.Stage({
