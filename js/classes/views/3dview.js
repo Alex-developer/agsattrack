@@ -16,40 +16,23 @@ Copyright 2012 Alex Greenland
 var AG3DVIEW = function() {
 	'use strict';
 
-	var ellipsoid = Cesium.Ellipsoid.WGS84;
+	var ellipsoid =null;
 	var canvas = null;
 	var scene = null;
 	var transitioner = null;
-	var cb = new Cesium.CentralBody(ellipsoid);
-	var observerBillboards = new Cesium.BillboardCollection();
+	var cb = null;
+	var observerBillboards = null;
 	var _render = false;
-	var satBillboards = new Cesium.BillboardCollection();
+	var satBillboards = null;
 	var gridRefresh = 1;
 	var gridRefreshCounter = 0
-	var orbitLines = new Cesium.PolylineCollection();;
-	var footprintCircle = new Cesium.PolylineCollection();
+	var orbitLines = null;
+	var footprintCircle = null;
 	var updateCounter = 0;
-	var clock = new Cesium.Clock();
+	var clock = null;
 	var _selected = null;
 	var _follow = false;
-	
-	var TILE_PROVIDERS = {
-		'bing' : new Cesium.BingMapsImageryProvider(
-				{
-					server : 'dev.virtualearth.net',
-					mapStyle : Cesium.BingMapsStyle.AERIAL,
-					proxy : Cesium.FeatureDetection
-							.supportsCrossOriginImagery() ? undefined
-							: new Cesium.DefaultProxy('/proxy/')
-
-				}),
-		'osm' : new Cesium.OpenStreetMapImageryProvider({
-			url : 'http://otile1.mqcdn.com/tiles/1.0.0/osm'
-		}),
-		'static' : new Cesium.SingleTileImageryProvider({
-			url : 'images/NE2_50M_SR_W_4096.jpg'
-		})
-	};
+	var TILE_PROVIDERS = null;
 
     /*
 	jQuery(window).resize(function() {
@@ -93,29 +76,37 @@ var AG3DVIEW = function() {
 	 */
 	jQuery(document).bind('agsattrack.locationAvailable',
 			function(e, observer) {
-				plotObservers();
+			    if (AGSETTINGS.getHaveWebGL()) {
+                    plotObservers();
+                }
 			});
 
 	jQuery(document).bind('agsattrack.locationUpdated',
 			function(e, observer) {
-				plotObservers();	
+                if (AGSETTINGS.getHaveWebGL()) {
+				    plotObservers();
+                }
 			});	
 	
 	jQuery(document).bind('agsattrack.resetview',
 			function(e, observer) {
 				if (_render) {
-					plotObservers();
+                    if (AGSETTINGS.getHaveWebGL()) {
+					    plotObservers();
+                    }
 				}
 			});	
 	
 	jQuery(document).bind('agsattrack.followsatellite',
 			function(e, follow) {
-				_follow = follow;
-				if (!follow) {
-					if (_render) {
-						plotObservers();
-					}					
-				}
+				if (AGSETTINGS.getHaveWebGL()) {
+                    _follow = follow;
+				    if (!follow) {
+					    if (_render) {
+						    plotObservers();
+					    }					
+				    }
+                }
 			});
 	
 	/**
@@ -124,18 +115,22 @@ var AG3DVIEW = function() {
 	jQuery(document).bind(
 			'agsattrack.changetile',
 			function(event, provider) {
-				if (scene.mode !== Cesium.SceneMode.MORPHING) {
-					if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
-						cb.getImageryLayers().removeAll();
-						cb.getImageryLayers().addImageryProvider(
-								TILE_PROVIDERS[provider]);
-					}
-				}
+				if (AGSETTINGS.getHaveWebGL()) {
+                    if (scene.mode !== Cesium.SceneMode.MORPHING) {
+					    if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
+						    cb.getImageryLayers().removeAll();
+						    cb.getImageryLayers().addImageryProvider(
+								    TILE_PROVIDERS[provider]);
+					    }
+				    }
+                }
 			});
 
 	jQuery(document).bind('agsattrack.satsselectedcomplete', function() {
-        if (_render) {        
-		    populateSatelliteBillboard();
+        if (_render) {
+            if (AGSETTINGS.getHaveWebGL()) {        
+		        populateSatelliteBillboard();
+            }
         }
 	});
 
@@ -146,7 +141,28 @@ var AG3DVIEW = function() {
              //       drawFootprint();
 				}
 			});
-	
+
+    /**
+     * Listen for requests to change the view.
+     */
+    jQuery(document).bind('agsattrack.change3dview', function(event, view) {
+        if (AGSETTINGS.getHaveWebGL()) {
+            if (scene.mode !== Cesium.SceneMode.MORPHING) {
+                switch (view) {
+                case 'twod':
+                    transitioner.morphTo2D();
+                    break;
+                case 'twopointfived':
+                    transitioner.toColumbusView()
+                    break;
+                case 'threed':
+                    transitioner.morphTo3D();
+                    break;
+                }
+            }
+        }
+    });
+    	
 	/**
 	 * Plot the observers.
 	 */
@@ -206,26 +222,6 @@ var AG3DVIEW = function() {
 			}
 		}());
 	}
-
-	/**
-	 * Listen for requests to change the view.
-	 */
-	jQuery(document).bind('agsattrack.change3dview', function(event, view) {
-		if (scene.mode !== Cesium.SceneMode.MORPHING) {
-			switch (view) {
-			case 'twod':
-				transitioner.morphTo2D();
-				break;
-			case 'twopointfived':
-				transitioner.toColumbusView()
-				break;
-			case 'threed':
-				transitioner.morphTo3D();
-				break;
-			}
-		}
-	});
-
 
 
 	function populateSatelliteBillboard() {
@@ -403,54 +399,92 @@ var AG3DVIEW = function() {
 
 	}
 
-	jQuery('<canvas/>', {
-		'id' : 'glCanvas',
-		'class' : 'fullsize'
-	}).appendTo('#3d');
+    function init3DView() {
+        
+        ellipsoid = Cesium.Ellipsoid.WGS84;
+        cb = new Cesium.CentralBody(ellipsoid);
+        observerBillboards = new Cesium.BillboardCollection();
+        satBillboards = new Cesium.BillboardCollection();
+        orbitLines = new Cesium.PolylineCollection();;
+        footprintCircle = new Cesium.PolylineCollection();
+        clock = new Cesium.Clock();
 
-	canvas = jQuery('#glCanvas')[0];
-	scene = new Cesium.Scene(canvas);
-	transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
+        TILE_PROVIDERS = {
+            'bing' : new Cesium.BingMapsImageryProvider(
+                    {
+                        server : 'dev.virtualearth.net',
+                        mapStyle : Cesium.BingMapsStyle.AERIAL,
+                        proxy : Cesium.FeatureDetection
+                                .supportsCrossOriginImagery() ? undefined
+                                : new Cesium.DefaultProxy('/proxy/')
 
-	cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.static);
-	cb.showSkyAtmosphere = true;
+                    }),
+            'osm' : new Cesium.OpenStreetMapImageryProvider({
+                url : 'http://otile1.mqcdn.com/tiles/1.0.0/osm'
+            }),
+            'static' : new Cesium.SingleTileImageryProvider({
+                url : 'images/NE2_50M_SR_W_4096.jpg'
+            })
+        };
+                
+	    jQuery('<canvas/>', {
+		    'id' : 'glCanvas',
+		    'class' : 'fullsize'
+	    }).appendTo('#3d');
 
-	scene.getPrimitives().setCentralBody(cb);
+	    canvas = jQuery('#glCanvas')[0];
+	    scene = new Cesium.Scene(canvas);
+	    transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
 
-	scene.skyAtmosphere = new Cesium.SkyAtmosphere();
-	var imageryUrl = 'images/';
-	scene.skyBox = new Cesium.SkyBox({
-		positiveX : imageryUrl + 'skybox/tycho8_px_80.jpg',
-		negativeX : imageryUrl + 'skybox/tycho8_mx_80.jpg',
-		positiveY : imageryUrl + 'skybox/tycho8_py_80.jpg',
-		negativeY : imageryUrl + 'skybox/tycho8_my_80.jpg',
-		positiveZ : imageryUrl + 'skybox/tycho8_pz_80.jpg',
-		negativeZ : imageryUrl + 'skybox/tycho8_mz_80.jpg'
-	});
+	    cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.static);
+	    cb.showSkyAtmosphere = true;
 
-	scene.getCamera().getControllers().addCentralBody();
-	scene.getCamera().getControllers().get(0).spindleController.constrainedAxis = Cesium.Cartesian3.UNIT_Z;
-	scene.getCamera().lookAt(
-			new Cesium.Cartesian3(4000000.0, -15000000.0, 10000000.0), // eye
-			Cesium.Cartesian3.ZERO, // target
-			new Cesium.Cartesian3(-0.1642824655609347, 0.5596076102188919,
-					0.8123118822806428)); // up
+	    scene.getPrimitives().setCentralBody(cb);
 
-	satelliteClickDetails(scene);
-	scene.getPrimitives().add(orbitLines);
-	scene.getPrimitives().add(footprintCircle);
+	    scene.skyAtmosphere = new Cesium.SkyAtmosphere();
+	    var imageryUrl = 'images/';
+	    scene.skyBox = new Cesium.SkyBox({
+		    positiveX : imageryUrl + 'skybox/tycho8_px_80.jpg',
+		    negativeX : imageryUrl + 'skybox/tycho8_mx_80.jpg',
+		    positiveY : imageryUrl + 'skybox/tycho8_py_80.jpg',
+		    negativeY : imageryUrl + 'skybox/tycho8_my_80.jpg',
+		    positiveZ : imageryUrl + 'skybox/tycho8_pz_80.jpg',
+		    negativeZ : imageryUrl + 'skybox/tycho8_mz_80.jpg'
+	    });
 
-	scene.setAnimation(function() {
-	})
+	    scene.getCamera().getControllers().addCentralBody();
+	    scene.getCamera().getControllers().get(0).spindleController.constrainedAxis = Cesium.Cartesian3.UNIT_Z;
+	    scene.getCamera().lookAt(
+			    new Cesium.Cartesian3(4000000.0, -15000000.0, 10000000.0), // eye
+			    Cesium.Cartesian3.ZERO, // target
+			    new Cesium.Cartesian3(-0.1642824655609347, 0.5596076102188919,
+					    0.8123118822806428)); // up
 
-	jQuery(window).trigger('resize');
-	
+	    satelliteClickDetails(scene);
+	    scene.getPrimitives().add(orbitLines);
+	    scene.getPrimitives().add(footprintCircle);
+
+	    scene.setAnimation(function() {
+	    })
+        
+	    jQuery(window).trigger('resize');
+    }
+    
+    function initNo3DView() {
+        jQuery('<div style="padding:20px"><img src="/images/ie.jpg" width=128 style="float:left" /><h1>3D View Not Supported</h1><p>Sorry the 3D view is not supported in Native Internet Explorer.</p><p>Recent versions of Chrome, Firefox, and Safari are supported. Internet Explorer is supported by using the <a target="_blank" href="http://www.google.com/chromeframe">Chrome Frame plugin</a>, which is a one-time install that does not require admin rights</p></div>', {
+            'id' : 'glCanvas',
+            'class' : 'fullsize'
+        }).appendTo('#3d');        
+    }
+    
 	return {
 		startRender : function() {
-			_render = true;
-            resize();
-			renderScene();
-            populateSatelliteBillboard();
+            if (AGSETTINGS.getHaveWebGL()) {
+			    _render = true;
+                resize();
+			    renderScene();
+                populateSatelliteBillboard();
+            }
 		},
 
 		stopRender : function() {
@@ -458,11 +492,17 @@ var AG3DVIEW = function() {
 		},
 
         resizeView : function(width, height) {
-            resize(width, height);     
+            if (AGSETTINGS.getHaveWebGL()) {
+                resize(width, height);     
+            }
         },
                 
 		init : function() {
-
+            if (AGSETTINGS.getHaveWebGL()) {
+                init3DView();
+            } else {
+                initNo3DView();
+            }
 		}
 	}
 }

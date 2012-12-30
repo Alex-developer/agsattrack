@@ -13,9 +13,18 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 jQuery(document).ready(function() {
-    opsmode = 'i';            
-    AGSatTrack = new agsattrack();
-    AGSatTrack.init();
+    opsmode = 'i';
+        
+    Modernizr.load({
+      test: Modernizr.webgl,
+      yep : 'js/cesium/Cesium.js',
+      complete : function() {
+          AGSETTINGS.setHaveWebGL(Modernizr.webgl);
+          AGSETTINGS.setHaveCanvas(Modernizr.canvas);
+          AGSatTrack = new agsattrack();
+          AGSatTrack.init();            
+      }
+    });
+
 });

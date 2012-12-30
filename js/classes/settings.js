@@ -18,6 +18,7 @@ var AGSETTINGS = (function(element) {
 	var _refreshTimerInterval = 5000;
 	var _haveCanvas = true;
     var _switchViewOnTabClick = false;
+    var _haveWebGl = false;
     
 	return {
 		init: function() {
@@ -29,7 +30,14 @@ var AGSETTINGS = (function(element) {
         setSwitchViewOnTabClick : function(value) {
             _switchViewOnTabClick = value;    
         },
-        		
+        
+        getHaveWebGL : function() {
+            return _haveWebGl;
+        },
+        setHaveWebGL : function(value) {
+            _haveWebGl = value;    
+        },
+                		
         getHaveCanvas : function() {
             return _haveCanvas;
         },

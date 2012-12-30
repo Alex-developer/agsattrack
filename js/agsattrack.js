@@ -127,10 +127,15 @@ var agsattrack = function() {
 	}
 
 	function calculate(forceRefresh) {
+		var julianDate;
 
-		var cDate = new Cesium.JulianDate();
-		var julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();
-		
+        if (AGSETTINGS.getHaveWebGL()) {
+            var cDate = new Cesium.JulianDate();
+            julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();            
+        } else {
+            julianDate = new Date().Date2Julian();
+        }
+            		
 		calculateSunAndMoon();
 		
 		if (_tles.getTotalDisplaying() > 0) {
@@ -148,8 +153,14 @@ var agsattrack = function() {
 	}
 	
 	function calculateSunAndMoon() {
-		var cDate = new Cesium.JulianDate();
-		var julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();
+        var julianDate;
+
+        if (AGSETTINGS.getHaveWebGL()) {
+            var cDate = new Cesium.JulianDate();
+            julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();            
+        } else {
+            julianDate = new Date().Date2Julian();
+        }
 
 		_moonPos = _sunMoon.getMoonPos(julianDate, 
 				{latitude: _observers[0].getLat(), longitude: _observers[0].getLon()});
@@ -172,10 +183,18 @@ var agsattrack = function() {
 		},
 
 		getMoonPhase: function() {
-			var cDate = new Cesium.JulianDate();
-			var julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();			
-
+		    var julianDate;
+            
+            if (AGSETTINGS.getHaveWebGL()) {
+                var cDate = new Cesium.JulianDate();
+			    julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();			
+            } else {
+                julianDate = new Date().Date2Julian();
+            }
 			return _sunMoon.getMoonPhase(julianDate);
+            
+            
+            return 1;
 		},
 		
 		getDisplaying : function() {
