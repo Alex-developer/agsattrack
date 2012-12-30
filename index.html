@@ -125,7 +125,7 @@
                             <ul>
                                 <li class="satview" data-options="0"><img src="images/ribbon/list.png"><span>List View</span></li>
                                 <li class="satview" data-options="2"><img src="images/ribbon/table.png"><span>Passes View</span></li>
-                                <li class="satview" data-options="1"><img src="images/ribbon/globe.png"><span>3D View</span></li>
+                                <li class="satview" id="satview3d" data-options="1"><img src="images/ribbon/globe.png"><span>3D View</span></li>
                                 <li class="satview" data-options="3"><img src="images/ribbon/polar.png"><span>Polar View</span></li>
                                 <li class="satview" data-options="4"><img src="images/ribbon/sky.png"><span>Sky View</span></li>
                                 <li class="satview" data-options="5"><img src="images/ribbon/timeline.png"><span>Timeline View</span></li>
@@ -324,7 +324,7 @@
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
                     </div>
                                         
-                    <div class="ribbon-button ribbon-button-large view-reset">
+                    <div class="ribbon-button ribbon-button-large view-reset" id="3d-view-reset">
                         <span class="button-title">Reset</span> 
                         <span class="button-help"><strong>Reset view.</strong><br /><br />Resets the 3d view to its defaults.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
@@ -369,7 +369,7 @@
 
                 <div class="ribbon-section">
                     <span class="section-title">Satellite</span>
-                    <div class="ribbon-button ribbon-button-large view-reset"  data-type="togglebutton" data-event="agsattrack.followsatellite">
+                    <div class="ribbon-button ribbon-button-large view-reset" id="3d-follow" data-type="togglebutton" data-event="agsattrack.followsatellite">
                         <span class="button-title">Follow<br />Selected</span> 
                         <span class="button-help"><strong>Follow Satellite.</strong><br /><br />Follows the selected satellite, looking at your location.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/orbit.png" />

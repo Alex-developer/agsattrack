@@ -257,6 +257,11 @@ var agsattrack = function() {
 			
 			jQuery('#viewtabs').tabs('select',_views[_active].index);
 
+            jQuery.each(_views, function(view, options) {
+                if (typeof options.instance.postInit === 'function') {
+                    options.instance.postInit();
+                }
+            });            
 			
 		}
 

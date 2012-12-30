@@ -143,8 +143,10 @@
                                         
 						if (buttonType == 'dropdownmenu' || buttonType == 'dropdownmenustay') {
 							el.click(function(e){
-								$(menu).toggleClass('ribbon-menu-closed');
-								$(menu).toggleClass('ribbon-menu-open');
+                                if (!el.hasClass('disabled')) {                                   
+								    $(menu).toggleClass('ribbon-menu-closed');
+								    $(menu).toggleClass('ribbon-menu-open');
+                                }
 							});
                             
                             menu.click(function(e){
@@ -153,41 +155,47 @@
 							
                             if (buttonType == 'dropdownmenu') {
 							    menu.on('mouseleave', function(){
-								    $(menu).addClass('ribbon-menu-closed');
-								    $(menu).removeClass('ribbon-menu-open');								
+                                    if (!el.hasClass('disabled')) {                                    
+								        $(menu).addClass('ribbon-menu-closed');
+								        $(menu).removeClass('ribbon-menu-open');
+                                    }								
 							    });
                             }
 						}
 						
 						if (buttonType === 'togglebutton') {
 							el.click(function(e){
-								var toggleClass = 'ribbon-button-large-active';
-								if (el.hasClass('ribbon-button-small')) {
-									toggleClass = 'ribbon-button-small-active';									
-								}
-								el.toggleClass(toggleClass);
-								var event = el.attr('data-event');
-								if (typeof event !== 'undefined') {
-									jQuery(document).trigger(event, el.hasClass(toggleClass));
-								}								
+                                if (!el.hasClass('disabled')) {
+								    var toggleClass = 'ribbon-button-large-active';
+								    if (el.hasClass('ribbon-button-small')) {
+									    toggleClass = 'ribbon-button-small-active';									
+								    }
+								    el.toggleClass(toggleClass);
+								    var event = el.attr('data-event');
+								    if (typeof event !== 'undefined') {
+									    jQuery(document).trigger(event, el.hasClass(toggleClass));
+								    }
+                                }								
 							});
 						}
 						
 						if (buttonType === 'buttongroup') {
 							el.click(function(e){
-								var oldActive = null;
-								var buttonGroup = el.attr('data-group');
-								$('div[data-group="'+buttonGroup+'"]').each(function() {
-								    if ($(this).hasClass('ribbon-button-large-active')) {
-								    	$(this).removeClass('ribbon-button-large-active');
-								    	oldActive = this;
+                                if (!el.hasClass('disabled')) {                                
+								    var oldActive = null;
+								    var buttonGroup = el.attr('data-group');
+								    $('div[data-group="'+buttonGroup+'"]').each(function() {
+								        if ($(this).hasClass('ribbon-button-large-active')) {
+								    	    $(this).removeClass('ribbon-button-large-active');
+								    	    oldActive = this;
+								        }
+								    });
+								    $(this).addClass('ribbon-button-large-active');
+								    var event = el.attr('data-event');
+								    if (typeof event !== 'undefined') {
+									    jQuery(document).trigger(event);
 								    }
-								});
-								$(this).addClass('ribbon-button-large-active');
-								var event = el.attr('data-event');
-								if (typeof event !== 'undefined') {
-									jQuery(document).trigger(event);
-								}
+                                }
 							});
 						} 
 						

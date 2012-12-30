@@ -470,11 +470,26 @@ var AG3DVIEW = function() {
 	    jQuery(window).trigger('resize');
     }
     
+    /**
+    * Disable 3d view if there is no WebGL support
+    */
     function initNo3DView() {
+        /**
+        * Add a sorry message to the view
+        */
         jQuery('<div style="padding:20px"><img src="/images/ie.jpg" width=128 style="float:left" /><h1>3D View Not Supported</h1><p>Sorry the 3D view is not supported in Native Internet Explorer.</p><p>Recent versions of Chrome, Firefox, and Safari are supported. Internet Explorer is supported by using the <a target="_blank" href="http://www.google.com/chromeframe">Chrome Frame plugin</a>, which is a one-time install that does not require admin rights</p></div>', {
             'id' : 'glCanvas',
             'class' : 'fullsize'
-        }).appendTo('#3d');        
+        }).appendTo('#3d');
+
+        /**
+        * Disable all of the toolbar buttons                
+        */
+        jQuery('#satview3d').hide();
+        jQuery('#3d-view-reset').disable();
+        jQuery('#3d-projection').disable();
+        jQuery('#3d-provider').disable();
+        jQuery('#3d-follow').disable();
     }
     
 	return {
@@ -500,9 +515,13 @@ var AG3DVIEW = function() {
 		init : function() {
             if (AGSETTINGS.getHaveWebGL()) {
                 init3DView();
-            } else {
-                initNo3DView();
             }
-		}
+		},
+        
+        postInit : function() {
+            if (!AGSETTINGS.getHaveWebGL()) {
+                initNo3DView();
+            }            
+        }
 	}
 }
