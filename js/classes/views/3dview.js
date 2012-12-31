@@ -137,8 +137,9 @@ var AG3DVIEW = function() {
 	jQuery(document).bind('agsattrack.updatesatdata',
 			function(event, selected) {
 				if (_render) {
-			//		updateSatelliteBillboards();
-             //       drawFootprint();
+                    if (AGSETTINGS.getHaveWebGL()) { 
+					    updateSatelliteBillboards();
+                    }
 				}
 			});
 
@@ -230,6 +231,7 @@ var AG3DVIEW = function() {
 		var satellites = AGSatTrack.getSatellites();
         var pos;
         var now = new Cesium.JulianDate();
+        var cpos;
                 
       //  footprintCircle.removeAll();
 		satBillboards.removeAll();
@@ -239,10 +241,11 @@ var AG3DVIEW = function() {
 		for ( var i = 0; i < satellites.length; i++) {
 			if (satellites[i].isDisplaying()) {
                 pos = satellites[i].getData();
+                cpos = new Cesium.Cartesian3(pos.x, pos.y, pos.z);
+                cpos = newpos.multiplyByScalar(1000);                
 				billboard = satBillboards.add({
 					imageIndex : 0,
-					position : Cesium.Cartesian3(pos.x * 1000, pos.y * 1000,
-                    pos.z * 1000)                    
+					position : cpos                   
 				});
 				billboard.satelliteName = satellites[i].getName();
 				billboard.satelliteNoradId = satellites[i].getNoradId();
@@ -265,10 +268,10 @@ var AG3DVIEW = function() {
 		var now = new Cesium.JulianDate();
 		var pos, newpos, bb;
 		var satellites = AGSatTrack.getSatellites();
-
+        var following = AGSatTrack.getFollowing();
 		
-		if (_selected !== null && _follow) {
-			var satInfo = _selected.sat.getData();
+		if (following !== null && _follow) {
+			var satInfo = following.getData();
 			var observer = AGSatTrack.getObservers()[0];
 			var target = ellipsoid
 			.cartographicToCartesian(Cesium.Cartographic
@@ -289,10 +292,12 @@ var AG3DVIEW = function() {
 			bb = satBillboards.get(i);
 			pos = satellites[bb.satelliteindex].getData();
 
-			newpos = new Cesium.Cartesian3(pos.x * 1000, pos.y * 1000,
-					pos.z * 1000); // TODO multiplyByScalar(1000)
+			newpos = new Cesium.Cartesian3(pos.x, pos.y, pos.z);
+            newpos = newpos.multiplyByScalar(1000);
 			bb.setPosition(newpos);
 		}
+        
+        setupOrbit();
 	}
 
 	function drawFootprint() {
@@ -313,7 +318,6 @@ var AG3DVIEW = function() {
                             satInfo.longitude, satInfo.latitude)),
                     satInfo.footprint * 500));            
         }
-
 
 	}
 
@@ -340,12 +344,14 @@ var AG3DVIEW = function() {
         for (var i=0; i< selected.length; i++) {
             addOrbitLine(selected[i]);    
         }
+        drawFootprint();
     }
     
     function addOrbitLine(sat) {    
 		var orbit = sat.getOrbitData();
 		var plottingAos = false;
-		
+		var pos;
+        
 		if (typeof (orbit[0]) !== 'undefined') {
 
 			var now = new Cesium.JulianDate();
@@ -353,16 +359,17 @@ var AG3DVIEW = function() {
 					Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
 					Cesium.Cartesian3.ZERO);
 
-			orbitLines.removeAll();
 			var points = [];
 			var pointsAOS = [];
 			for ( var i = 0; i < orbit.length; i++) {
-				points.push(new Cesium.Cartesian3(orbit[i].x * 1000,
-						orbit[i].y * 1000, orbit[i].z * 1000));
+                pos = new Cesium.Cartesian3(orbit[i].x, orbit[i].y, orbit[i].z)
+                pos = pos.multiplyByScalar(1000);
+				points.push(pos);
 				
 				if (orbit[i].el >= AGSETTINGS.getAosEl()) {
-					pointsAOS.push(new Cesium.Cartesian3(orbit[i].x * 1000,
-							orbit[i].y * 1000, orbit[i].z * 1000));
+                    pos = new Cesium.Cartesian3(orbit[i].x, orbit[i].y, orbit[i].z)
+                    pos = pos.multiplyByScalar(1000);
+					pointsAOS.push(pos);
 					plottingAos = true;
 				}
 				

@@ -138,3 +138,19 @@ body {
 .imageanchor {
 	vertical-align: text-bottom;
 }
+
+img {
+    border: none;
+}
+
+
+#ribbon.backstage .logo {
+    float: left;
+}
+
+#ribbon.backstage {
+    font-family: verdana;
+}
+#ribbon.backstage table {
+    clear: both;
+}

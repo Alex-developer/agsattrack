@@ -215,8 +215,18 @@ var AGUI = function() {
         var args = e.args;
         var selectedSatellite = AGSatTrack.getSatelliteByName(args.item.value); 
         UpdateSatelliteData(selectedSatellite);
+        AGSatTrack.setFollowing(selectedSatellite);
 	});
 
+    
+    jQuery(document).bind('agsattrack.satsselectedcomplete', function(e, selectedInfo) {
+        if (selectedInfo.selected.length === 0) {
+            jQuery('#sat-info-selector').jqxDropDownList('clear');
+            AGSatTrack.setFollowing(null);
+            jQuery('#sat-info-selector').hide();    
+        }
+    });
+        
     /**
     * When a new satellite is selected update the satellite information pane.
     * TODO: There must be a better way to manage the selection in the drop down. Re selecting the
@@ -252,6 +262,8 @@ var AGUI = function() {
                 jQuery('#sat-info-selector').jqxDropDownList('selectIndex', 0);
                 jQuery('#sat-info-selector').hide();
                 UpdateSatelliteData(selectedInfo.satellites[0]);
+            } else {
+                AGSatTrack.setFollowing(null);
             }           
         }
         jQuery('#sat-info-selector').jqxListBox('endUpdate');        

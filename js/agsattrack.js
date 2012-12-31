@@ -26,7 +26,8 @@ var agsattrack = function() {
 	var _sunMoon = new AGSUNMOON();
 	var _initComplete = false; // Don't like this
 	var _speed = 1;
-	
+	var _following = null;
+    
 	/**
 	 * Shim to support animation frames
 	 */
@@ -197,6 +198,14 @@ var agsattrack = function() {
             return 1;
 		},
 		
+        setFollowing : function(satellite) {
+            _following = satellite;
+        },
+        
+        getFollowing : function() {
+            return _following;    
+        },
+        
 		getDisplaying : function() {
             return _tles.getDisplaying();
         },
