@@ -242,7 +242,7 @@ var AG3DVIEW = function() {
 			if (satellites[i].isDisplaying()) {
                 pos = satellites[i].getData();
                 cpos = new Cesium.Cartesian3(pos.x, pos.y, pos.z);
-                cpos = newpos.multiplyByScalar(1000);                
+                cpos = cpos.multiplyByScalar(1000);                
 				billboard = satBillboards.add({
 					imageIndex : 0,
 					position : cpos                   
