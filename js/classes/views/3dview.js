@@ -34,7 +34,9 @@ var AG3DVIEW = function() {
 	var _follow = false;
     var _followFromObserver = false;
     var TILE_PROVIDERS = null;
-
+    var _skyAtmosphere;
+    var _skybox;
+    
     /*
 	jQuery(window).resize(function() {
 		if (canvas === null) {
@@ -127,7 +129,29 @@ var AG3DVIEW = function() {
                     }
                 }
             });    
-    
+
+    jQuery(document).bind('agsattrack.showatmosphere',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    if (state) {
+                        scene.skyAtmosphere = _skyAtmosphere;    
+                    } else {
+                        scene.skyAtmosphere = undefined;    
+                    }
+                }
+            });
+
+    jQuery(document).bind('agsattrack.showskybox',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    if (state) {
+                        scene.skyBox = _skybox;    
+                    } else {
+                        scene.skyBox = undefined;    
+                    }
+                }
+            });
+                
     
 	/**
 	 * Listen for any changes in the tile provider.
@@ -290,6 +314,7 @@ var AG3DVIEW = function() {
 		var satellites = AGSatTrack.getSatellites();
         var following = AGSatTrack.getFollowing();
 		var target;
+        var up;
         
 		if (following !== null && (_follow || _followFromObserver)) {
 			var satInfo = following.getData();
@@ -301,16 +326,18 @@ var AG3DVIEW = function() {
                 .cartographicToCartesian(Cesium.Cartographic
                         .fromDegrees(observer.getLon(), observer
                                 .getLat(), 100));    
+                up = new Cesium.Cartesian3(0, 0, 1);                                     
             } else {
                 target = ellipsoid
                 .cartographicToCartesian(Cesium.Cartographic
                         .fromDegrees(observer.getLon(), observer
-                                .getLat()));     
+                                .getLat()));
+                up = new Cesium.Cartesian3(0, 0, 1);                                     
             }                                                      
 			var eye = ellipsoid
 					.cartographicToCartesian(Cesium.Cartographic
 							.fromDegrees(satInfo.longitude,satInfo.latitude, (satInfo.altitude + 10) *1000));
-			var up = new Cesium.Cartesian3(0, 0, 1);
+			
             if (_followFromObserver) {
                 scene.getCamera().lookAt(target, eye , up);
             } else {
@@ -482,9 +509,11 @@ var AG3DVIEW = function() {
 
 	    scene.getPrimitives().setCentralBody(cb);
 
-	    scene.skyAtmosphere = new Cesium.SkyAtmosphere();
+        _skyAtmosphere = new Cesium.SkyAtmosphere();
+	    scene.skyAtmosphere = _skyAtmosphere;
+        
 	    var imageryUrl = 'images/';
-	    scene.skyBox = new Cesium.SkyBox({
+	    _skybox = new Cesium.SkyBox({
 		    positiveX : imageryUrl + 'skybox/tycho8_px_80.jpg',
 		    negativeX : imageryUrl + 'skybox/tycho8_mx_80.jpg',
 		    positiveY : imageryUrl + 'skybox/tycho8_py_80.jpg',
@@ -492,7 +521,8 @@ var AG3DVIEW = function() {
 		    positiveZ : imageryUrl + 'skybox/tycho8_pz_80.jpg',
 		    negativeZ : imageryUrl + 'skybox/tycho8_mz_80.jpg'
 	    });
-
+        scene.skyBox = _skybox;
+        
 	    scene.getCamera().getControllers().addCentralBody();
 	    scene.getCamera().getControllers().get(0).spindleController.constrainedAxis = Cesium.Cartesian3.UNIT_Z;
 	    scene.getCamera().lookAt(
