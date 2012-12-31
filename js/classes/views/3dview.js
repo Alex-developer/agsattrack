@@ -32,7 +32,8 @@ var AG3DVIEW = function() {
 	var clock = null;
 	var _selected = null;
 	var _follow = false;
-	var TILE_PROVIDERS = null;
+    var _followFromObserver = false;
+    var TILE_PROVIDERS = null;
 
     /*
 	jQuery(window).resize(function() {
@@ -101,6 +102,9 @@ var AG3DVIEW = function() {
 			function(e, follow) {
 				if (AGSETTINGS.getHaveWebGL()) {
                     _follow = follow;
+                    if (_follow) {
+                        _followFromObserver = false;
+                    }
 				    if (!follow) {
 					    if (_render) {
 						    plotObservers();
@@ -109,6 +113,22 @@ var AG3DVIEW = function() {
                 }
 			});
 	
+    jQuery(document).bind('agsattrack.followsatelliteobs',
+            function(e, follow) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _followFromObserver = follow;
+                    if (_followFromObserver) {
+                        _follow = false;
+                    }                    
+                    if (!_followFromObserver) {
+                        if (_render) {
+                            plotObservers();
+                        }                    
+                    }
+                }
+            });    
+    
+    
 	/**
 	 * Listen for any changes in the tile provider.
 	 */
@@ -269,19 +289,33 @@ var AG3DVIEW = function() {
 		var pos, newpos, bb;
 		var satellites = AGSatTrack.getSatellites();
         var following = AGSatTrack.getFollowing();
-		
-		if (following !== null && _follow) {
+		var target;
+        
+		if (following !== null && (_follow || _followFromObserver)) {
 			var satInfo = following.getData();
 			var observer = AGSatTrack.getObservers()[0];
-			var target = ellipsoid
-			.cartographicToCartesian(Cesium.Cartographic
-					.fromDegrees(observer.getLon(), observer
-							.getLat()));
+
+                            
+            if (_followFromObserver) {
+                target = ellipsoid
+                .cartographicToCartesian(Cesium.Cartographic
+                        .fromDegrees(observer.getLon(), observer
+                                .getLat(), 100));    
+            } else {
+                target = ellipsoid
+                .cartographicToCartesian(Cesium.Cartographic
+                        .fromDegrees(observer.getLon(), observer
+                                .getLat()));     
+            }                                                      
 			var eye = ellipsoid
 					.cartographicToCartesian(Cesium.Cartographic
 							.fromDegrees(satInfo.longitude,satInfo.latitude, (satInfo.altitude + 10) *1000));
 			var up = new Cesium.Cartesian3(0, 0, 1);
-			scene.getCamera().lookAt(eye, target, up);
+            if (_followFromObserver) {
+                scene.getCamera().lookAt(target, eye , up);
+            } else {
+                scene.getCamera().lookAt(eye, target, up);
+            }
 		}
 		
 		satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
