@@ -154,3 +154,71 @@ img {
 #ribbon.backstage table {
     clear: both;
 }
+
+
+
+#window-preferences-tabs h2 {
+    font-size: 23px;
+    line-height: 29px;
+    padding: 9px 15px 4px 0;
+}
+#window-preferences-tabs h2, .subtitle {
+    font-weight: normal;
+    margin: 0;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+
+ #icon-options-general {
+    background-image: url("/images/icons32.png");
+}
+
+.icon32 {
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+.icon32 {
+    float: left;
+    height: 34px;
+    margin: 7px 8px 0 0;
+    width: 36px;
+}
+
+.icon32.icon-settings, #icon-options-general {
+    background-position: -492px -5px;
+}
+
+.form-table {
+    border-collapse: collapse;
+    clear: both;
+    margin-bottom: -8px;
+    margin-top: 0.5em;
+    width: 100%;
+}
+
+.form-table th, .form-wrap label {
+    color: #222222;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+.form-table th {
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+    width: 200px;
+}
+.form-table th, .form-wrap label {
+    font-weight: normal;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.form-table td {
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 9px;
+    padding: 8px 10px;
+}
+p.description {
+    font-family: sans-serif;
+    font-size: 12px;
+    font-style: italic;
+}

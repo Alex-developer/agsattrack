@@ -683,44 +683,55 @@
 			<div title="Sky View" style="padding: 1px;" width=1000 height=600 id="sky"></div>
 			<div title="Timeline View" style="padding: 1px;" width=1000 height=600 id="timeline"></div>			
 			<div title="Settings" style="padding: 1px;" width=1000 height=600 id="sky">
-				<div id="window-preferences-tabs" class="easyui-tabs"
-					data-options="fit:true">
+				<div id="window-preferences-tabs" class="easyui-tabs" data-options="fit:true">
 					<div title="Observer" data-options="" style="padding: 20px;">
-						<table>
-							<tr>
-								<td>Name</td>
-								<td><input size=15 id="observer-name"></td>
-							</tr>
-							<tr>
-								<td>Latitude</td>
-								<td><input size=10 id="observer-latitude"></td>
-							</tr>
-							<tr>
-								<td>Longitude</td>
-								<td><input size=5 id="observer-longitude"></td>
-							</tr>
-						</table>
+                    
+                    
+                        <div class="icon32" id="icon-options-general"><br></div>
+                        <h2>Observer Options</h2>
+                        
+                        <h3>Home Location</h3>
+                        <table class="form-table">
+                            <tr valign="top">
+                                <th>Location name</th>
+                                <td>
+                                    <input size=15 id="observer-name">
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <th>Location Latitude</th>
+                                <td>
+                                    <input size=15 id="latitude-name">
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <th>Location Longitude</th>
+                                <td>
+                                    <input size=15 id="latitude-longitude">
+                                </td>
+                            </tr>                            
+                        </table>
 					</div>
 					<div title="Satellites" data-options="" style="padding: 20px;">
-						<form id="window-preferences-satellites-form">
-							<fieldset>
-								<legend>Calculate Positions Every</legend>
-								<small>If you have a slower PC then try increasing this
-									value to improve performance.</small> <br /> <input
-									id="window-preferences-calc-timer" class="easyui-numberspinner"
-									style="width: 60px;" required="required"
-									data-options="min:1,max:50,editable:false"> Seconds
-							</fieldset>
-
-							<fieldset>
-								<legend>AoS When Above</legend>
-								<small>The Aquisition of Satellite will be when the
-									selected satellite is above this setting.</small> <br /> <input
-									id="window-preferences-aos" class="easyui-numberspinner"
-									style="width: 60px;" required="required"
-									data-options="min:-10,max:100,editable:false"> Degrees
-							</fieldset>
-						</form>
+                        <div class="icon32" id="icon-options-general"><br></div>
+                        <h2>Satellite Options</h2>
+                        
+                        <h3>Position Calculations</h3>
+                        <table class="form-table">
+                            <tr valign="top">
+                                <th>Calculate Every (Seconds)</th>
+                                <td>
+                                    <input id="window-preferences-calc-timer" class="easyui-numberspinner" style="width: 60px;" required="required" data-options="min:1,max:50,editable:false">
+                                    <p class="description">If you have a slower PC then try increasing this value to improve performance.</p>
+                                    </td>
+                            </tr>
+                            <tr valign="top">
+                                <th>AoS When Above (In Degrees)</th>
+                                <td>
+                                    <input id="window-preferences-aos" class="easyui-numberspinner" style="width: 60px;" required="required" data-options="min:-10,max:100,editable:false">
+                                </td>
+                            </tr>
+                        </table>
 					</div>
 					<div title="Views" data-options="" style="padding: 20px;">
                         <span>Switch to view on tab select <input type="checkbox" id="switchtabonclick" value="on"></span>
