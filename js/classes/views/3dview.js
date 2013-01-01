@@ -27,6 +27,7 @@ var AG3DVIEW = function() {
 	var gridRefresh = 1;
 	var gridRefreshCounter = 0
 	var orbitLines = null;
+    var aosLines = null;
 	var footprintCircle = null;
 	var updateCounter = 0;
 	var clock = null;
@@ -243,7 +244,7 @@ var AG3DVIEW = function() {
 				// Point the camera at us and position it directly above us if
 				// we are the first observer
 				if (i == 0) {
-					scene.getCamera().lookAt(eye, target, up);
+					scene.getCamera().controller.lookAt(eye, target, up);
 				}
 			}
 		}
@@ -259,6 +260,7 @@ var AG3DVIEW = function() {
 	function renderScene() {
 		(function tick() {
 			if (_render) {
+                scene.initializeFrame();
 			//	try {
 					scene.render();
 			//	} catch (err) {
@@ -339,9 +341,9 @@ var AG3DVIEW = function() {
 							.fromDegrees(satInfo.longitude,satInfo.latitude, (satInfo.altitude + 10) *1000));
 			
             if (_followFromObserver) {
-                scene.getCamera().lookAt(target, eye , up);
+                scene.getCamera().controller.lookAt(target, eye, up);                
             } else {
-                scene.getCamera().lookAt(eye, target, up);
+                scene.getCamera().controller.lookAt(eye, target, up);                
             }
 		}
 		
@@ -383,19 +385,20 @@ var AG3DVIEW = function() {
 	}
 
 	function satelliteClickDetails(scene) {
-		var handler = new Cesium.EventHandler(scene.getCanvas());
+		var handler = new Cesium.ScreenSpaceEventHandler(scene.getCanvas());
 
-		handler.setMouseAction(function(click) {
+		handler.setInputAction(function(click) {
 			var pickedObject = scene.pick(click.position);
 			if (pickedObject) {
 				var selected = pickedObject.satelliteName;
 				jQuery(document).trigger('agsattrack.satclicked', {index: selected});
 			}
-		}, Cesium.MouseEventType.LEFT_CLICK);
+		}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 	}
 
 	function resetOrbit() {
-		orbitLines.removeAll();
+        orbitLines.removeAll();
+		aosLines.removeAll();
 		footprintCircle.removeAll();
 	}
 
@@ -419,7 +422,10 @@ var AG3DVIEW = function() {
 			orbitLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
 					Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
 					Cesium.Cartesian3.ZERO);
-
+            aosLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                    Cesium.Cartesian3.ZERO);
+                    
 			var points = [];
 			var pointsAOS = [];
 			for ( var i = 0; i < orbit.length; i++) {
@@ -436,7 +442,7 @@ var AG3DVIEW = function() {
 				
 				if (plottingAos && orbit[i].el <= AGSETTINGS.getAosEl()) {
 					plottingAos = false;
-					orbitLines.add({
+					aosLines.add({
 						positions : pointsAOS,
 						width : 3,
 						color : Cesium.Color.GREEN
@@ -449,19 +455,23 @@ var AG3DVIEW = function() {
 			
 		//	var segments = Cesium.PolylinePipeline.wrapLongitude(ellipsoid, points);
 		//	for (var i=0; i < segments.length; i++) {
+
+            if (plottingAos) {
+                aosLines.add({
+                    positions : pointsAOS,
+                    width : 3,
+                    color : Cesium.Color.GREEN
+                });
+            }        
+      
 				orbitLines.add({
 					positions : points,
 					width : 1,
 					color : Cesium.Color.RED
 				});
+      
 		//	}
-			if (plottingAos) {
-				orbitLines.add({
-					positions : pointsAOS,
-					width : 3,
-					color : Cesium.Color.GREEN
-				});
-			}
+
 
 		}
 
@@ -474,6 +484,7 @@ var AG3DVIEW = function() {
         observerBillboards = new Cesium.BillboardCollection();
         satBillboards = new Cesium.BillboardCollection();
         orbitLines = new Cesium.PolylineCollection();;
+        aosLines = new Cesium.PolylineCollection();;
         footprintCircle = new Cesium.PolylineCollection();
         clock = new Cesium.Clock();
 
@@ -523,21 +534,14 @@ var AG3DVIEW = function() {
 	    });
         scene.skyBox = _skybox;
         
-	    scene.getCamera().getControllers().addCentralBody();
-	    scene.getCamera().getControllers().get(0).spindleController.constrainedAxis = Cesium.Cartesian3.UNIT_Z;
-	    scene.getCamera().lookAt(
-			    new Cesium.Cartesian3(4000000.0, -15000000.0, 10000000.0), // eye
-			    Cesium.Cartesian3.ZERO, // target
-			    new Cesium.Cartesian3(-0.1642824655609347, 0.5596076102188919,
-					    0.8123118822806428)); // up
-
+     /*   scene.getCamera().controller.lookAt(new Cesium.Cartesian3(4000000.0, -15000000.0,  10000000.0), // eye
+            Cesium.Cartesian3.ZERO, // target
+            new Cesium.Cartesian3(-0.1642824655609347, 0.5596076102188919, 0.8123118822806428)); // up
+       */
 	    satelliteClickDetails(scene);
 	    scene.getPrimitives().add(orbitLines);
 	    scene.getPrimitives().add(footprintCircle);
 
-	    scene.setAnimation(function() {
-	    })
-        
 	    jQuery(window).trigger('resize');
     }
     

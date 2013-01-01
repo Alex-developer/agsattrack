@@ -20,6 +20,7 @@ var AGTIMELINE = function() {
 	var _stage = null;
 	var _backgroundLayer = null;
 	var _navBackgroundLayer = null;
+    var _mousePosLayer = null;
 	var _width;
 	var _height;
 	var _pixelsPerMin;
@@ -84,17 +85,38 @@ var AGTIMELINE = function() {
 	}
 
 	function drawMousePos() {
-	}
+	    getDimensions();
+        
+        _mousePosLayer.removeChildren();
+        
+        _mousePosLayer.add(new Kinetic.Line({
+            points : [ _mousePos.x, 0, _mousePos.x, _height ],
+            stroke : '#777',
+            strokeWidth : 1,
+            opacity: 0.5
+        }));
+                    
+        _mousePosLayer.draw();
+    }
 
 
 
-	function drawTimeline() {
-		getDimensions();
-		drawBackground();
-		
-		
-	}
+	    function drawTimeline() {
+		    getDimensions();
+		    drawBackground();
+		    
+		    
+	    }
 
+        function animate() {
+            if (_render) {
+                drawMousePos();
+            }
+            requestAnimFrame(animate);
+        }
+        
+        animate();
+            
 	return {
 		startRender : function() {
 			_render = true;
@@ -127,6 +149,10 @@ var AGTIMELINE = function() {
 			_navBackgroundLayer = new Kinetic.Layer();
 			_stage.add(_navBackgroundLayer);			
 
+            _mousePosLayer = new Kinetic.Layer();
+            _stage.add(_mousePosLayer);                
+            
+            
 			drawBackground();
 		}
 	}

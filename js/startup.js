@@ -23,7 +23,7 @@ jQuery(document).ready(function() {
         
     Modernizr.load({
       test: Modernizr.webgl,
-      yep : 'js/cesium/Cesium.js',
+      yep : 'js/cesium/Unminified/Cesium.js',
       complete : function() {
           AGSETTINGS.setHaveWebGL(Modernizr.webgl);
           AGSETTINGS.setHaveCanvas(Modernizr.canvas);

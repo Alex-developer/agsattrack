@@ -294,7 +294,7 @@ var requirejs, require, define;
     };
 }());
 
-define("../ThirdParty/almond-0.0.3/almond.js", function(){});
+define("..\ThirdParty\almond-0.0.3\almond.js", function(){});
 
 /*global define*/
 define('Core/defaultValue',[],function() {
