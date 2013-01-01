@@ -37,6 +37,7 @@ var AG3DVIEW = function() {
     var TILE_PROVIDERS = null;
     var _skyAtmosphere;
     var _skybox;
+    var _fps = null;
     
     /*
 	jQuery(window).resize(function() {
@@ -146,12 +147,24 @@ var AG3DVIEW = function() {
             function(e, state) {
                 if (AGSETTINGS.getHaveWebGL()) {
                     if (state) {
-                        scene.skyBox = _skybox;    
+                        scene.skyBox = _skybox;
                     } else {
-                        scene.skyBox = undefined;    
+                        scene.skyBox = undefined;                           
                     }
                 }
             });
+            
+    jQuery(document).bind('agsattrack.showfps',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    if (state) {
+                        _fps = new Cesium.PerformanceDisplay();                         
+                        scene.getPrimitives().add(_fps);    
+                    } else {
+                        scene.getPrimitives().remove(_fps);                               
+                    }
+                }
+            });            
                 
     
 	/**
