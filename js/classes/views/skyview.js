@@ -24,8 +24,6 @@ var AGSKYVIEW = function() {
 	};
 	var _sats = [];
 	var _satLabels = [];
-	var _satImage = new Image();
-	var _moonImage = new Image();
 	var _width;
 	var _height;
 	var _xstep;
@@ -283,7 +281,7 @@ var AGSKYVIEW = function() {
 						_sats[index] = new Kinetic.Image({
 							x : pos.x - 8,
 							y : pos.y - 8,
-							image : _satImage,
+							image : AGIMAGES.getImage('satellite16'),
 							width : 16,
 							height : 16,
 							id : satellite.getName()

@@ -40,8 +40,6 @@ var AGPOLARVIEW = function() {
 	var _twoPi = 2 * Math.PI;
 	var _halfMargin;
 	var _de2ra = 0.0174532925;
-	var _satImage = new Image();
-	var _moonImage = new Image();
     var _showPlanets = false;
     var _images = [];
     
@@ -457,7 +455,7 @@ var AGPOLARVIEW = function() {
 						_sats[index] = new Kinetic.Image({
 							x : pos.x - 8,
 							y : pos.y - 8,
-							image : _satImage,
+							image : AGIMAGES.getImage('satellite16'),
 							width : 16,
 							height : 16,
 							id : satellite.getName()

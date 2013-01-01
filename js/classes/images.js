@@ -19,6 +19,12 @@ var AGIMAGES = (function() {
     var _images = [];
     
     AGUTIL.loadImages({
+        home: '/images/home.png',
+        satellite16: '/images/satellite-16.png',
+        satellite24: '/images/satellite-24.png',
+        satellite32: '/images/satellite-32.png',
+        iss16: '/images/iss-16.png',
+        iss32: '/images/iss-32.png',
         generic: '/images/planets/generic.png',
         jupiter: '/images/planets/jupiter.png',
         saturn: '/images/planets/saturn.png',

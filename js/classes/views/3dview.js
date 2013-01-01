@@ -249,7 +249,20 @@ var AG3DVIEW = function() {
 								.fromDegrees(observer.getLon(), observer
 										.getLat(), 1e7));
 				var up = new Cesium.Cartesian3(0, 0, 1);
-				var image = new Image();
+                
+                
+                var textureAtlas = scene.getContext().createTextureAtlas({
+                    image : AGIMAGES.getImage('home')
+                });
+                observerBillboards.setTextureAtlas(textureAtlas);
+                observerBillboards.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(target);
+                observerBillboards.add({
+                    imageIndex : 0,
+                    position : new Cesium.Cartesian3(0.0, 0.0, 0.0)
+                });        
+        
+            /*
+                var image = new Image();
 				image.src = 'images/cross_yellow_16.png';
 				image.onload = function() {
 					var textureAtlas = scene.getContext().createTextureAtlas({
@@ -263,6 +276,7 @@ var AG3DVIEW = function() {
 						position : new Cesium.Cartesian3(0.0, 0.0, 0.0)
 					});
 				};
+                */
 				// Point the camera at us and position it directly above us if
 				// we are the first observer
 				if (i == 0) {
@@ -301,7 +315,6 @@ var AG3DVIEW = function() {
         var now = new Cesium.JulianDate();
         var cpos;
                 
-      //  footprintCircle.removeAll();
 		satBillboards.removeAll();
         satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                 Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
@@ -310,9 +323,9 @@ var AG3DVIEW = function() {
 			if (satellites[i].isDisplaying()) {
                 pos = satellites[i].getData();
                 cpos = new Cesium.Cartesian3(pos.x, pos.y, pos.z);
-                cpos = cpos.multiplyByScalar(1000);                
+                cpos = cpos.multiplyByScalar(1000);               
 				billboard = satBillboards.add({
-					imageIndex : 0,
+					imageIndex : (satellites[i].getNoradId() === '25544'?2:0),
 					position : cpos                   
 				});
 				billboard.satelliteName = satellites[i].getName();
@@ -321,15 +334,16 @@ var AG3DVIEW = function() {
 			}
 		}
 		scene.getPrimitives().add(satBillboards);
-		image.src = 'images/Satellite.png';
-		image.onload = function() {
-			var textureAtlas = scene.getContext().createTextureAtlas({
-				image : image
-			}); // seems needed in onload()
-			satBillboards.setTextureAtlas(textureAtlas);
-		};
-       // updateSatelliteBillboards();
-      //  drawFootprint();
+
+        var textureAtlas = scene.getContext().createTextureAtlas({
+            images : [
+                AGIMAGES.getImage('satellite16'), 
+                AGIMAGES.getImage('satellite32'),
+                AGIMAGES.getImage('iss16'),
+                AGIMAGES.getImage('iss32')
+                ] 
+        });
+        satBillboards.setTextureAtlas(textureAtlas);
 	}
 
 	function updateSatelliteBillboards() {
@@ -376,7 +390,20 @@ var AG3DVIEW = function() {
 		for ( var i = 0; i < satBillboards.getLength(); i++) {
 			bb = satBillboards.get(i);
 			pos = satellites[bb.satelliteindex].getData();
-
+            
+            if (satellites[bb.satelliteindex].getSelected()) {
+                if (satellites[i].getNoradId() === '25544') {
+                    bb.setImageIndex(3);    
+                } else {
+                    bb.setImageIndex(1);    
+                }
+            } else {
+                if (satellites[i].getNoradId() === '25544') {
+                    bb.setImageIndex(2);    
+                } else {
+                    bb.setImageIndex(0);    
+                }   
+            }
 			newpos = new Cesium.Cartesian3(pos.x, pos.y, pos.z);
             newpos = newpos.multiplyByScalar(1000);
 			bb.setPosition(newpos);
