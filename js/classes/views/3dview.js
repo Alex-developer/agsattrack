@@ -115,6 +115,7 @@ var AG3DVIEW = function() {
 				    if (!follow) {
 					    if (_render) {
 						    plotObservers();
+                            updateSatelliteBillboards();
 					    }					
 				    }
                 }
@@ -130,6 +131,7 @@ var AG3DVIEW = function() {
                     if (!_followFromObserver) {
                         if (_render) {
                             plotObservers();
+                            updateSatelliteBillboards();
                         }                    
                     }
                 }
@@ -261,22 +263,6 @@ var AG3DVIEW = function() {
                     position : new Cesium.Cartesian3(0.0, 0.0, 0.0)
                 });        
         
-            /*
-                var image = new Image();
-				image.src = 'images/cross_yellow_16.png';
-				image.onload = function() {
-					var textureAtlas = scene.getContext().createTextureAtlas({
-						image : image
-					});
-					observerBillboards.setTextureAtlas(textureAtlas);
-					observerBillboards.modelMatrix = Cesium.Transforms
-							.eastNorthUpToFixedFrame(target);
-					observerBillboards.add({
-						imageIndex : 0,
-						position : new Cesium.Cartesian3(0.0, 0.0, 0.0)
-					});
-				};
-                */
 				// Point the camera at us and position it directly above us if
 				// we are the first observer
 				if (i == 0) {
@@ -297,10 +283,11 @@ var AG3DVIEW = function() {
 		(function tick() {
 			if (_render) {
                 scene.initializeFrame();
-			//	try {
+				try {
 					scene.render();
-			//	} catch (err) {
-			//	}
+				} catch (err) {
+                    // See told you it was a nasty hack !
+                }
 				Cesium.requestAnimationFrame(tick);
 			}
 		}());
@@ -363,7 +350,7 @@ var AG3DVIEW = function() {
                 target = ellipsoid
                 .cartographicToCartesian(Cesium.Cartographic
                         .fromDegrees(observer.getLon(), observer
-                                .getLat(), 100));    
+                                .getLat(), 100));
                 up = new Cesium.Cartesian3(0, 0, 1);                                     
             } else {
                 target = ellipsoid
