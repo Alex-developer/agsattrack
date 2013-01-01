@@ -38,6 +38,9 @@ var AG3DVIEW = function() {
     var _skyAtmosphere;
     var _skybox;
     var _fps = null;
+    var _labels = null;
+    var _mousePosLabel = null;
+    var _showMousePos = false;
     
     /*
 	jQuery(window).resize(function() {
@@ -166,7 +169,13 @@ var AG3DVIEW = function() {
                 }
             });            
                 
-    
+    jQuery(document).bind('agsattrack.showmousepos',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _showMousePos = state;
+                }
+            }); 
+                
 	/**
 	 * Listen for any changes in the tile provider.
 	 */
@@ -409,6 +418,26 @@ var AG3DVIEW = function() {
 		}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 	}
 
+    function mouseMoveDetails(scene, ellipsoid) {
+        var handler = new Cesium.ScreenSpaceEventHandler(scene.getCanvas());
+        handler.setInputAction(function(movement) {
+            if (_showMousePos) {
+                var cartesian = scene.getCamera().controller.pickEllipsoid(movement.endPosition, ellipsoid);
+                if (cartesian && !isNaN(cartesian.x)) {
+                    var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+                    _mousePosLabel.setShow(true);
+                    var lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+                    var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+                    
+                    _mousePosLabel.setText('(' + AGUTIL.convertDecDegLon(lon, false) + ', ' + AGUTIL.convertDecDegLat(lat, false) + ')');
+                    _mousePosLabel.setPosition(cartesian);
+                } else {
+                    _mousePosLabel.setText('');
+                }
+            }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    }
+        
 	function resetOrbit() {
         orbitLines.removeAll();
 		aosLines.removeAll();
@@ -547,12 +576,22 @@ var AG3DVIEW = function() {
 	    });
         scene.skyBox = _skybox;
         
+        _labels = new Cesium.LabelCollection(undefined);        
+        _mousePosLabel = _labels.add({
+            font : '18px sans-serif',
+            fillColor : 'black',
+            outlineColor : 'black',
+            style : Cesium.LabelStyle.FILL,
+        });
+        scene.getPrimitives().add(_labels);
+                
      /*   scene.getCamera().controller.lookAt(new Cesium.Cartesian3(4000000.0, -15000000.0,  10000000.0), // eye
             Cesium.Cartesian3.ZERO, // target
             new Cesium.Cartesian3(-0.1642824655609347, 0.5596076102188919, 0.8123118822806428)); // up
        */
 	    satelliteClickDetails(scene);
-	    scene.getPrimitives().add(orbitLines);
+	    mouseMoveDetails(scene, ellipsoid);
+        scene.getPrimitives().add(orbitLines);
 	    scene.getPrimitives().add(footprintCircle);
 
 	    jQuery(window).trigger('resize');

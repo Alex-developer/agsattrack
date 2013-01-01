@@ -286,6 +286,11 @@ body
 	clear: left;
 	margin: -1px 5px 0px 1px;
 }
+
+#ribbon .ribbon-button-small-no-title {
+    margin: -1px 1px 0px 1px !important;
+}
+
 #ribbon .ribbon-button .ribbon-icon.ribbon-hot, #ribbon .ribbon-button .ribbon-icon.ribbon-disabled,
 #ribbon .ribbon-split-button .ribbon-icon.ribbon-hot, #ribbon .ribbon-split-button .ribbon-icon.ribbon-disabled
 {

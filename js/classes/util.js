@@ -16,7 +16,20 @@ Copyright 2012 Alex Greenland
 var AGUTIL = (function() {
 
 	
-	function convertDecDeg(v,tipo) {
+	function convertDecDeg(v,tipo, html) {
+        var symbol;
+                
+        if (typeof html === 'undefined') {
+            debugger;
+            html = true;
+        }
+        
+        if (html) {
+           symbol = '&deg'; 
+        } else {
+           symbol = 'º';             
+        }
+        
     	if (!tipo) tipo='N';
     	var deg;
     	deg = v;
@@ -24,7 +37,7 @@ var AGUTIL = (function() {
     		return "";
     	} else if (deg > 180 || deg < 0){
     		// convert coordinate from north to south or east to west if wrong tipo
-    		return convertDecDeg(-v,(tipo=='N'?'S': (tipo=='E'?'W':tipo) ));
+    		return convertDecDeg(-v,(tipo=='N'?'S': (tipo=='E'?'W':tipo) ), html);
     	} else {
     		var gpsdeg = parseInt(deg);
     		var remainder = deg - (gpsdeg * 1.0);
@@ -33,9 +46,11 @@ var AGUTIL = (function() {
     		var M = parseInt(gpsmin);
     		var remainder2 = gpsmin - (parseInt(gpsmin)*1.0);
     		var S = parseInt(remainder2*60.0);
-    		return D+"&deg; "+M+"' "+S+"'' "+tipo;
+    		return D+symbol+' '+M+"' "+S+"'' "+tipo;
     	}
-    }
+        
+        
+    }                   
 
     function pad(num, size) {
         var s = "00" + num;
@@ -43,14 +58,14 @@ var AGUTIL = (function() {
     }
     
 	return {
-		convertDecDegLat: function(lat) {
+		convertDecDegLat: function(lat,html) {
 	        dir = (lat>0?'N':'S');
-	        lat = convertDecDeg(lat,dir);
+	        lat = convertDecDeg(lat,dir,html);
 	        return lat;
 		},
-		convertDecDegLon: function(lon) {
+		convertDecDegLon: function(lon,html) {
 	        var dir = (lon>0?'E':'W');
-	        lon = convertDecDeg(lon,dir);
+	        lon = convertDecDeg(lon,dir,html);
 	        return lon;
 		},
 		shortdate : function(date) {
