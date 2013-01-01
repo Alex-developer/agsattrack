@@ -21,9 +21,7 @@ var agsattrack = function() {
 	var ui = null;
 	var refreshCounter = 0;
 	var refreshInterval = 1;
-	var _moonPos = null;
-	var _sunPos = null;
-	var _sunMoon = new AGSUNMOON();
+	var _planets = new AGPLANETS();
 	var _initComplete = false; // Don't like this
 	var _speed = 1;
 	var _following = null;
@@ -134,10 +132,10 @@ var agsattrack = function() {
             var cDate = new Cesium.JulianDate();
             julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();            
         } else {
-            julianDate = new Date().Date2Julian();
+            julianDate = Date.Date2Julian(new Date());
         }
             		
-		calculateSunAndMoon();
+		_planets.update(julianDate, _observers[0]);
 		
 		if (_tles.getTotalDisplaying() > 0) {
 			var date = new Date();
@@ -153,22 +151,6 @@ var agsattrack = function() {
 		}
 	}
 	
-	function calculateSunAndMoon() {
-        var julianDate;
-
-        if (AGSETTINGS.getHaveWebGL()) {
-            var cDate = new Cesium.JulianDate();
-            julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();            
-        } else {
-            julianDate = new Date().Date2Julian();
-        }
-
-		_moonPos = _sunMoon.getMoonPos(julianDate, 
-				{latitude: _observers[0].getLat(), longitude: _observers[0].getLon()});
-
-		_sunPos = _sunMoon.getSunPos(julianDate, 
-				{latitude: _observers[0].getLat(), longitude: _observers[0].getLon()});	
-	}
 	
     function setSelected(index) {
         _tles.getSatellite(index).setSelected(true);        
@@ -176,28 +158,10 @@ var agsattrack = function() {
     
 	return {
 
-		getMoon: function() {
-			if (_moonPos === null) {
-				calculateSunAndMoon();
-			}
-			return _moonPos;
+		getPlanets: function() {
+			return _planets.getPlanets();
 		},
 
-		getMoonPhase: function() {
-		    var julianDate;
-            
-            if (AGSETTINGS.getHaveWebGL()) {
-                var cDate = new Cesium.JulianDate();
-			    julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();			
-            } else {
-                julianDate = new Date().Date2Julian();
-            }
-			return _sunMoon.getMoonPhase(julianDate);
-            
-            
-            return 1;
-		},
-		
         setFollowing : function(satellite) {
             _following = satellite;
         },

@@ -14,13 +14,12 @@ Copyright 2012 Alex Greenland
    limitations under the License.
  */ 
 var AGUTIL = (function() {
-
+    'use strict'
 	
 	function convertDecDeg(v,tipo, html) {
         var symbol;
                 
         if (typeof html === 'undefined') {
-            debugger;
             html = true;
         }
         
@@ -52,12 +51,32 @@ var AGUTIL = (function() {
         
     }                   
 
+    
     function pad(num, size) {
         var s = "00" + num;
         return s.substr(s.length-size);
     }
     
 	return {
+        
+        loadImages : function(sources, callback){
+            var images = {};
+            var loadedImages = 0;
+            var numImages = 0;
+            for (var src in sources) {
+                numImages++;
+            }
+            for (var src in sources) {
+                images[src] = new Image();
+                images[src].onload = function(){
+                    if (++loadedImages >= numImages) {
+                        callback(images);
+                    }
+                };
+                images[src].src = sources[src];
+            }
+        },
+        
 		convertDecDegLat: function(lat,html) {
 	        dir = (lat>0?'N':'S');
 	        lat = convertDecDeg(lat,dir,html);

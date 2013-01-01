@@ -14,10 +14,6 @@ Copyright 2012 Alex Greenland
    limitations under the License.
  */
 jQuery(document).ready(function() {
-    //var planets = new AGPLANETS();
-    
-   // var pos = planets.PlanetAlt();
-   
         
     Modernizr.load({
       test: Modernizr.webgl,

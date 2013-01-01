@@ -401,7 +401,17 @@ var AG3DVIEW = function() {
             footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
                     .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
                             satInfo.longitude, satInfo.latitude)),
-                    satInfo.footprint * 500));            
+                    satInfo.footprint * 500));  
+   /*                 
+ var ellipse = new Cesium.Polygon();
+         ellipse.setPositions(Cesium.Shapes.computeEllipseBoundary(
+            ellipsoid, ellipsoid.cartographicToCartesian(
+                new Cesium.Cartographic.fromDegrees(
+                            satInfo.longitude, satInfo.latitude)), satInfo.footprint * 500,
+                    satInfo.footprint * 500, Cesium.Math.toRadians(60)));
+        scene.getPrimitives().add(ellipse);
+        debugger;
+ */                                     
         }
 
 	}

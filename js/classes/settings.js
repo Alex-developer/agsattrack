@@ -17,7 +17,7 @@ var AGSETTINGS = (function(element) {
 	var _aosEl = 5;
 	var _refreshTimerInterval = 5000;
 	var _haveCanvas = true;
-    var _switchViewOnTabClick = false;
+    var _switchViewOnTabClick = true;
     var _haveWebGl = false;
     
 	return {

@@ -319,9 +319,60 @@ Date.Format = function(p_Date, p_Format, p_FirstDayOfWeek, p_firstweekofyear) {
 	return retVal;
 }
 
-Date.prototype.Date2Julian = function() {
- return Math.floor((this / 86400000) - 
- (this.getTimezoneOffset()/1440) + 2440587.5);
+Date.Date2Julian = function(date) {
+    era = 'CE';
+    
+    y = date.getFullYear();
+    m = date.getMonth()+1;
+    d = date.getDate();
+    h = date.getHours();
+    mn = date.getMinutes();
+    s = date.getSeconds();
+
+     var jy, ja, jm;            //scratch
+
+    if( y == 0 ) {
+        return 0;
+    }
+    if( y == 1582 && m == 10 && d > 4 && d < 15 ) {
+        return 0;
+    }
+
+//    if( y < 0 )  ++y;
+    if( era == "BCE" ) y = -y + 1;
+    if( m > 2 ) {
+        jy = y;
+        jm = m + 1;
+    } else {
+        jy = y - 1;
+        jm = m + 13;
+    }
+
+    var intgr = Math.floor( Math.floor(365.25*jy) + Math.floor(30.6001*jm) + d + 1720995 );
+
+    //check for switch to Gregorian calendar
+    var gregcal = 15 + 31*( 10 + 12*1582 );
+    if( d + 31*(m + 12*y) >= gregcal ) {
+        ja = Math.floor(0.01*jy);
+        intgr += 2 - ja + Math.floor(0.25*ja);
+    }
+
+    //correct for half-day offset
+    var dayfrac = h/24.0 - 0.5;
+    if( dayfrac < 0.0 ) {
+        dayfrac += 1.0;
+        --intgr;
+    }
+
+    //now set the fraction of a day
+    var frac = dayfrac + (mn + s/60.0)/60.0/24.0;
+
+    //round to nearest second
+    var jd0 = (intgr + frac)*100000;
+    var jd  = Math.floor(jd0);
+    if( jd0 - jd > 0.5 ) ++jd;
+    return jd/100000;
+    
 };
 
  Date.prototype.Julian2Date = function() {

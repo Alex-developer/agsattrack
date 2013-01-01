@@ -42,7 +42,9 @@ var AGPOLARVIEW = function() {
 	var _de2ra = 0.0174532925;
 	var _satImage = new Image();
 	var _moonImage = new Image();
-
+    var _showPlanets = false;
+    var _images = [];
+    
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#polar');
@@ -75,6 +77,14 @@ var AGPOLARVIEW = function() {
 		_satLayer.clear();
 	});
 
+    jQuery(document).bind('agsattrack.showplanets',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL() && _render) {
+                    _showPlanets = state;
+                    drawPlanets();
+                }
+            });
+                
 	jQuery('#polarcanvas').mousemove(
 			function(e) {
 				return;
@@ -196,9 +206,8 @@ var AGPOLARVIEW = function() {
 	var _satLayer = new Kinetic.Layer();
 	_stage.add(_satLayer);
 
-	var _moonLayer = new Kinetic.Layer();
-	_stage.add(_moonLayer);
-	var _moon = null;
+	var _planetLayer = new Kinetic.Layer();
+	_stage.add(_planetLayer);
 	
 	_stage.on('mousemove', function() {
 		_mousePos = _stage.getMousePosition();
@@ -384,29 +393,9 @@ var AGPOLARVIEW = function() {
 	function drawPolarView() {
 
 		setDimensions();
-
-
-		var _moonPos = AGSatTrack.getMoon();
-		
-		if (_moonPos[0] > 0) {
-			var pos = convertAzEltoXY(_moonPos[1], _moonPos[0]);			
-			if (_moon === null) {
-				_moon = new Kinetic.Image({
-					x : pos.x - 8,
-					y : pos.y - 8,
-					image : _moonImage,
-					width : 32,
-					height : 32,
-					id : -1
-				});
-				_moonLayer.add(_moon);
-			} else {
-				_moon.setPosition(parseInt(pos.x - 8),
-						parseInt(pos.y - 8));				
-			}
-			_moonLayer.draw();
-		}
-		
+        
+        drawPlanets();
+        
 		var satellites = AGSatTrack.getSatellites();
 		jQuery.each(satellites, function(index, satellite) {
 			if (satellite.isDisplaying()) {
@@ -490,6 +479,45 @@ var AGPOLARVIEW = function() {
 		_satLayer.draw();
 	}
 
+    function drawPlanets() {
+        var image;
+        
+        setDimensions();
+        _planetLayer.removeChildren();    
+        if (_showPlanets) {        
+            var _planets = AGSatTrack.getPlanets();
+            jQuery.each(_planets, function(index, planet) {
+                if (planet.alt > 0) {
+                    var pos = convertAzEltoXY(planet.az, planet.alt);            
+                    if (planet.name.toLowerCase() === 'moon') {
+                        image = AGIMAGES.getImage(planet.name.toLowerCase()+planet.phase,'generic');                        
+                    } else {
+                        image = AGIMAGES.getImage(planet.name.toLowerCase(),'generic');
+                    }
+
+                    _planetLayer.add(new Kinetic.Image({
+                        x : pos.x - 8,
+                        y : pos.y - 8,
+                        image : image,
+                        width : 32,
+                        height : 32,
+                        id : -1
+                    }));
+                    
+                    _planetLayer.add(new Kinetic.Text({
+                        x : pos.x,
+                        y : pos.y - 20,
+                        text : planet.name,
+                        fontSize : 10,
+                        fontFamily : 'Verdana',
+                        textFill : 'black'
+                    }));                  
+                }
+            });
+        }
+        _planetLayer.draw();        
+    }
+    
 	function animate() {
 		if (_render) {
 			drawMousePos();
@@ -497,17 +525,8 @@ var AGPOLARVIEW = function() {
 		requestAnimFrame(animate);
 	}
 
-	var _moonPhase = AGSatTrack.getMoonPhase();
-	
-	_satImage.src = '/images/Satellite.png';
-	_moonImage.src = '/images/moon/phase' + _moonPhase + '.png';
-	_satImage.onload = function() {
-		_moonImage.onload = function() {
-			animate();
-		}
-	};
-
-	drawBackground();
+    drawBackground();    
+	animate();
 
 	return {
 		startRender : function() {

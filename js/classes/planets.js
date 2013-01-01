@@ -1184,6 +1184,7 @@ Copyright 2012 Alex Greenland
         this.mag = -1.0;
         this.elong = 0;
         this.pa = 0;
+        this.phase = 1; // for Moon
         // position angle (elongation)
         this.update = updatePosition;
         this.elongupdate = updateElong;
@@ -1191,18 +1192,18 @@ Copyright 2012 Alex Greenland
     
     bodies = new Array();
     bodies[0] = new Body("Mercury", MERCURY, 0, 24, 25);
-    bodies[1] = new Body("Venus  ", VENUS, 1, 24, 25);
-    bodies[2] = new Body("Earth  ", 2, 3, 24, 25);
-    bodies[3] = new Body("Mars   ", MARS, 3, 24, 25);
-    bodies[4] = new Body("Jupiter", JUPITER, 4, 24, 25);
-    bodies[5] = new Body("Saturn ", SATURN, 5, 24, 25);
-    bodies[6] = new Body("Uranus ", URANUS, 6, 24, 25);
-    bodies[7] = new Body("Neptune", NEPTUNE, 7, 24, 25);
-    bodies[8] = new Body("", 8, 0, 0, 0);
-    bodies[9] = new Body("Sun    ", SUN, 9, 26, 27);
-    bodies[10] = new Body("Moon   ", MOON, 10, 28, 29);
-    bodies[COMET] = new Body("Comet  ", COMET, 2, 24, 25);
-    bodies[20] = new Body("User object", USER, 2, 24, 25);
+    bodies[1] = new Body("Venus", VENUS, 1, 24, 25);
+   // bodies[2] = new Body("Earth", 2, 3, 24, 25);
+    bodies[2] = new Body("Mars", MARS, 3, 24, 25);
+    bodies[3] = new Body("Jupiter", JUPITER, 4, 24, 25);
+    bodies[4] = new Body("Saturn", SATURN, 5, 24, 25);
+    bodies[5] = new Body("Uranus", URANUS, 6, 24, 25);
+    bodies[6] = new Body("Neptune", NEPTUNE, 7, 24, 25);
+   // bodies[8] = new Body("", 8, 0, 0, 0);
+    bodies[7] = new Body("Sun", SUN, 9, 26, 27);
+    bodies[8] = new Body("Moon", MOON, 10, 28, 29);
+  //  bodies[COMET] = new Body("Comet  ", COMET, 2, 24, 25);
+  //  bodies[20] = new Body("User object", USER, 2, 24, 25);
     function updatePosition(jday, obs) {
         // update body-object with current positions
         // elongation NOT calculated! (use updateElong for that)
@@ -1227,6 +1228,22 @@ Copyright 2012 Alex Greenland
         this.dist = dat[9];
         this.illum = dat[7];
         this.mag = dat[10];
+        
+        if (this.p === MOON) {
+            var j;
+            var ip, ag;
+            ip = (jday + 4.867) / 29.53059;
+            ip = ip - Math.floor(ip);
+            if(ip < 0.5)
+            {
+                ag = ip * 29.53059 + 29.53059 / 2;
+            }
+            else
+            {
+                ag = ip * 29.53059 - 29.53059 / 2;
+            }
+            this.phase = Math.floor(ag) + 1;            
+        }
     }
     function updateElong(jday, obs) {
         // calculate elongation for object
@@ -1442,14 +1459,22 @@ Copyright 2012 Alex Greenland
     
     return {
     
-        PlanetAlt : function() {
+        update : function(julianDate, observer) {
             var obs = new observatory(atlas[0], 2012, 1, 1, 12, 0, 0);
-            obs.latitude = 52;
-            obs.longitude = 0;
-            var julianDate = new Date().Date2Julian();
-            p = MOON;
-            var res = PlanetAlt(p, julianDate, obs);           
-            debugger;
+            obs.latitude = observer.getLat();
+            obs.longitude = observer.getLon();;
+            
+            for (i=0;i< bodies.length;i++) {
+                
+                if (bodies[i].name !== '') {
+                    bodies[i].update(julianDate, obs);
+                }
+            }
+            return bodies;
+        },
+        
+        getPlanets : function() {
+            return bodies;
         }
 
     }
