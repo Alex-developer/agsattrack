@@ -18,6 +18,7 @@ var AGUTIL = (function() {
 	
 	function convertDecDeg(v,tipo, html) {
         var symbol;
+        var dir;
                 
         if (typeof html === 'undefined') {
             html = true;
@@ -78,13 +79,13 @@ var AGUTIL = (function() {
         },
         
 		convertDecDegLat: function(lat,html) {
-	        dir = (lat>0?'N':'S');
-	        lat = convertDecDeg(lat,dir,html);
+            var dir = (lat>0?'N':'S');
+	        var lat = convertDecDeg(lat,dir,html);
 	        return lat;
 		},
 		convertDecDegLon: function(lon,html) {
 	        var dir = (lon>0?'E':'W');
-	        lon = convertDecDeg(lon,dir,html);
+	        var lon = convertDecDeg(lon,dir,html);
 	        return lon;
 		},
 		shortdate : function(date) {
