@@ -14,9 +14,30 @@ Copyright 2012 Alex Greenland
    limitations under the License.
  */
 jQuery(document).ready(function() {
+    
+    function isiDevice(){
+        return (
+            (navigator.platform.indexOf("iPhone") != -1) ||
+            (navigator.platform.indexOf("iPod") != -1)
+        );
+    }
+    
+    function webGlTest() {
+        var result = false;
+        
+        if (Modernizr.webgl) {
+            if (!isiDevice()) {
+                result = true;
+            }    
+        } else {
+            result = false;
+        }
+        
+        return result;
+    }
         
     Modernizr.load({
-      test: Modernizr.webgl,
+      test: webGlTest(),
       yep : 'js/cesium/Unminified/Cesium.js',
       complete : function() {
           AGSETTINGS.setHaveWebGL(Modernizr.webgl);
