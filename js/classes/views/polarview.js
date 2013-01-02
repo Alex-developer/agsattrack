@@ -77,7 +77,7 @@ var AGPOLARVIEW = function() {
 
     jQuery(document).bind('agsattrack.showplanets',
             function(e, state) {
-                if (AGSETTINGS.getHaveWebGL() && _render) {
+                if (AGSETTINGS.getHaveCanvas() && _render) {
                     _showPlanets = state;
                     drawPlanets();
                 }
