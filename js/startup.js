@@ -15,32 +15,47 @@ Copyright 2012 Alex Greenland
  */
 jQuery(document).ready(function() {
     
-    function isiDevice(){
-        return (
-            (navigator.platform.indexOf("iPhone") != -1) ||
-            (navigator.platform.indexOf("iPod") != -1)
-        );
-    }
-    
+    /**
+    * Check if webGL is really supported. Some devices, like the iPad report, via Modernizer that webGL
+    * is available when in fact it is not.
+    */
     function webGlTest() {
         var result = false;
+        var disableWebGLOn = {
+            product : ['ipad', 'iphone', 'ipod'],
+            name : ['ie']
+        };
         
+        function isWebBGLSupported() {
+            var result = true;
+            
+            for(var property in disableWebGLOn){
+                for (i=0;i<disableWebGLOn[property].length;i++) {
+                    if (platform[property]) {
+                        if (disableWebGLOn[property][i] === platform[property].toLowerCase()) {
+                            result = false;
+                            break;
+                        }
+                    }    
+                }
+            }
+            return result;  
+        }
+            
         if (Modernizr.webgl) {
-            if (!isiDevice()) {
-                result = true;
-            }    
+            result = isWebBGLSupported();
         } else {
             result = false;
         }
         
         return result;
     }
-        
+    
     Modernizr.load({
       test: webGlTest(),
       yep : 'js/cesium/Unminified/Cesium.js',
       complete : function() {
-          AGSETTINGS.setHaveWebGL(Modernizr.webgl);
+          AGSETTINGS.setHaveWebGL(webGlTest());
           AGSETTINGS.setHaveCanvas(Modernizr.canvas);
           AGSatTrack = new agsattrack();
           AGSatTrack.init();            
