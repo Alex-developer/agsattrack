@@ -17,6 +17,10 @@ var AGUTIL = (function() {
     'use strict'
 	
 	function convertDecDeg(v,tipo, html) {
+        
+        if ( v < -180) {
+            return v;
+        } 
         var symbol;
         var dir;
                 

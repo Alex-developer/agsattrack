@@ -343,6 +343,8 @@ var AGUI = function() {
             }  
         }
     });
+    
+    ctrl.remove();
         
 	return {
 		updateSatelliteInfo : function(noradId) {

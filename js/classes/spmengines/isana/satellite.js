@@ -27,26 +27,6 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     sgp4 = new SGP4(tle.getElements());
     orbitSgp4 = new SGP4(tle.getElements());
     
-	var ORBITTYPES = {
-			'unknown' : 0,
-			'geostationary' : 1
-		};
-	
-	tle.getElements().orbit_type = ORBITTYPES.unknown;
-    if (isGeoStationary()) {
-    	tle.getElements().orbit_type = ORBITTYPES.geostationary;    	
-    } else {
-    	
-    }
-    
-    function isGeoStationary() {
-    	if ( (tle.getElements().orbit_type.mean_motion - 1.0027) < 0.0002) {
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
-    
     function calculateOrbit(observer) {
 		var date = new Date();
     	var numberOfPoints = 200;
@@ -101,11 +81,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 		getNoradId : function() {
 			return tle.getNoradId();
 		},
-	/*
-    	getData: function() {
-			return sgp4;
-		},
-     */   
+  
         /**
         * Get a value from the SPM
         * 
@@ -122,19 +98,19 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 			sgp4.calc(date);
 			sgp4.latlng();
 			sgp4.look(observer.getLat(), observer.getLon(), observer.getAlt());
+            
+            _orbitCalcCounter++;
+            if (_orbitCalcCounter >= _calcOrbitEvery || orbit.length === 0) {
+                calculateOrbit(observer);
+                _orbitCalcCounter = 0;
+            }
+                        
 		},
 		getOrbitData : function() {
 			return orbit;
 		},
 		calculateOrbit: function(observer) {
 			calculateOrbit(observer);
-		},
-		calculateOrbitDelayed : function(observer) {
-		    _orbitCalcCounter++;
-		    if (_orbitCalcCounter >= _calcOrbitEvery || orbit.length === 0) {
-		    	calculateOrbit(observer);
-		    	_orbitCalcCounter = 0;
-		    }
 		}
 	
 	}

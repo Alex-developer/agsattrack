@@ -19,7 +19,8 @@ var AGSETTINGS = (function(element) {
 	var _haveCanvas = true;
     var _switchViewOnTabClick = true;
     var _haveWebGl = false;
-    var _spm = 'isana';
+//    var _spm = 'isana';
+    var _spm = 'jspredict';
     
 	return {
 		init: function() {

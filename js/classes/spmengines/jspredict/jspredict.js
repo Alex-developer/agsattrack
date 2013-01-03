@@ -146,6 +146,8 @@ function tle (name, line1, line2) {
     } else {
         this.deep = 0;
     }
+    // TODO: Fix this
+    this.deep = 0;
 }
 
 // Satellite position class used by jsPredict
@@ -2315,7 +2317,7 @@ jsPredict.prototype.SDP4 = function (tsince, tle, pos, vel) {
     this.deep_arg_xll = xmdf;
     this.SDP4_deep_arg_t = tsince;
 
-    this.Deep (2, $tle, this.SDP4_deep_arg_eosq, this.SDP4_deep_arg_sinio, this.SDP4_deep_arg_cosio, this.SDP4_deep_arg_betao, this.SDP4_deep_arg_aodp, this.SDP4_deep_arg_theta2, this.SDP4_deep_arg_sing, this.SDP4_deep_arg_cosg, this.SDP4_deep_arg_betao2, this.SDP4_deep_arg_xmdot, this.SDP4_deep_arg_omgdot, this.SDP4_deep_arg_xnodot, this.SDP4_deep_arg_xnodp, this.SDP4_deep_arg_t, this.SDP4_deep_arg_ds50);
+    this.Deep (2, tle, this.SDP4_deep_arg_eosq, this.SDP4_deep_arg_sinio, this.SDP4_deep_arg_cosio, this.SDP4_deep_arg_betao, this.SDP4_deep_arg_aodp, this.SDP4_deep_arg_theta2, this.SDP4_deep_arg_sing, this.SDP4_deep_arg_cosg, this.SDP4_deep_arg_betao2, this.SDP4_deep_arg_xmdot, this.SDP4_deep_arg_omgdot, this.SDP4_deep_arg_xnodot, this.SDP4_deep_arg_xnodp, this.SDP4_deep_arg_t, this.SDP4_deep_arg_ds50);
 
     xmdf = this.deep_arg_xll;
     a = Math.pow (Globals.xke / this.deep_arg_xn, Globals.tothrd) * tempa * tempa;
@@ -2325,7 +2327,7 @@ jsPredict.prototype.SDP4 = function (tsince, tle, pos, vel) {
     // Update for deep-space periodic effects
     this.deep_arg_xll = xmam;
 
-    this.Deep (3, $tle, this.SDP4_deep_arg_eosq, this.SDP4_deep_arg_sinio, this.SDP4_deep_arg_cosio, this.SDP4_deep_arg_betao, this.SDP4_deep_arg_aodp, this.SDP4_deep_arg_theta2, this.SDP4_deep_arg_sing, this.SDP4_deep_arg_cosg, this.SDP4_deep_arg_betao2, this.SDP4_deep_arg_xmdot, this.SDP4_deep_arg_omgdot, this.SDP4_deep_arg_xnodot, this.SDP4_deep_arg_xnodp, this.SDP4_deep_arg_t, this.SDP4_deep_arg_ds50);
+    this.Deep (3, tle, this.SDP4_deep_arg_eosq, this.SDP4_deep_arg_sinio, this.SDP4_deep_arg_cosio, this.SDP4_deep_arg_betao, this.SDP4_deep_arg_aodp, this.SDP4_deep_arg_theta2, this.SDP4_deep_arg_sing, this.SDP4_deep_arg_cosg, this.SDP4_deep_arg_betao2, this.SDP4_deep_arg_xmdot, this.SDP4_deep_arg_omgdot, this.SDP4_deep_arg_xnodot, this.SDP4_deep_arg_xnodp, this.SDP4_deep_arg_t, this.SDP4_deep_arg_ds50);
 
     xmam = this.deep_arg_xll;
     xl = xmam + this.deep_arg_omgadf + this.deep_arg_xnode;
@@ -2489,11 +2491,16 @@ jsPredict.prototype.calc = function (tle, obs_geodetic, sat_data, daynum) {
         sat_data.lat *= -1;
     }
 
+    if (tle.catnum === 20439) {
+        debugger;
+    }
+    
     if (this.io_lon == 'W') {
         sat_data.lon = 360.0 - (sat_geodetic.lon / Globals.deg2rad);
     } else {
         sat_data.lon = (sat_geodetic.lon / Globals.deg2rad);
     }
+        sat_data.lon = (sat_geodetic.lon / Globals.deg2rad);
 
     sat_data.alt = sat_geodetic.alt;
 

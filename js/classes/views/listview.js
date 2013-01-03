@@ -71,8 +71,6 @@ var AGLISTVIEW = function() {
 		jQuery.each(satellites, function(index, satellite) {
 			var rowCSSArray = ['listviewsat'];
 			if (_calcAoS) {
-				var observer = AGSatTrack.getObservers()[0];
-				satellite.calculateOrbitDelayed(observer);
 				var rowCSS = '';
 				if (satellite.get('elevation').toFixed(0) > AGSETTINGS.getAosEl()) {
 					rowCSSArray.push('green');
@@ -93,7 +91,7 @@ var AGLISTVIEW = function() {
 			html += '<td>' + AGUTIL.convertDecDegLon(satellite.get('longitude')) + '</td>';	
 			html += '<td>' + satellite.get('altitude').toFixed(0) + '</td>';
 			html += '<td>' + satellite.get('velocity').toFixed(0) + '</td>';
-			if (_calcAoS) {
+			if (_calcAoS && satellite.get('next_aos')) {
 				html += '<td>' + AGUTIL.shortdate(satellite.get('next_aos')) + '</td>';
 			} else {
 				html += '<td></td>';

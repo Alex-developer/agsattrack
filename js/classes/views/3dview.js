@@ -345,21 +345,15 @@ var AG3DVIEW = function() {
 
                             
             if (_followFromObserver) {
-                target = ellipsoid
-                .cartographicToCartesian(Cesium.Cartographic
-                        .fromDegrees(observer.getLon(), observer
-                                .getLat(), 100));
+                target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
                 up = new Cesium.Cartesian3(0, 0, 1);                                     
             } else {
-                target = ellipsoid
-                .cartographicToCartesian(Cesium.Cartographic
-                        .fromDegrees(observer.getLon(), observer
-                                .getLat()));
+                target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat()));
                 up = new Cesium.Cartesian3(0, 0, 1);                                     
-            }                                                      
+            } 
+                                                  
 			var eye = ellipsoid
-					.cartographicToCartesian(Cesium.Cartographic
-							.fromDegrees(following.get('longitude'),following.get('latitude'), (following.get('altitude') + 10) *1000));
+					.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'),following.get('latitude'), (following.get('altitude') + 10) *1000));
 			
             if (_followFromObserver) {
                 scene.getCamera().controller.lookAt(target, eye, up);                
@@ -388,7 +382,7 @@ var AG3DVIEW = function() {
                     bb.setImageIndex(0);    
                 }   
             }
-			newpos = new Cesium.Cartesian3(pos.x, pos.y, pos.z);
+			newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
             newpos = newpos.multiplyByScalar(1000);
 			bb.setPosition(newpos);
 		}
@@ -403,7 +397,6 @@ var AG3DVIEW = function() {
         var selected = AGSatTrack.getTles().getSelected();
         for (var i=0; i< selected.length; i++) {
             footPrint = footprintCircle.add();
-            var satInfo = selected[i].getData();
             var now = new Cesium.JulianDate();
             footPrint.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                     Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
@@ -411,8 +404,8 @@ var AG3DVIEW = function() {
 
             footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
                     .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
-                            satInfo.longitude, satInfo.latitude)),
-                    satInfo.footprint * 500));  
+                            selected[i].get('longitude'), selected[i].get('latitude'))),
+                    selected[i].get('footprint') * 500));  
    /*                 
  var ellipse = new Cesium.Polygon();
          ellipse.setPositions(Cesium.Shapes.computeEllipseBoundary(
