@@ -397,10 +397,9 @@ var AGPOLARVIEW = function() {
 		var satellites = AGSatTrack.getSatellites();
 		jQuery.each(satellites, function(index, satellite) {
 			if (satellite.isDisplaying()) {
-				var data = satellite.getData();
 
-				var az = data.azimuth;
-				var el = data.elevation;
+				var az = satellite.get('azimuth');
+				var el = satellite.get('elevation');
 
 				if (el > AGSETTINGS.getAosEl()) {
 
@@ -428,8 +427,8 @@ var AGPOLARVIEW = function() {
 					}
 
 					var satLabel = satellite.getName() + ' (az: '
-							+ data.azimuth.toFixed(0) + ' , el: '
-							+ data.elevation.toFixed(0) + ')';
+							+ az.toFixed(0) + ' , el: '
+							+ el.toFixed(0) + ')';
 
 					if (typeof _sats[index] !== 'undefined') {
 						_satLabels[index].setPosition(parseInt(pos.x - 8),

@@ -286,15 +286,14 @@ var AGUI = function() {
     }
     
     function updateSatelliteInfo(satellite) {
-        var data = satellite.getData();
-        jQuery('#latitude').html(AGUTIL.convertDecDegLat(data.latitude));
-        jQuery('#longitude').html(AGUTIL.convertDecDegLon(data.longitude));
-        jQuery('#altitude').html(data.altitude.toFixed(3));
-        jQuery('#velocity').html(data.velocity.toFixed(3));
-        jQuery('#range').html(data.range.toFixed(3));
-        jQuery('#footprint').html(data.footprint.toFixed(3));
-        jQuery('#elevation').html(data.elevation.toFixed(3));
-        jQuery('#azimuth').html(data.azimuth.toFixed(3));      
+        jQuery('#latitude').html(AGUTIL.convertDecDegLat(satellite.get('latitude')));
+        jQuery('#longitude').html(AGUTIL.convertDecDegLon(satellite.get('longitude')));
+        jQuery('#altitude').html(satellite.get('altitude').toFixed(3));
+        jQuery('#velocity').html(satellite.get('velocity').toFixed(3));
+        jQuery('#range').html(satellite.get('range').toFixed(3));
+        jQuery('#footprint').html(satellite.get('footprint').toFixed(3));
+        jQuery('#elevation').html(satellite.get('elevation').toFixed(3));
+        jQuery('#azimuth').html(satellite.get('azimuth').toFixed(3));      
     }
     
     function updateNextpass(satellite) {

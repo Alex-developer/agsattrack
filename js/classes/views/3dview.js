@@ -308,8 +308,7 @@ var AG3DVIEW = function() {
                 Cesium.Cartesian3.ZERO);        
 		for ( var i = 0; i < satellites.length; i++) {
 			if (satellites[i].isDisplaying()) {
-                pos = satellites[i].getData();
-                cpos = new Cesium.Cartesian3(pos.x, pos.y, pos.z);
+                cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
                 cpos = cpos.multiplyByScalar(1000);               
 				billboard = satBillboards.add({
 					imageIndex : (satellites[i].getNoradId() === '25544'?2:0),
@@ -342,7 +341,6 @@ var AG3DVIEW = function() {
         var up;
         
 		if (following !== null && (_follow || _followFromObserver)) {
-			var satInfo = following.getData();
 			var observer = AGSatTrack.getObservers()[0];
 
                             
@@ -361,7 +359,7 @@ var AG3DVIEW = function() {
             }                                                      
 			var eye = ellipsoid
 					.cartographicToCartesian(Cesium.Cartographic
-							.fromDegrees(satInfo.longitude,satInfo.latitude, (satInfo.altitude + 10) *1000));
+							.fromDegrees(following.get('longitude'),following.get('latitude'), (following.get('altitude') + 10) *1000));
 			
             if (_followFromObserver) {
                 scene.getCamera().controller.lookAt(target, eye, up);                
@@ -376,7 +374,6 @@ var AG3DVIEW = function() {
 
 		for ( var i = 0; i < satBillboards.getLength(); i++) {
 			bb = satBillboards.get(i);
-			pos = satellites[bb.satelliteindex].getData();
             
             if (satellites[bb.satelliteindex].getSelected()) {
                 if (satellites[i].getNoradId() === '25544') {

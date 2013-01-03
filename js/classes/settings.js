@@ -19,11 +19,19 @@ var AGSETTINGS = (function(element) {
 	var _haveCanvas = true;
     var _switchViewOnTabClick = true;
     var _haveWebGl = false;
+    var _spm = 'isana';
     
 	return {
 		init: function() {
 		},
 
+        getSPM : function() {
+            return _spm;    
+        },
+        setSPM : function(value) {
+            _spm = value;
+        },
+                
         getSwitchViewOnTabClick : function() {
             return _switchViewOnTabClick;
         },

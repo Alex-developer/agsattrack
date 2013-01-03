@@ -69,18 +69,14 @@ var AGLISTVIEW = function() {
 		
 		var html = '';
 		jQuery.each(satellites, function(index, satellite) {
-				
 			var rowCSSArray = ['listviewsat'];
 			if (_calcAoS) {
 				var observer = AGSatTrack.getObservers()[0];
 				satellite.calculateOrbitDelayed(observer);
-				var data = satellite.getData();
 				var rowCSS = '';
-				if (data.elevation.toFixed(0) > AGSETTINGS.getAosEl()) {
+				if (satellite.get('elevation').toFixed(0) > AGSETTINGS.getAosEl()) {
 					rowCSSArray.push('green');
-				}
-			} else {
-				var data = satellite.getData();					
+				}				
 			}
 			if (satellite.getSelected()) {
 				rowCSSArray.push('bold');
@@ -91,14 +87,14 @@ var AGLISTVIEW = function() {
 			html += '<tr ' + rowCSS + ' ' + 'id="satlist' + index + '">';
 			html += '<td>' + satellite.getName() + '</td>';
 			html += '<td>' + satellite.getNoradId() + '</td>';
-			html += '<td>' + data.azimuth.toFixed(2) + '&deg;</td>';
-			html += '<td>' + data.elevation.toFixed(2) + '&deg;</td>';
-			html += '<td>' + AGUTIL.convertDecDegLat(data.latitude) + '&deg;</td>';				
-			html += '<td>' + AGUTIL.convertDecDegLon(data.longitude) + '</td>';	
-			html += '<td>' + data.altitude.toFixed(0) + '</td>';
-			html += '<td>' + data.velocity.toFixed(0) + '</td>';
+			html += '<td>' + satellite.get('azimuth').toFixed(2) + '&deg;</td>';
+			html += '<td>' + satellite.get('elevation').toFixed(2) + '&deg;</td>';
+			html += '<td>' + AGUTIL.convertDecDegLat(satellite.get('latitude')) + '&deg;</td>';				
+			html += '<td>' + AGUTIL.convertDecDegLon(satellite.get('longitude')) + '</td>';	
+			html += '<td>' + satellite.get('altitude').toFixed(0) + '</td>';
+			html += '<td>' + satellite.get('velocity').toFixed(0) + '</td>';
 			if (_calcAoS) {
-				html += '<td>' + AGUTIL.shortdate(data.next_aos) + '</td>';
+				html += '<td>' + AGUTIL.shortdate(satellite.get('next_aos')) + '</td>';
 			} else {
 				html += '<td></td>';
 			}
