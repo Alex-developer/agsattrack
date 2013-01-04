@@ -25,8 +25,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     var _isDisplaying = false;
     
     var _satmap = {
-        'elevation' : 'iel',
-        'azimuth' : 'iaz',
+        'elevation' : 'sat_ele',
+        'azimuth' : 'sat_azi',
         'latitude' : 'latitude',
         'longitude' : 'longitude',
         'altitude' : 'sat_alt',
@@ -87,12 +87,31 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 				var date = new Date();				
 			}
             _sat.configureGroundStation(observer.getLat(), observer.getLon());
-            
+
             _sat.doCalc(); 
-            
-            _sat.FindAOS();     
-            
+            _sat.FindAOS();              
+            _sat.FindLOS();              
+            _sat.doCalc(); 
 		},
+        
+        getNextEvent : function() {
+            var event;
+            
+            if (_sat.AosHappens()) {
+                if (_sat.sat_ele >= AGSETTINGS.getAosEl()) {
+                    event = 'LOS: ' + AGUTIL.shortdate(_sat.next_los);    
+                } else {
+                    if (_sat.next_aos) {
+                        event = 'AOS: ' + AGUTIL.shortdate(_sat.next_aos);    
+                    } else {
+                        event = 'N/A';
+                    }
+                }
+            } else {
+                event = 'Never';
+            }
+            return event;  
+        },
         
         aosHappens : function() {
             return _sat.AosHappens();    

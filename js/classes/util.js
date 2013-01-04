@@ -98,9 +98,9 @@ var AGUTIL = (function() {
 			}
 			var shortDate = '';
 			
-			shortDate += date.getFullYear() + '/';
-			shortDate += pad(date.getMonth(),2) + '/';
-			shortDate += pad(date.getDate(),2) + ' ';
+            shortDate += pad(date.getDate(),2) + '/';
+            shortDate += pad(date.getMonth()+1,2) + '/';
+			shortDate += date.getFullYear() + ' ';
 			shortDate += pad(date.getHours(),2) + ':';
 			shortDate += pad(date.getMinutes(),2) + ':';
 			shortDate += pad(date.getSeconds(),2);

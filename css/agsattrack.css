@@ -222,3 +222,13 @@ p.description {
     font-size: 12px;
     font-style: italic;
 }
+
+#listviewtable tr, #listviewtable th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;    
+}
+
+#listviewtable th.right {
+    text-align: right;
+}

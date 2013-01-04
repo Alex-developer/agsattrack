@@ -219,131 +219,192 @@ var AGPOLARVIEW = function() {
 
 		setDimensions();
 		layer.removeChildren();
-		layer.clear();
-		layer.draw();
+
+        layer.add(new Kinetic.Rect({
+            x: 0,
+            y: 0,
+            width: _width,
+            height: _height,
+            fill: '#001224'
+        }));
+      
+
+        layer.add(new Kinetic.Circle({
+            x : _cx,
+            y : _cy,
+            radius : _radius + _halfMargin,
+            stroke : '#38554d',
+            strokeWidth : 10,
+            fill: '#001224' 
+        })); 
+        
 		_circle = new Kinetic.Circle({
 			x : _cx,
 			y : _cy,
 			radius : _radius,
-			stroke : 'black',
-			strokeWidth : 1
+            fill: {
+                start: {
+                    x: -10,
+                    y: -10
+                },
+                end: {
+                  x: 100,
+                  y: 100
+                },
+                colorStops: [0, '#374553', 1, '#001224']
+            }            
 		});
-
+                    
 		_circle.on('mouseout', function() {
 			_mousePos.show = false;
 		});
 		layer.add(_circle);
 
-		_circle = new Kinetic.Circle({
-			x : _cx,
-			y : _cy,
-			radius : _sixtySize,
-			stroke : 'black',
-			strokeWidth : 1
-		});
-		layer.add(_circle);
-
-		_circle = new Kinetic.Circle({
-			x : _cx,
-			y : _cy,
-			radius : _thirtySize,
-			stroke : 'black',
-			strokeWidth : 1
-		});
-		layer.add(_circle);
-
-		_circle = new Kinetic.Circle({
-			x : _cx,
-			y : _cy,
-			radius : 1,
-			stroke : 'black',
-			strokeWidth : 1
-		});
-		layer.add(_circle);
+        for (var i=0; i<90; i+=15) {
+            var radius = (0.5 + (_radius * (i/90))) | 0;
+            layer.add(new Kinetic.Circle({
+                x : _cx,
+                y : _cy,
+                radius : radius,
+                stroke : '#ccc',
+                strokeWidth : 1
+            }));    
+        }
+        
+        for (var i=15; i<90; i+=15) {
+            var radius = (0.5 + (_radius * (i/90))) | 0;
+            layer.add(new Kinetic.Text({
+                x : _cx - radius - 7,
+                y : _cy + 5,
+                text : (90-i) + 'º',
+                fontSize : 10,
+                fontFamily : 'Verdana',
+                textFill : '#999'
+            }));
+            layer.add(new Kinetic.Text({
+                x : _cx + radius - 7,
+                y : _cy + 5,
+                text : (90-i) + 'º',
+                fontSize : 10,
+                fontFamily : 'Verdana',
+                textFill : '#999'
+            }));                 
+        }
+        
+        var long=0;
+        for (var i=0; i< 360; i+= 5) {
+            
+            var rad = i * (Math.PI/180);
+            
+            if (long) {
+                var len = 15;    
+            } else {
+                var len = 10;
+            }
+            long = !long;
+            
+            var startX = (_cx + (_radius + 15 - len) * Math.cos( rad )) | 0;
+            var startY =  (_cy + (_radius + 15 - len)  * Math.sin( rad )) | 0;
+            
+            var endX =  (_cx + (_radius + 15) * Math.cos( rad )) | 0;  
+            var endY =  (_cy + (_radius + 15) * Math.sin( rad )) | 0;
+            
+            layer.add(new Kinetic.Line({
+                points : [ startX, startY, endX, endY ],
+                stroke : '#ccc',
+                strokeWidth : 1
+            }));
+            /*
+            layer.add(new Kinetic.Text({
+                x : startX,
+                y :startY,
+                text : i + 'º',
+                fontSize : 10,
+                fontFamily : 'Verdana',
+                textFill : '#999'
+            }));
+            */            
+        }      
+            
 
 		_line = new Kinetic.Line({
-			points : [ _cx - _radius - _halfMargin, _cy,
-					_cx + _radius + _halfMargin, _cy ],
-			stroke : 'black',
+			points : [ _cx - _radius - _halfMargin + 5, _cy,
+					_cx + _radius + _halfMargin - 5, _cy ],
+			stroke : '#ccc',
 			strokeWidth : 1
 		});
 		layer.add(_line);
 
 		_line = new Kinetic.Line({
-			points : [ _cx, _cy - _radius - _halfMargin, _cx,
-					_cy + _radius + _halfMargin ],
-			stroke : 'black',
+			points : [ _cx, _cy - _radius - _halfMargin + 5, _cx,
+					_cy + _radius + _halfMargin - 5 ],
+			stroke : '#ccc',
 			strokeWidth : 1
 		});
 		layer.add(_line);
 
-		_text = new Kinetic.Text({
-			x : _cx - 9,
-			y : 2,
-			text : 'N',
-			fontSize : 15,
-			fontFamily : 'Verdana',
-			textFill : 'green'
-		});
-		layer.add(_text);
+		layer.add(new Kinetic.Text({
+            x : _cx + 5,
+            y : 30,
+            text : 'N',
+            fontSize : 15,
+            fontFamily : 'Verdana',
+            textFill : 'white'
+        }));
 
-		_text = new Kinetic.Text({
-			x : _cx + _radius + _halfMargin,
-			y : _radius + _halfMargin + 15,
-			text : 'E',
-			fontSize : 15,
-			fontFamily : 'Verdana',
-			textFill : 'green'
-		});
-		layer.add(_text);
+		layer.add(new Kinetic.Text({
+            x : _cx + _radius ,
+            y : _radius + _halfMargin,
+            text : 'E',
+            fontSize : 15,
+            fontFamily : 'Verdana',
+            textFill : 'white'
+        }));
 
-		_text = new Kinetic.Text({
-			x : _cx - _radius - _margin,
-			y : _radius + _halfMargin + 15,
-			text : 'W',
-			fontSize : 15,
-			fontFamily : 'Verdana',
-			textFill : 'green'
-		});
-		layer.add(_text);
+		layer.add(new Kinetic.Text({
+            x : _cx - _radius - 10,
+            y : _radius + _halfMargin,
+            text : 'W',
+            fontSize : 15,
+            fontFamily : 'Verdana',
+            textFill : 'white'
+        }));
 
-		_text = new Kinetic.Text({
-			x : _cx - 8,
-			y : _height - _halfMargin + 5,
-			text : 'S',
-			fontSize : 15,
-			fontFamily : 'Verdana',
-			textFill : 'green'
-		});
-		layer.add(_text);
+		layer.add(new Kinetic.Text({
+            x : _cx + 8,
+            y : _height - _halfMargin - 30,
+            text : 'S',
+            fontSize : 15,
+            fontFamily : 'Verdana',
+            textFill : 'white'
+        }));
 
-		_text = new Kinetic.Text({
-			x : 0,
-			y : 5,
-			text : 'Mouse Position',
-			fontSize : 15,
-			fontFamily : 'Verdana',
-			textFill : 'black'
-		});
-		layer.add(_text);
-		_text = new Kinetic.Text({
-			x : 0,
-			y : 30,
-			text : 'Azimuth:',
-			fontSize : 12,
-			fontFamily : 'Verdana',
-			textFill : 'black'
-		});
-		layer.add(_text);
-		_text = new Kinetic.Text({
-			x : 0,
-			y : 50,
-			text : 'Elevation:',
-			fontSize : 12,
-			fontFamily : 'Verdana',
-			textFill : 'black'
-		});
-		layer.add(_text);
+		layer.add(new Kinetic.Text({
+            x : 0,
+            y : 5,
+            text : 'Mouse Position',
+            fontSize : 15,
+            fontFamily : 'Verdana',
+            textFill : 'white'
+        }));
+        
+		layer.add(new Kinetic.Text({
+            x : 0,
+            y : 30,
+            text : 'Azimuth:',
+            fontSize : 12,
+            fontFamily : 'Verdana',
+            textFill : 'white'
+        }));
+        
+		layer.add(new Kinetic.Text({
+            x : 0,
+            y : 50,
+            text : 'Elevation:',
+            fontSize : 12,
+            fontFamily : 'Verdana',
+            textFill : 'white'
+        }));
 
 		layer.draw();
 
@@ -355,7 +416,7 @@ var AGPOLARVIEW = function() {
 		text : 'N/A',
 		fontSize : 12,
 		fontFamily : 'Verdana',
-		textFill : 'green'
+		textFill : '#ccc'
 	});
 	_objectLayer.add(_mousePosTextAz);
 
@@ -365,7 +426,7 @@ var AGPOLARVIEW = function() {
 		text : 'N/A',
 		fontSize : 12,
 		fontFamily : 'Verdana',
-		textFill : 'green'
+		textFill : '#ccc'
 	});
 	_objectLayer.add(_mousePosTextEl);
 
@@ -426,9 +487,7 @@ var AGPOLARVIEW = function() {
 						_style = 'bold';
 					}
 
-					var satLabel = satellite.getName() + ' (az: '
-							+ az.toFixed(0) + ' , el: '
-							+ el.toFixed(0) + ')';
+					var satLabel = satellite.getName();
 
 					if (typeof _sats[index] !== 'undefined') {
 						_satLabels[index].setPosition(parseInt(pos.x - 8),
@@ -442,7 +501,7 @@ var AGPOLARVIEW = function() {
 							fontSize : 10,
 							fontFamily : 'Verdana',
 							fontStyle : _style,
-							textFill : 'green'
+							textFill : 'white'
 						});
 						_satLayer.add(_satLabels[index]);
 					}
@@ -507,7 +566,7 @@ var AGPOLARVIEW = function() {
                         text : planet.name,
                         fontSize : 10,
                         fontFamily : 'Verdana',
-                        textFill : 'black'
+                        textFill : 'white'
                     }));                  
                 }
             });

@@ -1565,6 +1565,7 @@ var PLib =
         
             PLib.sat_azi = PLib.Degrees(obs_set.x);
             PLib.sat_ele = PLib.Degrees(obs_set.y);
+
             PLib.sat_range = obs_set.z;
             PLib.sat_range_rate = obs_set.w;
             PLib.sat_lat = PLib.Degrees(sat_geodetic.lat);
@@ -1695,7 +1696,7 @@ var PLib =
         
                 } while (PLib.lostime == 0.0);
             }
-        
+            PLib.next_los = PLib.Daynum2Date(PLib.lostime);
             return PLib.lostime;
         },
 
