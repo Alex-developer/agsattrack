@@ -50,7 +50,7 @@ var AGUTIL = (function() {
     		var M = parseInt(gpsmin);
     		var remainder2 = gpsmin - (parseInt(gpsmin)*1.0);
     		var S = parseInt(remainder2*60.0);
-    		return D+symbol+' '+M+"' "+S+"'' "+tipo;
+    		return pad(D,3)+symbol+' '+pad(M,2)+"' "+pad(S,2)+"'' "+tipo;
     	}
         
         

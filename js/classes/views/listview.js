@@ -84,13 +84,16 @@ var AGLISTVIEW = function() {
 			
 			html += '<tr ' + rowCSS + ' ' + 'id="satlist' + index + '">';
 			html += '<td>' + satellite.getName() + '</td>';
-			html += '<td>' + satellite.getNoradId() + '</td>';
+            html += '<td>' + satellite.getNoradId() + '</td>';
+            html += '<td>' + satellite.get('type') + '</td>';
+			html += '<td>' + satellite.get('visibility').substring(0,3) + '</td>';
 			html += '<td>' + satellite.get('azimuth').toFixed(2) + '&deg;</td>';
 			html += '<td>' + satellite.get('elevation').toFixed(2) + '&deg;</td>';
 			html += '<td>' + AGUTIL.convertDecDegLat(satellite.get('latitude')) + '&deg;</td>';				
 			html += '<td>' + AGUTIL.convertDecDegLon(satellite.get('longitude')) + '</td>';	
 			html += '<td>' + satellite.get('altitude').toFixed(0) + '</td>';
-			html += '<td>' + satellite.get('velocity').toFixed(0) + '</td>';
+            html += '<td>' + satellite.get('velocity').toFixed(0) + '</td>';
+			html += '<td>' + satellite.aosHappens() + '</td>';
 			if (_calcAoS && satellite.get('next_aos')) {
 				html += '<td>' + AGUTIL.shortdate(satellite.get('next_aos')) + '</td>';
 			} else {

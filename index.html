@@ -608,6 +608,11 @@
 						<td>Altitude</td>
 						<td id="altitude" class="sat-info"></td>
 					</tr>
+                    <tr>
+                        <td>Visible</td>
+                        <td id="visible" class="sat-info"></td>
+                    </tr>
+                    
 					<tr>
 						<td>Velocity</td>
 						<td id="velocity" class="sat-info"></td>
@@ -620,6 +625,10 @@
 						<td>Range</td>
 						<td id="range" class="sat-info"></td>
 					</tr>
+                    <tr>
+                        <td>Range rate</td>
+                        <td id="rangerate" class="sat-info"></td>
+                    </tr>
 					<tr>
 						<td>Elevation</td>
 						<td id="elevation" class="sat-info"></td>
@@ -628,7 +637,14 @@
 						<td>Azimuth</td>
 						<td id="azimuth" class="sat-info"></td>
 					</tr>
-
+                    <tr>
+                        <td>Orbital Phase</td>
+                        <td id="orbitalphase" class="sat-info"></td>
+                    </tr>
+                    <tr>
+                        <td>AOS Happens</td>
+                        <td id="aoshappens" class="sat-info"></td>
+                    </tr>
 					<tr>
 						<td>AOS</td>
 						<td id="aos" class="sat-info"></td>
@@ -652,13 +668,16 @@
 					<thead>
 						<tr>
 							<th width="15%">Name</th>
-							<th width="5%">Id</th>
+                            <th width="4%">Id</th>
+                            <th width="4%">Type</th>
+							<th width="4%">Viz</th>
 							<th width="5%">Azimuth</th>
 							<th width="5%">Elevation</th>
-							<th width="10%">Latitude</th>
-							<th width="10%">Longitude</th>
+							<th width="8%">Latitude</th>
+							<th width="8%">Longitude</th>
 							<th width="5%">Altitude</th>
 							<th width="5%">Velocity</th>
+                            <th width="2%">AOS H</th>
 							<th width="15%">AOS</th>
 						</tr>
 					</thead>

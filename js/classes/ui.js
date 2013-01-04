@@ -289,11 +289,15 @@ var AGUI = function() {
         jQuery('#latitude').html(AGUTIL.convertDecDegLat(satellite.get('latitude')));
         jQuery('#longitude').html(AGUTIL.convertDecDegLon(satellite.get('longitude')));
         jQuery('#altitude').html(satellite.get('altitude').toFixed(3));
+        jQuery('#visible').html(satellite.get('visibility'));
         jQuery('#velocity').html(satellite.get('velocity').toFixed(3));
         jQuery('#range').html(satellite.get('range').toFixed(3));
+        jQuery('#rangerate').html(satellite.get('rangerate').toFixed(3));
         jQuery('#footprint').html(satellite.get('footprint').toFixed(3));
         jQuery('#elevation').html(satellite.get('elevation').toFixed(3));
         jQuery('#azimuth').html(satellite.get('azimuth').toFixed(3));      
+        jQuery('#orbitalphase').html(satellite.get('orbitalphase').toFixed(3));      
+        jQuery('#aoshappens').html(satellite.aosHappens());      
     }
     
     function updateNextpass(satellite) {

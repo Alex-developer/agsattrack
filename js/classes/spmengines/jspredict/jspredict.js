@@ -2500,7 +2500,8 @@ jsPredict.prototype.calc = function (tle, obs_geodetic, sat_data, daynum) {
     } else {
         sat_data.lon = (sat_geodetic.lon / Globals.deg2rad);
     }
-        sat_data.lon = (sat_geodetic.lon / Globals.deg2rad);
+    
+    sat_data.lon = (sat_geodetic.lon / Globals.deg2rad);
 
     sat_data.alt = sat_geodetic.alt;
 

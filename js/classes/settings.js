@@ -20,7 +20,8 @@ var AGSETTINGS = (function(element) {
     var _switchViewOnTabClick = true;
     var _haveWebGl = false;
 //    var _spm = 'isana';
-    var _spm = 'jspredict';
+    //var _spm = 'jspredict';
+    var _spm = 'predictlib';
     
 	return {
 		init: function() {
