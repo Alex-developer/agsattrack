@@ -15,6 +15,7 @@ Copyright 2012 Alex Greenland
  */ 
 var AGPOLARVIEW = function() {
 	'use strict';
+    
 	var _render = false;
     var _stage;
 	var _sats = [];
@@ -35,8 +36,6 @@ var AGPOLARVIEW = function() {
 	var _cx;
 	var _cy;
 	var _radius;
-	var _sixtySize;
-	var _thirtySize;
 	var _twoPi = 2 * Math.PI;
 	var _halfMargin;
 	var _de2ra = 0.0174532925;
@@ -82,34 +81,6 @@ var AGPOLARVIEW = function() {
                     drawPlanets();
                 }
             });
-                
-	jQuery('#polarcanvas').mousemove(
-			function(e) {
-				return;
-				_mousePos = getMousePos(polarCanvas, e);
-
-				var rel = _radius
-						- Math.sqrt((_mousePos.x - _cx) * (_mousePos.x - _cx)
-								+ (_mousePos.y - _cy) * (_mousePos.y - _cy));
-				_mousePos.el = 90.0 * rel / _radius;
-				if (_mousePos.x >= _cx) {
-					/* 1. and 2. quadrant */
-					_mousePos.az = Math.atan2(_mousePos.x - _cx, _cy
-							- _mousePos.y)
-							/ _de2ra;
-				} else {
-					/* 3 and 4. quadrant */
-					_mousePos.az = 360
-							+ Math.atan2(_mousePos.x - _cx, _cy - _mousePos.y)
-							/ _de2ra;
-				}
-
-				if (_mousePos.az < 0 || _mousePos.el < 0) {
-					_mousePos.show = false;
-				} else {
-					_mousePos.show = true;
-				}
-			});
 
 	function getMousePos(canvas, evt) {
 		var rect = canvas.getBoundingClientRect();
@@ -167,8 +138,6 @@ var AGPOLARVIEW = function() {
 	}
 
 	function setDimensions() {
-		// _height = polarCanvas.height;
-		// _width = polarCanvas.width;
 
 		_height = _stage.getHeight();
 		_width = _stage.getWidth();
@@ -184,8 +153,6 @@ var AGPOLARVIEW = function() {
 		_cx = (0.5 + (_width / 2)) | 0;
 		_cy = (0.5 + (_height / 2)) | 0;
 		_radius = (0.5 + (size / 2)) | 0;
-		_sixtySize = (0.5 + (_radius * 0.6667)) | 0;
-		_thirtySize = (0.5 + (_radius * 0.3333)) | 0;
 		_halfMargin = (0.5 + (_margin / 2)) | 0;
 	}
 
@@ -244,11 +211,11 @@ var AGPOLARVIEW = function() {
 			radius : _radius,
             fill: {
                 start: {
-                    x: -10,
+                    x: 0,
                     y: -10
                 },
                 end: {
-                  x: 100,
+                  x: 0,
                   y: 100
                 },
                 colorStops: [0, '#374553', 1, '#001224']

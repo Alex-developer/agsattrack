@@ -101,15 +101,13 @@ var AGSKYVIEW = function() {
 		getDimensions();
 
 		_backgroundLayer.removeChildren();
-		_backgroundLayer.clear();
-		_backgroundLayer.draw();
-		_backgroundLayer.add(new Kinetic.Rect({
-			fill : 'black',
-			x : 0,
-			y : 0,
-			width : _width,
-			height : _height
-		}));
+        _backgroundLayer.add(new Kinetic.Rect({
+            x: 0,
+            y: 0,
+            width: _width,
+            height: _height,
+            fill: '#001224'
+        }));
 
 		_backgroundLayer.add(new Kinetic.Text({
 			x : 0,
@@ -151,7 +149,7 @@ var AGSKYVIEW = function() {
 			var xPos = (0.5 + (i * 10 * _xstep)) | 0;
 
 			if (i === 0 || i === 9 || i === 18 || i === 27) {
-				_stroke = '#777';
+				_stroke = '#ccc';
 				_start = 20;
 			} else {
 				_stroke = '#333';
@@ -167,16 +165,35 @@ var AGSKYVIEW = function() {
 
 		}
 
-		for ( var i = 0; i <= 9; i++) {
-			var yPos = (0.5 + (i * 10 * _ystep)) | 0;
+		for ( var i = 15; i <= 90; i+=15) {
+			var yPos = (0.5 + (i * _ystep)) | 0;
 			_backgroundLayer.add(new Kinetic.Line({
 				points : [ 0, yPos, _width, yPos ],
 				stroke : '#333',
 				strokeWidth : 1,
 				opacity: 0.5				
 			}));
+            
+            _backgroundLayer.add(new Kinetic.Text({
+                x : 5,
+                y : yPos,
+                text : (90-i) + 'º',
+                fontSize : 10,
+                fontFamily : 'Verdana',
+                textFill : '#999'
+            }));  
+                        
 		}
 
+        _backgroundLayer.add(new Kinetic.Image({
+          x: 0,
+          y: _height - 109,
+          image: AGIMAGES.getImage('city'),
+          width: _width,
+          height: 109
+        }));
+        
+        
 		_backgroundLayer.draw();
 	}
 
@@ -252,9 +269,7 @@ var AGSKYVIEW = function() {
 						_style = 'bold';
 					}
 
-					var satLabel = satellite.getName() + ' (az: '
-							+ az.toFixed(0) + ' , el: '
-							+ el.toFixed(0) + ')';
+					var satLabel = satellite.getName();
 
 					if (typeof _sats[index] !== 'undefined') {
 						_satLabels[index].setPosition(parseInt(pos.x - 8),
@@ -268,7 +283,7 @@ var AGSKYVIEW = function() {
 							fontSize : 10,
 							fontFamily : 'Verdana',
 							fontStyle : _style,
-							textFill : 'green'
+							textFill : 'white'
 						});
 						_satLayer.add(_satLabels[index]);
 					}
