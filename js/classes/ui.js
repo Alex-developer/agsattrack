@@ -190,9 +190,11 @@ var AGUI = function() {
     */
 	jQuery(document).bind('agsattrack.tlesloaded',
 		function(e, group) {
+            var tles = AGSatTrack.getTles();
+            jQuery('#statustotalloaded').html(tles.getCount() + ' Satellites Loaded');
             jQuery('#sat-info-selector').jqxDropDownList('clear');
             clearDataPane();
-            jQuery('#ag-satselector').agsatbox('setData', AGSatTrack.getTles());
+            jQuery('#ag-satselector').agsatbox('setData', tles);
 	});
 
 	/**
@@ -348,7 +350,16 @@ var AGUI = function() {
         }
     });
     
+    
+    jQuery(document).bind('agsattrack.updatestatus', function(e, params) {
+        jQuery('#status').html(params.text); 
+    });
+    jQuery(document).bind('agsattrack.updateinfo', function(e, params) {
+        jQuery('#info').html(params.text); 
+    });        
+
     ctrl.remove();
+    jQuery('#status').html('Idle');
         
 	return {
 		updateSatelliteInfo : function(noradId) {

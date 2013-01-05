@@ -101,6 +101,13 @@ var agsattrack = function() {
                 _tles.getSatellite(params.index).toggleSelected();
             }
             
+            var sat = _tles.getSatellite(params.index);
+            if (sat.getSelected()) {
+                sat.requestOrbit();
+                var name = _tles.getSatellite(params.index).getName();
+                jQuery(document).trigger('agsattrack.updateinfo', {text: 'Orbit Requested For ' + name});
+            }
+            
             var _selected = _tles.getSelected();
 			calculate(true);
 			jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
@@ -128,6 +135,8 @@ var agsattrack = function() {
 	function calculate(forceRefresh) {
 		var julianDate;
 
+        jQuery(document).trigger('agsattrack.updatestatus', {text: 'Calculating'});
+        
         if (AGSETTINGS.getHaveWebGL()) {
             var cDate = new Cesium.JulianDate();
             julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();            
@@ -149,7 +158,10 @@ var agsattrack = function() {
 		} else {
 			jQuery(document).trigger('agsattrack.updatesatdata', {});
 		}
-	}
+
+        jQuery(document).trigger('agsattrack.updatestatus', {text: 'Idle'});
+    
+    }
 	
 	
     function setSelected(index) {

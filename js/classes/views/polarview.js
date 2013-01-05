@@ -52,6 +52,7 @@ var AGPOLARVIEW = function() {
         if (width !== 0 && height !== 0) {
             _stage.setSize(width, height);
             drawBackground();
+            drawPolarView();
         }          
     }
 	
@@ -171,8 +172,11 @@ var AGPOLARVIEW = function() {
 	var _satLayer = new Kinetic.Layer();
 	_stage.add(_satLayer);
 
-	var _planetLayer = new Kinetic.Layer();
-	_stage.add(_planetLayer);
+    var _planetLayer = new Kinetic.Layer();
+    _stage.add(_planetLayer);
+    
+    var _orbitLayer = new Kinetic.Layer();
+	_stage.add(_orbitLayer);
 	
 	_stage.on('mousemove', function() {
 		_mousePos = _stage.getMousePosition();
@@ -264,9 +268,9 @@ var AGPOLARVIEW = function() {
             var rad = i * (Math.PI/180);
             
             if (long) {
-                var len = 15;    
+                var len = 10;    
             } else {
-                var len = 10;
+                var len = 15;
             }
             long = !long;
             
@@ -280,17 +284,7 @@ var AGPOLARVIEW = function() {
                 points : [ startX, startY, endX, endY ],
                 stroke : '#ccc',
                 strokeWidth : 1
-            }));
-            /*
-            layer.add(new Kinetic.Text({
-                x : startX,
-                y :startY,
-                text : i + 'º',
-                fontSize : 10,
-                fontFamily : 'Verdana',
-                textFill : '#999'
-            }));
-            */            
+            }));           
         }      
             
 
@@ -422,6 +416,7 @@ var AGPOLARVIEW = function() {
         
         drawPlanets();
         
+        _orbitLayer.removeChildren();
 		var satellites = AGSatTrack.getSatellites();
 		jQuery.each(satellites, function(index, satellite) {
 			if (satellite.isDisplaying()) {
@@ -429,24 +424,75 @@ var AGPOLARVIEW = function() {
 				var az = satellite.get('azimuth');
 				var el = satellite.get('elevation');
 
-				if (el > AGSETTINGS.getAosEl()) {
 
-					/*
-					 * if (selected !== null && index == selected.index) {
-					 * polarContext.beginPath(); polarContext.strokeStyle =
-					 * '#00FF00'; var move = false; var orbit =
-					 * satellite.getOrbitData(); var lastX; var lastY; for ( var
-					 * i = 0; i < orbit.length; i++) {
-					 * 
-					 * if (orbit[i].el > AGSETTINGS.getAosEl()) var pos =
-					 * convertAzEltoXY(orbit[i].az, orbit[i].el);
-					 * 
-					 * if (i == 0) { polarContext.moveTo(pos.x, pos.y); } else {
-					 * polarContext.lineTo(pos.x, pos.y); }
-					 * 
-					 *  } } polarContext.stroke();
-					 */
+                /**
+                * If satellite is selected draw its orbit
+                */
+                if (satellite.getSelected()) {
+                    var move = false;
+                    var points = [];                        
+                    var orbit = satellite.getOrbitData();
+                    var started = false;
+                    var max = {az:0, el:0};
+                    var aostime = null;
+                    for ( var i = 0; i < orbit.length; i++) {
+                        if (orbit[i].el >= AGSETTINGS.getAosEl()) {
+                            var pos = convertAzEltoXY(orbit[i].az, orbit[i].el);
+                            points.push(pos.x | 0);
+                            points.push(pos.y | 0);
+                            started = true;
+                            if (aostime === null) {
+                                aostime = orbit[i].date;
+                            }
+                        }
+                        if (orbit[i].el > max.el) {
+                            max = orbit[i];
+                        }
+                        if (started && orbit[i].el < AGSETTINGS.getAosEl()) {
+                            break;
+                        }
+                    }
+                    
+                    if (points.length > 0) {
+                        _orbitLayer.add(new Kinetic.Line({
+                                points: points,
+                                stroke: 'green',
+                                strokeWidth: 1,
+                                lineCap: 'round',
+                                lineJoin: 'round'
+                            })
+                        );
+                    }
+                    
+                    /**
+                    * If satellite is selected but NOT visible then add a text label
+                    * at the max elevation.
+                    */
+                    if (el < AGSETTINGS.getAosEl()) {
+                        var pos = convertAzEltoXY(max.az, max.el);
+                        var label = '(AOS: '+AGUTIL.shortdatetime(aostime, true)+')';
+                        _orbitLayer.add(new Kinetic.Text({
+                            x : pos.x,
+                            y : pos.y,
+                            text : satellite.getName(),
+                            fontSize : 6,
+                            fontFamily : 'Verdana',
+                            textFill : '#eee'
+                        }));
+                        _orbitLayer.add(new Kinetic.Text({
+                            x : pos.x,
+                            y : pos.y + 10,
+                            text : label,
+                            fontSize : 6,
+                            fontFamily : 'Verdana',
+                            textFill : '#eee'
+                        }));                        
+                    }
+                                           
+                }
 
+                if (el > AGSETTINGS.getAosEl()) {
+                                    
 					var pos = convertAzEltoXY(az, el);
 					var _style = 'normal';
 
@@ -499,6 +545,7 @@ var AGPOLARVIEW = function() {
 			}
 
 		});
+        _orbitLayer.draw();
 		_satLayer.draw();
 	}
 

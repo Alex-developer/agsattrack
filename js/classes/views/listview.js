@@ -18,7 +18,8 @@ var AGLISTVIEW = function() {
 	
 	var _render = false;
 	var _calcAoS = true;
-	
+	var _contextMenu = null;
+    
 	/**
 	 * Listen for an event telling us a new set of elements were loaded
 	 */
@@ -117,8 +118,30 @@ var AGLISTVIEW = function() {
 		});		
 	}
 	
-	
-	
+	/*
+    _contextMenu = $("#jqxListViewMenu").jqxMenu({ width: '120px', height: '140px', autoOpenPopup: false, mode: 'popup' });
+    jQuery(document).bind('contextmenu', function (e) {
+        return false;
+    });
+    jQuery('#list').on('mousedown', function (event) {
+        var rightClick = isRightClick(event);
+        if (rightClick) {
+            var scrollTop = jQuery(window).scrollTop();
+            var scrollLeft = jQuery(window).scrollLeft();
+            _contextMenu.jqxMenu('open', parseInt(event.clientX) + 5 + scrollLeft, parseInt(event.clientY) + 5 + scrollTop);
+            return false;
+        }
+     });
+              
+    function isRightClick(event) {
+        var rightclick;
+        if (!event) var event = window.event;
+        if (event.which) rightclick = (event.which == 3);
+        else if (event.button) rightclick = (event.button == 2);
+        return rightclick;
+    }
+    */
+                                
 	return {
 		startRender : function() {
 			_render = true;

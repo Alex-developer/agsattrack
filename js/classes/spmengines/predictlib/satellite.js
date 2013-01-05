@@ -17,13 +17,14 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     'use strict';
     
     var _sat = new AGPREDICTLIB(tle0, tle1, tle2);
+    var _satOrbit = new AGPREDICTLIB(tle0, tle1, tle2);
      
     var orbit = [];
     var _calcOrbitEvery = 50;
-    var _orbitCalcCounter = 0;
+    var _orbitCalcCounter = _calcOrbitEvery;
     var _selected = false;
     var _isDisplaying = false;
-    
+    var _orbitrequested = false;
     var _satmap = {
         'elevation' : 'sat_ele',
         'azimuth' : 'sat_azi',
@@ -37,11 +38,41 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'visibility' : 'visibility',
         'rangerate' : 'sat_range_rate',
         'orbitalphase' : 'ma256',
-        'next_aos' : 'next_aos'     
+        'next_aos' : 'next_aos',
+        'x' : 'sat_x',     
+        'y' : 'sat_y',     
+        'z' : 'sat_z'     
     };
         
     function calculateOrbit(observer) {
-  	
+        _orbitrequested = false;
+            _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
+        
+        if (_sat.next_aos && _sat.next_los) {
+            var date = new Date(); 
+                       
+            var period = ((1440 / _sat.sat[0].meanmo) + 0.5) * 60;
+            var step = period / 200;
+            
+            orbit = [];
+            date = new Date();
+            for (var i=0; i <= 200; i++) {
+                var time = (date.getTime() - 315446400000) / 86400000;
+                _satOrbit.doCalc(time);
+                var orbitdata = {
+                    x: _satOrbit.sat_x,
+                    y: _satOrbit.sat_y,
+                    z: _satOrbit.sat_z,
+                    el: _satOrbit.elevation,
+                    az: _satOrbit.azimuth,
+                    date: date
+                };
+                orbit.push(orbitdata);
+                date = Date.DateAdd('s', step, date);         
+            }        
+        }
+        jQuery(document).trigger('agsattrack.updateinfo', {text: 'Calculating Orbit Complete For ' + _sat.sat[0].name});
+
     }
     
 	return {
@@ -61,6 +92,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         toggleSelected : function() {
             _selected = !_selected;
             return _selected;    
+        },
+        
+        requestOrbit : function() {
+            _orbitrequested = true;    
         },
         
         /**
@@ -88,10 +123,20 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 			}
             _sat.configureGroundStation(observer.getLat(), observer.getLon());
 
-            _sat.doCalc(); 
-            _sat.FindAOS();              
-            _sat.FindLOS();              
-            _sat.doCalc(); 
+            _sat.doCalc();
+            
+            if (_orbitrequested) {
+                calculateOrbit(observer);    
+            }
+            _orbitCalcCounter++;
+            if (_orbitCalcCounter >= _calcOrbitEvery) {
+                _sat.FindAOS();              
+                _sat.FindLOS();              
+                _orbitCalcCounter = 0;
+                _sat.doCalc(); // TODO: Fix this. Its here to reset the values after the AOS calcs
+            }
+
+
 		},
         
         getNextEvent : function() {
@@ -122,7 +167,11 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 		},
 		calculateOrbit: function(observer) {
 			calculateOrbit(observer);
-		}
+		},
+        
+        getTodaysPasses : function() {
+            var passes  = _sat.getTodaysPasses();
+        }
 	
 	}
 };
@@ -130,3 +179,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 AGSATELLITE.getFiles = function() {
     return ['/js/classes/spmengines/predictlib/predictlib.js'];
 }
+
+
+var clone = (function(){ 
+  return function (obj) { Clone.prototype=obj; return new Clone() };
+  function Clone(){}
+}());

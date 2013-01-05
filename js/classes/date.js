@@ -375,38 +375,65 @@ Date.Date2Julian = function(date) {
     
 };
 
- Date.prototype.Julian2Date = function() {
+ Date.Julian2Date = function(jd) {
   
-        var X = parseFloat(this)+0.5;
-        var Z = Math.floor(X); //Get day without time
-        var F = X - Z; //Get time
-        var Y = Math.floor((Z-1867216.25)/36524.25);
-        var A = Z+1+Y-Math.floor(Y/4);
-        var B = A+1524;
-        var C = Math.floor((B-122.1)/365.25);
-       var D = Math.floor(365.25*C);
-       var G = Math.floor((B-D)/30.6001);
-       //must get number less than or equal to 12)
-       var month = (G<13.5) ? (G-1) : (G-13);
-       //if Month is January or February, or the rest of year
-       var year = (month<2.5) ? (C-4715) : (C-4716);
-       month -= 1; //Handle JavaScript month format
-       var UT = B-D-Math.floor(30.6001*G)+F;
-       var day = Math.floor(UT);
-       //Determine time
-       UT -= Math.floor(UT);
-       UT *= 24;
-       var hour = Math.floor(UT);
-       UT -= Math.floor(UT);
-       UT *= 60;
-       var minute = Math.floor(UT);
-       UT -= Math.floor(UT);
-       UT *= 60;
-       var second = Math.round(UT);
+    var    j1, j2, j3, j4, j5;            //scratch
+
+    //
+    // get the date from the Julian day number
+    //
+    var intgr   = Math.floor(jd);
+    var frac    = jd - intgr;
+    var gregjd  = 2299161;
+    if( intgr >= gregjd ) {                //Gregorian calendar correction
+        var tmp = Math.floor( ( (intgr - 1867216) - 0.25 ) / 36524.25 );
+        j1 = intgr + 1 + tmp - Math.floor(0.25*tmp);
+    } else
+        j1 = intgr;
+
+    //correction for half day offset
+    var dayfrac = frac + 0.5;
+    if( dayfrac >= 1.0 ) {
+        dayfrac -= 1.0;
+        ++j1;
+    }
+
+    j2 = j1 + 1524;
+    j3 = Math.floor( 6680.0 + ( (j2 - 2439870) - 122.1 )/365.25 );
+    j4 = Math.floor(j3*365.25);
+    j5 = Math.floor( (j2 - j4)/30.6001 );
+
+    var d = Math.floor(j2 - j4 - Math.floor(j5*30.6001));
+    var m = Math.floor(j5 - 1);
+    if( m > 12 ) m -= 12;
+    var y = Math.floor(j3 - 4715);
+    if( m > 2 )   --y;
+    if( y <= 0 )  --y;
+
+    //
+    // get time of day from day fraction
+    //
+    var hr  = Math.floor(dayfrac * 24.0);
+    var mn  = Math.floor((dayfrac*24.0 - hr)*60.0);
+         f  = ((dayfrac*24.0 - hr)*60.0 - mn)*60.0;
+    var sc  = Math.floor(f);
+         f -= sc;
+    if( f > 0.5 ) ++sc;
  
-    return new Date(Date.UTC(year, month, day, hour, minute, second));
+    return new Date(Date.UTC(y, m, d, hr, mn, sc));
  };
 
+ Date.fromUnixTime = function(value) {
+    var theDate = new Date(value * 1000);
+    return theDate;
+  }
+  
+  
+Date.toUnixTime = function(date) {
+    return date.getTime()/1000.0;
+}
+  
+  
 // ====================================
 
 /* if desired, map new methods to direct functions

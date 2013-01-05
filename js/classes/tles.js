@@ -127,9 +127,6 @@ var AGTLES = function() {
 			for (var i=0; i < satellites.length; i++) {
 				if (satellites[i].isDisplaying()) {
 					satellites[i].calc(date, observer);
-					if (satellites[i].getSelected()) {
-						satellites[i].calculateOrbit(observer);
-					}
 				}
 			}
 		},

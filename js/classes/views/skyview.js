@@ -319,7 +319,7 @@ var AGSKYVIEW = function() {
 
     function drawOrbits() {
         var pos;
-        var orbitData;
+        var orbit;
         var points;
         
         getDimensions()
@@ -328,11 +328,20 @@ var AGSKYVIEW = function() {
 
         jQuery.each(satellites, function(index, satellite) {
             if (satellite.isDisplaying() && satellite.getSelected()) {
-                orbitData = satellite.getOrbitData();
+                orbit = satellite.getOrbitData();
                 points = [];
-                for (var i=0; i<orbitData.length;i++) {
-                    if (orbitData[i].el > -10) {
-                        pos = convertAzEltoScreen(orbitData[i].az, orbitData[i].el);
+                var max = {az:0, el:0};
+                var aostime = null;                
+                for (var i=0; i<orbit.length;i++) {
+                    if (orbit[i].el >= AGSETTINGS.getAosEl() && aostime === null) {                    
+                        aostime = orbit[i].date;
+                    }
+                                                
+                    if (orbit[i].el > -10) {
+                        if (orbit[i].el > max.el) {
+                            max = orbit[i];
+                        }                        
+                        pos = convertAzEltoScreen(orbit[i].az, orbit[i].el);
                         points.push(pos.x);
                         points.push(pos.y);
                         /*
@@ -348,7 +357,7 @@ var AGSKYVIEW = function() {
                         if (pos.x <= 0 || pos.x >= _width || pos.y >= _height) {
                             _orbitLayer.add(new Kinetic.Line({
                                     points: points,
-                                    stroke: 'red',
+                                    stroke: 'green',
                                     strokeWidth: 1,
                                     lineCap: 'round',
                                     lineJoin: 'round'
@@ -369,6 +378,28 @@ var AGSKYVIEW = function() {
                         })
                     );
                 }
+                
+                var el = satellite.get('elevation');
+                if (el < AGSETTINGS.getAosEl()) {
+                    var pos = convertAzEltoScreen(max.az, max.el);
+                    var label = '(AOS: '+AGUTIL.shortdatetime(aostime, true)+')';
+                    _orbitLayer.add(new Kinetic.Text({
+                        x : pos.x,
+                        y : pos.y,
+                        text : satellite.getName(),
+                        fontSize : 6,
+                        fontFamily : 'Verdana',
+                        textFill : '#eee'
+                    }));
+                    _orbitLayer.add(new Kinetic.Text({
+                        x : pos.x,
+                        y : pos.y + 10,
+                        text : label,
+                        fontSize : 6,
+                        fontFamily : 'Verdana',
+                        textFill : '#eee'
+                    }));                        
+                }                
             }
         });
         _orbitLayer.draw();        

@@ -108,6 +108,31 @@ var AGUTIL = (function() {
 			return shortDate;
 		},
         
+        shortdatetime : function(date, hideDate) {
+            if (date === '') {
+                return '';
+            }
+            var shortDate = '';
+            var cDate = new Date();
+            
+            if (cDate.getFullYear() === date.getFullYear() &&
+                cDate.getMonth() === date.getMonth() &&
+                cDate.getDate() === date.getDate() && hideDate) {
+                
+                shortDate = '';
+            } else {
+                shortDate += pad(date.getDate(),2) + '/';
+                shortDate += pad(date.getMonth()+1,2) + '/';
+                shortDate += date.getFullYear() + ' ';                
+            }
+
+            shortDate += pad(date.getHours(),2) + ':';
+            shortDate += pad(date.getMinutes(),2) + ':';
+            shortDate += pad(date.getSeconds(),2);
+            
+            return shortDate;
+        },        
+        
         /**
         * Check if webGL is really supported. Some devices, like the iPad report, via Modernizer that webGL
         * is available when in fact it is not.

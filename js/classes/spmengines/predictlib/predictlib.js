@@ -1542,7 +1542,7 @@ var PLib =
                 PLib.SGP4(PLib.tsince, PLib.tle, pos, vel);
         
             PLib.Convert_Sat_State(pos, vel);
-        
+
             PLib.Magnitude(vel);
             PLib.sat_vel = vel.w;
         
@@ -1566,6 +1566,10 @@ var PLib =
             PLib.sat_azi = PLib.Degrees(obs_set.x);
             PLib.sat_ele = PLib.Degrees(obs_set.y);
 
+            PLib.sat_x = pos.x;
+            PLib.sat_y = pos.y;
+            PLib.sat_z = pos.z;
+            
             PLib.sat_range = obs_set.z;
             PLib.sat_range_rate = obs_set.w;
             PLib.sat_lat = PLib.Degrees(sat_geodetic.lat);
@@ -1602,9 +1606,8 @@ var PLib =
         
         AosHappens: function(x)
         {
-            if (typeof x === 'undefined') {
-                x = 0;
-            }
+            x = 0;
+
             var lin = 0.0, sma = 0.0, apogee = 0.0;
         
             if (PLib.sat[x].meanmo == 0.0)
@@ -1629,7 +1632,8 @@ var PLib =
         Decayed: function(x, time)
         {
             var satepoch = 0.0;
-        
+            x = 0;
+            
             if (time == 0.0)
                 time = PLib.CurrentDaynum();
         
@@ -1643,6 +1647,7 @@ var PLib =
     
         Geostationary: function(x)
         {
+            x = 0;
             if (Math.abs(PLib.sat[x].meanmo - 1.0027) < 0.0002) 
                 return 1;
             else
@@ -1700,11 +1705,15 @@ var PLib =
             return PLib.lostime;
         },
 
-        doCalc: function()
+        doCalc: function(time)
         {
             var satInfo = new Object();
-
-            PLib.daynum = PLib.CurrentDaynum();
+            
+            if (typeof time === 'undefined') {
+                PLib.daynum = PLib.CurrentDaynum();
+            } else {
+                PLib.daynum = time;
+            }
             PLib.PreCalc(0);
             PLib.Calc();
 
@@ -1810,7 +1819,7 @@ var PLib =
 
             for (z = 0; z < PLib.sat.length; z++)
             {
-                indx = z;
+                indx = 0;
 
                 now = (3651.0 + PLib.CurrentDaynum()) * 86400.0;
 

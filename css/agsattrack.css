@@ -232,3 +232,30 @@ p.description {
 #listviewtable th.right {
     text-align: right;
 }
+
+
+.layout-panel-south {
+    background: #EAEDF1;    
+}
+
+#south-panel {
+
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#eaedf1));
+    background: -moz-linear-gradient(#ffffff, #eaedf1); /*-pie-background: linear-gradient(#ffffff, #eaedf1);*/
+
+}
+
+#statusbar div {
+    border: 1px solid #CCCCCC;
+    margin: 3px;
+    padding: 3px 4px;
+    float: left;
+}
+
+#statusbar #statustotalloaded {
+    width: 140px;
+}
+
+#statusbar #status { {
+    width: 140px;
+}
