@@ -32,7 +32,8 @@ var AGSKYVIEW = function() {
 	var _backgroundLayer = null;
 	var _mousePosLayer = null;
     var _orbitLayer = null;
-	var _planetLayer = null;
+    var _planetLayer = null;
+	var _cityLayer = null;
 	var _satLayer = null;
 	var _infoGroup = null;
 	var _mousePosAz = null;
@@ -100,7 +101,8 @@ var AGSKYVIEW = function() {
 		
 		getDimensions();
 
-		_backgroundLayer.removeChildren();
+        _backgroundLayer.removeChildren();
+		_cityLayer.removeChildren();
         _backgroundLayer.add(new Kinetic.Rect({
             x: 0,
             y: 0,
@@ -185,16 +187,17 @@ var AGSKYVIEW = function() {
                         
 		}
 
-        _backgroundLayer.add(new Kinetic.Image({
+        _cityLayer.add(new Kinetic.Image({
           x: 0,
           y: _height - 109,
           image: AGIMAGES.getImage('city'),
           width: _width,
-          height: 109
+          height: 109,
+          opacity: 0.90
         }));
-        
-        
+
 		_backgroundLayer.draw();
+        _cityLayer.draw();
 	}
 
 	function drawMousePos() {
@@ -434,6 +437,7 @@ var AGSKYVIEW = function() {
 				width : jQuery('#viewtabs').tabs('getTab', 0).width(),
 				height : jQuery('#viewtabs').tabs('getTab', 0).height()
 			});
+                        
 			_backgroundLayer = new Kinetic.Layer();
 			_stage.add(_backgroundLayer);
 
@@ -448,7 +452,10 @@ var AGSKYVIEW = function() {
 
             _orbitLayer = new Kinetic.Layer();
             _stage.add(_orbitLayer);
-                        
+             
+            _cityLayer = new Kinetic.Layer();
+            _stage.add(_cityLayer);
+                                                
 			_infoGroup = new Kinetic.Group({
 		        draggable: true
 		      });

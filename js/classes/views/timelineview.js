@@ -113,7 +113,7 @@ var AGTIMELINE = function() {
             })); 
             
             if (hour > 24) {
-                hour = 0;
+                hour = 1;
             }
             _backgroundLayer.add(new Kinetic.Text({
                 x : i + _satLegendWidth - (hour < 10?3:7),

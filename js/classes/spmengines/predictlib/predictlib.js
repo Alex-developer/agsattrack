@@ -922,9 +922,9 @@ var PLib =
                     f330 = 1 + deep_arg.cosio;
                     f330 = 1.875 * f330 * f330 * f330;
                     PLib.Deep.del1 = 3 * PLib.Deep.xnq * PLib.Deep.xnq * aqnv * aqnv;
-                    PLib.Deep.del2 = 2 * PLib.Deep.del1 * f220 * g200 * q22;
-                    PLib.Deep.del3 = 3 * PLib.Deep.del1 * f330 * g300 * q33 * aqnv;
-                    PLib.Deep.del1 = PLib.Deep.del1 * f311 * g310 * q31 * aqnv;
+                    PLib.Deep.del2 = 2 * PLib.Deep.del1 * f220 * g200 * PLib.q22;
+                    PLib.Deep.del3 = 3 * PLib.Deep.del1 * f330 * g300 * PLib.q33 * aqnv;
+                    PLib.Deep.del1 = PLib.Deep.del1 * f311 * g310 * PLib.q31 * aqnv;
                     PLib.Deep.fasx2 = 0.13130908;
                     PLib.Deep.fasx4 = 2.8843198;
                     PLib.Deep.fasx6 = 0.37448087;
@@ -954,8 +954,8 @@ var PLib =
                 if (deep_arg.xinc < 0)
                 {
                     deep_arg.xinc = -deep_arg.xinc;
-                    deep_arg.xnode = deep_arg.xnode + pi;
-                    deep_arg.omgadf = deep_arg.omgadf - pi;
+                    deep_arg.xnode = deep_arg.xnode + PLib.pi;
+                    deep_arg.omgadf = deep_arg.omgadf - PLib.pi;
                 }
         
                 if (PLib.isFlagClear(PLib.RESONANCE_FLAG))
