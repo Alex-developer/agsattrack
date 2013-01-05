@@ -18,12 +18,20 @@ var AGTIMELINE = function() {
 
 	var _render = false;
 	var _stage = null;
-	var _backgroundLayer = null;
-	var _navBackgroundLayer = null;
+    var _backgroundLayer = null;
+	var _timelineLayer = null;
     var _mousePosLayer = null;
 	var _width;
 	var _height;
 	var _pixelsPerMin;
+    var _fixedStageWidth = 2880;
+    var _legendHeight = 100;
+    var _satLegendWidth = 200;
+    var _satHeight = 50;
+    var _leftMargin = 5;
+    var _topMargin = 5;
+    var _passInfo = null;
+    
 	var _mousePos = {
 			x : 0,
 			y : 0,
@@ -33,28 +41,23 @@ var AGTIMELINE = function() {
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#timeline');
-            width = parent.width();
+            width = _fixedStageWidth;
             height = parent.height();
         }
-
+        
+        width = _fixedStageWidth + _satLegendWidth;
+            
         if (width !== 0 && height !== 0) {
-            _stage.setSize(width, height);
-            drawBackground();
+            _stage.setSize(width, height-20);
+            drawTimeline();
         }          
     }
     
 	function getDimensions() {
 		_width = _stage.getWidth();
 		_height = _stage.getHeight();
-
-		var d = new Date();
-		var m = d.getMinutes();
-		var n = d.getHours();
 		
-		var total = n*60+m;
-		var totalLeft = 1440 - total;
-		
-		_pixelsPerMin = _width / totalLeft;
+		_pixelsPerMin = _fixedStageWidth / 1440;
 	}	
 
 	function drawBackground() {
@@ -64,26 +67,117 @@ var AGTIMELINE = function() {
 		_backgroundLayer.clear();
 		
 		_backgroundLayer.add(new Kinetic.Rect({
-			fill : 'black',
+            fill: {
+                start: {
+                    x: 0,
+                    y: 0
+                },
+                end: {
+                  x: 0,
+                  y: _height / 2
+                },
+                colorStops: [0, '#374553', 1, '#001224']
+            }, 
 			x : 0,
 			y : 0,
 			width : _width,
-			height : _height - 100
+			height : _height - _legendHeight
 		}));
 		
+        _backgroundLayer.add(new Kinetic.Rect({
+            fill: '#001224', 
+            x : 0,
+            y : 0,
+            width : _satLegendWidth,
+            height : _height
+        }));
+                
 		_backgroundLayer.add(new Kinetic.Rect({
-			fill : 'white',
-			x : 0,
-			y : _height - 100,
+            fill: '#374553',
+			x : _satLegendWidth,
+			y : _height - _legendHeight,
 			width : _width,
-			height : 100
+			height : _legendHeight
 		}));		
 		
+        var startHour = new Date().getHours();
+        if (startHour < 0) {
+            startHour = 0;
+        }
+        var hour = startHour;
+        for (var i=0; i <= _fixedStageWidth; i += (_pixelsPerMin * 60)) {
+            _backgroundLayer.add(new Kinetic.Line({
+                points : [ i + _satLegendWidth, _height - _legendHeight, i + _satLegendWidth, _height - _legendHeight + 20 ],
+                stroke : '#777',
+                strokeWidth : 1
+            })); 
+            
+            if (hour > 24) {
+                hour = 0;
+            }
+            _backgroundLayer.add(new Kinetic.Text({
+                x : i + _satLegendWidth - (hour < 10?3:7),
+                y : _height - 70,
+                text : hour,
+                fontSize : 10,
+                fontFamily : 'Verdana',
+                textFill : 'white'
+            }));
+            hour++;                                       
+        }
 		_backgroundLayer.draw();
-		
-		
 	}
 
+    function drawSatellites() {
+        _timelineLayer.removeChildren();
+        
+        var selectedSats = AGSatTrack.getTles().getSelected();
+        var yPos = _topMargin;
+        jQuery.each(selectedSats, function(index, sat) {
+
+            _timelineLayer.add(new Kinetic.Text({
+                x : _leftMargin,
+                y : yPos,
+                width: _satLegendWidth,
+                height: 15,
+                text : sat.getName(),
+                fontSize : 12,
+                fontFamily : 'Verdana',
+                textFill : 'white'
+            }));            
+            
+            var xpos = _satLegendWidth;
+            
+            var passes = sat.getTodaysPasses();
+            if (passes !== null) {
+                for (var i=0; i<passes.length;i++) {
+                    var startPos = Date.DateDiff('n', new Date(), passes[i].dateTimeStart) * _pixelsPerMin + _satLegendWidth;
+                    var endPos = Date.DateDiff('n', new Date(), passes[i].dateTimeEnd) * _pixelsPerMin + _satLegendWidth;
+                   /*
+                    _timelineLayer.add(new Kinetic.Line({
+                        points : [ startPos, 10, endPos, 10 ],
+                        stroke : '#ccc',
+                        strokeWidth : 1
+                    }));
+                    */
+                    _timelineLayer.add(new Kinetic.Rect({
+                        fill: 'white',
+                        x : startPos,
+                        y : yPos,
+                        width : endPos - startPos,
+                        height : 20
+                    }));
+                                                            
+                }
+            }
+            
+            
+            yPos +=_satHeight  
+        });           
+    
+        _timelineLayer.draw();
+    }
+    
 	function drawMousePos() {
 	    getDimensions();
         
@@ -101,21 +195,20 @@ var AGTIMELINE = function() {
 
 
 
-	    function drawTimeline() {
-		    getDimensions();
-		    drawBackground();
-		    
-		    
-	    }
+	function drawTimeline() {
+		getDimensions();
+		drawBackground();
+		drawSatellites();
+	}
 
-        function animate() {
-            if (_render) {
-                drawMousePos();
-            }
-            requestAnimFrame(animate);
+    function animate() {
+        if (_render) {
+            drawMousePos();
         }
-        
-        animate();
+        requestAnimFrame(animate);
+    }
+    
+    animate();
             
 	return {
 		startRender : function() {
@@ -146,14 +239,23 @@ var AGTIMELINE = function() {
 			_backgroundLayer = new Kinetic.Layer();
 			_stage.add(_backgroundLayer);
 			
-			_navBackgroundLayer = new Kinetic.Layer();
-			_stage.add(_navBackgroundLayer);			
+			_timelineLayer = new Kinetic.Layer({
+                width: _satLegendWidth
+            });
+			_stage.add(_timelineLayer);			
 
             _mousePosLayer = new Kinetic.Layer();
             _stage.add(_mousePosLayer);                
             
             
 			drawBackground();
-		}
+		},
+        
+        calculate : function(observer) {
+            var selectedSats = AGSatTrack.getTles().getSelected();
+            jQuery.each(selectedSats, function(index, sat) {
+                sat.calculateTodaysPasses();
+            });            
+        }
 	}
 }

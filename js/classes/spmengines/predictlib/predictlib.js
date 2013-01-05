@@ -1839,7 +1839,7 @@ var PLib =
                     {
                         PLib.daynum = PLib.FindAOS();
 
-                        while (PLib.Daynum2Date(PLib.daynum) < PLib.addDay(d))
+                        while (PLib.Daynum2Date(PLib.daynum) < PLib.addDay(d) || satInfoColl.length > 50)
                         {
                             var satInfo = new Object();
 
@@ -1887,8 +1887,8 @@ var PLib =
 
                             if (lastel != 0)
                             {
-                                PLib.daynum = PLib.FindLOS();
-                                PLib.Calc();
+                           //     PLib.daynum = PLib.FindLOS();
+                         //       PLib.Calc();
                             }
 
                             satInfo.dateTimeEnd = PLib.Daynum2Date(PLib.daynum);

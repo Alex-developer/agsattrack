@@ -147,9 +147,14 @@ var agsattrack = function() {
 		_planets.update(julianDate, _observers[0]);
 		
 		if (_tles.getTotalDisplaying() > 0) {
-			var date = new Date();
-			_tles.calcAll(date, _observers[0]);
-		
+            var activeView = AGVIEWS.getCurrentView();
+            if (typeof activeView.instance.calculate === 'function') {
+                activeView.instance.calculate(_observers[0]);    
+            } else {
+			    var date = new Date();
+			    _tles.calcAll(date, _observers[0]);
+            }
+            
 			refreshCounter++;
 			if (refreshCounter >= refreshInterval || forceRefresh) {
 				refreshCounter = 0;

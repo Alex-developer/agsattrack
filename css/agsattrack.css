@@ -259,3 +259,7 @@ p.description {
 #statusbar #status { {
     width: 140px;
 }
+
+#timeline {
+    overflow: auto;
+}

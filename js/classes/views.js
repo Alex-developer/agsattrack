@@ -58,6 +58,16 @@ var AGVIEWS = (function(element) {
             return _views;
         },
         
+        getCurrentView : function() {
+            var view = null;
+            jQuery.each(_views, function(_view, _options) {
+                if (_options.active) {
+                    view = _options;
+                }  
+            });
+            return view;             
+        },
+            
         getViewFromIndex : function(index) {
             var view = null;
             jQuery.each(_views, function(_view, _options) {

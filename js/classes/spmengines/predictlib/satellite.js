@@ -44,7 +44,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'y' : 'sat_y',     
         'z' : 'sat_z'     
     };
-        
+    var _passes = null;
+       
     function calculateOrbit(observer) {
         _orbitrequested = false;
         
@@ -207,8 +208,12 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 			calculateOrbit(observer);
 		},
         
+        calculateTodaysPasses : function() {
+            _passes = _sat.getTodaysPasses();            
+        },
+        
         getTodaysPasses : function() {
-            var passes  = _sat.getTodaysPasses();
+            return _passes;
         }
 	
 	}
