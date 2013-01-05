@@ -482,7 +482,7 @@ var AGPOLARVIEW = function() {
                         _orbitLayer.add(new Kinetic.Line({
                                 points: points,
                                 stroke: 'green',
-                                strokeWidth: 1,
+                                strokeWidth: 2,
                                 lineCap: 'round',
                                 lineJoin: 'round'
                             })
