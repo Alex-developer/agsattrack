@@ -20,6 +20,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     var _satOrbit = new AGPREDICTLIB(tle0, tle1, tle2);
      
     var orbit = [];
+    var _orbitAge = null;
     var _calcOrbitEvery = 50;
     var _orbitCalcCounter = _calcOrbitEvery;
     var _selected = false;
@@ -46,17 +47,33 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         
     function calculateOrbit(observer) {
         _orbitrequested = false;
-            _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
+        
+        if (_orbitAge !== null && Date.DateDiff('s', new Date(), _orbitAge) < 60) {
+            jQuery(document).trigger('agsattrack.updateinfo', {text: 'Orbit request For ' + _sat.sat[0].name + ' ignored'});
+            return;
+        }
+        
+        _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
         
         if (_sat.next_aos && _sat.next_los) {
             var date = new Date(); 
                        
             var period = ((1440 / _sat.sat[0].meanmo) + 0.5) * 60;
-            var step = period / 200;
+            var step = period / 800;            
             
-            orbit = [];
-            date = new Date();
-            for (var i=0; i <= 200; i++) {
+            if (_sat.elevation > 0) {
+                date = new Date();
+                do {
+                    var time = (date.getTime() - 315446400000) / 86400000;
+                    _satOrbit.doCalc(time);                    
+                    date = Date.DateAdd('s', -step, date);    
+                }  while (_satOrbit.elevation > 0);
+            } else {
+                orbit = [];
+                date = new Date();            
+            }
+            
+            for (var i=0; i <= 800; i++) {
                 var time = (date.getTime() - 315446400000) / 86400000;
                 _satOrbit.doCalc(time);
                 var orbitdata = {
@@ -71,6 +88,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                 date = Date.DateAdd('s', step, date);         
             }        
         }
+        _orbitAge = new Date();
+        
         jQuery(document).trigger('agsattrack.updateinfo', {text: 'Calculating Orbit Complete For ' + _sat.sat[0].name});
 
     }
@@ -139,21 +158,40 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 
 		},
         
-        getNextEvent : function() {
+        getNextEvent : function(returnRaw) {
             var event;
+            var raw = {};
             
+            if (typeof returnRaw === 'undefined') {
+                returnRaw = false;
+            }
             if (_sat.AosHappens()) {
                 if (_sat.sat_ele >= AGSETTINGS.getAosEl()) {
-                    event = 'LOS: ' + AGUTIL.shortdate(_sat.next_los);    
+                    event = 'LOS: ' + AGUTIL.shortdate(_sat.next_los); 
+                    raw.event = 'LOS';
+                    raw.eventlong = 'Loss Of Satellite';
+                    raw.time = AGUTIL.shortdatetime(_sat.next_los, true);   
                 } else {
                     if (_sat.next_aos) {
                         event = 'AOS: ' + AGUTIL.shortdate(_sat.next_aos);    
+                        raw.event = 'AOS';
+                        raw.eventlong = 'Aquisition Of Satellite';
+                        raw.time = AGUTIL.shortdatetime(_sat.next_aos, true); 
                     } else {
                         event = 'N/A';
+                        raw.event = 'N/A';
+                        raw.eventlong = 'Not Available';
+                        raw.time = '';                         
                     }
                 }
             } else {
                 event = 'Never';
+                raw.event = 'Never';
+                raw.eventlong = 'Never Visible';
+                raw.time = '';                 
+            }
+            if (returnRaw) {
+                return raw;    
             }
             return event;  
         },

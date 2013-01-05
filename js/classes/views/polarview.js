@@ -75,6 +75,13 @@ var AGPOLARVIEW = function() {
 		_satLayer.clear();
 	});
 
+    jQuery(document).bind('agsattrack.newfollowing', function(event, group) {
+        if (_render) {
+            drawBackground();
+            drawPolarView();
+        }
+    });
+    
     jQuery(document).bind('agsattrack.showplanets',
             function(e, state) {
                 if (AGSETTINGS.getHaveCanvas() && _render) {
@@ -177,7 +184,10 @@ var AGPOLARVIEW = function() {
     
     var _orbitLayer = new Kinetic.Layer();
 	_stage.add(_orbitLayer);
-	
+
+    var _infoLayer = new Kinetic.Layer();
+    _stage.add(_infoLayer);
+    	
 	_stage.on('mousemove', function() {
 		_mousePos = _stage.getMousePosition();
 		convertMousePos();
@@ -415,6 +425,7 @@ var AGPOLARVIEW = function() {
 		setDimensions();
         
         drawPlanets();
+        drawInfoLayer();
         
         _orbitLayer.removeChildren();
 		var satellites = AGSatTrack.getSatellites();
@@ -444,6 +455,20 @@ var AGPOLARVIEW = function() {
                             if (aostime === null) {
                                 aostime = orbit[i].date;
                             }
+                            
+                            /**
+                            * For Debugging  ONLY
+                            */
+                            /*
+                            _orbitLayer.add(new Kinetic.Circle({
+                                x : pos.x,
+                                y : pos.y,
+                                radius : 2,
+                                stroke : '#ccc',
+                                strokeWidth : 1
+                            }));
+                            */                             
+                            
                         }
                         if (orbit[i].el > max.el) {
                             max = orbit[i];
@@ -469,24 +494,40 @@ var AGPOLARVIEW = function() {
                     * at the max elevation.
                     */
                     if (el < AGSETTINGS.getAosEl()) {
-                        var pos = convertAzEltoXY(max.az, max.el);
-                        var label = '(AOS: '+AGUTIL.shortdatetime(aostime, true)+')';
-                        _orbitLayer.add(new Kinetic.Text({
-                            x : pos.x,
-                            y : pos.y,
-                            text : satellite.getName(),
-                            fontSize : 6,
-                            fontFamily : 'Verdana',
-                            textFill : '#eee'
-                        }));
-                        _orbitLayer.add(new Kinetic.Text({
-                            x : pos.x,
-                            y : pos.y + 10,
-                            text : label,
-                            fontSize : 6,
-                            fontFamily : 'Verdana',
-                            textFill : '#eee'
-                        }));                        
+                        if (aostime !== null) {
+                            var pos = convertAzEltoXY(max.az, max.el);
+                            var label = '(AOS: '+AGUTIL.shortdatetime(aostime, true)+')';
+                            _orbitLayer.add(new Kinetic.Text({
+                                x : pos.x,
+                                y : pos.y,
+                                text : satellite.getName(),
+                                fontSize : 6,
+                                fontFamily : 'Verdana',
+                                textFill : '#eee'
+                            }));
+                            _orbitLayer.add(new Kinetic.Text({
+                                x : pos.x,
+                                y : pos.y + 10,
+                                text : label,
+                                fontSize : 6,
+                                fontFamily : 'Verdana',
+                                textFill : '#eee'
+                            }));     
+                        }                   
+                    } else {
+                        
+                        if (max.az !== 0 && max.el !== 0) {
+                            var pos = convertAzEltoXY(max.az, max.el);
+                            var label = max.el.toFixed(0);
+                            _orbitLayer.add(new Kinetic.Text({
+                                x : pos.x,
+                                y : pos.y,
+                                text : label,
+                                fontSize : 6,
+                                fontFamily : 'Verdana',
+                                textFill : '#eee'
+                            }));
+                        }                         
                     }
                                            
                 }
@@ -548,7 +589,44 @@ var AGPOLARVIEW = function() {
         _orbitLayer.draw();
 		_satLayer.draw();
 	}
+    
+    function drawInfoLayer() {
+        _infoLayer.removeChildren();
+        var following = AGSatTrack.getFollowing();
+        if (following !== null) {
+            var nextEvent = following.getNextEvent(true);
+             
+             _infoLayer.add(new Kinetic.Text({
+                x : 10,
+                y : _height-50,
+                text : 'Information for ' + following.getName(),
+                fontSize : 10,
+                fontFamily : 'Verdana',
+                textFill : '#ccc'
+             }));
 
+             _infoLayer.add(new Kinetic.Text({
+                x : 10,
+                y : _height-35,
+                text : 'Next Event: ' + nextEvent.eventlong,
+                fontSize : 8,
+                fontFamily : 'Verdana',
+                textFill : '#ccc'
+             }));
+             
+             _infoLayer.add(new Kinetic.Text({
+                x : 10,
+                y : _height-23,
+                text : 'Event Time: ' + nextEvent.time,
+                fontSize : 8,
+                fontFamily : 'Verdana',
+                textFill : '#ccc'
+             }));             
+                               
+        }
+        _infoLayer.draw();        
+    }
+    
     function drawPlanets() {
         var image;
         

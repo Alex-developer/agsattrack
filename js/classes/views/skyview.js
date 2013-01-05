@@ -380,7 +380,7 @@ var AGSKYVIEW = function() {
                 }
                 
                 var el = satellite.get('elevation');
-                if (el < AGSETTINGS.getAosEl()) {
+                if (el < AGSETTINGS.getAosEl() && aostime !== null) {
                     var pos = convertAzEltoScreen(max.az, max.el);
                     var label = '(AOS: '+AGUTIL.shortdatetime(aostime, true)+')';
                     _orbitLayer.add(new Kinetic.Text({

@@ -176,6 +176,7 @@ var agsattrack = function() {
 
         setFollowing : function(satellite) {
             _following = satellite;
+            jQuery(document).trigger('agsattrack.newfollowing', {satellites: _following});
         },
         
         getFollowing : function() {
