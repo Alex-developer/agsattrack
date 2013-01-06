@@ -16,11 +16,28 @@ Copyright 2012 Alex Greenland
 var AGPASSESVIEW = function() {
 	'use strict';
 	var _render = false;
-	
-	jQuery(window).resize(function() {
-		jQuery('#passesgrid').datagrid('resize');
-	});
-	
+	var _polar;
+    var _3d;
+    
+    function resize(width, height) {
+        if (typeof width === 'undefined' || typeof height === 'undefined') {
+            var parent = jQuery('#passes');
+            width = parent.width();
+            height = parent.height();
+        }
+
+        if (width !== 0 && height !== 0) {
+            jQuery('#passes').width(width);
+            jQuery('#passes').height(height);
+            jQuery('#passesgrid').datagrid('resize',{
+                width: width / 2,
+                height: height / 2
+            });
+       //     _polar.resizeView(width / 2, height / 2);
+            
+        }          
+    }
+        
 	jQuery(document).bind('agsattrack.newsatselected1', function(event, selected) {
 
 		var selected = AGSatTrack.getSelected();
@@ -100,9 +117,18 @@ if (typeof data.originalRows !== 'undefined') {
 		stopRender : function() {
 			_render = false;			
 		},
-		
+
+        resizeView : function(width, height) {
+            resize(width, height);     
+        },
+        		
 		init : function() {
-			
+        //    var _polar = AGVIEWS.getNewView('polar','passespolar');
+        //    _polar.startRender();
+        //    var _3d = AGVIEWS.getNewView('3d','passes3d');
+         //   _3d.init();
+          //  _3d.postInit();
+           // _3d.startRender();			
 		}		
 	}
 }

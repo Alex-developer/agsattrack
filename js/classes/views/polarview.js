@@ -13,7 +13,7 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
-var AGPOLARVIEW = function() {
+var AGPOLARVIEW = function(element) {
 	'use strict';
     
 	var _render = false;
@@ -41,10 +41,16 @@ var AGPOLARVIEW = function() {
 	var _de2ra = 0.0174532925;
     var _showPlanets = false;
     var _images = [];
+    var _element;
     
+    if (typeof element === 'undefined') {
+        _element = 'polar';    
+    } else {
+        _element = element;
+    }
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
-            var parent = jQuery('#polar');
+            var parent = jQuery('#'+_element);
             width = parent.width();
             height = parent.height();
         }
@@ -165,7 +171,7 @@ var AGPOLARVIEW = function() {
 	}
 
 	_stage = new Kinetic.Stage({
-		container : 'polar',
+		container : _element,
 		width : 1000,
 		height : 600
 	});
@@ -666,20 +672,29 @@ var AGPOLARVIEW = function() {
         _planetLayer.draw();        
     }
     
+    var _debugCounter=0;
 	function animate() {
 		if (_render) {
+            if (AGSETTINGS.getDebugLevel() > 0) {
+                _debugCounter++;
+                if (_debugCounter > 100) {
+                    _debugCounter = 0;
+                    console.log('Polar Animate');
+                }
+            }
 			drawMousePos();
-		}
-		requestAnimFrame(animate);
+		    requestAnimFrame(animate);
+        }
+		
 	}
 
     drawBackground();    
-	animate();
 
 	return {
 		startRender : function() {
 			_render = true;
             resize();
+            animate();
 			_satLayer.clear();
 		},
 

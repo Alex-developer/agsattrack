@@ -58,6 +58,16 @@ var AGVIEWS = (function(element) {
             return _views;
         },
         
+        getNewView : function(name, params) {
+            var view = null;
+            jQuery.each(_views, function(_view, _options) {
+                if (_view === name) {
+                    view = new window[_options.classname](params)
+                }  
+            });
+            return view;  
+        },
+        
         getCurrentView : function() {
             var view = null;
             jQuery.each(_views, function(_view, _options) {
