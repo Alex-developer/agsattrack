@@ -2,8 +2,10 @@ AgSatTrack
 ==========
 
 ![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/master/screenshot.png)
-
 ![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/master/screenshot-follow.png)
+![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/master/polar.png)
+![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/master/skyview.png)
+![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/master/timeline.png)
 
 AgSatTrack is a web based satellite tracking program.
 
