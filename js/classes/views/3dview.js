@@ -13,7 +13,7 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
-var AG3DVIEW = function() {
+var AG3DVIEW = function(element) {
 	'use strict';
 
 	var ellipsoid =null;
@@ -41,7 +41,14 @@ var AG3DVIEW = function() {
     var _labels = null;
     var _mousePosLabel = null;
     var _showMousePos = false;
+    var _element;
     
+    if (typeof element === 'undefined') {
+        _element = '3d';    
+    } else {
+        _element = element;
+    }
+        
     /*
 	jQuery(window).resize(function() {
 		if (canvas === null) {
@@ -62,7 +69,7 @@ var AG3DVIEW = function() {
       */
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
-            var parent = jQuery('#3d');
+            var parent = jQuery('#'+_element);
             width = parent.width();
             height = parent.height();
         }
@@ -279,9 +286,17 @@ var AG3DVIEW = function() {
 	 * There is a NASTY hack in here to stop Cesium messing up when tabs are
 	 * switched
 	 */
+    var _debugCounter = 0;     
 	function renderScene() {
 		(function tick() {
 			if (_render) {
+                if (AGSETTINGS.getDebugLevel() > 0) {                
+                    _debugCounter++;
+                    if (_debugCounter > 100) {
+                        _debugCounter = 0;
+                        console.log('3d Animate');
+                    }
+                }                 
                 scene.initializeFrame();
 				try {
 					scene.render();
@@ -565,7 +580,7 @@ var AG3DVIEW = function() {
 	    jQuery('<canvas/>', {
 		    'id' : 'glCanvas',
 		    'class' : 'fullsize'
-	    }).appendTo('#3d');
+	    }).appendTo('#'+_element);
 
 	    canvas = jQuery('#glCanvas')[0];
 	    scene = new Cesium.Scene(canvas);

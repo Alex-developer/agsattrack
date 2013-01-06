@@ -22,11 +22,19 @@ var AGSETTINGS = (function(element) {
 //    var _spm = 'isana';
     //var _spm = 'jspredict';
     var _spm = 'predictlib';
+    var _debugLevel = 1;
     
 	return {
 		init: function() {
 		},
 
+        getDebugLevel : function() {
+            return _debugLevel;    
+        },
+        setDebugLevel : function(value) {
+            _debugLevel = value;
+        },
+                
         getSPM : function() {
             return _spm;    
         },

@@ -416,10 +416,27 @@ var AGSKYVIEW = function() {
         drawOrbits();
 	}
 
+    var _debugCounter=0;    
+    function animate() {
+        if (_render) {
+            if (AGSETTINGS.getDebugLevel() > 0) {            
+                _debugCounter++;
+                if (_debugCounter > 100) {
+                    _debugCounter = 0;
+                    console.log('Sky Animate');
+                }
+            }       
+            drawMousePos();
+            requestAnimFrame(animate);
+        }
+        
+    }
+                
 	return {
 		startRender : function() {
-            resize();            
-			_render = true;
+            _render = true;
+            resize();
+            animate();          
 		},
 
 		stopRender : function() {
@@ -527,16 +544,6 @@ var AGSKYVIEW = function() {
 			});
 
 			drawBackground();
-
-			function animate() {
-				if (_render) {
-					drawMousePos();
-				}
-				requestAnimFrame(animate);
-			}
-			
-
-			animate();
 
 			jQuery(window).trigger('resize');
 		}

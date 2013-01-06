@@ -280,11 +280,20 @@ var AGTIMELINE = function() {
 		drawSatellites();
 	}
 
+    var _debugCounter = 0;
     function animate() {
         if (_render) {
+            if (AGSETTINGS.getDebugLevel() > 0) {            
+                _debugCounter++;
+                if (_debugCounter > 100) {
+                    _debugCounter = 0;
+                    console.log('Timeline Animate');
+                }
+            }      
             drawMousePos();
+            requestAnimFrame(animate);
         }
-        requestAnimFrame(animate);
+        
     }
     
     animate();
@@ -292,7 +301,8 @@ var AGTIMELINE = function() {
 	return {
 		startRender : function() {
 			_render = true;
-            resize();             
+            resize();
+            animate();            
 		},
 
 		stopRender : function() {
