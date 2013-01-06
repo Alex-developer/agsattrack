@@ -323,8 +323,8 @@ var AGUI = function() {
             html += '<tr><th>Aos</th><th>Los</th></tr>';            
             html += '<tr><td>'+ AGUTIL.shortdatetime(passes[i].dateTimeStart,true)+'</td><td>'+ AGUTIL.shortdatetime(passes[i].dateTimeEnd,true)+'</td></tr>';
             html += '<tr><th>Orbit Number</th><td>'+passes[i].orbitNumber+'</td></tr>';          
-            html += '<tr><th>Peak Az</th><td>'+passes[i].peakAzimuth+'</td></tr>';          
-            html += '<tr><th>Peak El</th><td>'+passes[i].peakElevation+'</td></tr>';     
+            html += '<tr><th>Peak Az</th><td>'+passes[i].peakAzimuth.toFixed(2)+'</td></tr>';          
+            html += '<tr><th>Peak El</th><td>'+passes[i].peakElevation.toFixed(2)+'</td></tr>';     
             html += '<tr><th>&nbsp;</th><td>&nbsp;</td></tr>';                 
         }                    
         html += '</table>';
