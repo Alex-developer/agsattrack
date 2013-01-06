@@ -256,10 +256,15 @@ p.description {
     width: 140px;
 }
 
-#statusbar #status { {
+#statusbar #status {
     width: 140px;
 }
 
-#timeline {
-    overflow: auto;
+  {
+    width: 100%;
+    font-size: 0.8em;
+}
+
+#passestable th {
+    text-align: left;
 }

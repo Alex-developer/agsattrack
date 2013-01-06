@@ -212,6 +212,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         calculateTodaysPasses : function(observer) {
             _satPasses.configureGroundStation(observer.getLat(), observer.getLon());
             _passes = _satPasses.getTodaysPasses();            
+            return _passes;
         },
         
         getTodaysPasses : function() {

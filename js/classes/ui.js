@@ -181,6 +181,23 @@ var AGUI = function() {
 		}
 	});
 
+    jQuery('#satinfot').tabs({
+        onSelect : function(title, index) {
+            if (index === 1) {
+                var following = AGSatTrack.getFollowing();
+                if (following !== null) {
+                    var passes = following.getTodaysPasses();
+                    if (passes === null) {
+                        var obs = AGSatTrack.getObservers()[0];
+                        passes = following.calculateTodaysPasses(obs);
+                        updateNextpass(following, passes);
+                    }
+                }
+            }            
+        }
+    });
+    
+    
     /**
     * Listen for a new set of TLE's being loaded. When they are reset stuff
     */
@@ -203,7 +220,6 @@ var AGUI = function() {
         if (selectedItem !== null) {
             var selectedSatellite = AGSatTrack.getSatelliteByName(selectedItem.value);    
 			updateSatelliteInfo(selectedSatellite);
-            updateNextpass(selectedSatellite); 
         }
 
 	});
@@ -214,7 +230,6 @@ var AGUI = function() {
 	jQuery('#sat-info-selector').bind('select', function(e) {
         var args = e.args;
         var selectedSatellite = AGSatTrack.getSatelliteByName(args.item.value); 
-        UpdateSatelliteData(selectedSatellite);
         AGSatTrack.setFollowing(selectedSatellite);
 	});
 
@@ -278,7 +293,6 @@ var AGUI = function() {
             }
         });
         updateSatelliteInfo(satellite);
-        updateNextpass(satellite); 
     }
     
     function clearDataPane() {
@@ -300,36 +314,23 @@ var AGUI = function() {
         jQuery('#aoshappens').html(satellite.aosHappens());      
     }
     
-    function updateNextpass(satellite) {
-        var selectedItem = jQuery('#sat-info-selector').jqxDropDownList('getSelectedItem');
-        if (selectedItem !== null) {
-            var selectedSatellite = AGSatTrack.getSatelliteByName(selectedItem.value); 
+    function updateNextpass(satellite, passes) {
+        var html = '';
+        jQuery('#nextpass').html('');
 
-            jQuery('#nextpass').html('');
-
-            var table = '<table>';
-            table += '<tr>';
-            table += '<th>Time</th>';
-            table += '<th>Az</th>';
-            table += '<th>El</th>';
-            table += '</tr>';
-
-            var orbitData = selectedSatellite.getOrbitData();
-            for ( var i = 0; i < orbitData.length; i++) {
-                if (orbitData[i].el > AGSETTINGS.getAosEl()) {
-                    table += '<tr>';
-                    table += '<td>' + AGUTIL.shortdate(orbitData[i].date) + '</td>';
-                    table += '<td>' + orbitData[i].az.toFixed(0) + '</td>';
-                    table += '<td>' + orbitData[i].el.toFixed(0) + '</td>';
-                    table += '</tr>'
-                }
-            }
-            table += '</table>';
-
-            jQuery('#nextpass').html(table);
-        } else {
-            jQuery('#nextpass').html('Not Available');  
-        }        
+        html += '<table id="passestable">';
+        for (var i=0; i < passes.length; i++) {
+            html += '<tr><th>Aos</th><th>Los</th></tr>';            
+            html += '<tr><td>'+ AGUTIL.shortdatetime(passes[i].dateTimeStart,true)+'</td><td>'+ AGUTIL.shortdatetime(passes[i].dateTimeEnd,true)+'</td></tr>';
+            html += '<tr><th>Orbit Number</th><td>'+passes[i].orbitNumber+'</td></tr>';          
+            html += '<tr><th>Peak Az</th><td>'+passes[i].peakAzimuth+'</td></tr>';          
+            html += '<tr><th>Peak El</th><td>'+passes[i].peakElevation+'</td></tr>';     
+            html += '<tr><th>&nbsp;</th><td>&nbsp;</td></tr>';                 
+        }                    
+        html += '</table>';
+        jQuery('#nextpass').html(html);
+    
+           
     }
     
     
