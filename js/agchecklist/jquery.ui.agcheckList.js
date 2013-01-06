@@ -167,6 +167,10 @@ let me know and I will add the appropriate credit.
 			return o.selectedItems;
 		},
 
+        clear : function() {
+            this.options.objTable.empty();    
+        },
+        
 		setData: function(dataModel){
 			var self = this, o = self.options, el = self.element;
 			o.listItems = dataModel;

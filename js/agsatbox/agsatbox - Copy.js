@@ -19,10 +19,21 @@
 
 
             var divWrapper = $('<div style="width:555px" />');
-            divLeft = $('<div style="float:left;" > <select id="leftsat" multiple="multiple" style="width:250px;height:400px"></select></div>');
+            divLeft = $('<div style="float:left;" />');
             var divCenter = $('<div style="float:left;" />');
-            divRight = $('<div style="float:left;" ><select id="rightsat" multiple="multiple" style="width:250px;height:400px"></select></div>');
-
+            divRight = $('<div style="float:left;" />');
+            divLeft.jqxListBox({ source: leftSource, width: 250, height: 400, allowDrop: true, allowDrag: true, multipleextended: true,
+                dragEnd: function (dragItem, dropItem) {
+                    SendMoveEvents();                    
+                    return true;
+                }                                   
+            });
+            divRight.jqxListBox({ source: rightSource, checkboxes: true, width: 250, height: 400, allowDrop: true, allowDrag: true, multipleextended: true,
+                dragEnd: function (dragItem, dropItem) {
+                    SendMoveEvents();                    
+                    return true;
+                }
+            });
 
             var buttonPrefix =  $el.attr('id')+'Button';
             var selectorHTML = '        \
@@ -34,7 +45,13 @@
             </div>';
 
             divCenter.append(selectorHTML);
+            divLeft.jqxListBox.bind('select', function (e) {
+                var args = e.args;
 
+            });
+            divRight.jqxListBox.bind('select', function (e) {
+
+            });
 
             divWrapper.append(divLeft);
             divWrapper.append(divCenter);
@@ -45,79 +62,86 @@
                 var el = $(e.target);
                 var direction = el.hasClass('right') ? 'right' : 'left';
 
-                moveSats(direction);
+                moveAllSats(direction);
                 
                 e.stopImmediatePropagation();
             });
- 
+
+            divRight.on('checkChange', function (event) {
+                if (!_ignoreEvents) {
+                    var args = event.args;
+                    if (args.checked) {
+                        jQuery(document).trigger('agsattrack.satclicked', {
+                            index : args.value,
+                            state: true
+                        });
+                    } else {
+                        jQuery(document).trigger('agsattrack.satclicked', {
+                            index : args.value,
+                            state: false
+                        });                    
+                    }
+                }
+            });  
             
             jQuery(document).bind('agsattrack.newsatselected', function(event, params) {
                 _ignoreEvents = true;
-
+                divRight.jqxListBox('uncheckAll');
+                var rightItems = divRight.jqxListBox('getItems');
+                for (var i=0; i<params.satellites.length; i++) {
+                    for (var j=0; j<rightItems.length;j++) {
+                        if (rightItems[j].value === params.satellites[i].getName()) {
+                            divRight.jqxListBox('checkIndex', rightItems[j].index);
+                            break;    
+                        }
+                    }    
+                }
                 _ignoreEvents = false;    
             });
                    
             hook('onInit');
         }
 
-        function moveSats(direction) {
-             _moveAllSats(direction, false);    
-        }
-        
         function moveAllSats(direction) {
-             _moveAllSats(direction, true);    
-        }
-        
-        function _move(direction, all) {
-            var selectedOpts = [];
             if (direction === 'right') {
-                if (all) {
-                    selectedOpts = jQuery('#leftsat option');
-                } else {
-                    selectedOpts = jQuery('#leftsat option:selected');
-                }
-                jQuery('#rightsat').append(jQuery(selectedOpts).clone());
-                jQuery(selectedOpts).remove();
-            } else {
-                if (all) {
-                    selectedOpts = jQuery('#rightsat option');
-                } else {
-                    selectedOpts = jQuery('#rightsat option:selected');
-                }                
-                jQuery('#leftsat').append(jQuery(selectedOpts).clone());
-                jQuery(selectedOpts).remove();                
-            }
-            
-            return selectedOpts;           
-        }
-             
-        function _moveAllSats(direction, all) {
-            if (direction === 'right') {
+                var leftItems = divLeft.jqxListBox('getItems');
+                var rightItems = divRight.jqxListBox('getItems');
                 var sourceData = [];
-
-                if (all) {
-                    _move('left', all);
+                if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
+                    for (var i=0;i<rightItems.length;i++) {
+                        sourceData.push(rightItems[i].value);    
+                    }
                 }
-                selectedOpts = _move(direction, all);
-                
-                jQuery.each(selectedOpts, function(index, opt) {
-                    sourceData.push(jQuery(opt).val());
-                });                
+                if (typeof leftItems !== 'undefined' && leftItems.length > 0) {
+                    for (var i=0;i<leftItems.length;i++) {
+                        sourceData.push(leftItems[i].value);    
+                    }
+                }
 
                 jQuery(document).trigger('agsattrack.satsselected', {
                     selections : sourceData
                 }); 
                 jQuery(document).trigger('agsattrack.forceupdate', {});                                        
 
+                divLeft.jqxListBox('clear');
+                divRight.jqxListBox({ source: sourceData});
+
             } else {
+                var leftItems = divLeft.jqxListBox('getItems');
+                var rightItems = divRight.jqxListBox('getItems');
                 var sourceData = [];
-                if (all) {
-                    _move('right', all);
+                if (typeof leftItems !== 'undefined' && leftItems.length > 0) {
+                    for (var i=0;i<leftItems.length;i++) {
+                        sourceData.push(leftItems[i].value);    
+                    }
                 }
-                selectedOpts = _move(direction, all);
-                jQuery.each(selectedOpts, function(index, opt) {
-                    sourceData.push(jQuery(opt).val());
-                });
+                if (typeof rightItems !== 'undefined' && rightItems.length > 0) {
+                    for (var i=0;i<rightItems.length;i++) {
+                        sourceData.push(rightItems[i].value);    
+                    }
+                }
+                divRight.jqxListBox('clear');
+                divLeft.jqxListBox({ source: sourceData});
 
                 jQuery(document).trigger('agsattrack.satsselected', {
                     selections : []
@@ -143,19 +167,18 @@
         }
 
         function clear() {
-            jQuery('#leftsat').children().remove();
-            jQuery('#rightsat').children().remove();
+            divLeft.jqxListBox('clear');
+            divRight.jqxListBox('clear');
         }
 
         function setData(tles) {
             clear(); 
             for (var i=0; i < tles.getCount(); i++) {          
-                var sat = tles.getSatellite(i);
-                var name = sat.getName();        
+                var sat = tles.getSatellite(i);        
                 if (sat.isDisplaying()) {
-                    jQuery('#rightsat').append('<option value="'+name+'">'+name+'</option>');
+                    divRight.jqxListBox('addItem', sat.getName());    
                 } else {
-                    jQuery('#leftsat').append('<option value="'+name+'">'+name+'</option>');
+                    divLeft.jqxListBox('addItem', sat.getName());    
                 }
             }    
         }

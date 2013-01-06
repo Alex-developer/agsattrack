@@ -94,11 +94,7 @@ var AGUI = function() {
     */    
       
     jQuery('#quick-sat-selector').agcheckList();       
-    
-    
-    
-    
-            
+           
 	jQuery('.view-reset').click(function() {
 		jQuery(document).trigger('agsattrack.resetview');
 	});
@@ -195,6 +191,8 @@ var AGUI = function() {
             jQuery('#sat-info-selector').jqxDropDownList('clear');
             clearDataPane();
             jQuery('#ag-satselector').agsatbox('setData', tles);
+            AGVIEWS.sendViewReset();
+            jQuery('#quick-sat-selector').agcheckList('clear');   
 	});
 
 	/**

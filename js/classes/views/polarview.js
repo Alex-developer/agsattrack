@@ -693,6 +693,11 @@ var AGPOLARVIEW = function() {
                 
 		init : function() {
 
-		}
+		},
+        
+        reset : function() {
+            _satLabels = [];
+            _sats = [];    
+        }
 	}
 }

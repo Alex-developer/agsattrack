@@ -76,6 +76,14 @@ var AGVIEWS = (function(element) {
                 }  
             });
             return view;    
+        },
+        
+        sendViewReset : function() {
+            jQuery.each(_views, function(_view, _options) {
+                if (typeof _options.instance.reset === 'function') {
+                    _options.instance.reset;
+                }  
+            });            
         }   
 
     }
