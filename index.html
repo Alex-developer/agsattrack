@@ -688,25 +688,33 @@
 			<div title="3D View" style="padding: 1px;" id="3d"></div>
 			<div title="Passes" style="overflow: auto; padding: 1px;" id="passes">
 
+                <table width="100%" height="100%">
+                    <tr>
+                        <td height="25%" width="25%">
+                            <table id="passesgrid" title="Passes" data-options="rownumbers:true, singleSelect:true, autoRowHeight:false, pagination:true, pageSize:20">
+                                <thead>
+                                    <tr>
+                                        <th field="date" width="170">Date</th>
+                                        <th field="az" width="100">Azimuth</th>
+                                        <th field="el" width="80">Elevation</th>
+                                        <th field="range" width="80" align="right">Range</th>
+                                        <th field="footprint" width="80" align="right">Footprint</th>
+                                    </tr>
+                                </thead>
+                            </table>                        
+                        </td>
+                        <td height="25%" width="25%">
+                            <div id="passespolar"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td></td>
+                    </tr>                    
+                </table>
 
-				<table id="passesgrid" title="Passes"
-					style="widwth: 700px; heiwght: 300px" class="fullsize"
-					data-options="
-                rownumbers:true,  
-                singleSelect:true,  
-                autoRowHeight:false,  
-                pagination:true,  
-                pageSize:20">
-					<thead>
-						<tr>
-							<th field="date" width="170">Date</th>
-							<th field="az" width="100">Azimuth</th>
-							<th field="el" width="80">Elevation</th>
-							<th field="range" width="80" align="right">Range</th>
-							<th field="footprint" width="80" align="right">Footprint</th>
-						</tr>
-					</thead>
-				</table>
+
 
 
 			</div>
@@ -927,22 +935,26 @@
         </ul>
     </div>
  -->                   
-<!-- 
-	<script type="text/javascript">
-		var _gaq = _gaq || [];
-		_gaq.push([ '_setAccount', 'UA-36758800-1' ]);
-		_gaq.push([ '_trackPageview' ]);
 
-		(function() {
-			var ga = document.createElement('script');
-			ga.type = 'text/javascript';
-			ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl'
-					: 'http://www')
-					+ '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0];
-			s.parentNode.insertBefore(ga, s);
-		})();
+	<script type="text/javascript">
+        var href = document.location.href;
+        
+        if (href.indexOf('local') === -1) {
+		    var _gaq = _gaq || [];
+		    _gaq.push([ '_setAccount', 'UA-36758800-1' ]);
+		    _gaq.push([ '_trackPageview' ]);
+
+		    (function() {
+			    var ga = document.createElement('script');
+			    ga.type = 'text/javascript';
+			    ga.async = true;
+			    ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+					    : 'http://www')
+					    + '.google-analytics.com/ga.js';
+			    var s = document.getElementsByTagName('script')[0];
+			    s.parentNode.insertBefore(ga, s);
+		    })();
+        }
 	</script>
- -->
+
 </body>
