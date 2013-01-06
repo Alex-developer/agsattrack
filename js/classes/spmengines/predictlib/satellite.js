@@ -18,6 +18,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     
     var _sat = new AGPREDICTLIB(tle0, tle1, tle2);
     var _satOrbit = new AGPREDICTLIB(tle0, tle1, tle2);
+    var _satPasses = new AGPREDICTLIB(tle0, tle1, tle2);
      
     var orbit = [];
     var _orbitAge = null;
@@ -208,8 +209,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 			calculateOrbit(observer);
 		},
         
-        calculateTodaysPasses : function() {
-            _passes = _sat.getTodaysPasses();            
+        calculateTodaysPasses : function(observer) {
+            _satPasses.configureGroundStation(observer.getLat(), observer.getLon());
+            _passes = _satPasses.getTodaysPasses();            
         },
         
         getTodaysPasses : function() {

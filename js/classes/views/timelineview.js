@@ -202,18 +202,20 @@ var AGTIMELINE = function() {
                 fontFamily : 'Verdana',
                 textFill : 'white'
             }));            
-            
-            var xpos = _viewLeftMargin;
-            
-            var passes = sat.getTodaysPasses();
-            var baseDate = new Date();
-            var startDate = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), baseDate.getHours(), 0,0);
+
+            _timelineLayer.add(new Kinetic.Line({
+                points : [ _viewLeftMargin, yPos+10, _fixedStageWidth-_viewLeftMargin, yPos+10 ],
+                stroke : '#777',
+                strokeWidth : 1
+            }));
                         
+            var xpos = _viewLeftMargin;
+            var passes = sat.getTodaysPasses();           
             if (passes !== null) {
                 for (var i=0; i<passes.length;i++) {
-                    var sdiff = Date.DateDiff('n', startDate, passes[i].dateTimeStart);
-                    var startPos = (Date.DateDiff('n', startDate, passes[i].dateTimeStart) * _pixelsPerMin) + _viewLeftMargin;
-                    var endPos = (Date.DateDiff('n', startDate, passes[i].dateTimeEnd) * _pixelsPerMin) + _viewLeftMargin;
+                    var sdiff = Date.DateDiff('n', _startDate, passes[i].dateTimeStart);
+                    var startPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeStart) * _pixelsPerMin) + _viewLeftMargin;
+                    var endPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeEnd) * _pixelsPerMin) + _viewLeftMargin;
                    /*
                     _timelineLayer.add(new Kinetic.Line({
                         points : [ startPos, 10, endPos, 10 ],
@@ -351,7 +353,7 @@ var AGTIMELINE = function() {
         calculate : function(observer) {
             var selectedSats = AGSatTrack.getTles().getSelected();
             jQuery.each(selectedSats, function(index, sat) {
-                sat.calculateTodaysPasses();
+                sat.calculateTodaysPasses(observer);
             });
             drawTimeline();           
         }
