@@ -17,10 +17,14 @@ var AGTIMELINE = function() {
 	'use strict';
 
 	var _render = false;
-	var _stage = null;
+    var _viewStage = null;
+	var _legendStage = null;
     var _backgroundLayer = null;
+    var _legendBackgroundLayer = null;
+    var _legendLayer = null;
 	var _timelineLayer = null;
     var _mousePosLayer = null;
+    var _mousePosTimeLayer = null;
 	var _width;
 	var _height;
 	var _pixelsPerMin;
@@ -31,6 +35,10 @@ var AGTIMELINE = function() {
     var _leftMargin = 5;
     var _topMargin = 5;
     var _passInfo = null;
+    var _viewLeftMargin = 5;
+    var _startDate;
+    var _startHour = 0;
+    var _mousePosTime;
     
 	var _mousePos = {
 			x : 0,
@@ -41,21 +49,32 @@ var AGTIMELINE = function() {
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#timeline');
-            width = _fixedStageWidth;
+            width = parent.width();
             height = parent.height();
         }
         
-        width = _fixedStageWidth + _satLegendWidth;
-            
+        var stageWidth = _fixedStageWidth + _viewLeftMargin;
+        
         if (width !== 0 && height !== 0) {
-            _stage.setSize(width, height-20);
+            
+            jQuery('#timelinelegend').width(200);
+            jQuery('#timelinelegend').height(height+25);
+
+            jQuery('#timelineview').width(width - 210);
+            jQuery('#timelineview').height(height);
+                        
+            _viewStage.setSize(stageWidth, height-25);
+            _legendStage.setSize(200, height-25);
+            
+            _mousePosTimeLayer.setX(0);
+            _mousePosTimeLayer.setY(height-50);
             drawTimeline();
         }          
     }
     
 	function getDimensions() {
-		_width = _stage.getWidth();
-		_height = _stage.getHeight();
+		_width = _viewStage.getWidth();
+		_height = _viewStage.getHeight();
 		
 		_pixelsPerMin = _fixedStageWidth / 1440;
 	}	
@@ -63,8 +82,8 @@ var AGTIMELINE = function() {
 	function drawBackground() {
 		getDimensions();
 		
+        _legendBackgroundLayer.removeChildren();
 		_backgroundLayer.removeChildren();
-		_backgroundLayer.clear();
 		
 		_backgroundLayer.add(new Kinetic.Rect({
             fill: {
@@ -84,30 +103,54 @@ var AGTIMELINE = function() {
 			height : _height - _legendHeight
 		}));
 		
-        _backgroundLayer.add(new Kinetic.Rect({
+        _legendBackgroundLayer.add(new Kinetic.Rect({
             fill: '#001224', 
             x : 0,
             y : 0,
             width : _satLegendWidth,
-            height : _height
+            height : _height + 25
         }));
                 
 		_backgroundLayer.add(new Kinetic.Rect({
             fill: '#374553',
-			x : _satLegendWidth,
+			x : 0,
 			y : _height - _legendHeight,
 			width : _width,
 			height : _legendHeight
 		}));		
 		
-        var startHour = new Date().getHours();
-        if (startHour < 0) {
-            startHour = 0;
+        var baseDate = new Date();
+        _startDate = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), baseDate.getHours(), 0,0);
+        _startHour = _startDate.getHours();
+        if (_startHour < 0) {
+            _startHour = 0;
         }
-        var hour = startHour;
-        for (var i=0; i <= _fixedStageWidth; i += (_pixelsPerMin * 60)) {
+        var hour = _startHour;
+        var counter = 0;
+        var length;
+        for (var i=0; i <= _fixedStageWidth; i += (_pixelsPerMin * 5)) {
+            
+            switch (counter) {
+                case 0:
+                    length = 20;
+                    break;
+
+                case 3:
+                case 9:                
+                    length = 10;
+                    break;
+
+                case 6:              
+                    length = 15;
+                    break;
+                                        
+                default:
+                    length = 5;
+                    break;
+            };
+            
             _backgroundLayer.add(new Kinetic.Line({
-                points : [ i + _satLegendWidth, _height - _legendHeight, i + _satLegendWidth, _height - _legendHeight + 20 ],
+                points : [ i + _viewLeftMargin, _height - _legendHeight, i + _viewLeftMargin, _height - _legendHeight + length ],
                 stroke : '#777',
                 strokeWidth : 1
             })); 
@@ -115,27 +158,41 @@ var AGTIMELINE = function() {
             if (hour > 24) {
                 hour = 1;
             }
-            _backgroundLayer.add(new Kinetic.Text({
-                x : i + _satLegendWidth - (hour < 10?3:7),
-                y : _height - 70,
-                text : hour,
-                fontSize : 10,
-                fontFamily : 'Verdana',
-                textFill : 'white'
-            }));
-            hour++;                                       
+            if (length === 20) {
+                if (i === 0) {
+                    var xTextPos = _viewLeftMargin;    
+                } else {
+                    var xTextPos = i + _viewLeftMargin - (hour < 10?3:7);
+                }
+                _backgroundLayer.add(new Kinetic.Text({
+                    x : xTextPos,
+                    y : _height - 70,
+                    text : hour,
+                    fontSize : 10,
+                    fontFamily : 'Verdana',
+                    textFill : 'white'
+                }));
+                hour++; 
+            }
+            counter++;
+            if (counter === 12) {
+                counter = 0;
+            }
+                                      
         }
-		_backgroundLayer.draw();
+        _backgroundLayer.draw();
+		_legendBackgroundLayer.draw();
 	}
 
     function drawSatellites() {
         _timelineLayer.removeChildren();
+        _legendLayer.removeChildren();
         
         var selectedSats = AGSatTrack.getTles().getSelected();
         var yPos = _topMargin;
         jQuery.each(selectedSats, function(index, sat) {
 
-            _timelineLayer.add(new Kinetic.Text({
+            _legendLayer.add(new Kinetic.Text({
                 x : _leftMargin,
                 y : yPos,
                 width: _satLegendWidth,
@@ -146,13 +203,17 @@ var AGTIMELINE = function() {
                 textFill : 'white'
             }));            
             
-            var xpos = _satLegendWidth;
+            var xpos = _viewLeftMargin;
             
             var passes = sat.getTodaysPasses();
+            var baseDate = new Date();
+            var startDate = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), baseDate.getHours(), 0,0);
+                        
             if (passes !== null) {
                 for (var i=0; i<passes.length;i++) {
-                    var startPos = Date.DateDiff('n', new Date(), passes[i].dateTimeStart) * _pixelsPerMin + _satLegendWidth;
-                    var endPos = Date.DateDiff('n', new Date(), passes[i].dateTimeEnd) * _pixelsPerMin + _satLegendWidth;
+                    var sdiff = Date.DateDiff('n', startDate, passes[i].dateTimeStart);
+                    var startPos = (Date.DateDiff('n', startDate, passes[i].dateTimeStart) * _pixelsPerMin) + _viewLeftMargin;
+                    var endPos = (Date.DateDiff('n', startDate, passes[i].dateTimeEnd) * _pixelsPerMin) + _viewLeftMargin;
                    /*
                     _timelineLayer.add(new Kinetic.Line({
                         points : [ startPos, 10, endPos, 10 ],
@@ -176,20 +237,36 @@ var AGTIMELINE = function() {
         });           
     
         _timelineLayer.draw();
+        _legendLayer.draw();
     }
     
 	function drawMousePos() {
 	    getDimensions();
         
         _mousePosLayer.removeChildren();
+        _mousePosTimeLayer.clear();
         
-        _mousePosLayer.add(new Kinetic.Line({
-            points : [ _mousePos.x, 0, _mousePos.x, _height ],
-            stroke : '#777',
-            strokeWidth : 1,
-            opacity: 0.5
-        }));
-                    
+        if (_mousePos.x >= _viewLeftMargin) {
+            _mousePosLayer.add(new Kinetic.Line({
+                points : [ _mousePos.x, 0, _mousePos.x, _height ],
+                stroke : '#777',
+                strokeWidth : 1,
+                opacity: 0.5
+            }));
+        
+            var mins = (_mousePos.x - _viewLeftMargin) / _pixelsPerMin;
+            
+            var date = Date.DateAdd('n', mins, _startDate);
+            var hour = ((mins/60) | 0);
+            var minsLeft = (mins - (hour*60)) |0;
+            var displayHour = hour + _startHour;
+            
+            _mousePosTime.setText(AGUTIL.shortdate(date));
+        } else {
+            _mousePosTime.setText('');
+        }
+        
+        _mousePosTimeLayer.draw();             
         _mousePosLayer.draw();
     }
 
@@ -225,29 +302,49 @@ var AGTIMELINE = function() {
         },
         
 		init : function() {
-			_stage = new Kinetic.Stage({
-				container : 'timeline',
+			_viewStage = new Kinetic.Stage({
+				container : 'timelineview',
 				width : jQuery('#viewtabs').tabs('getTab', 0).width(),
 				height : jQuery('#viewtabs').tabs('getTab', 0).height()
 			});
-
-			_stage.on('mousemove', function() {
-				_mousePos = _stage.getMousePosition();
+                        
+			_viewStage.on('mousemove', function() {
+				_mousePos = _viewStage.getMousePosition();
 				_mousePos.show = true;
 			});
 			
 			_backgroundLayer = new Kinetic.Layer();
-			_stage.add(_backgroundLayer);
+			_viewStage.add(_backgroundLayer);
 			
 			_timelineLayer = new Kinetic.Layer({
                 width: _satLegendWidth
             });
-			_stage.add(_timelineLayer);			
-
+			_viewStage.add(_timelineLayer);			
+            
+            _legendStage = new Kinetic.Stage({
+                container : 'timelinelegend',
+                width : 200,
+                height : jQuery('#viewtabs').tabs('getTab', 0).height() + 25
+            });            
+            _legendBackgroundLayer = new Kinetic.Layer();
+            _legendStage.add(_legendBackgroundLayer);
+            _legendLayer = new Kinetic.Layer();
+            _legendStage.add(_legendLayer);                        
+                  
             _mousePosLayer = new Kinetic.Layer();
-            _stage.add(_mousePosLayer);                
-            
-            
+            _viewStage.add(_mousePosLayer);                
+            _mousePosTimeLayer = new Kinetic.Layer();
+            _legendStage.add(_mousePosTimeLayer);                         
+            _mousePosTime = new Kinetic.Text({
+                x : 5,
+                y : 0,
+                text : 'N/A',
+                fontSize : 10,
+                fontFamily : 'Verdana',
+                textFill : 'white'
+            });
+            _mousePosTimeLayer.add(_mousePosTime);
+                                    
 			drawBackground();
 		},
         
@@ -255,7 +352,8 @@ var AGTIMELINE = function() {
             var selectedSats = AGSatTrack.getTles().getSelected();
             jQuery.each(selectedSats, function(index, sat) {
                 sat.calculateTodaysPasses();
-            });            
+            });
+            drawTimeline();           
         }
 	}
 }

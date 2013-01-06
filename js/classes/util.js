@@ -63,6 +63,9 @@ var AGUTIL = (function() {
     }
     
 	return {
+        pad : function(num, size) {
+            return pad(num, size);    
+        },
         
         loadImages : function(sources, callback){
             var images = {};
