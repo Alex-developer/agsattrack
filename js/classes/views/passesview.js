@@ -18,6 +18,7 @@ var AGPASSESVIEW = function() {
 	var _render = false;
 	var _polar;
     var _3d;
+    var _test = 0;
     
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
