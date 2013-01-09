@@ -206,14 +206,25 @@ var AGSKYVIEW = function(element) {
 		}
 
         if (_showCity) {
-            _cityLayer.add(new Kinetic.Image({
+            var cityImage = new Kinetic.Image({
               x: 0,
               y: _height - 109,
               image: AGIMAGES.getImage('city'),
               width: _width,
               height: 109,
-              opacity: 0.90
-            }));
+              opacity: 0.90,
+              draggable: true
+            });
+            cityImage.on('dragmove', function(e) {
+                this.setX(0); 
+                if (_stage.getHeight() - this.getY() < 20) {
+                    this.setY(_stage.getHeight() - 20);
+                }
+                if (this.getY() < _stage.getHeight() - 109) {
+                    this.setY(_stage.getHeight() - 109);
+                }                
+            });            
+            _cityLayer.add(cityImage);
         }
 
 		_backgroundLayer.draw();
