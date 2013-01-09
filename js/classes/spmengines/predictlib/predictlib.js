@@ -1670,7 +1670,7 @@ var PLib =
         
                 while (PLib.aostime == 0.0)
                 {
-                    if (Math.abs(PLib.sat_ele) < 0.03)
+                    if (PLib.sat_ele >= 0.0)
                         PLib.aostime = PLib.daynum;
                     else
                     {
@@ -1690,21 +1690,48 @@ var PLib =
             if (PLib.Geostationary(indx) == 0 && PLib.AosHappens(indx) == 1 && PLib.Decayed(indx, PLib.daynum) == 0)
             {
                 PLib.Calc();
-        
-                do
-                {
+        /*
+                do {
                     PLib.daynum += PLib.sat_ele * Math.sqrt(PLib.sat_alt) / 502500.0;
+                    var tt=56;
                     PLib.Calc();
         
                     if (Math.abs(PLib.sat_ele) < 0.03)
                         PLib.lostime = PLib.daynum;
         
                 } while (PLib.lostime == 0.0);
+                
+          */      
+                while (PLib.lostime == 0.0) {
+                    PLib.daynum += Math.abs(PLib.sat_ele * Math.sqrt(PLib.sat_alt) / 502500.0);
+                    var tt=56;
+                    PLib.Calc();
+        
+                    if (Math.abs(PLib.sat_ele) < 0.03)
+                        PLib.lostime = PLib.daynum;
+        
+                }
+                                
             }
             PLib.next_los = PLib.Daynum2Date(PLib.lostime);
             return PLib.lostime;
         },
 
+        FindLOS2 : function()
+        {
+            /* This function steps through the pass to find LOS.
+               FindLOS() is called to "fine tune" and return the result. */
+
+            while (PLib.sat_ele>=0.0) {
+                PLib.daynum += Math.cos((PLib.sat_ele-1.0)*PLib.deg2rad)*Math.sqrt(PLib.sat_alt)/25000.0;
+                PLib.Calc();
+
+            } ;
+
+            return PLib.FindLOS();
+        },
+
+        
         doCalc: function(time)
         {
             var satInfo = new Object();

@@ -18,8 +18,6 @@ var AGPOLARVIEW = function(element) {
     
 	var _render = false;
     var _stage;
-	var _sats = [];
-	var _satLabels = [];
 	var _mousePos = {
 		x : 0,
 		y : 0,
@@ -42,12 +40,32 @@ var AGPOLARVIEW = function(element) {
     var _showPlanets = false;
     var _images = [];
     var _element;
+    var _backgroundLayer;
+    var _objectLayer;
+    var _satLayer;
+    var _planetLayer;
+    var _orbitLayer;
+    var _infoLayer;
+    var _mousePosTextAz;
+    var _mousePosTextEl;
+    var _naflag = false;
     
+    /**
+    * Set the parent element for this view.    
+    */
     if (typeof element === 'undefined') {
         _element = 'polar';    
     } else {
         _element = element;
     }
+    
+    /**
+    * Resize the view. if no width or heig is specified then it is derived
+    * from the parent (_element) element.
+    * 
+    * @param width Width of view in Pixels
+    * @param height Height of view in Pixels
+    */
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#'+_element);
@@ -76,9 +94,9 @@ var AGPOLARVIEW = function(element) {
 	 * Listen for an event telling us a new set of elements were loaded
 	 */
 	jQuery(document).bind('agsattrack.tlesloaded', function(event, group) {
-		_sats = [];
-		_satLabels = [];
-		_satLayer.clear();
+        if (_render) {
+		    _satLayer.clear();
+        }
 	});
 
     jQuery(document).bind('agsattrack.newfollowing', function(event, group) {
@@ -96,14 +114,10 @@ var AGPOLARVIEW = function(element) {
                 }
             });
 
-	function getMousePos(canvas, evt) {
-		var rect = canvas.getBoundingClientRect();
-		return {
-			x : evt.clientX - rect.left,
-			y : evt.clientY - rect.top
-		};
-	}
-
+    /**
+    * Convert the current postiion of the mouse to Azimuth and
+    * Elevation.
+    */
 	function convertMousePos() {
 		var rel = _radius
 				- Math.sqrt((_mousePos.x - _cx) * (_mousePos.x - _cx)
@@ -125,7 +139,15 @@ var AGPOLARVIEW = function(element) {
 			_mousePos.show = true;
 		}
 	}
-
+    
+    /**
+    * Convert an Azimuth and Elevation to screen coordinates
+    * 
+    * @param az The Azimuth
+    * @param el The Elevation
+    * 
+    * @returns {Object}
+    */
 	function convertAzEltoXY(az, el) {
 
 		if (el < 0) {
@@ -151,6 +173,10 @@ var AGPOLARVIEW = function(element) {
 		};
 	}
 
+    /**
+    * Setup the basic dimensions we need to be able
+    * to draw the Polar view.
+    */
 	function setDimensions() {
 
 		_height = _stage.getHeight();
@@ -170,44 +196,15 @@ var AGPOLARVIEW = function(element) {
 		_halfMargin = (0.5 + (_margin / 2)) | 0;
 	}
 
-	_stage = new Kinetic.Stage({
-		container : _element,
-		width : 1000,
-		height : 600
-	});
-
-	var layer = new Kinetic.Layer();
-	_stage.add(layer);
-
-	var _objectLayer = new Kinetic.Layer();
-	_stage.add(_objectLayer);
-
-	var _satLayer = new Kinetic.Layer();
-	_stage.add(_satLayer);
-
-    var _planetLayer = new Kinetic.Layer();
-    _stage.add(_planetLayer);
-    
-    var _orbitLayer = new Kinetic.Layer();
-	_stage.add(_orbitLayer);
-
-    var _infoLayer = new Kinetic.Layer();
-    _stage.add(_infoLayer);
-    	
-	_stage.on('mousemove', function() {
-		_mousePos = _stage.getMousePosition();
-		convertMousePos();
-	});
-
 	function drawBackground() {
 		var _circle;
 		var _line;
 		var _text;
 
 		setDimensions();
-		layer.removeChildren();
+		_backgroundLayer.removeChildren();
 
-        layer.add(new Kinetic.Rect({
+        _backgroundLayer.add(new Kinetic.Rect({
             x: 0,
             y: 0,
             width: _width,
@@ -216,7 +213,7 @@ var AGPOLARVIEW = function(element) {
         }));
       
 
-        layer.add(new Kinetic.Circle({
+        _backgroundLayer.add(new Kinetic.Circle({
             x : _cx,
             y : _cy,
             radius : _radius + _halfMargin,
@@ -245,11 +242,11 @@ var AGPOLARVIEW = function(element) {
 		_circle.on('mouseout', function() {
 			_mousePos.show = false;
 		});
-		layer.add(_circle);
+		_backgroundLayer.add(_circle);
 
         for (var i=0; i<90; i+=15) {
             var radius = (0.5 + (_radius * (i/90))) | 0;
-            layer.add(new Kinetic.Circle({
+            _backgroundLayer.add(new Kinetic.Circle({
                 x : _cx,
                 y : _cy,
                 radius : radius,
@@ -260,7 +257,7 @@ var AGPOLARVIEW = function(element) {
         
         for (var i=15; i<90; i+=15) {
             var radius = (0.5 + (_radius * (i/90))) | 0;
-            layer.add(new Kinetic.Text({
+            _backgroundLayer.add(new Kinetic.Text({
                 x : _cx - radius - 7,
                 y : _cy + 5,
                 text : (90-i) + 'º',
@@ -268,7 +265,7 @@ var AGPOLARVIEW = function(element) {
                 fontFamily : 'Verdana',
                 textFill : '#999'
             }));
-            layer.add(new Kinetic.Text({
+            _backgroundLayer.add(new Kinetic.Text({
                 x : _cx + radius - 7,
                 y : _cy + 5,
                 text : (90-i) + 'º',
@@ -296,31 +293,28 @@ var AGPOLARVIEW = function(element) {
             var endX =  (_cx + (_radius + 15) * Math.cos( rad )) | 0;  
             var endY =  (_cy + (_radius + 15) * Math.sin( rad )) | 0;
             
-            layer.add(new Kinetic.Line({
+            _backgroundLayer.add(new Kinetic.Line({
                 points : [ startX, startY, endX, endY ],
                 stroke : '#ccc',
                 strokeWidth : 1
             }));           
         }      
-            
 
-		_line = new Kinetic.Line({
-			points : [ _cx - _radius - _halfMargin + 5, _cy,
-					_cx + _radius + _halfMargin - 5, _cy ],
-			stroke : '#ccc',
-			strokeWidth : 1
-		});
-		layer.add(_line);
+		_backgroundLayer.add(new Kinetic.Line({
+            points : [ _cx - _radius - _halfMargin + 5, _cy,
+                    _cx + _radius + _halfMargin - 5, _cy ],
+            stroke : '#ccc',
+            strokeWidth : 1
+        }));
 
-		_line = new Kinetic.Line({
-			points : [ _cx, _cy - _radius - _halfMargin + 5, _cx,
-					_cy + _radius + _halfMargin - 5 ],
-			stroke : '#ccc',
-			strokeWidth : 1
-		});
-		layer.add(_line);
+		_backgroundLayer.add(new Kinetic.Line({
+            points : [ _cx, _cy - _radius - _halfMargin + 5, _cx,
+                    _cy + _radius + _halfMargin - 5 ],
+            stroke : '#ccc',
+            strokeWidth : 1
+        }));
 
-		layer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Kinetic.Text({
             x : _cx + 5,
             y : 30,
             text : 'N',
@@ -329,7 +323,7 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
 
-		layer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Kinetic.Text({
             x : _cx + _radius ,
             y : _radius + _halfMargin,
             text : 'E',
@@ -338,7 +332,7 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
 
-		layer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Kinetic.Text({
             x : _cx - _radius - 10,
             y : _radius + _halfMargin,
             text : 'W',
@@ -347,7 +341,7 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
 
-		layer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Kinetic.Text({
             x : _cx + 8,
             y : _height - _halfMargin - 30,
             text : 'S',
@@ -356,7 +350,7 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
 
-		layer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Kinetic.Text({
             x : 0,
             y : 5,
             text : 'Mouse Position',
@@ -365,7 +359,7 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
         
-		layer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Kinetic.Text({
             x : 0,
             y : 30,
             text : 'Azimuth:',
@@ -374,7 +368,7 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
         
-		layer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Kinetic.Text({
             x : 0,
             y : 50,
             text : 'Elevation:',
@@ -383,32 +377,8 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
 
-		layer.draw();
-
+		_backgroundLayer.draw();
 	}
-
-	var _mousePosTextAz = new Kinetic.Text({
-		x : 100,
-		y : 30,
-		text : 'N/A',
-		fontSize : 12,
-		fontFamily : 'Verdana',
-		textFill : '#ccc'
-	});
-	_objectLayer.add(_mousePosTextAz);
-
-	var _mousePosTextEl = new Kinetic.Text({
-		x : 100,
-		y : 50,
-		text : 'N/A',
-		fontSize : 12,
-		fontFamily : 'Verdana',
-		textFill : '#ccc'
-	});
-	_objectLayer.add(_mousePosTextEl);
-
-	var _naflag = false;
-    
     
     function drawMousePos() {
         if (_mousePos.show) {
@@ -426,6 +396,11 @@ var AGPOLARVIEW = function(element) {
         }        
     }
     
+
+    /**
+    * Draw the main polar view. This function plots the satellites, orbits
+    * and satellite information.
+    */
 	function drawPolarView() {
 
 		setDimensions();
@@ -434,8 +409,9 @@ var AGPOLARVIEW = function(element) {
         drawInfoLayer();
         
         _orbitLayer.removeChildren();
+        _satLayer.removeChildren();
 		var satellites = AGSatTrack.getSatellites();
-		jQuery.each(satellites, function(index, satellite) {
+		jQuery.each(satellites, function(index, satellite) {        
 			if (satellite.isDisplaying()) {
 
 				var az = satellite.get('azimuth');
@@ -447,52 +423,109 @@ var AGPOLARVIEW = function(element) {
                 */
                 if (satellite.getSelected()) {
                     var move = false;
+                    var prePoints = [];                        
                     var points = [];                        
-                    var orbit = satellite.getOrbitData();
-                    var started = false;
+                    var postPoints = [];                        
                     var max = {az:0, el:0};
                     var aostime = null;
-                    for ( var i = 0; i < orbit.length; i++) {
-                        if (orbit[i].el >= AGSETTINGS.getAosEl()) {
-                            var pos = convertAzEltoXY(orbit[i].az, orbit[i].el);
-                            points.push(pos.x | 0);
-                            points.push(pos.y | 0);
-                            started = true;
-                            if (aostime === null) {
-                                aostime = orbit[i].date;
+                    var okToDraw = true;
+                    
+                    var passData = satellite.getNextPass();
+                    var pass = passData.pass;
+                    var haveAos = false;
+                    
+                    if (okToDraw) {
+                                            
+                        points = []; 
+                        for ( var i = 0; i < pass.length; i++) {
+                            var pos = convertAzEltoXY(pass[i].az, pass[i].el);
+                            if (pass[i].el >= AGSETTINGS.getAosEl()) {
+                                
+                                if (points.length ===0) {
+                                    prePoints.push(pos.x | 0);
+                                    prePoints.push(pos.y | 0);                                    
+                                }
+                                points.push(pos.x | 0);
+                                points.push(pos.y | 0);
+
+                                if (aostime === null) {
+                                    aostime = pass[i].date;
+                                }
+                                
+                                /**
+                                * For Debugging  ONLY
+                                */
+                                /*
+                                _orbitLayer.add(new Kinetic.Circle({
+                                    x : pos.x,
+                                    y : pos.y,
+                                    radius : 2,
+                                    stroke : '#ccc',
+                                    strokeWidth : 1
+                                }));
+                                */                             
+                                
+                                haveAos = true;
+                            } else {
+                                if (!haveAos) {
+                                    if (pass[i].el >= 0) {
+                                        prePoints.push(pos.x | 0);
+                                        prePoints.push(pos.y | 0);                                    
+                                    }
+                                } else {
+                                    if (pass[i].el >= 0) {
+                                        if (postPoints.length === 0 && points.length > 0) {
+                                            debugger;
+                                            postPoints.push(points[points.length-2]);
+                                            postPoints.push(points[points.length-1]);
+                                        }
+                                        postPoints.push(pos.x | 0);
+                                        postPoints.push(pos.y | 0);                                    
+                                    }
+                                }
+                            }
+                            if (pass[i].el > max.el) {
+                                max = pass[i];
                             }
                             
-                            /**
-                            * For Debugging  ONLY
-                            */
-                            /*
-                            _orbitLayer.add(new Kinetic.Circle({
-                                x : pos.x,
-                                y : pos.y,
-                                radius : 2,
-                                stroke : '#ccc',
-                                strokeWidth : 1
-                            }));
-                            */                             
-                            
+                            if (haveAos && pass[i].el < 0) {
+                                break;
+                            }
                         }
-                        if (orbit[i].el > max.el) {
-                            max = orbit[i];
+
+                        if (prePoints.length > 0) {
+                            _orbitLayer.add(new Kinetic.Line({
+                                    points: prePoints,
+                                    stroke: 'red',
+                                    strokeWidth: 1,
+                                    lineCap: 'round',
+                                    lineJoin: 'round'
+                                })
+                            );
                         }
-                        if (started && orbit[i].el < AGSETTINGS.getAosEl()) {
-                            break;
+                                                                        
+                        if (points.length > 0) {
+                            _orbitLayer.add(new Kinetic.Line({
+                                    points: points,
+                                    stroke: 'green',
+                                    strokeWidth: 2,
+                                    lineCap: 'round',
+                                    lineJoin: 'round'
+                                })
+                            );
                         }
-                    }
-                    
-                    if (points.length > 0) {
-                        _orbitLayer.add(new Kinetic.Line({
-                                points: points,
-                                stroke: 'green',
-                                strokeWidth: 2,
-                                lineCap: 'round',
-                                lineJoin: 'round'
-                            })
-                        );
+                        
+                        if (postPoints.length > 0) {
+                            _orbitLayer.add(new Kinetic.Line({
+                                    points: postPoints,
+                                    stroke: 'red',
+                                    strokeWidth: 1,
+                                    lineCap: 'round',
+                                    lineJoin: 'round'
+                                })
+                            );
+                        }                        
+                                                
                     }
                     
                     /**
@@ -521,8 +554,7 @@ var AGPOLARVIEW = function(element) {
                             }));     
                         }                   
                     } else {
-                        
-                        if (max.az !== 0 && max.el !== 0) {
+                        if (max.az !== 0 && max.el !== 0 && okToDraw) {
                             var pos = convertAzEltoXY(max.az, max.el);
                             var label = max.el.toFixed(0);
                             _orbitLayer.add(new Kinetic.Text({
@@ -547,50 +579,35 @@ var AGPOLARVIEW = function(element) {
 						_style = 'bold';
 					}
 
-					var satLabel = satellite.getName();
+					_satLayer.add(new Kinetic.Text({
+                        x : pos.x - 8,
+                        y : pos.y - 20,
+                        text : satellite.getName(),
+                        fontSize : 10,
+                        fontFamily : 'Verdana',
+                        fontStyle : _style,
+                        textFill : 'white'
+                    }));
 
-					if (typeof _sats[index] !== 'undefined') {
-						_satLabels[index].setPosition(parseInt(pos.x - 8),
-								parseInt(pos.y - 20));
-						_satLabels[index].setFontStyle(_style);
-					} else {
-						_satLabels[index] = new Kinetic.Text({
-							x : pos.x - 8,
-							y : pos.y - 20,
-							text : satLabel,
-							fontSize : 10,
-							fontFamily : 'Verdana',
-							fontStyle : _style,
-							textFill : 'white'
+                    var sat;
+					sat = new Kinetic.Image({
+						x : pos.x - 8,
+						y : pos.y - 8,
+						image : AGIMAGES.getImage('satellite16'),
+						width : 16,
+						height : 16,
+						id : satellite.getName()
+					});
+					sat.on('mouseup', function(e) {
+						var selected = e.shape.getId();
+						jQuery(document).trigger('agsattrack.satclicked', {
+							index : selected
 						});
-						_satLayer.add(_satLabels[index]);
-					}
-
-					if (typeof _sats[index] !== 'undefined') {
-						_sats[index].setPosition(parseInt(pos.x - 8),
-								parseInt(pos.y - 8));
-					} else {
-						_sats[index] = new Kinetic.Image({
-							x : pos.x - 8,
-							y : pos.y - 8,
-							image : AGIMAGES.getImage('satellite16'),
-							width : 16,
-							height : 16,
-							id : satellite.getName()
-						});
-						_sats[index].on('mouseup', function(e) {
-							var selected = e.shape.getId();
-							jQuery(document).trigger('agsattrack.satclicked', {
-								index : selected
-							});
-						});
-						_satLayer.add(_sats[index]);
-					}
-
+					});
+					_satLayer.add(sat);
 				}
 
 			}
-
 		});
         _orbitLayer.draw();
 		_satLayer.draw();
@@ -688,8 +705,6 @@ var AGPOLARVIEW = function(element) {
 		
 	}
 
-    drawBackground();    
-
 	return {
 		startRender : function() {
 			_render = true;
@@ -707,7 +722,55 @@ var AGPOLARVIEW = function(element) {
         },
                 
 		init : function() {
+            _stage = new Kinetic.Stage({
+                container : _element,
+                width : 1000,
+                height : 600
+            });
 
+            _backgroundLayer = new Kinetic.Layer();
+            _stage.add(_backgroundLayer);
+
+            _objectLayer = new Kinetic.Layer();
+            _stage.add(_objectLayer);
+
+            _satLayer = new Kinetic.Layer();
+            _stage.add(_satLayer);
+
+            _planetLayer = new Kinetic.Layer();
+            _stage.add(_planetLayer);
+            
+            _orbitLayer = new Kinetic.Layer();
+            _stage.add(_orbitLayer);
+
+            _infoLayer = new Kinetic.Layer();
+            _stage.add(_infoLayer);
+                
+            _stage.on('mousemove', function() {
+                _mousePos = _stage.getMousePosition();
+                convertMousePos();
+            });
+            
+            _mousePosTextAz = new Kinetic.Text({
+                x : 100,
+                y : 30,
+                text : 'N/A',
+                fontSize : 12,
+                fontFamily : 'Verdana',
+                textFill : '#ccc'
+            });
+            _objectLayer.add(_mousePosTextAz);
+
+            _mousePosTextEl = new Kinetic.Text({
+                x : 100,
+                y : 50,
+                text : 'N/A',
+                fontSize : 12,
+                fontFamily : 'Verdana',
+                textFill : '#ccc'
+            });
+            _objectLayer.add(_mousePosTextEl);
+                
 		},
         
         reset : function() {

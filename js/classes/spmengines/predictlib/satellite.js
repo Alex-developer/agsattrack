@@ -21,6 +21,12 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     var _satPasses = new AGPREDICTLIB(tle0, tle1, tle2);
      
     var orbit = [];
+    var _nextPass = {
+        pass: [],
+        aosTime: null,
+        losTime: null,
+        maxEle: 0
+    };
     var _orbitAge = null;
     var _calcOrbitEvery = 50;
     var _orbitCalcCounter = _calcOrbitEvery;
@@ -46,7 +52,40 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'z' : 'sat_z'     
     };
     var _passes = null;
-       
+    
+    function getNextPass(observer) {
+        var date = new Date(); 
+        time = (date.getTime() - 315446400000) / 86400000;    
+        
+        _satOrbit.PreCalc(0);
+        _satOrbit.daynum = time;
+        var aos = _satOrbit.FindAOS();
+        
+        if (aos !== 0.0) {
+            var los = _satOrbit.FindLOS2();
+            _nextPass.orbit = [];
+            _nextPass.aosTime = _satOrbit.Daynum2Date(aos);
+            _nextPass.losTime = _satOrbit.Daynum2Date(los);
+ 
+            _satOrbit.doCalc(aos);
+
+            var time = aos;
+            while (time < los) {
+                _satOrbit.doCalc(time);
+                var orbitdata = {
+                    x: _satOrbit.sat_x,
+                    y: _satOrbit.sat_y,
+                    z: _satOrbit.sat_z,
+                    el: _satOrbit.elevation,
+                    az: _satOrbit.azimuth,
+                    date: _satOrbit.Daynum2Date(time)
+                };
+                _nextPass.pass.push(orbitdata);
+                time += (0.00035); // 30 Seconds
+            }     
+        }
+    }
+    
     function calculateOrbit(observer) {
         _orbitrequested = false;
         
@@ -60,7 +99,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         if (_sat.next_aos && _sat.next_los) {
             var date = new Date(); 
                        
-            var period = ((1440 / _sat.sat[0].meanmo) + 0.5) * 60;
+            var period = (Math.ceil(1440.0 / _sat.sat[0].meanmo)) * 60;
             var step = period / 800;            
             
             if (_sat.elevation > 0) {
@@ -143,6 +182,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 				var date = new Date();				
 			}
             _sat.configureGroundStation(observer.getLat(), observer.getLon());
+            _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
 
             _sat.doCalc();
             
@@ -157,7 +197,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                 _sat.doCalc(); // TODO: Fix this. Its here to reset the values after the AOS calcs
             }
 
-
+            if (_selected) { // TODO: bad code don't need to recalc this every time
+                getNextPass();                
+            }
 		},
         
         getNextEvent : function(returnRaw) {
@@ -217,6 +259,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         
         getTodaysPasses : function() {
             return _passes;
+        },
+        
+        getNextPass : function() {
+            return _nextPass;    
         }
 	
 	}

@@ -13,7 +13,7 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
-var AGSKYVIEW = function() {
+var AGSKYVIEW = function(element) {
 	'use strict';
 
 	var _render = false;
@@ -42,10 +42,17 @@ var AGSKYVIEW = function() {
 	var _moon = null;
 	var _moonText = null;
     var _showPlanets = false;
+    var _element;
     
+    if (typeof element === 'undefined') {
+        _element = 'sky';    
+    } else {
+        _element = element;
+    }
+        
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
-            var parent = jQuery('#polar');
+            var parent = jQuery('#' + _element);
             width = parent.width();
             height = parent.height();
         }
@@ -450,7 +457,7 @@ var AGSKYVIEW = function() {
 		init : function() {
 
 			_stage = new Kinetic.Stage({
-				container : 'sky',
+				container : _element,
 				width : jQuery('#viewtabs').tabs('getTab', 0).width(),
 				height : jQuery('#viewtabs').tabs('getTab', 0).height()
 			});

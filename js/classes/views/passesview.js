@@ -16,11 +16,11 @@ Copyright 2012 Alex Greenland
 var AGPASSESVIEW = function() {
 	'use strict';
 	var _render = false;
-	var _polar;
-    var _3d;
-    var _test = 0;
+    var _polar;
+	var _sky;
     
     function resize(width, height) {
+/*
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#passes');
             width = parent.width();
@@ -32,13 +32,14 @@ var AGPASSESVIEW = function() {
             jQuery('#passes').height(height);
             jQuery('#passesgrid').datagrid('resize',{
                 width: width / 2,
-                height: height / 2
+                height: height
             });
-       //     _polar.resizeView(width / 2, height / 2);
-            
+            _polar.resizeView(width / 2, height / 2);      
+            _sky.resizeView(width / 2, height / 2);            
         }          
+*/
     }
-        
+/*
 	jQuery(document).bind('agsattrack.newsatselected1', function(event, selected) {
 
 		var selected = AGSatTrack.getSelected();
@@ -109,14 +110,18 @@ if (typeof data.originalRows !== 'undefined') {
 	}
 	
 	jQuery('#passesgrid').datagrid({loadFilter:pagerFilter}).datagrid('loadData', getData());
-	
+*/	
 	return {
 		startRender : function() {
-			_render = true;			
+			_render = true;
+    //        _polar.startRender();
+     //       _sky.startRender();		
 		},
 		
 		stopRender : function() {
-			_render = false;			
+			_render = false;
+      //      _polar.stopRender();			
+      //      _sky.stopRender();
 		},
 
         resizeView : function(width, height) {
@@ -124,12 +129,9 @@ if (typeof data.originalRows !== 'undefined') {
         },
         		
 		init : function() {
-        //    var _polar = AGVIEWS.getNewView('polar','passespolar');
-        //    _polar.startRender();
-        //    var _3d = AGVIEWS.getNewView('3d','passes3d');
-         //   _3d.init();
-          //  _3d.postInit();
-           // _3d.startRender();			
+     //       _polar = AGVIEWS.getNewView('polar','passespolar');
+     //       _sky = AGVIEWS.getNewView('sky','passessky');
+     //       _sky.init();
 		}		
 	}
 }
