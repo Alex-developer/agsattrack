@@ -1657,7 +1657,8 @@ var PLib =
         FindAOS: function()
         {
             PLib.aostime = 0.0;
-        
+            var counter = 0;
+            
             if (PLib.AosHappens(indx) && PLib.Geostationary(indx) == 0 && PLib.Decayed(indx, PLib.daynum) == 0)
             {
                 PLib.Calc();
@@ -1666,8 +1667,12 @@ var PLib =
                 {
                     PLib.daynum -= 0.00035 * (PLib.sat_ele * (((PLib.sat_alt / 8400.0) + 0.46)) - 2.0);
                     PLib.Calc();
+                    if (counter++ > 1000) {
+                        break;
+                    }
                 }
         
+                counter = 0;
                 while (PLib.aostime == 0.0)
                 {
                     if (PLib.sat_ele >= 0.0)
@@ -1677,6 +1682,9 @@ var PLib =
                         PLib.daynum -= PLib.sat_ele * Math.sqrt(PLib.sat_alt) / 530000.0;
                         PLib.Calc();
                     }
+                    if (counter++ > 1000) {
+                        break;
+                    }                    
                 }
             }
             PLib.next_aos = PLib.Daynum2Date(PLib.aostime);

@@ -429,7 +429,7 @@ var AGPOLARVIEW = function(element) {
                     var max = {az:0, el:0};
                     var aostime = null;
                     var okToDraw = true;
-                    
+                    var aosPos = {x:0, y:0};
                     var passData = satellite.getNextPass();
                     var pass = passData.pass;
                     var haveAos = false;
@@ -443,7 +443,9 @@ var AGPOLARVIEW = function(element) {
                                 
                                 if (points.length ===0) {
                                     prePoints.push(pos.x | 0);
-                                    prePoints.push(pos.y | 0);                                    
+                                    prePoints.push(pos.y | 0);
+                                    aosPos.x  = pos.x;
+                                    aosPos.y = pos.y;                                   
                                 }
                                 points.push(pos.x | 0);
                                 points.push(pos.y | 0);
@@ -535,39 +537,50 @@ var AGPOLARVIEW = function(element) {
                     if (el < AGSETTINGS.getAosEl()) {
                         if (aostime !== null) {
                             var pos = convertAzEltoXY(max.az, max.el);
-                            var label = '(AOS: '+AGUTIL.shortdatetime(aostime, true)+')';
                             _orbitLayer.add(new Kinetic.Text({
-                                x : pos.x,
-                                y : pos.y,
+                                x : pos.x + 5,
+                                y : pos.y + 5,
                                 text : satellite.getName(),
                                 fontSize : 6,
                                 fontFamily : 'Verdana',
                                 textFill : '#eee'
-                            }));
-                            _orbitLayer.add(new Kinetic.Text({
-                                x : pos.x,
-                                y : pos.y + 10,
-                                text : label,
-                                fontSize : 6,
-                                fontFamily : 'Verdana',
-                                textFill : '#eee'
-                            }));     
+                            }));  
                         }                   
-                    } else {
-                        if (max.az !== 0 && max.el !== 0 && okToDraw) {
-                            var pos = convertAzEltoXY(max.az, max.el);
-                            var label = max.el.toFixed(0);
-                            _orbitLayer.add(new Kinetic.Text({
-                                x : pos.x,
-                                y : pos.y,
-                                text : label,
-                                fontSize : 6,
-                                fontFamily : 'Verdana',
-                                textFill : '#eee'
-                            }));
-                        }                         
+                    } 
+                    if (max.az !== 0 && max.el !== 0 && okToDraw) {
+                        var pos = convertAzEltoXY(max.az, max.el);
+                        _orbitLayer.add(new Kinetic.Circle({
+                            x : pos.x,
+                            y : pos.y,
+                            radius : 2,
+                            stroke : 'red',
+                            strokeWidth : 1,
+                            fill: 'red' 
+                        })); 
+                    }                         
+
+                    
+                    if (aosPos.x !== 0 && aosPos.y !== 0) {
+                        _orbitLayer.add(new Kinetic.Text({
+                            x : aosPos.x,
+                            y : aosPos.y,
+                            text : 'AoS: ' + AGUTIL.shortdatetime(passData.aosTime),
+                            fontSize : 6,
+                            fontFamily : 'Verdana',
+                            textFill : '#eee'
+                        }));                         
                     }
-                                           
+                    
+                    if (postPoints.length !== 0) {
+                        _orbitLayer.add(new Kinetic.Text({
+                            x : postPoints[0],
+                            y : postPoints[1],
+                            text : 'LoS: ' + AGUTIL.shortdatetime(passData.losTime),
+                            fontSize : 6,
+                            fontFamily : 'Verdana',
+                            textFill : '#eee'
+                        }));                          
+                    }                   
                 }
 
                 if (el > AGSETTINGS.getAosEl()) {
