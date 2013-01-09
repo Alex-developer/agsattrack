@@ -49,7 +49,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'next_aos' : 'next_aos',
         'x' : 'sat_x',     
         'y' : 'sat_y',     
-        'z' : 'sat_z'     
+        'z' : 'sat_z',
+        'epoc' : 'sat_epoch'    
     };
     var _passes = null;
     

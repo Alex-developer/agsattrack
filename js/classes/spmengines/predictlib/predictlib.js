@@ -1667,7 +1667,7 @@ var PLib =
                 {
                     PLib.daynum -= 0.00035 * (PLib.sat_ele * (((PLib.sat_alt / 8400.0) + 0.46)) - 2.0);
                     PLib.Calc();
-                    if (counter++ > 1000) {
+                    if (counter++ > 5000) {
                         break;
                     }
                 }
@@ -1682,7 +1682,7 @@ var PLib =
                         PLib.daynum -= PLib.sat_ele * Math.sqrt(PLib.sat_alt) / 530000.0;
                         PLib.Calc();
                     }
-                    if (counter++ > 1000) {
+                    if (counter++ > 5000) {
                         break;
                     }                    
                 }
