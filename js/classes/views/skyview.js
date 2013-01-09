@@ -43,6 +43,7 @@ var AGSKYVIEW = function(element) {
 	var _moonText = null;
     var _showPlanets = false;
     var _element;
+    var _showCity = true;
     
     if (typeof element === 'undefined') {
         _element = 'sky';    
@@ -82,6 +83,16 @@ var AGSKYVIEW = function(element) {
                     drawPlanets();
                 }
             });
+            
+    jQuery(document).bind('agsattrack.showcity',
+            function(e, state) {
+                if (AGSETTINGS.getHaveCanvas() && _render) {
+                    _showCity = state;
+                    drawBackground();
+                    drawSkyView();
+                }
+            });            
+            
                 
 	function getDimensions() {
 		_width = _stage.getWidth();
@@ -194,14 +205,16 @@ var AGSKYVIEW = function(element) {
                         
 		}
 
-        _cityLayer.add(new Kinetic.Image({
-          x: 0,
-          y: _height - 109,
-          image: AGIMAGES.getImage('city'),
-          width: _width,
-          height: 109,
-          opacity: 0.90
-        }));
+        if (_showCity) {
+            _cityLayer.add(new Kinetic.Image({
+              x: 0,
+              y: _height - 109,
+              image: AGIMAGES.getImage('city'),
+              width: _width,
+              height: 109,
+              opacity: 0.90
+            }));
+        }
 
 		_backgroundLayer.draw();
         _cityLayer.draw();
@@ -338,49 +351,74 @@ var AGSKYVIEW = function(element) {
 
         jQuery.each(satellites, function(index, satellite) {
             if (satellite.isDisplaying() && satellite.getSelected()) {
-                orbit = satellite.getOrbitData();
-                points = [];
+                var passData = satellite.getNextPass();
+                var pass = passData.pass;
+                var haveAos = false;
+                var prePoints = [];                        
+                var points = [];                        
+                var postPoints = [];  
                 var max = {az:0, el:0};
                 var aostime = null;                
-                for (var i=0; i<orbit.length;i++) {
-                    if (orbit[i].el >= AGSETTINGS.getAosEl() && aostime === null) {                    
-                        aostime = orbit[i].date;
-                    }
-                                                
-                    if (orbit[i].el > -10) {
-                        if (orbit[i].el > max.el) {
-                            max = orbit[i];
-                        }                        
-                        pos = convertAzEltoScreen(orbit[i].az, orbit[i].el);
-                        points.push(pos.x);
-                        points.push(pos.y);
-                        /*
-                        _orbitLayer.add(new Kinetic.Text({
-                            x : pos.x - 8,
-                            y : pos.y - 20,
-                            text : AGUTIL.shortdate(orbitData[i].date),
-                            fontSize : 10,
-                            fontFamily : 'Verdana',
-                            textFill : 'green'
-                        }));
-                        */                            
-                        if (pos.x <= 0 || pos.x >= _width || pos.y >= _height) {
-                            _orbitLayer.add(new Kinetic.Line({
-                                    points: points,
-                                    stroke: 'green',
-                                    strokeWidth: 1,
-                                    lineCap: 'round',
-                                    lineJoin: 'round'
-                                })
-                            );
-                            points = [];                            
+
+                for ( var i = 0; i < pass.length; i++) {
+                    var pos = convertAzEltoScreen(pass[i].az, pass[i].el);
+                    if (pass[i].el >= AGSETTINGS.getAosEl()) {
+                        
+                        if (points.length ===0) {
+                            prePoints.push(pos.x | 0);
+                            prePoints.push(pos.y | 0);                                    
                         }
-                    }    
+                        points.push(pos.x | 0);
+                        points.push(pos.y | 0);
+
+                        if (aostime === null) {
+                            aostime = pass[i].date;
+                        }
+                        
+                        /**
+                        * For Debugging  ONLY
+                        */
+                        /*
+                        _orbitLayer.add(new Kinetic.Circle({
+                            x : pos.x,
+                            y : pos.y,
+                            radius : 2,
+                            stroke : '#ccc',
+                            strokeWidth : 1
+                        }));
+                        */                             
+                        
+                        haveAos = true;
+                    } else {
+                        if (!haveAos) {
+                            if (pass[i].el >= 0) {
+                                prePoints.push(pos.x | 0);
+                                prePoints.push(pos.y | 0);                                    
+                            }
+                        } else {
+                            if (pass[i].el >= 0) {
+                                if (postPoints.length === 0 && points.length > 0) {
+                                    debugger;
+                                    postPoints.push(points[points.length-2]);
+                                    postPoints.push(points[points.length-1]);
+                                }
+                                postPoints.push(pos.x | 0);
+                                postPoints.push(pos.y | 0);                                    
+                            }
+                        }
+                    }
+                    if (pass[i].el > max.el) {
+                        max = pass[i];
+                    }
+                    
+                    if (haveAos && pass[i].el < 0) {
+                        break;
+                    }
                 }
-                
-                if (points.length > 0) {
+
+                if (prePoints.length > 0) {
                     _orbitLayer.add(new Kinetic.Line({
-                            points: points,
+                            points: prePoints,
                             stroke: 'red',
                             strokeWidth: 1,
                             lineCap: 'round',
@@ -388,6 +426,28 @@ var AGSKYVIEW = function(element) {
                         })
                     );
                 }
+                                                                
+                if (points.length > 0) {
+                    _orbitLayer.add(new Kinetic.Line({
+                            points: points,
+                            stroke: 'green',
+                            strokeWidth: 2,
+                            lineCap: 'round',
+                            lineJoin: 'round'
+                        })
+                    );
+                }
+                
+                if (postPoints.length > 0) {
+                    _orbitLayer.add(new Kinetic.Line({
+                            points: postPoints,
+                            stroke: 'red',
+                            strokeWidth: 1,
+                            lineCap: 'round',
+                            lineJoin: 'round'
+                        })
+                    );
+                }                 
                 
                 var el = satellite.get('elevation');
                 if (el < AGSETTINGS.getAosEl() && aostime !== null) {
