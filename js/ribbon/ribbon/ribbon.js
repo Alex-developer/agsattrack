@@ -277,64 +277,83 @@
 /*global jQuery*/
 /*jshint curly:false*/
 
-;(function ( $, window, document, undefined ) {
-  "use strict";
+/**
+ * Pulse plugin for jQuery 
+ * ---
+ * @author James Padolsey (http://james.padolsey.com)
+ * @version 0.1
+ * @updated 16-DEC-09
+ * ---
+ * Note: In order to animate color properties, you need
+ * the color plugin from here: http://plugins.jquery.com/project/color
+ * ---
+ * @info http://james.padolsey.com/javascript/simple-pulse-plugin-for-jquery/
+ */
 
-  var defaults = {
-      pulses   : 1,
-      interval : 0,
-      returnDelay : 0,
-      duration : 500
-    };
-
-  $.fn.pulse = function(properties, options, callback) {
-    if (typeof options === 'function') {
-      callback = options;
-      options = {};
+;jQuery.fn.pulse = function( prop, speed, times, easing, callback ) {
+    
+    if ( isNaN(times) ) {
+        callback = easing;
+        easing = times;
+        times = 1;
     }
-
-    options = $.extend({}, defaults, options);
-
-    if (!(options.interval >= 0))    options.interval = 0;
-    if (!(options.returnDelay >= 0)) options.returnDelay = 0;
-    if (!(options.duration >= 0))    options.duration = 500;
-    if (!(options.pulses >= -1))     options.pulses = 1;
-    if (typeof callback !== 'function') callback = function(){};
-
-    return this.each(function () {
-      var el = $(this),
-          property,
-          original = {}
-        ;
-
-      for (property in properties) {
-        if (properties.hasOwnProperty(property)) original[property] = el.css(property);
-      }
-
-      var timesPulsed = 0;
-
-      function animate() {
-        if (options.pulses > -1 && ++timesPulsed > options.pulses) return callback.apply(el);
-        el.animate(
-          properties,
-          {
-            duration : options.duration / 2,
-            complete : function(){
-              window.setTimeout(function(){
-                el.animate(original, {
-                  duration : options.duration / 2,
-                  complete : function() {
-                    window.setTimeout(animate, options.interval);
-                  }
-                });
-              },options.returnDelay);
+    
+    var optall = jQuery.speed(speed, easing, callback),
+        queue = optall.queue !== false,
+        largest = 0;
+        
+    for (var p in prop) {
+        largest = Math.max(prop[p].length, largest);
+    }
+    
+    optall.times = optall.times || times;
+    
+    return this[queue?'queue':'each'](function(){
+        
+        var counts = {},
+            opt = jQuery.extend({}, optall),
+            self = jQuery(this);
+            
+        pulse();
+        
+        function pulse() {
+            
+            var propsSingle = {},
+                doAnimate = false;
+            
+            for (var p in prop) {
+                
+                // Make sure counter is setup for current prop
+                counts[p] = counts[p] || {runs:0,cur:-1};
+                
+                // Set "cur" to reflect new position in pulse array
+                if ( counts[p].cur < prop[p].length - 1 ) {
+                    ++counts[p].cur;
+                } else {
+                    // Reset to beginning of pulse array
+                    counts[p].cur = 0;
+                    ++counts[p].runs;
+                }
+                
+                if ( prop[p].length === largest ) {
+                    doAnimate = opt.times > counts[p].runs;
+                }
+                
+                propsSingle[p] = prop[p][counts[p].cur];
+                
             }
-          }
-        );
-      }
-
-      animate();
+            
+            opt.complete = pulse;
+            opt.queue = false;
+            
+            if (doAnimate) {
+                self.animate(propsSingle, opt);
+            } else {
+                optall.complete.call(self[0]);
+            }
+            
+        }
+            
     });
-  };
-
-})( jQuery, window, document );
+    
+};

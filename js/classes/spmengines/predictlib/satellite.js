@@ -56,6 +56,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     
     function getNextPass(observer) {
         var date = new Date(); 
+        
+        _nextPass.pass = [];
+        
         time = (date.getTime() - 315446400000) / 86400000;    
         
         _satOrbit.PreCalc(0);
@@ -80,7 +83,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             _satOrbit.doCalc(aos);
 
             var time = aos;
-            while (time < los) {
+            while (_satOrbit.elevation >= 0) {
                 _satOrbit.doCalc(time);
                 var orbitdata = {
                     x: _satOrbit.sat_x,
@@ -96,49 +99,82 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         }
     }
     
+    /**
+    * Calculate the satellites orbit.
+    */
     function calculateOrbit(observer) {
         var date = new Date();
         var time;
         _orbitrequested = false;
         
+        /**
+        * Only rebuild the orbit data every 60 seconds
+        */
         if (_orbitAge !== null && Date.DateDiff('s', new Date(), _orbitAge) < 60) {
             jQuery(document).trigger('agsattrack.updateinfo', {text: 'Orbit request For ' + _sat.sat[0].name + ' ignored'});
             return;
         }
         
+        /**
+        * Initialise the orbit model
+        */
         _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
-        
         time = (date.getTime() - 315446400000) / 86400000;
         _satOrbit.doCalc(time);
         var thisOrbit = _satOrbit.orbitNumber;
 
+        /**
+        * Jump back to the end of the previous orbit
+        */
         while (thisOrbit === _satOrbit.orbitNumber) {
             time -= 0.0035;
             _satOrbit.doCalc(time);
         }
         
+        /**
+        * Add a little time to get us back onto the right orbit
+        */
         time += 0.0035;
         _satOrbit.doCalc(time);
         
+        /**
+        * Add points at 20 second intervals whilst we are on the same orbit
+        */
         while (thisOrbit === _satOrbit.orbitNumber) {
-            _satOrbit.doCalc(time);
-            var orbitdata = {
-                x: _satOrbit.sat_x,
-                y: _satOrbit.sat_y,
-                z: _satOrbit.sat_z,
-                el: _satOrbit.elevation,
-                az: _satOrbit.azimuth,
-                date: date
-            };
-            orbit.push(orbitdata);            
+            addPoint(time);   
             time += 0.00035;
         }
-
+        
+        /**
+        * FUDGE: No idea why but the orbits are not closed. A few additional points are
+        * required to complete the orbit.
+        */
+        for (i=i;i<20;i++) {
+            addPoint(time);   
+            time += 0.00035;            
+        }                    
         _orbitAge = new Date();
         
         jQuery(document).trigger('agsattrack.updateinfo', {text: 'Calculating Orbit Complete For ' + _sat.sat[0].name});
 
     }
+    
+    /**
+    * Add a point to the orbit data
+    */
+    function addPoint(time) {
+        _satOrbit.doCalc(time);
+        var orbitdata = {
+            x: _satOrbit.sat_x,
+            y: _satOrbit.sat_y,
+            z: _satOrbit.sat_z,
+            el: _satOrbit.elevation,
+            az: _satOrbit.azimuth,
+            date: _satOrbit.Daynum2Date(time)
+        };
+        orbit.push(orbitdata);         
+    }
+    
     
 	return {
 		isDisplaying: function() {

@@ -335,7 +335,7 @@ var AGUI = function() {
            
     }
     
-    
+
     jQuery('#center-panel').panel({
         onResize : function(width, height) {
         

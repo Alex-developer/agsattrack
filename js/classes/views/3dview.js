@@ -27,7 +27,7 @@ var AG3DVIEW = function(element) {
 	var gridRefresh = 1;
 	var gridRefreshCounter = 0
 	var orbitLines = null;
-    var aosLines = null;
+    var passLines = null;
 	var footprintCircle = null;
 	var updateCounter = 0;
 	var clock = null;
@@ -469,7 +469,7 @@ var AG3DVIEW = function(element) {
         
 	function resetOrbit() {
         orbitLines.removeAll();
-		aosLines.removeAll();
+		passLines.removeAll();
 		footprintCircle.removeAll();
 	}
 
@@ -482,18 +482,68 @@ var AG3DVIEW = function(element) {
         drawFootprint();
     }
     
+    function plotLine(cartPoints, colour, polylineCollection, width) {
+        var pos;
+        var points = [];
+        var lastPos;
+        var now = new Cesium.JulianDate();
+        
+        polylineCollection.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+                Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                Cesium.Cartesian3.ZERO);
+      
+        lastPos = cartPoints[0];
+        for ( var i = 0; i < cartPoints.length; i++) {    
+            if (checkOkToPlot(lastPos, cartPoints[i])) {
+                pos = new Cesium.Cartesian3(cartPoints[i].x, cartPoints[i].y, cartPoints[i].z)
+                pos = pos.multiplyByScalar(1000);
+                points.push(pos);
+            }
+            lastPos = cartPoints[i];
+        } 
+        
+        polylineCollection.add({
+            positions : points,
+            width : width,
+            color : colour
+        });
+                                          
+    }
+    
+    /**
+    * Check a point is ok to plot, i.e. its more than 'range' units away from the last point
+    */
+    function checkOkToPlot(lastPos, pos) {
+        var result = false;
+        var range = 5;
+        
+        if (Math.abs(lastPos.x - pos.x) > range || Math.abs(lastPos.y - pos.y) > range || Math.abs(lastPos.z - pos.z) > range ) {
+            result = true;
+        }
+        return result;  
+    }
+    
+    
     function addOrbitLine(sat) {    
 		var orbit = sat.getOrbitData();
 		var plottingAos = false;
 		var pos;
         
+        var pass = sat.getNextPass();
+        
+        if (typeof (orbit[0]) !== 'undefined') {
+            plotLine(orbit, Cesium.Color.RED, passLines, 1);
+            plotLine(pass.pass, Cesium.Color.GREEN, passLines, 5);
+        }
+        
+        /*
 		if (typeof (orbit[0]) !== 'undefined') {
 
 			var now = new Cesium.JulianDate();
 			orbitLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
 					Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
 					Cesium.Cartesian3.ZERO);
-            aosLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+            passLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                     Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                     Cesium.Cartesian3.ZERO);
                     
@@ -513,7 +563,7 @@ var AG3DVIEW = function(element) {
 				
 				if (plottingAos && orbit[i].el <= AGSETTINGS.getAosEl()) {
 					plottingAos = false;
-					aosLines.add({
+					passLines.add({
 						positions : pointsAOS,
 						width : 3,
 						color : Cesium.Color.GREEN
@@ -528,7 +578,7 @@ var AG3DVIEW = function(element) {
 		//	for (var i=0; i < segments.length; i++) {
 
             if (plottingAos) {
-                aosLines.add({
+                passLines.add({
                     positions : pointsAOS,
                     width : 3,
                     color : Cesium.Color.GREEN
@@ -545,7 +595,7 @@ var AG3DVIEW = function(element) {
 
 
 		}
-
+*/
 	}
 
     function init3DView() {
@@ -555,7 +605,7 @@ var AG3DVIEW = function(element) {
         observerBillboards = new Cesium.BillboardCollection();
         satBillboards = new Cesium.BillboardCollection();
         orbitLines = new Cesium.PolylineCollection();;
-        aosLines = new Cesium.PolylineCollection();;
+        passLines = new Cesium.PolylineCollection();;
         footprintCircle = new Cesium.PolylineCollection();
         clock = new Cesium.Clock();
 
@@ -621,6 +671,7 @@ var AG3DVIEW = function(element) {
 	    satelliteClickDetails(scene);
 	    mouseMoveDetails(scene, ellipsoid);
         scene.getPrimitives().add(orbitLines);
+        scene.getPrimitives().add(passLines);
 	    scene.getPrimitives().add(footprintCircle);
 
 	    jQuery(window).trigger('resize');
