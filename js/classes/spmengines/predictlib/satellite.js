@@ -194,12 +194,15 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             if (_orbitrequested) {
                 calculateOrbit(observer);    
             }
-            _orbitCalcCounter++;
-            if (_orbitCalcCounter >= _calcOrbitEvery) {
-                _sat.FindAOS();              
-                _sat.FindLOS();              
-                _orbitCalcCounter = 0;
-                _sat.doCalc(); // TODO: Fix this. Its here to reset the values after the AOS calcs
+            
+            if (AGSETTINGS.getCalculateEvents()) {
+                _orbitCalcCounter++;
+                if (_orbitCalcCounter >= _calcOrbitEvery) {
+                    _sat.FindAOS();              
+                    _sat.FindLOS();              
+                    _orbitCalcCounter = 0;
+                    _sat.doCalc(); // TODO: Fix this. Its here to reset the values after the AOS calcs
+                }
             }
 
             if (_selected) { // TODO: bad code don't need to recalc this every time
@@ -208,18 +211,24 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 		},
         
         getNextEvent : function(returnRaw) {
-            var event;
-            var raw = {};
+            var event = '';
+            var raw = {
+                event:  'N/A',
+                eventlong: 'Not Available',
+                time: new Date()
+            };
             
             if (typeof returnRaw === 'undefined') {
                 returnRaw = false;
             }
             if (_sat.AosHappens()) {
                 if (_sat.sat_ele >= AGSETTINGS.getAosEl()) {
-                    event = 'LOS: ' + AGUTIL.shortdate(_sat.next_los); 
-                    raw.event = 'LOS';
-                    raw.eventlong = 'Loss Of Satellite';
-                    raw.time = AGUTIL.shortdatetime(_sat.next_los, true);   
+                    if (typeof _sat.next_los !== 'undefined') {
+                        event = 'LOS: ' + AGUTIL.shortdate(_sat.next_los); 
+                        raw.event = 'LOS';
+                        raw.eventlong = 'Loss Of Satellite';
+                        raw.time = AGUTIL.shortdatetime(_sat.next_los, true);
+                    }
                 } else {
                     if (_sat.next_aos) {
                         event = 'AOS: ' + AGUTIL.shortdate(_sat.next_aos);    

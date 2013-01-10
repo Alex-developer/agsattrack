@@ -23,11 +23,20 @@ var AGSETTINGS = (function(element) {
     //var _spm = 'jspredict';
     var _spm = 'predictlib';
     var _debugLevel = 1;
+    var _calculateEvents = true;
+    
     
 	return {
 		init: function() {
 		},
 
+        getCalculateEvents : function() {
+            return _calculateEvents;    
+        },
+        setCalculateEvents : function(value) {
+            _calculateEvents = value;
+        },
+                
         getDebugLevel : function() {
             return _debugLevel;    
         },

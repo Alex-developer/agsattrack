@@ -91,10 +91,18 @@ var AGVIEWS = (function(element) {
         sendViewReset : function() {
             jQuery.each(_views, function(_view, _options) {
                 if (typeof _options.instance.reset === 'function') {
-                    _options.instance.reset;
+                    _options.instance.reset();
                 }  
             });            
-        }   
+        },
+        
+        tlesLoaded : function() {
+            jQuery.each(_views, function(_view, _options) {
+                if (typeof _options.instance.tlesLoaded === 'function') {
+                    _options.instance.tlesLoaded();
+                }  
+            });              
+        }  
 
     }
 })();

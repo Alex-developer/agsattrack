@@ -221,6 +221,14 @@
 			$('#ribbon #' + tabNames[index]).show();
 		}
 
+        $.fn.setState = function(e, state) {
+            var toggleClass = 'ribbon-button-large-active';
+            if ($(this).hasClass('ribbon-button-small')) {
+                toggleClass = 'ribbon-button-small-active';                                    
+            }
+            $(this).toggleClass(toggleClass);
+        }
+                
 		$.fn.enable = function() {
 			if (this.hasClass('ribbon-button')) {
 				if (this[0] && this[0].enable) {

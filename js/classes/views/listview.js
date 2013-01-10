@@ -38,7 +38,12 @@ var AGLISTVIEW = function() {
 			buildTable();
 		}
 	});
-	
+
+    jQuery(document).bind('agsattrack.showevents', function(state) {
+        AGSETTINGS.setCalculateEvents(state);
+    });    
+    
+    
 	/**
 	 * Listen for event telling us to stop or start calculating AoS times. This event
 	 * will normally be triggered by the ribbon or settings being changed.
@@ -94,7 +99,11 @@ var AGLISTVIEW = function() {
 			html += '<td align="right">' + satellite.get('altitude').toFixed(0) + '</td>';
             html += '<td align="right">' + satellite.get('velocity').toFixed(0) + '</td>';
 			
-            html += '<td>' + satellite.getNextEvent() + '</td>';
+            if (AGSETTINGS.getCalculateEvents()) {
+                html += '<td>' + satellite.getNextEvent() + '</td>';
+            } else {
+                html += '<td>Disabled</td>';
+            }
             
             /*
             if (_calcAoS && satellite.get('next_aos')) {
@@ -154,6 +163,14 @@ var AGLISTVIEW = function() {
 		
 		init : function() {
             
-		}
+		},
+        
+        tlesLoaded : function() {
+            var totalTles = AGSatTrack.getTles().getCount();
+            if (totalTles > 100) {
+                AGSETTINGS.setCalculateEvents(false);
+                jQuery('#list-view-show-events').setState(false);                  
+            }            
+        }
 	}
 }
