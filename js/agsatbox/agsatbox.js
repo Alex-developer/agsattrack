@@ -151,11 +151,12 @@
             clear(); 
             for (var i=0; i < tles.getCount(); i++) {          
                 var sat = tles.getSatellite(i);
-                var name = sat.getName();        
+                var name = sat.getName(); 
+                var value = sat.getCatalogNumber();       
                 if (sat.isDisplaying()) {
-                    jQuery('#rightsat').append('<option value="'+name+'">'+name+'</option>');
+                    jQuery('#rightsat').append('<option value="'+value+'">'+name+'</option>');
                 } else {
-                    jQuery('#leftsat').append('<option value="'+name+'">'+name+'</option>');
+                    jQuery('#leftsat').append('<option value="'+value+'">'+name+'</option>');
                 }
             }    
         }

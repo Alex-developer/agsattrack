@@ -52,7 +52,7 @@ var AGTLES = function() {
 		}
 		if (typeof selection.selections !== 'undefined') {
 			for (var i=0; i < selection.selections.length; i++) {
-                var index = getSatelliteIndex(selection.selections[i]);
+                var index = getSatelliteIndexFromCatalogNumber(selection.selections[i]);
 				satellites[index].setDisplaying(true);
 			}
 		}
@@ -60,10 +60,10 @@ var AGTLES = function() {
         jQuery(document).trigger('agsattrack.satsselectedcomplete', {selected: selectedSatellites});        
 	});
 
-    function getSatelliteIndex(name) {
+    function getSatelliteIndexFromCatalogNumber(noradId) {
         var index = -1;
         for (var i=0; i < satellites.length; i++) {
-            if (satellites[i].getName() === name) {
+            if (satellites[i].getCatalogNumber() === noradId) {
                 index = i;
                 break;
             }
@@ -139,9 +139,9 @@ var AGTLES = function() {
         },
         
         getSatelliteIndex : function(name) {
-            return getSatelliteIndex(name);          
+            return getSatelliteIndexFromCatalogNumber(name);          
         },
-        
+                
 		getSatellites : function() {
 			return satellites;
 		},

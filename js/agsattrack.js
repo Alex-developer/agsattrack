@@ -91,20 +91,17 @@ var agsattrack = function() {
 		});
 		
 		jQuery(document).bind('agsattrack.satclicked', function(event, params) {
-            if (typeof params.index === 'string') {
-                params.index = _tles.getSatelliteIndex(params.index);    
-            }
-            
+            var index = _tles.getSatelliteIndex(params.catalogNumber);
             if (typeof params.state !== 'undefined') {
-                _tles.getSatellite(params.index).setSelected(params.state);                    
+                _tles.getSatellite(index).setSelected(params.state);                    
             } else {
-                _tles.getSatellite(params.index).toggleSelected();
+                _tles.getSatellite(index).toggleSelected();
             }
             
-            var sat = _tles.getSatellite(params.index);
+            var sat = _tles.getSatellite(index);
             if (sat.getSelected()) {
                 sat.requestOrbit();
-                var name = _tles.getSatellite(params.index).getName();
+                var name = sat.getName();
                 jQuery(document).trigger('agsattrack.updateinfo', {text: 'Orbit Requested For ' + name});
             }
             

@@ -326,11 +326,11 @@ var AG3DVIEW = function(element) {
                 cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
                 cpos = cpos.multiplyByScalar(1000);               
 				billboard = satBillboards.add({
-					imageIndex : (satellites[i].getNoradId() === '25544'?2:0),
+					imageIndex : (satellites[i].getCatalogNumber() === '25544'?2:0),
 					position : cpos                   
 				});
 				billboard.satelliteName = satellites[i].getName();
-				billboard.satelliteNoradId = satellites[i].getNoradId();
+				billboard.satelliteCatalogId = satellites[i].getCatalogNumber();
 				billboard.satelliteindex = i;
 			}
 		}
@@ -385,13 +385,13 @@ var AG3DVIEW = function(element) {
 			bb = satBillboards.get(i);
             
             if (satellites[bb.satelliteindex].getSelected()) {
-                if (satellites[i].getNoradId() === '25544') {
+                if (satellites[i].getCatalogNumber() === '25544') {
                     bb.setImageIndex(3);    
                 } else {
                     bb.setImageIndex(1);    
                 }
             } else {
-                if (satellites[i].getNoradId() === '25544') {
+                if (satellites[i].getCatalogNumber() === '25544') {
                     bb.setImageIndex(2);    
                 } else {
                     bb.setImageIndex(0);    
@@ -441,8 +441,8 @@ var AG3DVIEW = function(element) {
 		handler.setInputAction(function(click) {
 			var pickedObject = scene.pick(click.position);
 			if (pickedObject) {
-				var selected = pickedObject.satelliteName;
-				jQuery(document).trigger('agsattrack.satclicked', {index: selected});
+				var selected = pickedObject.satelliteCatalogId;
+				jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: selected});
 			}
 		}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 	}

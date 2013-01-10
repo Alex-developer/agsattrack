@@ -83,7 +83,7 @@ var AGLISTVIEW = function() {
 			rowCSS = 'class="' + rowCSSArray.join(' ') + '"';
 
 			
-			html += '<tr ' + rowCSS + ' ' + 'id="satlist' + index + '">';
+			html += '<tr ' + rowCSS + ' ' + 'id="' + satellite.getCatalogNumber() + '">';
 			html += '<td>' + satellite.getName() + '</td>';
             html += '<td>' + satellite.get('type') + '</td>';
 			html += '<td>' + satellite.get('visibility').substring(0,3) + '</td>';
@@ -113,8 +113,8 @@ var AGLISTVIEW = function() {
 		});
 		jQuery('#listviewdata').html(html);
 		jQuery('.listviewsat').on('click',{}, function(e){
-			var selected = parseInt(jQuery(this).attr('id').replace('satlist',''));
-			jQuery(document).trigger('agsattrack.satclicked', {index: selected});			
+            var selected = jQuery(this).attr('id');
+			jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: selected});			
 		});		
 	}
 	

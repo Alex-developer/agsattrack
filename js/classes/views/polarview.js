@@ -609,12 +609,12 @@ var AGPOLARVIEW = function(element) {
 						image : AGIMAGES.getImage('satellite16'),
 						width : 16,
 						height : 16,
-						id : satellite.getName()
+						id : satellite.getCatalogNumber()
 					});
 					sat.on('mouseup', function(e) {
 						var selected = e.shape.getId();
 						jQuery(document).trigger('agsattrack.satclicked', {
-							index : selected
+							catalogNumber : selected
 						});
 					});
 					_satLayer.add(sat);

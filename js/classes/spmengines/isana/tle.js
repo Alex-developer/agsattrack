@@ -61,7 +61,7 @@ var AGTLE = function(line0, line1, line2) {
 		getName : function() {
 			return name;	
 		},
-		getNoradId : function() {
+		getCatalogNumber : function() {
 			return orbital_elements.catalog_no_1;
 		},		
 		elapsedTime : function(epoch_year, epoch, date) {

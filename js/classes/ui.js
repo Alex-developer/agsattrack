@@ -256,7 +256,8 @@ var AGUI = function() {
         if (selectedInfo.satellites.length > 1 ) {
             for (var i=0; i < selectedInfo.satellites.length; i++) {
                 var satelliteName = selectedInfo.satellites[i].getName();
-                jQuery('#sat-info-selector').jqxDropDownList('addItem', satelliteName);    
+                var catalogNumber = selectedInfo.satellites[i].getcatalogNumber();
+                jQuery('#sat-info-selector').jqxDropDownList('addItem', {label: satelliteName, value: catalogNumber});
             }
             if (selectedItem !== null) {
                 var items = jQuery('#sat-info-selector').jqxDropDownList('getItems');
@@ -273,7 +274,8 @@ var AGUI = function() {
         } else {
             if (selectedInfo.satellites.length > 0) {
                 var satelliteName = selectedInfo.satellites[0].getName();
-                jQuery('#sat-info-selector').jqxDropDownList('addItem', satelliteName);    
+                var catalogNumber = selectedInfo.satellites[0].getCatalogNumber();
+                jQuery('#sat-info-selector').jqxDropDownList('addItem', {label: satelliteName, value: catalogNumber});    
                 jQuery('#sat-info-selector').jqxDropDownList('selectIndex', 0);
                 jQuery('#sat-info-selector').hide();
                 UpdateSatelliteData(selectedInfo.satellites[0]);
@@ -285,8 +287,8 @@ var AGUI = function() {
     });    
 
     function UpdateSatelliteData(satellite) {
-        var noradId = satellite.getNoradId();
-        var url = 'ajax.php?id=' + noradId;
+        var catalogNumber = satellite.getCatalogNumber();
+        var url = 'ajax.php?id=' + catalogNumber;
         jQuery.getJSON(url, function(data) {
             for ( var i = 0; i < data.length; i++) {
                 jQuery('#' + data[i].field).html(data[i].value);
@@ -361,8 +363,8 @@ var AGUI = function() {
     jQuery('#status').html('Idle');
         
 	return {
-		updateSatelliteInfo : function(noradId) {
-			var url = 'ajax.php?id=' + noradId;
+		updateSatelliteInfo : function(catalogNumber) {
+			var url = 'ajax.php?id=' + catalogNumber;
 			jQuery.getJSON(url, function(data) {
 				for ( var i = 0; i < data.length; i++) {
 					jQuery('#' + data[i].field).html(data[i].value);

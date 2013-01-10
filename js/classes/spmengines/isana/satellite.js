@@ -78,8 +78,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 		getName: function() {
 			return tle.getName();
 		},
-		getNoradId : function() {
-			return tle.getNoradId();
+		getCatalogNumber : function() {
+			return tle.getCatalogNumber();
 		},
   
         /**
