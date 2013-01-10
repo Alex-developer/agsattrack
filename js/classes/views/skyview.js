@@ -427,6 +427,9 @@ var AGSKYVIEW = function(element) {
                     }
                 }
 
+                /**
+                * Plot any points below the AoS setting
+                */
                 if (prePoints.length > 0) {
                     _orbitLayer.add(new Kinetic.Line({
                             points: prePoints,
@@ -437,8 +440,33 @@ var AGSKYVIEW = function(element) {
                         })
                     );
                 }
-                                                                
+                
+                /**
+                * Plot the orbits above the AoS Setting. This will also detect and wrapping
+                * around 180 degrees.                                             
+                */
                 if (points.length > 0) {
+                    var lastX = points[0];
+                    var points1 = [];
+                    var halfWidth = _stage.getWidth() / 2;
+                    for (var i=2; i < points.length; i+=2) {
+                        if (Math.abs(lastX - points[i]) > halfWidth) {
+                            points1 = points.slice(i,points.length);
+                            points = points.slice(0,i);
+                            break;      
+                        }
+                        lastX = points[i];
+                    }
+                    if (points1.length !== 0) {
+                        _orbitLayer.add(new Kinetic.Line({
+                                points: points1,
+                                stroke: 'green',
+                                strokeWidth: 2,
+                                lineCap: 'round',
+                                lineJoin: 'round'
+                            })
+                        );                        
+                    }
                     _orbitLayer.add(new Kinetic.Line({
                             points: points,
                             stroke: 'green',
@@ -449,6 +477,9 @@ var AGSKYVIEW = function(element) {
                     );
                 }
                 
+                /**
+                * Plot any points after Los.
+                */
                 if (postPoints.length > 0) {
                     _orbitLayer.add(new Kinetic.Line({
                             points: postPoints,
