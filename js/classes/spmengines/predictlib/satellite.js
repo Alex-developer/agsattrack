@@ -54,24 +54,11 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     };
     var _passes = null;
     
-    /**
-    * Find and store ssp information for the nxt and or current pass of the
-    * satellite.
-    */
     function getNextPass(observer) {
         var date = new Date(); 
         time = (date.getTime() - 315446400000) / 86400000;    
         
         _satOrbit.PreCalc(0);
-        _satOrbit.doCalc();
-        
-        if (_satOrbit.elevation > 0) {
-            while (_satOrbit.elevation > 0) {
-                time -= (0.00035); // 30 Seconds  
-                _satOrbit.doCalc(time);                  
-            }
-        }
-        
         _satOrbit.daynum = time;
         var aos = _satOrbit.FindAOS();
         
@@ -96,7 +83,6 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                 };
                 _nextPass.pass.push(orbitdata);
                 time += (0.00035); // 30 Seconds
-                //time += Math.abs(_satOrbit.sat_ele * Math.sqrt(_satOrbit.sat_alt) / 1060000.0);
             }     
         }
     }
@@ -196,7 +182,6 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 			if (typeof date === 'undefined') {
 				var date = new Date();				
 			}
-            
             _sat.configureGroundStation(observer.getLat(), observer.getLon());
             _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
 
@@ -213,10 +198,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                 _sat.doCalc(); // TODO: Fix this. Its here to reset the values after the AOS calcs
             }
 
-            if (_selected) {
-                if (date > _nextPass.losTime || _nextPass.losTime === null ) {
-                    getNextPass();                
-                }
+            if (_selected) { // TODO: bad code don't need to recalc this every time
+                getNextPass();                
             }
 		},
         
