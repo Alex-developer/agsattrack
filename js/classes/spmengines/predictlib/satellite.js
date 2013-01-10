@@ -59,6 +59,15 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         time = (date.getTime() - 315446400000) / 86400000;    
         
         _satOrbit.PreCalc(0);
+        
+        _satOrbit.doCalc(time);
+        if (_satOrbit.elevation >= 0) {
+            while (_satOrbit.elevation >= 0) {
+                time -= 0.007;
+                _satOrbit.doCalc(time);   
+            }
+        }
+        
         _satOrbit.daynum = time;
         var aos = _satOrbit.FindAOS();
         
@@ -88,6 +97,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     }
     
     function calculateOrbit(observer) {
+        var date = new Date();
+        var time;
         _orbitrequested = false;
         
         if (_orbitAge !== null && Date.DateDiff('s', new Date(), _orbitAge) < 60) {
@@ -97,39 +108,32 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         
         _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
         
-        if (_sat.next_aos && _sat.next_los) {
-            var date = new Date(); 
-                       
-            var period = (Math.ceil(1440.0 / _sat.sat[0].meanmo)) * 60;
-            var step = period / 800;            
-            
-            if (_sat.elevation > 0) {
-                date = new Date();
-                do {
-                    var time = (date.getTime() - 315446400000) / 86400000;
-                    _satOrbit.doCalc(time);                    
-                    date = Date.DateAdd('s', -step, date);    
-                }  while (_satOrbit.elevation > 0);
-            } else {
-                orbit = [];
-                date = new Date();            
-            }
-            
-            for (var i=0; i <= 800; i++) {
-                var time = (date.getTime() - 315446400000) / 86400000;
-                _satOrbit.doCalc(time);
-                var orbitdata = {
-                    x: _satOrbit.sat_x,
-                    y: _satOrbit.sat_y,
-                    z: _satOrbit.sat_z,
-                    el: _satOrbit.elevation,
-                    az: _satOrbit.azimuth,
-                    date: date
-                };
-                orbit.push(orbitdata);
-                date = Date.DateAdd('s', step, date);         
-            }        
+        time = (date.getTime() - 315446400000) / 86400000;
+        _satOrbit.doCalc(time);
+        var thisOrbit = _satOrbit.orbitNumber;
+
+        while (thisOrbit === _satOrbit.orbitNumber) {
+            time -= 0.0035;
+            _satOrbit.doCalc(time);
         }
+        
+        time += 0.0035;
+        _satOrbit.doCalc(time);
+        
+        while (thisOrbit === _satOrbit.orbitNumber) {
+            _satOrbit.doCalc(time);
+            var orbitdata = {
+                x: _satOrbit.sat_x,
+                y: _satOrbit.sat_y,
+                z: _satOrbit.sat_z,
+                el: _satOrbit.elevation,
+                az: _satOrbit.azimuth,
+                date: date
+            };
+            orbit.push(orbitdata);            
+            time += 0.00035;
+        }
+
         _orbitAge = new Date();
         
         jQuery(document).trigger('agsattrack.updateinfo', {text: 'Calculating Orbit Complete For ' + _sat.sat[0].name});
