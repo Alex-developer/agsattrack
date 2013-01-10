@@ -77,6 +77,10 @@ body {
 	font-size: 1.1em;
 }
 
+.highlighted {
+    background: #001224;
+    color: white;
+}
 #toolbar {
 	padding: 4px 1px;
 	clear: both;
