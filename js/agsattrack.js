@@ -41,6 +41,14 @@ var agsattrack = function() {
 	
     
 	function bindEvents() {	
+
+        jQuery(document).bind('agsattrack.tlesloaded', function(event, params) {
+            ui.updateInfoPane();
+        });
+        jQuery(document).bind('agsattrack.satsselected', function(event, params) {
+            ui.updateInfoPane();
+        });        
+        
 		/**
 		 * Listen for an event to load a new set of elements
 		 */
@@ -108,6 +116,7 @@ var agsattrack = function() {
             var _selected = _tles.getSelected();
 			calculate(true);
 			jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
+            ui.updateInfoPane();
 		});
 	    
 		jQuery(document).bind('agsattrack.forceupdate', function(event) {

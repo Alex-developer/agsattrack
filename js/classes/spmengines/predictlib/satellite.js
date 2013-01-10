@@ -60,8 +60,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         _nextPass.pass = [];
         
         time = (date.getTime() - 315446400000) / 86400000;    
-        
-        _satOrbit.PreCalc(0);
+        _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
+        //_satOrbit.PreCalc(0);
         
         _satOrbit.doCalc(time);
         if (_satOrbit.elevation >= 0) {
@@ -242,7 +242,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             }
 
             if (_selected) { // TODO: bad code don't need to recalc this every time
-                getNextPass();                
+                getNextPass(observer);                
             }
 		},
         

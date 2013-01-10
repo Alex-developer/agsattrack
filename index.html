@@ -591,7 +591,21 @@
 	</div>
 	<div data-options="region:'west',split:true" title="Information" style="width: 270px;">
 		<div id="satinfot" class="easyui-tabs" data-options="fit:true">
-			<div title="Sat Info" style="overflow: auto; padding: 5px;">
+            <div title="help" style="overflow: auto; padding: 5px;" id="help-tab">
+                <div id="help-content">
+                </div>
+                 <div id="help-1" class="helptext">       
+                     <h3><span><img src="/images/info.png" /></span>Information</h3>
+                     <p>There are {tlecount} satellites loaded but none are current being displayed.</p>
+                     <p>before satellites are displayed you need to add them. There are two ways to add satellites.</p>
+                     <ul>
+                        <li><img src="/js/ribbon/icons/hot/satellite.png"><span>Use the satellite selector on the home ribbon tab</span></li>
+                        <li><img src="/js/ribbon/icons/hot/satellite_all.png"><span>Use the add all satellites button on the home ribbon tab</span></li>
+                     </ul>
+                 </div>
+                 
+            </div>
+			<div title="Sat" style="overflow: auto; padding: 5px;">
                 <div id="sat-info-selector"></div>
 				<table width="100%" class="satinfo">
 					<tr>
@@ -684,11 +698,11 @@
 				</table>
 			</div>
 
-			<div title="Next pass" style="padding: 5px;">
+			<div title="Passes" style="padding: 5px;">
 				<div id="nextpass"></div>
 			</div>
 
-            <div title="Quick Select" style="padding: 5px;">
+            <div title="Sat Select" style="padding: 5px;">
                 <div id="quick-sat-selector"></div>
             </div>            
 		</div>

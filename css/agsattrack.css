@@ -272,3 +272,17 @@ p.description {
 #passestable th {
     text-align: left;
 }
+
+.helptext {
+    display:none;
+}
+
+#help-tab ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 10px 10px;;   
+}
+
+#help-tab li {
+    margin-bottom: 10px; 
+}

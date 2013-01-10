@@ -335,7 +335,11 @@ var AGUI = function() {
            
     }
     
-
+/*    
+    jQuery('#sat-display-all').pulse({
+    opacity: [0,1] // pulse between 1 and 0
+    }, 200, 500);
+*/
     jQuery('#center-panel').panel({
         onResize : function(width, height) {
         
@@ -371,6 +375,33 @@ var AGUI = function() {
 					jQuery('#' + data[i].field).html(data[i].value);
 				}
 			});
-		}
+		},
+        
+        updateInfoPane : function() {
+            var showingHelp = false;
+            var totalTles = AGSatTrack.getTles().getCount();
+            var totalDisplaying = AGSatTrack.getDisplaying().length;
+            
+            if (totalTles > 0 && totalDisplaying === 0) {
+                var helpText = jQuery('#help-1').html();
+                helpText = helpText.replace(/{tlecount}/g, totalTles);
+                jQuery('#help-content').html(helpText);
+                showingHelp = true;    
+            }
+            
+            if (!showingHelp) {
+                var tab = jQuery('div#satinfot.easyui-tabs div.tabs-header div.tabs-wrap ul.tabs li').first();
+                tab.hide();
+                jQuery('#help-tab').hide();
+                jQuery('#help-content').html('');
+                jQuery('#satinfot').tabs('select', 1); 
+            } else {
+                var tab = jQuery('div#satinfot.easyui-tabs div.tabs-header div.tabs-wrap ul.tabs li').first();
+                tab.show();
+                jQuery('#help-tab').show();
+                jQuery('#satinfot').tabs('select', 0); 
+            }
+            
+        }
 	}
 }
