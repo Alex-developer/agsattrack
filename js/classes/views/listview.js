@@ -78,7 +78,7 @@ var AGLISTVIEW = function() {
 				}				
 			}
 			if (satellite.getSelected()) {
-				rowCSSArray.push('bold');
+				rowCSSArray.push('highlighted');
 			}				
 			rowCSS = 'class="' + rowCSSArray.join(' ') + '"';
 
