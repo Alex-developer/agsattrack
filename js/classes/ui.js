@@ -360,6 +360,7 @@ var AGUI = function() {
     });        
 
     ctrl.remove();
+    jQuery(document.body).show();
     jQuery('#status').html('Idle');
         
 	return {

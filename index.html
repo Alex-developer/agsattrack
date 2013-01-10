@@ -6,7 +6,7 @@
 
 <script type="text/javascript" src="js/cvi_busy_lib.js"></script>
 <script type="text/javascript">
-    ctrl = getBusyOverlay(document.documentElement, {color:'black', opacity:0.5});
+    ctrl = getBusyOverlay(document.documentElement, {color:'black', opacity:0.5, text: 'Loading ...'});
 </script>
 
 <link rel="stylesheet" href="css/agsattrack.css">
@@ -79,7 +79,7 @@
 <script src="js/startup.js"></script>
    
 </head>
-<body class='easyui-layout default' " id="body">
+<body class='easyui-layout default' style="display: none" id="body">
 	<div data-options="region:'north', title:'&nbsp;'" style="height: 120px;">
 
 
