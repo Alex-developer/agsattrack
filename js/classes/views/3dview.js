@@ -14,25 +14,25 @@ Copyright 2012 Alex Greenland
    limitations under the License.
  */ 
 var AG3DVIEW = function(element) {
-	'use strict';
+    'use strict';
 
-	var ellipsoid =null;
-	var canvas = null;
-	var scene = null;
-	var transitioner = null;
-	var cb = null;
-	var observerBillboards = null;
-	var _render = false;
-	var satBillboards = null;
-	var gridRefresh = 1;
-	var gridRefreshCounter = 0
-	var orbitLines = null;
+    var ellipsoid =null;
+    var canvas = null;
+    var scene = null;
+    var transitioner = null;
+    var cb = null;
+    var observerBillboards = null;
+    var _render = false;
+    var satBillboards = null;
+    var gridRefresh = 1;
+    var gridRefreshCounter = 0
+    var orbitLines = null;
     var passLines = null;
-	var footprintCircle = null;
-	var updateCounter = 0;
-	var clock = null;
-	var _selected = null;
-	var _follow = false;
+    var footprintCircle = null;
+    var updateCounter = 0;
+    var clock = null;
+    var _selected = null;
+    var _follow = false;
     var _followFromObserver = false;
     var TILE_PROVIDERS = null;
     var _skyAtmosphere;
@@ -50,22 +50,22 @@ var AG3DVIEW = function(element) {
     }
         
     /*
-	jQuery(window).resize(function() {
-		if (canvas === null) {
-			return;
-		}
-		var height = jQuery('.layout-panel-center').innerHeight();
-		var width = jQuery('.layout-panel-center').innerWidth();
+    jQuery(window).resize(function() {
+        if (canvas === null) {
+            return;
+        }
+        var height = jQuery('.layout-panel-center').innerHeight();
+        var width = jQuery('.layout-panel-center').innerWidth();
 
-		if (canvas.width === width && canvas.height === height) {
-			return;
-		}
+        if (canvas.width === width && canvas.height === height) {
+            return;
+        }
 
-		canvas.width = width;
-		canvas.height = height;
+        canvas.width = width;
+        canvas.height = height;
 
-		scene.getCamera().frustum.aspectRatio = width / height;
-	});
+        scene.getCamera().frustum.aspectRatio = width / height;
+    });
       */
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
@@ -82,52 +82,52 @@ var AG3DVIEW = function(element) {
         }          
     }
     
-	/**
-	 * Listen for an observers location becoming available and when it does
-	 * update all of the observers.
-	 * 
-	 * Currently we only have the home observer but this is to allow for mutual
-	 * pass predicitions i.e. supports more than one observer.
-	 */
-	jQuery(document).bind('agsattrack.locationAvailable',
-			function(e, observer) {
-			    if (AGSETTINGS.getHaveWebGL()) {
+    /**
+     * Listen for an observers location becoming available and when it does
+     * update all of the observers.
+     * 
+     * Currently we only have the home observer but this is to allow for mutual
+     * pass predicitions i.e. supports more than one observer.
+     */
+    jQuery(document).bind('agsattrack.locationAvailable',
+            function(e, observer) {
+                if (AGSETTINGS.getHaveWebGL()) {
                     plotObservers();
                 }
-			});
+            });
 
-	jQuery(document).bind('agsattrack.locationUpdated',
-			function(e, observer) {
+    jQuery(document).bind('agsattrack.locationUpdated',
+            function(e, observer) {
                 if (AGSETTINGS.getHaveWebGL()) {
-				    plotObservers();
+                    plotObservers();
                 }
-			});	
-	
-	jQuery(document).bind('agsattrack.resetview',
-			function(e, observer) {
-				if (_render) {
+            });    
+    
+    jQuery(document).bind('agsattrack.resetview',
+            function(e, observer) {
+                if (_render) {
                     if (AGSETTINGS.getHaveWebGL()) {
-					    plotObservers();
+                        plotObservers();
                     }
-				}
-			});	
-	
-	jQuery(document).bind('agsattrack.followsatellite',
-			function(e, follow) {
-				if (AGSETTINGS.getHaveWebGL()) {
+                }
+            });    
+    
+    jQuery(document).bind('agsattrack.followsatellite',
+            function(e, follow) {
+                if (AGSETTINGS.getHaveWebGL()) {
                     _follow = follow;
                     if (_follow) {
                         _followFromObserver = false;
                     }
-				    if (!follow) {
-					    if (_render) {
-						    plotObservers();
+                    if (!follow) {
+                        if (_render) {
+                            plotObservers();
                             updateSatelliteBillboards();
-					    }					
-				    }
+                        }                    
+                    }
                 }
-			});
-	
+            });
+    
     jQuery(document).bind('agsattrack.followsatelliteobs',
             function(e, follow) {
                 if (AGSETTINGS.getHaveWebGL()) {
@@ -185,39 +185,39 @@ var AG3DVIEW = function(element) {
                 }
             }); 
                 
-	/**
-	 * Listen for any changes in the tile provider.
-	 */
-	jQuery(document).bind(
-			'agsattrack.changetile',
-			function(event, provider) {
-				if (AGSETTINGS.getHaveWebGL()) {
+    /**
+     * Listen for any changes in the tile provider.
+     */
+    jQuery(document).bind(
+            'agsattrack.changetile',
+            function(event, provider) {
+                if (AGSETTINGS.getHaveWebGL()) {
                     if (scene.mode !== Cesium.SceneMode.MORPHING) {
-					    if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
-						    cb.getImageryLayers().removeAll();
-						    cb.getImageryLayers().addImageryProvider(
-								    TILE_PROVIDERS[provider]);
-					    }
-				    }
+                        if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
+                            cb.getImageryLayers().removeAll();
+                            cb.getImageryLayers().addImageryProvider(
+                                    TILE_PROVIDERS[provider]);
+                        }
+                    }
                 }
-			});
+            });
 
-	jQuery(document).bind('agsattrack.satsselectedcomplete', function() {
+    jQuery(document).bind('agsattrack.satsselectedcomplete', function() {
         if (_render) {
             if (AGSETTINGS.getHaveWebGL()) {        
-		        populateSatelliteBillboard();
+                populateSatelliteBillboard();
             }
         }
-	});
+    });
 
-	jQuery(document).bind('agsattrack.updatesatdata',
-			function(event, selected) {
-				if (_render) {
+    jQuery(document).bind('agsattrack.updatesatdata',
+            function(event, selected) {
+                if (_render) {
                     if (AGSETTINGS.getHaveWebGL()) { 
-					    updateSatelliteBillboards();
+                        updateSatelliteBillboards();
                     }
-				}
-			});
+                }
+            });
 
     /**
      * Listen for requests to change the view.
@@ -239,25 +239,25 @@ var AG3DVIEW = function(element) {
             }
         }
     });
-    	
-	/**
-	 * Plot the observers.
-	 */
-	function plotObservers() {
-		observerBillboards.removeAll();
-		var observers = AGSatTrack.getObservers();
-		for ( var i = 0; i < observers.length; i++) {
-			var observer = observers[i];
-			if (observer.isReady()) {
-				var target = ellipsoid
-						.cartographicToCartesian(Cesium.Cartographic
-								.fromDegrees(observer.getLon(), observer
-										.getLat()));
-				var eye = ellipsoid
-						.cartographicToCartesian(Cesium.Cartographic
-								.fromDegrees(observer.getLon(), observer
-										.getLat(), 1e7));
-				var up = new Cesium.Cartesian3(0, 0, 1);
+        
+    /**
+     * Plot the observers.
+     */
+    function plotObservers() {
+        observerBillboards.removeAll();
+        var observers = AGSatTrack.getObservers();
+        for ( var i = 0; i < observers.length; i++) {
+            var observer = observers[i];
+            if (observer.isReady()) {
+                var target = ellipsoid
+                        .cartographicToCartesian(Cesium.Cartographic
+                                .fromDegrees(observer.getLon(), observer
+                                        .getLat()));
+                var eye = ellipsoid
+                        .cartographicToCartesian(Cesium.Cartographic
+                                .fromDegrees(observer.getLon(), observer
+                                        .getLat(), 1e7));
+                var up = new Cesium.Cartesian3(0, 0, 1);
                 
                 
                 var textureAtlas = scene.getContext().createTextureAtlas({
@@ -270,26 +270,26 @@ var AG3DVIEW = function(element) {
                     position : new Cesium.Cartesian3(0.0, 0.0, 0.0)
                 });        
         
-				// Point the camera at us and position it directly above us if
-				// we are the first observer
-				if (i == 0) {
-					scene.getCamera().controller.lookAt(eye, target, up);
-				}
-			}
-		}
-		scene.getPrimitives().add(observerBillboards);
-	}
+                // Point the camera at us and position it directly above us if
+                // we are the first observer
+                if (i == 0) {
+                    scene.getCamera().controller.lookAt(eye, target, up);
+                }
+            }
+        }
+        scene.getPrimitives().add(observerBillboards);
+    }
 
-	/**
-	 * Render the scene.
-	 * 
-	 * There is a NASTY hack in here to stop Cesium messing up when tabs are
-	 * switched
-	 */
+    /**
+     * Render the scene.
+     * 
+     * There is a NASTY hack in here to stop Cesium messing up when tabs are
+     * switched
+     */
     var _debugCounter = 0;     
-	function renderScene() {
-		(function tick() {
-			if (_render) {
+    function renderScene() {
+        (function tick() {
+            if (_render) {
                 if (AGSETTINGS.getDebugLevel() > 0) {                
                     _debugCounter++;
                     if (_debugCounter > 100) {
@@ -298,43 +298,43 @@ var AG3DVIEW = function(element) {
                     }
                 }                 
                 scene.initializeFrame();
-				try {
-					scene.render();
-				} catch (err) {
+             //   try {
+                    scene.render();
+        //        } catch (err) {
                     // See told you it was a nasty hack !
-                }
-				Cesium.requestAnimationFrame(tick);
-			}
-		}());
-	}
+          //      }
+                Cesium.requestAnimationFrame(tick);
+            }
+        }());
+    }
 
 
-	function populateSatelliteBillboard() {
-		var billboard;
-		var image = new Image();
-		var satellites = AGSatTrack.getSatellites();
+    function populateSatelliteBillboard() {
+        var billboard;
+        var image = new Image();
+        var satellites = AGSatTrack.getSatellites();
         var pos;
         var now = new Cesium.JulianDate();
         var cpos;
                 
-		satBillboards.removeAll();
+        satBillboards.removeAll();
         satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                 Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                 Cesium.Cartesian3.ZERO);        
-		for ( var i = 0; i < satellites.length; i++) {
-			if (satellites[i].isDisplaying()) {
+        for ( var i = 0; i < satellites.length; i++) {
+            if (satellites[i].isDisplaying()) {
                 cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
                 cpos = cpos.multiplyByScalar(1000);               
-				billboard = satBillboards.add({
-					imageIndex : (satellites[i].getCatalogNumber() === '25544'?2:0),
-					position : cpos                   
-				});
-				billboard.satelliteName = satellites[i].getName();
-				billboard.satelliteCatalogId = satellites[i].getCatalogNumber();
-				billboard.satelliteindex = i;
-			}
-		}
-		scene.getPrimitives().add(satBillboards);
+                billboard = satBillboards.add({
+                    imageIndex : (satellites[i].getCatalogNumber() === '25544'?2:0),
+                    position : cpos                   
+                });
+                billboard.satelliteName = satellites[i].getName();
+                billboard.satelliteCatalogId = satellites[i].getCatalogNumber();
+                billboard.satelliteindex = i;
+            }
+        }
+        scene.getPrimitives().add(satBillboards);
 
         var textureAtlas = scene.getContext().createTextureAtlas({
             images : [
@@ -345,18 +345,18 @@ var AG3DVIEW = function(element) {
                 ] 
         });
         satBillboards.setTextureAtlas(textureAtlas);
-	}
+    }
 
-	function updateSatelliteBillboards() {
-		var now = new Cesium.JulianDate();
-		var pos, newpos, bb;
-		var satellites = AGSatTrack.getSatellites();
+    function updateSatelliteBillboards() {
+        var now = new Cesium.JulianDate();
+        var pos, newpos, bb;
+        var satellites = AGSatTrack.getSatellites();
         var following = AGSatTrack.getFollowing();
-		var target;
+        var target;
         var up;
         
-		if (following !== null && (_follow || _followFromObserver)) {
-			var observer = AGSatTrack.getObservers()[0];
+        if (following !== null && (_follow || _followFromObserver)) {
+            var observer = AGSatTrack.getObservers()[0];
 
                             
             if (_followFromObserver) {
@@ -367,22 +367,22 @@ var AG3DVIEW = function(element) {
                 up = new Cesium.Cartesian3(0, 0, 1);                                     
             } 
                                                   
-			var eye = ellipsoid
-					.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'),following.get('latitude'), (following.get('altitude') + 10) *1000));
-			
+            var eye = ellipsoid
+                    .cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'),following.get('latitude'), (following.get('altitude') + 10) *1000));
+            
             if (_followFromObserver) {
                 scene.getCamera().controller.lookAt(target, eye, up);                
             } else {
                 scene.getCamera().controller.lookAt(eye, target, up);                
             }
-		}
-		
-		satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-				Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-				Cesium.Cartesian3.ZERO);
+        }
+        
+        satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+                Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                Cesium.Cartesian3.ZERO);
 
-		for ( var i = 0; i < satBillboards.getLength(); i++) {
-			bb = satBillboards.get(i);
+        for ( var i = 0; i < satBillboards.getLength(); i++) {
+            bb = satBillboards.get(i);
             
             if (satellites[bb.satelliteindex].getSelected()) {
                 if (satellites[i].getCatalogNumber() === '25544') {
@@ -397,18 +397,18 @@ var AG3DVIEW = function(element) {
                     bb.setImageIndex(0);    
                 }   
             }
-			newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
+            newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
             newpos = newpos.multiplyByScalar(1000);
-			bb.setPosition(newpos);
-		}
+            bb.setPosition(newpos);
+        }
         
         setupOrbit();
-	}
+    }
 
-	function drawFootprint() {
+    function drawFootprint() {
         var footPrint;
         
-		footprintCircle.removeAll();
+        footprintCircle.removeAll();
         var selected = AGSatTrack.getTles().getSelected();
         for (var i=0; i< selected.length; i++) {
             footPrint = footprintCircle.add();
@@ -433,19 +433,19 @@ var AG3DVIEW = function(element) {
  */                                     
         }
 
-	}
+    }
 
-	function satelliteClickDetails(scene) {
-		var handler = new Cesium.ScreenSpaceEventHandler(scene.getCanvas());
+    function satelliteClickDetails(scene) {
+        var handler = new Cesium.ScreenSpaceEventHandler(scene.getCanvas());
 
-		handler.setInputAction(function(click) {
-			var pickedObject = scene.pick(click.position);
-			if (pickedObject) {
-				var selected = pickedObject.satelliteCatalogId;
-				jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: selected});
-			}
-		}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-	}
+        handler.setInputAction(function(click) {
+            var pickedObject = scene.pick(click.position);
+            if (pickedObject) {
+                var selected = pickedObject.satelliteCatalogId;
+                jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: selected});
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    }
 
     function mouseMoveDetails(scene, ellipsoid) {
         var handler = new Cesium.ScreenSpaceEventHandler(scene.getCanvas());
@@ -467,13 +467,13 @@ var AG3DVIEW = function(element) {
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     }
         
-	function resetOrbit() {
+    function resetOrbit() {
         orbitLines.removeAll();
-		passLines.removeAll();
-		footprintCircle.removeAll();
-	}
+        passLines.removeAll();
+        footprintCircle.removeAll();
+    }
 
-	function setupOrbit() {
+    function setupOrbit() {
         resetOrbit();
         var selected = AGSatTrack.getTles().getSelected();
         for (var i=0; i< selected.length; i++) {
@@ -525,9 +525,9 @@ var AG3DVIEW = function(element) {
     
     
     function addOrbitLine(sat) {    
-		var orbit = sat.getOrbitData();
-		var plottingAos = false;
-		var pos;
+        var orbit = sat.getOrbitData();
+        var plottingAos = false;
+        var pos;
         
         var pass = sat.getNextPass();
         
@@ -537,45 +537,45 @@ var AG3DVIEW = function(element) {
         }
         
         /*
-		if (typeof (orbit[0]) !== 'undefined') {
+        if (typeof (orbit[0]) !== 'undefined') {
 
-			var now = new Cesium.JulianDate();
-			orbitLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-					Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-					Cesium.Cartesian3.ZERO);
+            var now = new Cesium.JulianDate();
+            orbitLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                    Cesium.Cartesian3.ZERO);
             passLines.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                     Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                     Cesium.Cartesian3.ZERO);
                     
-			var points = [];
-			var pointsAOS = [];
-			for ( var i = 0; i < orbit.length; i++) {
+            var points = [];
+            var pointsAOS = [];
+            for ( var i = 0; i < orbit.length; i++) {
                 pos = new Cesium.Cartesian3(orbit[i].x, orbit[i].y, orbit[i].z)
                 pos = pos.multiplyByScalar(1000);
-				points.push(pos);
-				
-				if (orbit[i].el >= AGSETTINGS.getAosEl()) {
+                points.push(pos);
+                
+                if (orbit[i].el >= AGSETTINGS.getAosEl()) {
                     pos = new Cesium.Cartesian3(orbit[i].x, orbit[i].y, orbit[i].z)
                     pos = pos.multiplyByScalar(1000);
-					pointsAOS.push(pos);
-					plottingAos = true;
-				}
-				
-				if (plottingAos && orbit[i].el <= AGSETTINGS.getAosEl()) {
-					plottingAos = false;
-					passLines.add({
-						positions : pointsAOS,
-						width : 3,
-						color : Cesium.Color.GREEN
-					});
-					pointsAOS = [];
-				}
-				
-				
-			}
-			
-		//	var segments = Cesium.PolylinePipeline.wrapLongitude(ellipsoid, points);
-		//	for (var i=0; i < segments.length; i++) {
+                    pointsAOS.push(pos);
+                    plottingAos = true;
+                }
+                
+                if (plottingAos && orbit[i].el <= AGSETTINGS.getAosEl()) {
+                    plottingAos = false;
+                    passLines.add({
+                        positions : pointsAOS,
+                        width : 3,
+                        color : Cesium.Color.GREEN
+                    });
+                    pointsAOS = [];
+                }
+                
+                
+            }
+            
+        //    var segments = Cesium.PolylinePipeline.wrapLongitude(ellipsoid, points);
+        //    for (var i=0; i < segments.length; i++) {
 
             if (plottingAos) {
                 passLines.add({
@@ -585,18 +585,18 @@ var AG3DVIEW = function(element) {
                 });
             }        
       
-				orbitLines.add({
-					positions : points,
-					width : 1,
-					color : Cesium.Color.RED
-				});
+                orbitLines.add({
+                    positions : points,
+                    width : 1,
+                    color : Cesium.Color.RED
+                });
       
-		//	}
+        //    }
 
 
-		}
+        }
 */
-	}
+    }
 
     function init3DView() {
         
@@ -627,32 +627,32 @@ var AG3DVIEW = function(element) {
             })
         };
                 
-	    jQuery('<canvas/>', {
-		    'id' : 'glCanvas',
-		    'class' : 'fullsize'
-	    }).appendTo('#'+_element);
+        jQuery('<canvas/>', {
+            'id' : 'glCanvas',
+            'class' : 'fullsize'
+        }).appendTo('#'+_element);
 
-	    canvas = jQuery('#glCanvas')[0];
-	    scene = new Cesium.Scene(canvas);
-	    transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
+        canvas = jQuery('#glCanvas')[0];
+        scene = new Cesium.Scene(canvas);
+        transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
 
-	    cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.static);
-	    cb.showSkyAtmosphere = true;
+        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.static);
+        cb.showSkyAtmosphere = true;
 
-	    scene.getPrimitives().setCentralBody(cb);
+        scene.getPrimitives().setCentralBody(cb);
 
         _skyAtmosphere = new Cesium.SkyAtmosphere();
-	    scene.skyAtmosphere = _skyAtmosphere;
+        scene.skyAtmosphere = _skyAtmosphere;
         
-	    var imageryUrl = 'images/';
-	    _skybox = new Cesium.SkyBox({
-		    positiveX : imageryUrl + 'skybox/tycho8_px_80.jpg',
-		    negativeX : imageryUrl + 'skybox/tycho8_mx_80.jpg',
-		    positiveY : imageryUrl + 'skybox/tycho8_py_80.jpg',
-		    negativeY : imageryUrl + 'skybox/tycho8_my_80.jpg',
-		    positiveZ : imageryUrl + 'skybox/tycho8_pz_80.jpg',
-		    negativeZ : imageryUrl + 'skybox/tycho8_mz_80.jpg'
-	    });
+        var imageryUrl = 'images/';
+        _skybox = new Cesium.SkyBox({
+            positiveX : imageryUrl + 'skybox/tycho8_px_80.jpg',
+            negativeX : imageryUrl + 'skybox/tycho8_mx_80.jpg',
+            positiveY : imageryUrl + 'skybox/tycho8_py_80.jpg',
+            negativeY : imageryUrl + 'skybox/tycho8_my_80.jpg',
+            positiveZ : imageryUrl + 'skybox/tycho8_pz_80.jpg',
+            negativeZ : imageryUrl + 'skybox/tycho8_mz_80.jpg'
+        });
         scene.skyBox = _skybox;
         
         _labels = new Cesium.LabelCollection(undefined);        
@@ -668,13 +668,13 @@ var AG3DVIEW = function(element) {
             Cesium.Cartesian3.ZERO, // target
             new Cesium.Cartesian3(-0.1642824655609347, 0.5596076102188919, 0.8123118822806428)); // up
        */
-	    satelliteClickDetails(scene);
-	    mouseMoveDetails(scene, ellipsoid);
+        satelliteClickDetails(scene);
+        mouseMoveDetails(scene, ellipsoid);
         scene.getPrimitives().add(orbitLines);
         scene.getPrimitives().add(passLines);
-	    scene.getPrimitives().add(footprintCircle);
+        scene.getPrimitives().add(footprintCircle);
 
-	    jQuery(window).trigger('resize');
+        jQuery(window).trigger('resize');
     }
     
     /**
@@ -699,19 +699,19 @@ var AG3DVIEW = function(element) {
         jQuery('#3d-follow').disable();
     }
     
-	return {
-		startRender : function() {
+    return {
+        startRender : function() {
             if (AGSETTINGS.getHaveWebGL()) {
-			    _render = true;
+                _render = true;
                 resize();
-			    renderScene();
+                renderScene();
                 populateSatelliteBillboard();
             }
-		},
+        },
 
-		stopRender : function() {
-			_render = false;
-		},
+        stopRender : function() {
+            _render = false;
+        },
 
         resizeView : function(width, height) {
             if (AGSETTINGS.getHaveWebGL()) {
@@ -719,16 +719,16 @@ var AG3DVIEW = function(element) {
             }
         },
                 
-		init : function() {
+        init : function() {
             if (AGSETTINGS.getHaveWebGL()) {
                 init3DView();
             }
-		},
+        },
         
         postInit : function() {
             if (!AGSETTINGS.getHaveWebGL()) {
                 initNo3DView();
             }            
         }
-	}
+    }
 }

@@ -15,7 +15,7 @@ Copyright 2012 Alex Greenland
  */
 var AGUI = function() {
 	'use strict';
-
+    
 	/**
 	 * Ugly hack to hide view tabs
 	 */
@@ -366,7 +366,9 @@ var AGUI = function() {
     ctrl.remove();
     jQuery(document.body).show();
     jQuery('#status').html('Idle');
-        
+
+    var _helper = new AGPOPUPHELP();
+                
 	return {
 		updateSatelliteInfo : function(catalogNumber) {
 			var url = 'ajax.php?id=' + catalogNumber;
@@ -378,28 +380,21 @@ var AGUI = function() {
 		},
         
         updateInfoPane : function() {
-            var showingHelp = false;
-            var totalTles = AGSatTrack.getTles().getCount();
-            var totalDisplaying = AGSatTrack.getDisplaying().length;
-            
-            if (totalTles > 0 && totalDisplaying === 0) {
-                var helpText = jQuery('#help-1').html();
-                helpText = helpText.replace(/{tlecount}/g, totalTles);
-                jQuery('#help-content').html(helpText);
-                showingHelp = true;    
-            }
-            
-            if (!showingHelp) {
-                var tab = jQuery('div#satinfot.easyui-tabs div.tabs-header div.tabs-wrap ul.tabs li').first();
-                tab.hide();
-                jQuery('#help-tab').hide();
-                jQuery('#help-content').html('');
-                jQuery('#satinfot').tabs('select', 1); 
-            } else {
-                var tab = jQuery('div#satinfot.easyui-tabs div.tabs-header div.tabs-wrap ul.tabs li').first();
-                tab.show();
-                jQuery('#help-tab').show();
-                jQuery('#satinfot').tabs('select', 0); 
+            if (AGSETTINGS.getShowPopupHelp()) {
+                var showingHelp = false;
+                var totalTles = AGSatTrack.getTles().getCount();
+                var totalDisplaying = AGSatTrack.getDisplaying().length;
+                
+                if (totalTles > 0 && totalDisplaying === 0) {
+                    var helpText = jQuery('#help-1').html();
+                    helpText = helpText.replace(/{tlecount}/g, totalTles);
+                    _helper.showHelp(helpText, true);
+                    showingHelp = true;
+                }
+                
+                if (!showingHelp) {
+                    _helper.closeBalloon(true);    
+                }
             }
             
         }

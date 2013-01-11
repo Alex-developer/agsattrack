@@ -13,73 +13,73 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
-var AGSETTINGS = (function(element) {
+var AGSETTINGS = (function() {
+    'use strict';
+    
 	var _aosEl = 5;
 	var _refreshTimerInterval = 5000;
 	var _haveCanvas = true;
     var _switchViewOnTabClick = true;
     var _haveWebGl = false;
-//    var _spm = 'isana';
-    //var _spm = 'jspredict';
+//    var _spm = 'isana'; /* broken DO NOT USE */
+//    var _spm = 'jspredict'; /* broken DO NOT USE */
     var _spm = 'predictlib';
     var _debugLevel = 1;
     var _calculateEvents = true;
-    
+    var _showPopupHelp = true;
     
 	return {
 		init: function() {
 		},
-
+        getShowPopupHelp : function() {
+            return _showPopupHelp;    
+        },
+        setShowPopupHelp : function(value) {
+            _showPopupHelp = value;
+            jQuery(document).trigger('agsattrack.showpopuphelp', value);            
+        },    
         getCalculateEvents : function() {
             return _calculateEvents;    
         },
         setCalculateEvents : function(value) {
             _calculateEvents = value;
-        },
-                
+        },      
         getDebugLevel : function() {
             return _debugLevel;    
         },
         setDebugLevel : function(value) {
             _debugLevel = value;
-        },
-                
+        },       
         getSPM : function() {
             return _spm;    
         },
         setSPM : function(value) {
             _spm = value;
-        },
-                
+        },   
         getSwitchViewOnTabClick : function() {
             return _switchViewOnTabClick;
         },
         setSwitchViewOnTabClick : function(value) {
             _switchViewOnTabClick = value;    
         },
-        
         getHaveWebGL : function() {
             return _haveWebGl;
         },
         setHaveWebGL : function(value) {
             _haveWebGl = value;    
         },
-                		
         getHaveCanvas : function() {
             return _haveCanvas;
         },
         setHaveCanvas : function(value) {
             _haveCanvas = value;    
         },
-
-        
 		getAosEl : function() {
 			return _aosEl;
 		},
 		setAosEl : function(val) {
-			_aosEl = val
+			_aosEl = val;
 		},
-		
 		getRefreshTimerInterval : function() {
 			return _refreshTimerInterval;
 		},
@@ -87,5 +87,5 @@ var AGSETTINGS = (function(element) {
 			_refreshTimerInterval = val;
 		}	
 
-	}
+	};
 })();

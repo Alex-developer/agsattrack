@@ -273,16 +273,30 @@ p.description {
     text-align: left;
 }
 
-.helptext {
+.helpwrapper {
     display:none;
 }
 
-#help-tab ul {
+.helptext ul {
     list-style-type: none;
     padding: 0;
     margin: 0 0 10px 10px;;   
 }
 
-#help-tab li {
+.helptext li {
     margin-bottom: 10px; 
+}
+
+.helptext li img {
+    float: left;
+    margin-right: 5px;
+}
+    
+.helptext h2 {
+    font-size: 1.9em;
+    margin-bottom: 5px;
+    margin-top: 5px;    
+}
+.helptext h2 span {
+    margin-right: 10px;
 }

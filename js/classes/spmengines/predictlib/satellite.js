@@ -50,7 +50,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'x' : 'sat_x',     
         'y' : 'sat_y',     
         'z' : 'sat_z',
-        'epoc' : 'sat_epoch'    
+        'epoc' : 'sat_epoch' ,
+        'orbitnumber' : 'rv'   
     };
     var _passes = null;
     
@@ -79,7 +80,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             _nextPass.orbit = [];
             _nextPass.aosTime = _satOrbit.Daynum2Date(aos);
             _nextPass.losTime = _satOrbit.Daynum2Date(los);
- 
+            _nextPass.orbitNumber = _satOrbit.orbitNumber;
+            
             _satOrbit.doCalc(aos);
 
             var time = aos;
