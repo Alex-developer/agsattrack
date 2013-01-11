@@ -17,6 +17,7 @@ var AGPOPUPHELP = function() {
     'use strict';
     var _helpAgent = null;    
     var ANIMATETIMER = 10000;
+    var _queueItem = null;
     
     clippy.load('Links', function(agent) {
         var windowWidth = jQuery(window).width();
@@ -46,10 +47,22 @@ var AGPOPUPHELP = function() {
         setTimeout(randomAnimation, ANIMATETIMER);
     }
     randomAnimation();
+    
+    function waitForHelper() {
+        if (_helpAgent !== null) {
+            _helpAgent.tip(_queueItem, true);
+        }
+        setTimeout(waitForHelper, 250);        
+    }
                 
     return {
         showHelp: function(helpText) {
-            _helpAgent.tip(helpText, true);
+            if (_helpAgent === null) {
+                _queueItem = helpText;
+                waitForHelper();   
+            } else {
+                _helpAgent.tip(helpText, true);
+            }
         },
         
         closeBalloon : function(fast) {
