@@ -18,7 +18,7 @@ var agsattrack = function() {
 
 	var _observers = [];
 	var _tles = new AGTLES();
-	var ui = null;
+	var _ui = null;
 	var refreshCounter = 0;
 	var refreshInterval = 1;
 	var _planets = new AGPLANETS();
@@ -43,10 +43,10 @@ var agsattrack = function() {
 	function bindEvents() {	
 
         jQuery(document).bind('agsattrack.tlesloaded', function(event, params) {
-            ui.updateInfoPane();
+            _ui.updateInfoPane();
         });
         jQuery(document).bind('agsattrack.satsselected', function(event, params) {
-            ui.updateInfoPane();
+            _ui.updateInfoPane();
         });        
         
 		/**
@@ -110,13 +110,13 @@ var agsattrack = function() {
             if (sat.getSelected()) {
                 sat.requestOrbit();
                 var name = sat.getName();
-                jQuery(document).trigger('agsattrack.updateinfo', {text: 'Orbit Requested For ' + name});
+                _ui.updateInfo('Orbit Requested For ' + name);
             }
             
             var _selected = _tles.getSelected();
 			calculate(true);
 			jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
-            ui.updateInfoPane();
+            _ui.updateInfoPane();
 		});
 	    
 		jQuery(document).bind('agsattrack.forceupdate', function(event) {
@@ -141,7 +141,7 @@ var agsattrack = function() {
 	function calculate(forceRefresh) {
 		var julianDate;
 
-        jQuery(document).trigger('agsattrack.updatestatus', {text: 'Calculating'});
+        _ui.updateStatus('Calculating');
         
         if (AGSETTINGS.getHaveWebGL()) {
             var cDate = new Cesium.JulianDate();
@@ -170,7 +170,7 @@ var agsattrack = function() {
 			jQuery(document).trigger('agsattrack.updatesatdata', {});
 		}
 
-        jQuery(document).trigger('agsattrack.updatestatus', {text: 'Idle'});
+        _ui.updateStatus('Idle');
     
     }
 	
@@ -223,6 +223,10 @@ var agsattrack = function() {
 			return _observers;
 		},
 		
+        getUI : function() {
+            return _ui;    
+        },
+        
 		init : function() {
 			var _active = 0;
 			
@@ -242,7 +246,7 @@ var agsattrack = function() {
             /**
              * Fire up the user Inerface
              */
-            ui = new AGUI();
+            _ui = new AGUI();
 
             
 			/**

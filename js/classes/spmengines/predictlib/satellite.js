@@ -109,11 +109,13 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         var time;
         _orbitrequested = false;
         
+        AGSatTrack.getUi().updateInfo('Calculating Orbit For ' + _sat.sat[0].name + ' Started');
+        
         /**
         * Only rebuild the orbit data every 60 seconds
         */
         if (_orbitAge !== null && Date.DateDiff('s', new Date(), _orbitAge) < 60) {
-            jQuery(document).trigger('agsattrack.updateinfo', {text: 'Orbit request For ' + _sat.sat[0].name + ' ignored'});
+            AGSatTrack.getUi().updateInfo('Orbit request For ' + _sat.sat[0].name + ' ignored');
             return;
         }
         
@@ -157,7 +159,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         }                    
         _orbitAge = new Date();
         
-        jQuery(document).trigger('agsattrack.updateinfo', {text: 'Calculating Orbit Complete For ' + _sat.sat[0].name});
+        AGSatTrack.getUi().updateInfo('Calculating Orbit Complete For ' + _sat.sat[0].name);
 
     }
     

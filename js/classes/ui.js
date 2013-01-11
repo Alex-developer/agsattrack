@@ -371,6 +371,13 @@ var AGUI = function() {
     var _helper = new AGPOPUPHELP();
                 
 	return {
+        updateInfo : function(text) {
+            jQuery('#info').html(text);            
+        },
+        updateStatus : function(text) {
+            jQuery('#status').html(text);            
+        },
+                
 		updateSatelliteInfo : function(catalogNumber) {
 			var url = 'ajax.php?id=' + catalogNumber;
 			jQuery.getJSON(url, function(data) {
