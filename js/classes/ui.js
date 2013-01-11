@@ -231,6 +231,7 @@ var AGUI = function() {
         var args = e.args;
         var selectedSatellite = AGSatTrack.getSatelliteByName(args.item.value); 
         AGSatTrack.setFollowing(selectedSatellite);
+        UpdateSatelliteData(selectedSatellite);
 	});
 
     
@@ -256,7 +257,7 @@ var AGUI = function() {
         if (selectedInfo.satellites.length > 1 ) {
             for (var i=0; i < selectedInfo.satellites.length; i++) {
                 var satelliteName = selectedInfo.satellites[i].getName();
-                var catalogNumber = selectedInfo.satellites[i].getcatalogNumber();
+                var catalogNumber = selectedInfo.satellites[i].getCatalogNumber();
                 jQuery('#sat-info-selector').jqxDropDownList('addItem', {label: satelliteName, value: catalogNumber});
             }
             if (selectedItem !== null) {

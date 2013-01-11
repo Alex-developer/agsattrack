@@ -69,7 +69,8 @@ let me know and I will add the appropriate credit.
             jQuery(document).bind('agsattrack.satsselected', function(e, selected) {
                 var data = [];
                 for (var i=0; i < selected.selections.length; i++) {
-                    data.push({text: selected.selections[i], value: selected.selections[i]});    
+                    var sat = AGSatTrack.getSatelliteByName(selected.selections[i]);
+                    data.push({text: sat.getName(), value: sat.getCatalogNumber()});    
                 }
                 o.listItems = data;
                 self.loadList();        
@@ -144,7 +145,7 @@ let me know and I will add the appropriate credit.
 			// fire onChange event
 			if (!disableEvents) {
                 o.onChange.call();
-                jQuery(document).trigger('agsattrack.satclicked', {index: $(element).attr('data-text')});
+                jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: $(element).attr('data-value')});
             }
 		},
 
