@@ -27,10 +27,27 @@ var AGSETTINGS = (function() {
     var _debugLevel = 1;
     var _calculateEvents = true;
     var _showPopupHelp = true;
+    var _requireEUCookieLaw = false;
     
 	return {
 		init: function() {
 		},
+        cookiesOk: function() {
+            var result = true;
+            
+            if (_requireEUCookieLaw) {
+                if(jQuery.cookie('cc_cookie_accept') === null && jQuery.cookie('cc_cookie_decline') === null) { 
+                } else {
+                    if (jQuery.cookie('cc_cookie_decline') == "cc_cookie_decline") {
+                        result = false;
+                    }    
+                }    
+            } 
+            return result;  
+        },
+        getRequireEUCookieLaw : function() {
+            return _requireEUCookieLaw;    
+        },
         getShowPopupHelp : function() {
             return _showPopupHelp;    
         },

@@ -76,6 +76,10 @@
 <script src="/js/modernizer.js"></script>
 <script src="/js/platform.js"></script>
 <script src="/js/startup.js"></script>
+
+
+<link href="/js/cookiecuttr/cookiecuttr.css" rel="stylesheet" type="text/css" />
+<script src="/js/cookiecuttr/jquery.cookiecuttr.js"></script>
    
 </head>
 <body class='easyui-layout default' style="display: none" id="body">
@@ -759,7 +763,18 @@
                     <div title="General" data-options="" style="padding: 20px;">
                         <div class="icon32" id="icon-options-general"><br></div>
                         <h2>General Options</h2>
-                        
+
+                        <h3>Views</h3>
+                        <table class="form-table">
+                            <tr valign="top">
+                                <th>Switch to view on tab select</th>
+                                <td>
+                                    <input type="checkbox" id="switchtabonclick" value="on">
+                                    <p class="description">Enabling this option will cause the current view to be switched when you click on the views in the ribbon bar.</p>
+                                </td>
+                            </tr>                          
+                        </table>
+                                                
                         <h3>Popup Help</h3>
                         <table class="form-table">
                             <tr valign="top">
@@ -995,20 +1010,22 @@
         var href = document.location.href;
         
         if (href.indexOf('local') === -1) {
-		    var _gaq = _gaq || [];
-		    _gaq.push([ '_setAccount', 'UA-36758800-1' ]);
-		    _gaq.push([ '_trackPageview' ]);
+		    if (AGSETTINGS.cookiesOk()) {
+                var _gaq = _gaq || [];
+		        _gaq.push([ '_setAccount', 'UA-36758800-1' ]);
+		        _gaq.push([ '_trackPageview' ]);
 
-		    (function() {
-			    var ga = document.createElement('script');
-			    ga.type = 'text/javascript';
-			    ga.async = true;
-			    ga.src = ('https:' == document.location.protocol ? 'https://ssl'
-					    : 'http://www')
-					    + '.google-analytics.com/ga.js';
-			    var s = document.getElementsByTagName('script')[0];
-			    s.parentNode.insertBefore(ga, s);
-		    })();
+		        (function() {
+			        var ga = document.createElement('script');
+			        ga.type = 'text/javascript';
+			        ga.async = true;
+			        ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+					        : 'http://www')
+					        + '.google-analytics.com/ga.js';
+			        var s = document.getElementsByTagName('script')[0];
+			        s.parentNode.insertBefore(ga, s);
+		        })();
+            }
         }
 	</script>
 

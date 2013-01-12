@@ -23,7 +23,16 @@ jQuery(document).ready(function() {
           
           AGSPMENGINE.loadSPMEngine(function(){
             AGSatTrack = new agsattrack();
-            AGSatTrack.init();            
+            AGSatTrack.init();      
+            
+            if (AGSETTINGS.getRequireEUCookieLaw()) {
+                jQuery.cookieCuttr({
+                    cookieDeclineButton: true,
+                    cookieAnalytics: false,
+                    cookiePolicyLink: 'privacy_policy.html'
+                });
+            }
+      
           });
       }
     });
