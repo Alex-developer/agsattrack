@@ -90,7 +90,7 @@ var AGSETTINGS = (function() {
         getObserver: function(index) {
             var result = null;
             
-            if (typeof _settings.observers[index] !== 'undefined') {
+            if (typeof _settings.observers !== 'undefined' && typeof _settings.observers[index] !== 'undefined') {
                 result = _settings.observers[index];   
             }
             return result;  
