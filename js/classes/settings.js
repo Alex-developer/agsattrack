@@ -16,43 +16,77 @@ Copyright 2012 Alex Greenland
 var AGSETTINGS = (function() {
     'use strict';
     
-	var _aosEl = 5;
-	var _refreshTimerInterval = 5000;
 	var _haveCanvas = true;
-    var _switchViewOnTabClick = true;
     var _haveWebGl = false;
 //    var _spm = 'isana'; /* broken DO NOT USE */
 //    var _spm = 'jspredict'; /* broken DO NOT USE */
     var _spm = 'predictlib';
     var _debugLevel = 1;
     var _calculateEvents = true;
-    var _showPopupHelp = true;
     var _requireEUCookieLaw = false;
+    
+    var _settings = {
+        aosEl: 5,
+        refreshTimerInterval : 5000,
+        showPopupHelp : true,
+        switchViewOnTabClick : true
+    };
+    var COOKIENAME = 'agsattrack';
+    var COOKIEEXPIRES = 30;
+    
+    /**
+    * Save all of our settings to a cookie
+    */
+    function saveSettings() {
+        if (AGSETTINGS.cookiesOk()) {
+            var cookieData = JSON.stringify(_settings);
+            
+            jQuery.cookie(COOKIENAME, cookieData, { expires: COOKIEEXPIRES });
+        } 
+    }
+    
+    /**
+    * Determine if its ok for us to use cookies.
+    */
+    function cookiesOK() {
+        var result = true;
+        
+        if (_requireEUCookieLaw) {
+            if(jQuery.cookie('cc_cookie_accept') === null && jQuery.cookie('cc_cookie_decline') === null) { 
+            } else {
+                if (jQuery.cookie('cc_cookie_decline') == "cc_cookie_decline") {
+                    result = false;
+                }    
+            }    
+        } 
+        return result;         
+    }
+    
+    /**
+    * Load settings from a cookie if one is found
+    */
+    if (jQuery.cookie(COOKIENAME) !== null) {
+        var cookieData = jQuery.cookie(COOKIENAME);
+        _settings = JSON.parse(cookieData); 
+    }
     
 	return {
 		init: function() {
 		},
+        saveSettings: function() {
+            saveSettings();    
+        },
         cookiesOk: function() {
-            var result = true;
-            
-            if (_requireEUCookieLaw) {
-                if(jQuery.cookie('cc_cookie_accept') === null && jQuery.cookie('cc_cookie_decline') === null) { 
-                } else {
-                    if (jQuery.cookie('cc_cookie_decline') == "cc_cookie_decline") {
-                        result = false;
-                    }    
-                }    
-            } 
-            return result;  
+            return cookiesOK();
         },
         getRequireEUCookieLaw : function() {
             return _requireEUCookieLaw;    
         },
         getShowPopupHelp : function() {
-            return _showPopupHelp;    
+            return _settings.showPopupHelp;    
         },
         setShowPopupHelp : function(value) {
-            _showPopupHelp = value;
+            _settings.showPopupHelp = value;
             jQuery(document).trigger('agsattrack.showpopuphelp', value);            
         },    
         getCalculateEvents : function() {
@@ -74,10 +108,10 @@ var AGSETTINGS = (function() {
             _spm = value;
         },   
         getSwitchViewOnTabClick : function() {
-            return _switchViewOnTabClick;
+            return _settings.switchViewOnTabClick;
         },
         setSwitchViewOnTabClick : function(value) {
-            _switchViewOnTabClick = value;    
+            _settings.switchViewOnTabClick = value;    
         },
         getHaveWebGL : function() {
             return _haveWebGl;
@@ -92,16 +126,16 @@ var AGSETTINGS = (function() {
             _haveCanvas = value;    
         },
 		getAosEl : function() {
-			return _aosEl;
+			return _settings.aosEl;
 		},
 		setAosEl : function(val) {
-			_aosEl = val;
+			_settings.aosEl = val;
 		},
 		getRefreshTimerInterval : function() {
-			return _refreshTimerInterval;
+			return _settings.refreshTimerInterval;
 		},
 		setRefreshTimerInterval : function(val) {
-			_refreshTimerInterval = val;
+			_settings.refreshTimerInterval = val;
 		}	
 
 	};

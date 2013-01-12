@@ -81,7 +81,8 @@ var AGOPTIONS = function() {
 
         temp = jQuery('#popuphelp-show').prop('checked');
         AGSETTINGS.setShowPopupHelp(temp)
-                
+        
+        AGSETTINGS.saveSettings();               
 		jQuery('#options-save').disable();
 	});
 	
