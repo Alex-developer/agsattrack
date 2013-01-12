@@ -214,6 +214,8 @@ var AGUI = function() {
             if (AGSETTINGS.getAutoAddSats()) {
                 jQuery('#ag-satselector').agsatbox('moveAllSats','right');        
             }
+            var groupName = AGSatTrack.getTles().getGroupName();
+            jQuery('#statusgroup').html('Group: ' + groupName); 
 	});
 
 	/**
@@ -381,7 +383,12 @@ var AGUI = function() {
         updateStatus : function(text) {
             jQuery('#status').html(text);            
         },
-                
+        updateStatusGroup : function(text) {
+            jQuery('#statusgroup').html(text);            
+        },                
+        updateStatusFollowing : function(text) {
+            jQuery('#statusfollowing').html(text);            
+        },
 		updateSatelliteInfo : function(catalogNumber) {
 			var url = 'ajax.php?id=' + catalogNumber;
 			jQuery.getJSON(url, function(data) {

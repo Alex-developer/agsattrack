@@ -17,7 +17,8 @@ var AGTLES = function() {
 	'use strict';
 	
 	var baseUrl = 'ajax.php?keps=';
-	var group = '';
+	var _group = '';
+    var _groupName = '';
 	var rawKeps = '';
 	var satellites = [];
 	
@@ -41,7 +42,7 @@ var AGTLES = function() {
             }
         }
         AGVIEWS.tlesLoaded();
-        jQuery(document).trigger('agsattrack.tlesloaded', group);
+        jQuery(document).trigger('agsattrack.tlesloaded', _group);
 	}
 	
 	/**
@@ -158,12 +159,18 @@ var AGTLES = function() {
 			return names;
 		},
 		
+        getGroupName : function() {
+            return _groupName;    
+        },
+        
 		load: function(group) {
 			var url = baseUrl + group;
 			
 			jQuery.getJSON(url, function(data) {
 				satellites = [];
-				group = data.id;
+				_group = data.id;
+                var groupData = jQuery('#sat-group-selector-listbox').jqxListBox('getItemByValue', group);
+                _groupName = groupData.label;
 				rawKeps = data.keps.split('\n');
 				processRawData();
 			});			

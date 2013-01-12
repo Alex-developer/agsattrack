@@ -188,6 +188,11 @@ var agsattrack = function() {
         setFollowing : function(satellite) {
             _following = satellite;
             jQuery(document).trigger('agsattrack.newfollowing', {satellites: _following});
+            if (_following !== null) {
+                _ui.updateStatusFollowing('Following: ' + _following.getName());   
+            } else {
+                _ui.updateStatusFollowing('Following: NONE');   
+            }
         },
         
         getFollowing : function() {
