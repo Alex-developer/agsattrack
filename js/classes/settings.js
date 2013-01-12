@@ -23,7 +23,7 @@ var AGSETTINGS = (function() {
     var _spm = 'predictlib';
     var _debugLevel = 1;
     var _calculateEvents = true;
-    var _requireEUCookieLaw = false;
+    var _requireEUCookieLaw = true;
     
     var _settings = {
         aosEl: 5,
