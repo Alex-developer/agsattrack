@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,6 +13,36 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+ 
+ /**
+ * Shim to support animation frames
+ */
+window.requestAnimFrame = (function() {
+    return window.requestAnimationFrame
+            || window.webkitRequestAnimationFrame
+            || window.mozRequestAnimationFrame
+            || window.oRequestAnimationFrame
+            || window.msRequestAnimationFrame || function(callback) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+})();
+
+/**
+* Delayed trigger hack
+*/
+$.fn.delayedTrigger = function(duration, eventName, event) {
+  var target = this;
+  var timeoutId = $.delayedEvents[eventName];
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
+  $.delayedEvents[eventName] = setTimeout(function() { 
+    delete $.delayedEvents[eventName];
+    target.trigger(eventName, event);
+  }, duration);
+}
+$.delayedEvents = {}; 
+    
 jQuery(document).ready(function() {
     Modernizr.load({
       test: AGUTIL.webGlTest(),

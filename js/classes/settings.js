@@ -41,6 +41,18 @@ var AGSETTINGS = (function() {
     */
     function saveSettings() {
         if (AGSETTINGS.cookiesOk()) {
+            var observersSettings = [];
+            var observers = AGSatTrack.getObservers();
+            jQuery.each(observers, function(index, observer) {
+                observersSettings[index] = {
+                    name: observer.getName(),
+                    lat: observer.getLat(),
+                    lon: observer.getLon(),
+                    alt: observer.getAlt(),
+                    auto: observer.getAutoGeo()
+                };
+            });              
+            _settings.observers = observersSettings;
             var cookieData = JSON.stringify(_settings);
             
             jQuery.cookie(COOKIENAME, cookieData, { expires: COOKIEEXPIRES });
@@ -75,6 +87,14 @@ var AGSETTINGS = (function() {
 	return {
 		init: function() {
 		},
+        getObserver: function(index) {
+            var result = null;
+            
+            if (typeof _settings.observers[index] !== 'undefined') {
+                result = _settings.observers[index];   
+            }
+            return result;  
+        },
         saveSettings: function() {
             saveSettings();    
         },

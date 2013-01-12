@@ -292,3 +292,17 @@ p.description {
 .helptext h2 span {
     margin-right: 10px;
 }
+
+#geocomplete {
+    width: 300px;
+    font-family: 'Myriad Pro',Calibri,Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.map_canvas {
+    border: 10px solid #FFFFFF;
+    height: 450px;
+    margin: 10px 0;
+    width: 770px;
+}

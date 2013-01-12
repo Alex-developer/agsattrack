@@ -26,20 +26,6 @@ var agsattrack = function() {
 	var _speed = 1;
 	var _following = null;
     
-	/**
-	 * Shim to support animation frames
-	 */
-	window.requestAnimFrame = (function() {
-		return window.requestAnimationFrame
-				|| window.webkitRequestAnimationFrame
-				|| window.mozRequestAnimationFrame
-				|| window.oRequestAnimationFrame
-				|| window.msRequestAnimationFrame || function(callback) {
-					window.setTimeout(callback, 1000 / 60);
-				};
-	})();
-	
-    
 	function bindEvents() {	
 
         jQuery(document).bind('agsattrack.tlesloaded', function(event, params) {
@@ -257,7 +243,7 @@ var agsattrack = function() {
 			/**
 			 * Setup the first observer, this will be the 'Home' observer
 			 */
-			_observers[0] = new AGOBSERVER().init();
+			_observers[0] = new AGOBSERVER(0).init();
 
 			bindEvents();
 			

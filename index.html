@@ -68,6 +68,8 @@
 <script type="text/javascript" src="/js/jqwidgets/jqxdragdrop.js"></script>  
 <script type="text/javascript" src="/js/jqwidgets/jqxdropdownlist.js"></script>
 <script type="text/javascript" src="/js/jqwidgets/jqxmenu.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxpanel.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxwindow.js"></script>
 <link rel="stylesheet" href="/js/jqwidgets/styles/jqx.base.css" type="text/css" />
 
 <script type="text/javascript" src="/js/joyride/jquery.joyride-2.0.2.js"></script>
@@ -77,9 +79,11 @@
 <script src="/js/platform.js"></script>
 <script src="/js/startup.js"></script>
 
-
 <link href="/js/cookiecuttr/cookiecuttr.css" rel="stylesheet" type="text/css" />
 <script src="/js/cookiecuttr/jquery.cookiecuttr.js"></script>
+
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
+<script src="/js/geocomplete/jquery.geocomplete.min.js"></script>
    
 </head>
 <body class='easyui-layout default' style="display: none" id="body">
@@ -796,24 +800,67 @@
                         <h3>Home Location</h3>
                         <table class="form-table">
                             <tr valign="top">
+                                <th>Use Browser To Find Location</th>
+                                <td>
+                                    <input type="checkbox" id="observergelocate" value="on">
+                                    <p class="description">Selecting this option will attempt to use the browsers inbuilt Geo Location. If you do not select this option you can manually specify your location below.</p>
+                                </td>
+                            </tr>                          
+                            <tr valign="top">
                                 <th>Location name</th>
                                 <td>
-                                    <input size=15 id="observer-name">
+                                    <input size=15 id="observername" class="observerhome">
+                                    <button type="submit" id="geoshow"><img src="/images/geo.png" width=16> Select On Map</button>
                                 </td>
                             </tr>
                             <tr valign="top">
                                 <th>Location Latitude</th>
                                 <td>
-                                    <input size=15 id="latitude-name">
+                                    <input size=20 id="observerlatitude" class="observerhome">
                                 </td>
                             </tr>
                             <tr valign="top">
                                 <th>Location Longitude</th>
                                 <td>
-                                    <input size=15 id="latitude-longitude">
+                                    <input size=20 id="observerlongitude" class="observerhome">
                                 </td>
-                            </tr>                            
+                            </tr>
+                            <tr valign="top">
+                                <th>Location Altitude</th>
+                                <td>
+                                    <input size=10 id="observeraltitude" class="observerhome">
+                                </td>
+                            </tr>                                                       
                         </table>
+                        
+                        <h3>Mutual Location</h3>
+                        <table class="form-table">
+                            <tr valign="top">
+                                <th>Location name</th>
+                                <td>
+                                    <input size=15 id="mutualname" disabled>
+                                    <button type="submit" id="mutualgeoshow" disabled><img src="/images/geo.png" width=16> Select On Map</button>
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <th>Location Latitude</th>
+                                <td>
+                                    <input size=20 id="mutuallatitude" disabled>
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <th>Location Longitude</th>
+                                <td>
+                                    <input size=20 id="mutuallongitude" disabled>
+                                </td>
+                            </tr> 
+                            <tr valign="top">
+                                <th>Location Altitude</th>
+                                <td>
+                                    <input size=10 id="mutualaltitude" disabled>
+                                </td>
+                            </tr>                                                         
+                        </table>                        
 					</div>
 					<div title="Satellites" data-options="" style="padding: 20px;">
                         <div class="icon32" id="icon-options-general"><br></div>
