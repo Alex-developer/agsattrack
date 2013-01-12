@@ -19,34 +19,38 @@ var AGPOPUPHELP = function() {
     var ANIMATETIMER = 10000;
     var _queueItem = null;
     
-    clippy.load('Links', function(agent) {
-        var windowWidth = jQuery(window).width();
-        var windowHeight = jQuery(window).height();
-        _helpAgent = agent;
-        
-        _helpAgent.show();
-        _helpAgent.moveTo(windowWidth - 110, windowHeight - 100, 0);
-        
-        jQuery('.clippy-balloon').on('click', function(){
-            _helpAgent.closeBalloon(true);    
-        });
-    }, function(){
-    }); 
-    jQuery(document).bind('agsattrack.showpopuphelp', function(state) {
-        if (state) {
-            _helpAgent.show();    
-        } else {
-            _helpAgent.hide();
-        }
-    }); 
-    
+    if (AGSETTINGS.getShowPopupHelp()) {
+        clippy.load('Links', function(agent) {
+            var windowWidth = jQuery(window).width();
+            var windowHeight = jQuery(window).height();
+            _helpAgent = agent;
+            
+            _helpAgent.show();
+            _helpAgent.moveTo(windowWidth - 110, windowHeight - 100, 0);
+            
+            jQuery('.clippy-balloon').on('click', function(){
+                _helpAgent.closeBalloon(true);    
+            });
+        }, function(){
+        }); 
+        jQuery(document).bind('agsattrack.showpopuphelp', function(state) {
+            if (state) {
+                _helpAgent.show();    
+            } else {
+                _helpAgent.hide();
+            }
+        }); 
+    }
+              
     function randomAnimation() {
         if (_helpAgent !== null) {
             _helpAgent.animate();
         }
         setTimeout(randomAnimation, ANIMATETIMER);
     }
-    randomAnimation();
+    if (AGSETTINGS.getShowPopupHelp()) {
+        randomAnimation();
+    }
     
     function waitForHelper() {
         if (_helpAgent !== null) {
@@ -54,19 +58,25 @@ var AGPOPUPHELP = function() {
         }
         setTimeout(waitForHelper, 250);        
     }
-                
+        
     return {
         showHelp: function(helpText) {
-            if (_helpAgent === null) {
-                _queueItem = helpText;
-                waitForHelper();   
-            } else {
-                _helpAgent.tip(helpText, true);
+            if (AGSETTINGS.getShowPopupHelp()) {            
+                if (_helpAgent === null) {
+                    _queueItem = helpText;
+                    waitForHelper();   
+                } else {
+                    _helpAgent.tip(helpText, true);
+                }
             }
         },
         
         closeBalloon : function(fast) {
-            _helpAgent.closeBalloon(fast);  
+            if (AGSETTINGS.getShowPopupHelp()) {
+                if (_helpAgent === null) {             
+                    _helpAgent.closeBalloon(fast);  
+                }
+            }
         } 
 
     };
