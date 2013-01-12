@@ -35,7 +35,7 @@ Copyright 2012 Alex Greenland
         var window = jQuery('<div id="geowindow"><div><img width="14" height="14" src="/images/geo.png" alt="" /> Select Location</div><div><div><div>'+form+'</div></div><div><div style="float: right; margin-top: 15px;"><input type="button" id="ok" value="OK" style="margin-right: 10px" /><input type="button" id="cancel" value="Cancel" /></div></div></div></div>');
         jQuery(document.body).append(window);
               
-        window.jqxWindow({ maxHeight: 600, maxWidth: 800, minHeight: 600, minWidth: 800, height: 600, width: 800,
+        window.jqxWindow({ maxHeight: 640, maxWidth: 840, minHeight: 640, minWidth: 840, height: 640, width: 840,
             resizable: false, isModal: true, modalOpacity: 0.3,
             okButton: jQuery('#ok'), cancelButton: jQuery('#cancel'),
             initContent: function () {
