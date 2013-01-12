@@ -59,7 +59,7 @@ var AGUI = function() {
     var dataAdapter = new jQuery.jqx.dataAdapter(source,
         {
             loadComplete: function (records) {
-                loadAvailablesatellites('amateur');    
+                loadAvailablesatellites(AGSETTINGS.getDefaultTLEgroup());    
             }
         }
     );

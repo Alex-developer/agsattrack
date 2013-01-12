@@ -30,7 +30,8 @@ var AGSETTINGS = (function() {
         refreshTimerInterval : 5000,
         showPopupHelp : true,
         switchViewOnTabClick : true,
-        autoAddSats: true
+        autoAddSats: true,
+        defaultTleGroup: 'amateur'
     };
     var COOKIENAME = 'agsattrack';
     var COOKIEEXPIRES = 30;
@@ -83,7 +84,13 @@ var AGSETTINGS = (function() {
         getRequireEUCookieLaw : function() {
             return _requireEUCookieLaw;    
         },
-        
+
+        getDefaultTLEgroup : function() {
+            return _settings.defaultTleGroup;    
+        },
+        setDefaultTLEgroup : function(value) {
+            _settings.defaultTleGroup = value;
+        },         
         getAutoAddSats : function() {
             return _settings.autoAddSats;    
         },

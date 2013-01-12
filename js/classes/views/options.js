@@ -42,9 +42,25 @@ var AGOPTIONS = function() {
             jQuery('#sats-autoadd').prop('checked', true);
         } else {
             jQuery('#sats-autoadd').prop('checked', false);
-        }        
+        }  
+        
+        jQuery('#options-sat-group-selector-listbox').children().remove();
+        var tleGroups = jQuery('#sat-group-selector-listbox').jqxListBox('getItems');
+        var selectedGroup = AGSETTINGS.getDefaultTLEgroup()
+        jQuery.each(tleGroups, function(index, group) {
+            var selected = '';
+            if (group.value === selectedGroup) {
+                selected = ' selected="selected"';
+            }
+            jQuery('#options-sat-group-selector-listbox').append('<option value="'+group.value+'"'+selected+'>'+group.label+'</option>'); 
+        });        
+              
     }
 
+    jQuery('#options-sat-group-selector-listbox').on('change', function(e){
+        enableSave();        
+    });
+        
     jQuery('#sats-autoadd').on('click', function(e){
         enableSave();        
     });
@@ -95,11 +111,12 @@ var AGOPTIONS = function() {
         temp = jQuery('#sats-autoadd').prop('checked');
         AGSETTINGS.setAutoAddSats(temp)        
         
+        var defaultgroup = jQuery('#options-sat-group-selector-listbox').find(":selected").val();
+        AGSETTINGS.setDefaultTLEgroup(defaultgroup)  
+                
         AGSETTINGS.saveSettings();               
 		jQuery('#options-save').disable();
 	});
-	
-    setupOptions();
     
 	return {
 		startRender : function() {
