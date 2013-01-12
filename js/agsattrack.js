@@ -70,7 +70,7 @@ var agsattrack = function() {
 					options.instance.stopRender();
 				}
 			});
-	
+
 			_views[view].active = true;
 			_views[view].instance.startRender();
 	
