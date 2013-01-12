@@ -29,7 +29,8 @@ var AGSETTINGS = (function() {
         aosEl: 5,
         refreshTimerInterval : 5000,
         showPopupHelp : true,
-        switchViewOnTabClick : true
+        switchViewOnTabClick : true,
+        autoAddSats: true
     };
     var COOKIENAME = 'agsattrack';
     var COOKIEEXPIRES = 30;
@@ -82,6 +83,14 @@ var AGSETTINGS = (function() {
         getRequireEUCookieLaw : function() {
             return _requireEUCookieLaw;    
         },
+        
+        getAutoAddSats : function() {
+            return _settings.autoAddSats;    
+        },
+        setAutoAddSats : function(value) {
+            _settings.autoAddSats = value;
+        }, 
+                
         getShowPopupHelp : function() {
             return _settings.showPopupHelp;    
         },

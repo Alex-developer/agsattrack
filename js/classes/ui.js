@@ -209,7 +209,11 @@ var AGUI = function() {
             clearDataPane();
             jQuery('#ag-satselector').agsatbox('setData', tles);
             AGVIEWS.sendViewReset();
-            jQuery('#quick-sat-selector').agcheckList('clear');   
+            jQuery('#quick-sat-selector').agcheckList('clear');
+            
+            if (AGSETTINGS.getAutoAddSats()) {
+                jQuery('#ag-satselector').agsatbox('moveAllSats','right');        
+            }
 	});
 
 	/**

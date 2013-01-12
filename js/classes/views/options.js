@@ -37,8 +37,18 @@ var AGOPTIONS = function() {
         } else {
             jQuery('#popuphelp-show').prop('checked', false);
         }
+        
+        if (AGSETTINGS.getAutoAddSats()) {
+            jQuery('#sats-autoadd').prop('checked', true);
+        } else {
+            jQuery('#sats-autoadd').prop('checked', false);
+        }        
     }
 
+    jQuery('#sats-autoadd').on('click', function(e){
+        enableSave();        
+    });
+        
     jQuery('#popuphelp-show').on('click', function(e){
         enableSave();        
     });
@@ -82,10 +92,15 @@ var AGOPTIONS = function() {
         temp = jQuery('#popuphelp-show').prop('checked');
         AGSETTINGS.setShowPopupHelp(temp)
         
+        temp = jQuery('#sats-autoadd').prop('checked');
+        AGSETTINGS.setAutoAddSats(temp)        
+        
         AGSETTINGS.saveSettings();               
 		jQuery('#options-save').disable();
 	});
 	
+    setupOptions();
+    
 	return {
 		startRender : function() {
 			_render = true;
