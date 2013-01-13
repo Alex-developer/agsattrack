@@ -28,7 +28,7 @@ var AGSETTINGS = (function() {
     var _settings = {
         aosEl: 5,
         refreshTimerInterval : 5000,
-        showPopupHelp : true,
+        showPopupHelp : false,
         switchViewOnTabClick : true,
         autoAddSats: true,
         defaultTleGroup: 'amateur'
