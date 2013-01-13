@@ -89,6 +89,12 @@ var AGTLES = function() {
             return getSelected();
         },
         
+        deselectAll : function() {
+            for (var i=0; i < satellites.length; i++) {
+                satellites[i].setSelected(false);
+            }             
+        },
+        
         displayAll : function() {
             for (var i=0; i < satellites.length; i++) {
                 satellites[i].setDisplaying(true);

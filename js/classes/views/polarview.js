@@ -49,6 +49,9 @@ var AGPOLARVIEW = function(element) {
     var _mousePosTextAz;
     var _mousePosTextEl;
     var _naflag = false;
+    var _mode;
+    var _singleSat = null;
+    var _passToShow = null;
     
     /**
     * Set the parent element for this view.    
@@ -255,13 +258,21 @@ var AGPOLARVIEW = function(element) {
             }));    
         }
         
+        /**
+        * we only use single mode on the passes view so for now just reduce
+        * the font size for this case.
+        */
+        var elFontSize = 10;
+        if (_mode === AGPOLARVIEW.modes.SINGLE) {
+            elFontSize = 8;    
+        }
         for (var i=15; i<90; i+=15) {
             var radius = (0.5 + (_radius * (i/90))) | 0;
             _backgroundLayer.add(new Kinetic.Text({
                 x : _cx - radius - 7,
                 y : _cy + 5,
                 text : (90-i) + 'º',
-                fontSize : 10,
+                fontSize : elFontSize,
                 fontFamily : 'Verdana',
                 textFill : '#999'
             }));
@@ -269,7 +280,7 @@ var AGPOLARVIEW = function(element) {
                 x : _cx + radius - 7,
                 y : _cy + 5,
                 text : (90-i) + 'º',
-                fontSize : 10,
+                fontSize : elFontSize,
                 fontFamily : 'Verdana',
                 textFill : '#999'
             }));                 
@@ -350,29 +361,33 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
 
+        var elFontSize = 10;
+        if (_mode === AGPOLARVIEW.modes.SINGLE) {
+            elFontSize = 8;    
+        }        
 		_backgroundLayer.add(new Kinetic.Text({
-            x : 0,
+            x : 10,
             y : 5,
             text : 'Mouse Position',
-            fontSize : 15,
+            fontSize : elFontSize,
             fontFamily : 'Verdana',
             textFill : 'white'
         }));
         
 		_backgroundLayer.add(new Kinetic.Text({
-            x : 0,
+            x : 10,
             y : 30,
             text : 'Azimuth:',
-            fontSize : 12,
+            fontSize : elFontSize,
             fontFamily : 'Verdana',
             textFill : 'white'
         }));
         
 		_backgroundLayer.add(new Kinetic.Text({
-            x : 0,
+            x : 10,
             y : 50,
             text : 'Elevation:',
-            fontSize : 12,
+            fontSize : elFontSize,
             fontFamily : 'Verdana',
             textFill : 'white'
         }));
@@ -402,7 +417,39 @@ var AGPOLARVIEW = function(element) {
     * and satellite information.
     */
 	function drawPolarView() {
+        switch (_mode) {
+            case AGPOLARVIEW.modes.DEFAULT:
+                _drawDefaultView();  
+                break;
+                
+            case AGPOLARVIEW.modes.SINGLE:
+                _drawSingleView();
+                break;
+        }
+    }
+    
+    /**
+    * Draw a single satellite. We allow the layers to be cleared each time
+    * so that if no satelite is selected the view is cleared.
+    */
+    function _drawSingleView() {
 
+        setDimensions();
+        
+        drawPlanets();
+        drawInfoLayer();
+        
+        _orbitLayer.removeChildren();
+        _satLayer.removeChildren();
+        if (_singleSat !== null) {            
+            plotSatellite(_singleSat);
+        }
+        _orbitLayer.draw();
+        _satLayer.draw();               
+    }
+    
+    
+    function _drawDefaultView() {
 		setDimensions();
         
         drawPlanets();
@@ -412,240 +459,258 @@ var AGPOLARVIEW = function(element) {
         _satLayer.removeChildren();
 		var satellites = AGSatTrack.getSatellites();
 		jQuery.each(satellites, function(index, satellite) {        
-			if (satellite.isDisplaying()) {
-
-				var az = satellite.get('azimuth');
-				var el = satellite.get('elevation');
-
-
-                /**
-                * If satellite is selected draw its orbit
-                */
-                if (satellite.getSelected()) {
-                    var move = false;
-                    var prePoints = [];                        
-                    var points = [];                        
-                    var postPoints = [];                        
-                    var max = {az:0, el:0};
-                    var aostime = null;
-                    var okToDraw = true;
-                    var aosPos = {x:0, y:0};
-                    var passData = satellite.getNextPass();
-                    var pass = passData.pass;
-                    var haveAos = false;
-                    
-                    if (okToDraw) {
-                                            
-                        points = []; 
-                        for ( var i = 0; i < pass.length; i++) {
-                            var pos = convertAzEltoXY(pass[i].az, pass[i].el);
-                            if (pass[i].el >= AGSETTINGS.getAosEl()) {
-                                
-                                if (points.length ===0) {
-                                    prePoints.push(pos.x | 0);
-                                    prePoints.push(pos.y | 0);
-                                    aosPos.x  = pos.x;
-                                    aosPos.y = pos.y;                                   
-                                }
-                                points.push(pos.x | 0);
-                                points.push(pos.y | 0);
-
-                                if (aostime === null) {
-                                    aostime = pass[i].date;
-                                }
-                                
-                                /**
-                                * For Debugging  ONLY
-                                */
-                                /*
-                                _orbitLayer.add(new Kinetic.Circle({
-                                    x : pos.x,
-                                    y : pos.y,
-                                    radius : 2,
-                                    stroke : '#ccc',
-                                    strokeWidth : 1
-                                }));
-                                */                             
-                                
-                                haveAos = true;
-                            } else {
-                                if (!haveAos) {
-                                    if (pass[i].el >= 0) {
-                                        prePoints.push(pos.x | 0);
-                                        prePoints.push(pos.y | 0);                                    
-                                    }
-                                } else {
-                                    if (pass[i].el >= 0) {
-                                        if (postPoints.length === 0 && points.length > 0) {
-                                            debugger;
-                                            postPoints.push(points[points.length-2]);
-                                            postPoints.push(points[points.length-1]);
-                                        }
-                                        postPoints.push(pos.x | 0);
-                                        postPoints.push(pos.y | 0);                                    
-                                    }
-                                }
-                            }
-                            if (pass[i].el > max.el) {
-                                max = pass[i];
-                            }
-                            
-                            if (haveAos && pass[i].el < 0) {
-                                break;
-                            }
-                        }
-
-                        if (prePoints.length > 0) {
-                            _orbitLayer.add(new Kinetic.Line({
-                                    points: prePoints,
-                                    stroke: 'red',
-                                    strokeWidth: 1,
-                                    lineCap: 'round',
-                                    lineJoin: 'round'
-                                })
-                            );
-                        }
-                                                                        
-                        if (points.length > 0) {
-                            _orbitLayer.add(new Kinetic.Line({
-                                    points: points,
-                                    stroke: 'green',
-                                    strokeWidth: 2,
-                                    lineCap: 'round',
-                                    lineJoin: 'round'
-                                })
-                            );
-                        }
-                        
-                        if (postPoints.length > 0) {
-                            _orbitLayer.add(new Kinetic.Line({
-                                    points: postPoints,
-                                    stroke: 'red',
-                                    strokeWidth: 1,
-                                    lineCap: 'round',
-                                    lineJoin: 'round'
-                                })
-                            );
-                        }                        
-                                                
-                    }
-                    
-                    /**
-                    * If satellite is selected but NOT visible then add a text label
-                    * at the max elevation.
-                    */
-                    if (el < AGSETTINGS.getAosEl()) {
-                        if (aostime !== null) {
-                            var pos = convertAzEltoXY(max.az, max.el);
-                            _orbitLayer.add(new Kinetic.Text({
-                                x : pos.x + 5,
-                                y : pos.y + 5,
-                                text : satellite.getName(),
-                                fontSize : 6,
-                                fontFamily : 'Verdana',
-                                textFill : '#eee'
-                            }));  
-                        }                   
-                    } 
-                    if (max.az !== 0 && max.el !== 0 && okToDraw) {
-                        var pos = convertAzEltoXY(max.az, max.el);
-                        _orbitLayer.add(new Kinetic.Circle({
-                            x : pos.x,
-                            y : pos.y,
-                            radius : 2,
-                            stroke : 'red',
-                            strokeWidth : 1,
-                            fill: 'red' 
-                        })); 
-                    }                         
-
-                    
-                    if (aosPos.x !== 0 && aosPos.y !== 0) {
-                        _orbitLayer.add(new Kinetic.Text({
-                            x : aosPos.x,
-                            y : aosPos.y,
-                            text : 'AoS: ' + AGUTIL.shortdatetime(passData.aosTime),
-                            fontSize : 6,
-                            fontFamily : 'Verdana',
-                            textFill : '#eee'
-                        }));                         
-                    }
-                    
-                    if (postPoints.length !== 0) {
-                        _orbitLayer.add(new Kinetic.Text({
-                            x : postPoints[0],
-                            y : postPoints[1],
-                            text : 'LoS: ' + AGUTIL.shortdatetime(passData.losTime),
-                            fontSize : 6,
-                            fontFamily : 'Verdana',
-                            textFill : '#eee'
-                        }));                          
-                    }                   
-                }
-
-                if (el > AGSETTINGS.getAosEl()) {
-                                    
-					var pos = convertAzEltoXY(az, el);
-					var _style = 'normal';
-
-					if (satellite.getSelected()) {
-						_style = 'bold';
-					}
-
-					_satLayer.add(new Kinetic.Text({
-                        x : pos.x - 8,
-                        y : pos.y - 20,
-                        text : satellite.getName(),
-                        fontSize : 10,
-                        fontFamily : 'Verdana',
-                        fontStyle : _style,
-                        textFill : 'white'
-                    }));
-
-                    var sat;
-					sat = new Kinetic.Image({
-						x : pos.x - 8,
-						y : pos.y - 8,
-						image : AGIMAGES.getImage('satellite16'),
-						width : 16,
-						height : 16,
-						id : satellite.getCatalogNumber()
-					});
-					sat.on('mouseup', function(e) {
-						var selected = e.shape.getId();
-						jQuery(document).trigger('agsattrack.satclicked', {
-							catalogNumber : selected
-						});
-					});
-					_satLayer.add(sat);
-				}
-
-			}
+            plotSatellite(satellite);
 		});
         _orbitLayer.draw();
 		_satLayer.draw();
 	}
+    
+    function plotSatellite(satellite) {
+        if (satellite.isDisplaying()) {
+
+            var az = satellite.get('azimuth');
+            var el = satellite.get('elevation');
+
+
+            /**
+            * If satellite is selected draw its orbit
+            */
+            if (satellite.getSelected()) {
+                var move = false;
+                var prePoints = [];                        
+                var points = [];                        
+                var postPoints = [];                        
+                var max = {az:0, el:0};
+                var aostime = null;
+                var okToDraw = true;
+                var aosPos = {x:0, y:0};
+                var passData = null;
+                var pass = null;
+                var haveAos = false;
+                
+                if (_passToShow !== null) {
+                    var observers = AGSatTrack.getObservers();
+                    var observer = observers[0];
+                    passData = satellite.getPassforTime(observer, _passToShow);
+                    pass = passData.pass;                       
+                } else {
+                    passData = satellite.getNextPass();
+                    pass = passData.pass;                    
+                }
+                
+                if (okToDraw) {
+                                        
+                    points = []; 
+                    for ( var i = 0; i < pass.length; i++) {
+                        var pos = convertAzEltoXY(pass[i].az, pass[i].el);
+                        if (pass[i].el >= AGSETTINGS.getAosEl()) {
+                            
+                            if (points.length ===0) {
+                                prePoints.push(pos.x | 0);
+                                prePoints.push(pos.y | 0);
+                                aosPos.x  = pos.x;
+                                aosPos.y = pos.y;                                   
+                            }
+                            points.push(pos.x | 0);
+                            points.push(pos.y | 0);
+
+                            if (aostime === null) {
+                                aostime = pass[i].date;
+                            }
+                            
+                            /**
+                            * For Debugging  ONLY
+                            */
+                            /*
+                            _orbitLayer.add(new Kinetic.Circle({
+                                x : pos.x,
+                                y : pos.y,
+                                radius : 2,
+                                stroke : '#ccc',
+                                strokeWidth : 1
+                            }));
+                            */                             
+                            
+                            haveAos = true;
+                        } else {
+                            if (!haveAos) {
+                                if (pass[i].el >= 0) {
+                                    prePoints.push(pos.x | 0);
+                                    prePoints.push(pos.y | 0);                                    
+                                }
+                            } else {
+                                if (pass[i].el >= 0) {
+                                    if (postPoints.length === 0 && points.length > 0) {
+                                        postPoints.push(points[points.length-2]);
+                                        postPoints.push(points[points.length-1]);
+                                    }
+                                    postPoints.push(pos.x | 0);
+                                    postPoints.push(pos.y | 0);                                    
+                                }
+                            }
+                        }
+                        if (pass[i].el > max.el) {
+                            max = pass[i];
+                        }
+                        
+                        if (haveAos && pass[i].el < 0) {
+                            break;
+                        }
+                    }
+
+                    if (prePoints.length > 0) {
+                        _orbitLayer.add(new Kinetic.Line({
+                                points: prePoints,
+                                stroke: 'red',
+                                strokeWidth: 1,
+                                lineCap: 'round',
+                                lineJoin: 'round'
+                            })
+                        );
+                    }
+                                                                    
+                    if (points.length > 0) {
+                        _orbitLayer.add(new Kinetic.Line({
+                                points: points,
+                                stroke: 'green',
+                                strokeWidth: 2,
+                                lineCap: 'round',
+                                lineJoin: 'round'
+                            })
+                        );
+                    }
+                    
+                    if (postPoints.length > 0) {
+                        _orbitLayer.add(new Kinetic.Line({
+                                points: postPoints,
+                                stroke: 'red',
+                                strokeWidth: 1,
+                                lineCap: 'round',
+                                lineJoin: 'round'
+                            })
+                        );
+                    }                        
+                                            
+                }
+                
+                /**
+                * If satellite is selected but NOT visible then add a text label
+                * at the max elevation.
+                */
+                if (el < AGSETTINGS.getAosEl()) {
+                    if (aostime !== null) {
+                        var pos = convertAzEltoXY(max.az, max.el);
+                        _orbitLayer.add(new Kinetic.Text({
+                            x : pos.x + 5,
+                            y : pos.y + 5,
+                            text : satellite.getName(),
+                            fontSize : 6,
+                            fontFamily : 'Verdana',
+                            textFill : '#eee'
+                        }));  
+                    }                   
+                } 
+                if (max.az !== 0 && max.el !== 0 && okToDraw) {
+                    var pos = convertAzEltoXY(max.az, max.el);
+                    _orbitLayer.add(new Kinetic.Circle({
+                        x : pos.x,
+                        y : pos.y,
+                        radius : 2,
+                        stroke : 'red',
+                        strokeWidth : 1,
+                        fill: 'red' 
+                    })); 
+                }                         
+
+                
+                if (aosPos.x !== 0 && aosPos.y !== 0) {
+                    _orbitLayer.add(new Kinetic.Text({
+                        x : aosPos.x,
+                        y : aosPos.y,
+                        text : 'AoS: ' + AGUTIL.shortdatetime(passData.aosTime),
+                        fontSize : 6,
+                        fontFamily : 'Verdana',
+                        textFill : '#eee'
+                    }));                         
+                }
+                
+                if (postPoints.length !== 0) {
+                    _orbitLayer.add(new Kinetic.Text({
+                        x : postPoints[0],
+                        y : postPoints[1],
+                        text : 'LoS: ' + AGUTIL.shortdatetime(passData.losTime),
+                        fontSize : 6,
+                        fontFamily : 'Verdana',
+                        textFill : '#eee'
+                    }));                          
+                }                   
+            }
+
+            if (el > AGSETTINGS.getAosEl()) {
+                                
+                var pos = convertAzEltoXY(az, el);
+                var _style = 'normal';
+
+                if (satellite.getSelected()) {
+                    _style = 'bold';
+                }
+
+                _satLayer.add(new Kinetic.Text({
+                    x : pos.x - 8,
+                    y : pos.y - 20,
+                    text : satellite.getName(),
+                    fontSize : 10,
+                    fontFamily : 'Verdana',
+                    fontStyle : _style,
+                    textFill : 'white'
+                }));
+
+                var sat;
+                sat = new Kinetic.Image({
+                    x : pos.x - 8,
+                    y : pos.y - 8,
+                    image : AGIMAGES.getImage('satellite16'),
+                    width : 16,
+                    height : 16,
+                    id : satellite.getCatalogNumber()
+                });
+                sat.on('mouseup', function(e) {
+                    var selected = e.shape.getId();
+                    jQuery(document).trigger('agsattrack.satclicked', {
+                        catalogNumber : selected
+                    });
+                });
+                _satLayer.add(sat);
+            }
+
+        }
+    }
     
     function drawInfoLayer() {
         _infoLayer.removeChildren();
         var following = AGSatTrack.getFollowing();
         if (following !== null) {
             var nextEvent = following.getNextEvent(true);
-             
-             _infoLayer.add(new Kinetic.Text({
-                x : 10,
-                y : _height-50,
-                text : 'Information for ' + following.getName(),
-                fontSize : 10,
-                fontFamily : 'Verdana',
-                textFill : '#ccc'
-             }));
 
+            var elFontSize = 10;
+            if (_mode === AGPOLARVIEW.modes.SINGLE) {
+                elFontSize = 6;    
+            }
+            if (_mode !== AGPOLARVIEW.modes.SINGLE) {             
+                 _infoLayer.add(new Kinetic.Text({
+                    x : 10,
+                    y : _height-50,
+                    text : 'Information for ' + following.getName(),
+                    fontSize : elFontSize,
+                    fontFamily : 'Verdana',
+                    textFill : '#ccc'
+                 }));
+            }
              _infoLayer.add(new Kinetic.Text({
                 x : 10,
                 y : _height-35,
                 text : 'Next Event: ' + nextEvent.eventlong,
-                fontSize : 8,
+                fontSize : elFontSize,
                 fontFamily : 'Verdana',
                 textFill : '#ccc'
              }));
@@ -654,7 +719,7 @@ var AGPOLARVIEW = function(element) {
                 x : 10,
                 y : _height-23,
                 text : 'Event Time: ' + nextEvent.time,
-                fontSize : 8,
+                fontSize : elFontSize,
                 fontFamily : 'Verdana',
                 textFill : '#ccc'
              }));             
@@ -733,8 +798,17 @@ var AGPOLARVIEW = function(element) {
         resizeView : function(width, height) {
             resize(width, height);     
         },
-                
-		init : function() {
+        
+        reDraw : function() {
+            drawPolarView();    
+        },
+             
+		init : function(mode) {     
+            if (typeof mode === 'undefined') {
+                mode = AGPOLARVIEW.modes.DEFAULT;    
+            }
+            _mode = mode;
+            
             _stage = new Kinetic.Stage({
                 container : _element,
                 width : 1000,
@@ -764,21 +838,25 @@ var AGPOLARVIEW = function(element) {
                 convertMousePos();
             });
             
+            var elFontSize = 10;
+            if (_mode === AGPOLARVIEW.modes.SINGLE) {
+                elFontSize = 8;    
+            }               
             _mousePosTextAz = new Kinetic.Text({
-                x : 100,
+                x : 80,
                 y : 30,
                 text : 'N/A',
-                fontSize : 12,
+                fontSize : elFontSize,
                 fontFamily : 'Verdana',
                 textFill : '#ccc'
             });
             _objectLayer.add(_mousePosTextAz);
 
             _mousePosTextEl = new Kinetic.Text({
-                x : 100,
+                x : 80,
                 y : 50,
                 text : 'N/A',
-                fontSize : 12,
+                fontSize : elFontSize,
                 fontFamily : 'Verdana',
                 textFill : '#ccc'
             });
@@ -787,6 +865,19 @@ var AGPOLARVIEW = function(element) {
 		},
         
         reset : function() {
+        },
+        
+        setSingleSat : function(satellite) {
+            _singleSat = satellite
+        },
+        
+        setPassToShow : function(passToShow) {
+            _passToShow = passToShow;
         }
 	}
 }
+
+AGPOLARVIEW.modes = {
+    DEFAULT : 1,
+    SINGLE : 2
+};

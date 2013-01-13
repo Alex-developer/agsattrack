@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/css/menu.css">
 
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/gray/easyui.css">
+<link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="/js/jqueryui/smoothness/jquery-ui-1.9.2.custom.min.css">
 <link rel="stylesheet" type="text/css" href="/js/agchecklist/checkList.css">
 
@@ -475,14 +476,12 @@
                 
                 <div class="ribbon-section">
                     <span class="section-title">View Options</span>
-
                     <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="2">
                         <span class="button-title">Switch to<br />This View</span> 
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
                     </div>
-                    
                     <div class="ribbon-button ribbon-button-large view-reset">
                         <span class="button-title">Reset<br />View
                         </span> <span class="button-help"></span> 
@@ -490,8 +489,18 @@
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
                     </div>  
-                                        
                  </div>                
+                               
+                <div class="ribbon-section">
+                    <span class="section-title">Satellite</span>
+                    <select id="passes-sat"></select>
+                </div>
+                
+                <div class="ribbon-section" id="passes-available" style="display: none">
+                    <span class="section-title">Available Passes</span>
+                    <select id="passes-passes"></select>
+                </div>                
+                
             </div>
 
             <div class="ribbon-tab" id="polar-tab">
@@ -724,29 +733,29 @@
 				</table>
 			</div>
 			<div title="3D View" style="padding: 1px;" id="3d"></div>
-			<div title="Passes" style="overflow: auto; padding: 1px;" id="passes">
+			<div title="Passes" style="overflow: hidden" id="passes">
 
-                <table width="100%" height="100%">
+
+                <table width="98%" height="100%">
                     <tr>
-                        <td height="25%" width="25%" rowspan="2">
-                            <table id="passesgrid" title="Passes" data-options="rownumbers:true, singleSelect:true, autoRowHeight:false, pagination:true, pageSize:20">
+                        <td height="50%" width="100%" colspan="2" valign="top">                    
+                            <table id="passesgrid" class="easyui-datagrid" title="Passes" data-options="rownumbers:true, singleSelect:true, autoRowHeight:false, pagination:true, pageSize:20">
                                 <thead>
                                     <tr>
                                         <th field="date" width="170">Date</th>
                                         <th field="az" width="100">Azimuth</th>
                                         <th field="el" width="80">Elevation</th>
+                                        <th field="viz" width="80">Visibility</th>
                                         <th field="range" width="80" align="right">Range</th>
                                         <th field="footprint" width="80" align="right">Footprint</th>
                                     </tr>
                                 </thead>
                             </table>                        
                         </td>
-                        <td height="25%" width="25%">
-                            <div id="passespolar"></div>
-                        </td>
                     </tr>
                     <tr>
-                        <td><div id="passessky"></div></td>
+                        <td height="50%" width="50%"><div id="passespolar"></div></td>
+                        <td height="50" width="50%"><div id="passessky"></div></td>
                     </tr>                    
                 </table>
 

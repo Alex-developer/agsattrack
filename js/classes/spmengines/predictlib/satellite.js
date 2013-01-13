@@ -25,7 +25,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         pass: [],
         aosTime: null,
         losTime: null,
-        maxEle: 0
+        maxEle: 0,
+        orbitNumber: 0
     };
     var _orbitAge = null;
     var _calcOrbitEvery = 50;
@@ -54,13 +55,62 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'orbitnumber' : 'rv'   
     };
     var _passes = null;
+    var _passesCache = [];
     
+    /**
+    * Calculate and cache the next pass for this satellite
+    */
     function getNextPass(observer) {
+        var date = new Date();
+        
+        if (typeof _passesCache[0] === 'undefined') {
+            _passesCache[0] = getPass(observer);    
+        }
+        if (date > _passesCache[0].losTime) {
+            _passesCache[0] = getPass(observer);    
+        }
+        return _passesCache[0];
+    }
+    
+    /**
+    * Calculate and cache the pass for a specific time
+    */    
+    function getPassforTime(observer, time) {
+        var pass = null;
+        for (var i=0; i < _passesCache.length; i++) {
+            if (_passesCache[i].aosTime === time) {
+                pass = _passesCache[i];
+                break;    
+            }
+        }
+        if (pass === null) {
+            pass = getPass(observer, time);
+            _passesCache.push(pass);    
+        }
+        return pass;
+    }   
+    
+    /**
+    * Calculate a pass   
+    */
+    function getPass(observer, time) {
         var date = new Date(); 
+        var passData = {
+            pass: [],
+            aosTime: null,
+            losTime: null,
+            maxEle: 0,
+            orbitNumber: 0
+        };
         
-        _nextPass.pass = [];
+        passData.pass = [];
         
-        time = (date.getTime() - 315446400000) / 86400000;    
+        if (typeof time === 'undefined') {
+            time = (date.getTime() - 315446400000) / 86400000;    
+        } else {
+            time = (time.getTime() - 315446400000) / 86400000;    
+        }
+        
         _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
         //_satOrbit.PreCalc(0);
         
@@ -77,10 +127,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         
         if (aos !== 0.0) {
             var los = _satOrbit.FindLOS2();
-            _nextPass.orbit = [];
-            _nextPass.aosTime = _satOrbit.Daynum2Date(aos);
-            _nextPass.losTime = _satOrbit.Daynum2Date(los);
-            _nextPass.orbitNumber = _satOrbit.orbitNumber;
+            passData.orbit = [];
+            passData.aosTime = _satOrbit.Daynum2Date(aos);
+            passData.losTime = _satOrbit.Daynum2Date(los);
+            passData.orbitNumber = _satOrbit.orbitNumber;
             
             _satOrbit.doCalc(aos);
 
@@ -93,12 +143,20 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                     z: _satOrbit.sat_z,
                     el: _satOrbit.elevation,
                     az: _satOrbit.azimuth,
+                    footprint: _satOrbit.fk,
+                    viz: _satOrbit.visibility,
+                    range: _satOrbit.sat_range,
                     date: _satOrbit.Daynum2Date(time)
                 };
-                _nextPass.pass.push(orbitdata);
+                passData.pass.push(orbitdata);
                 time += (0.00035); // 30 Seconds
+                if (_satOrbit.elevation > passData.maxEle) {
+                    passData.maxEle = _satOrbit.elevation;  
+                }
             }     
         }
+        
+        return passData;
     }
     
     /**
@@ -316,9 +374,12 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         },
         
         getNextPass : function() {
-            return _nextPass;    
+            return _passesCache[0];    
+        },
+         
+        getPassforTime: function(observer, time) {
+            return getPassforTime(observer, time);
         }
-	
 	}
 };
 
