@@ -6,7 +6,7 @@
 
 <script type="text/javascript" src="js/cvi_busy_lib.js"></script>
 <script type="text/javascript">
-    ctrl = getBusyOverlay(document.documentElement, {color:'black', opacity:0.5, text: 'Loading ...'});
+    ctrl = getBusyOverlay(document.documentElement, {color:'black', opacity:0.5, text: 'Loading Please Wait ...'});
 </script>
 
 <link rel="stylesheet" href="/css/agsattrack.css">
@@ -607,9 +607,14 @@
 	</div>
 	<div data-options="region:'west',split:true" title="Information" style="width: 270px;">
 		<div id="satinfot" class="easyui-tabs" data-options="fit:true">
-			<div title="Sat" style="overflow: auto; padding: 5px;">
+			<div title="Satellite Info." style="overflow: auto; padding: 5px;">
                 <div id="sat-info-selector"></div>
-				<table width="100%" class="satinfo">
+                <div id="satinfo-message">
+                    <h2><center>No Satellite Selected</center></h2>
+                    <p><center>Please select a satellite to display its information.</center></p>
+                </div>
+                
+				<table width="100%" class="satinfo" style="display:none">
 					<tr>
 						<th colspan="2">Element Values</th>
 					</tr>
@@ -700,11 +705,7 @@
 				</table>
 			</div>
 
-			<div title="Passes" style="padding: 5px;">
-				<div id="nextpass"></div>
-			</div>
-
-            <div title="Sat Select" style="padding: 5px;">
+            <div title="Satellite Selector" style="padding: 5px;">
                 <div id="quick-sat-selector"></div>
             </div>            
 		</div>

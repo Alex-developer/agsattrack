@@ -256,9 +256,8 @@ p.description {
     width: 140px;
 }
 
-  {
-    width: 100%;
-    font-size: 0.8em;
+.listviewsat {
+    cursor: pointer;
 }
 
 #passestable th {
