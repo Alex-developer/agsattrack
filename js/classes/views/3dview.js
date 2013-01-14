@@ -24,6 +24,7 @@ var AG3DVIEW = function(element) {
     var observerBillboards = null;
     var _render = false;
     var satBillboards = null;
+    var _satNameLabels = null;
     var gridRefresh = 1;
     var gridRefreshCounter = 0
     var orbitLines = null;
@@ -42,6 +43,7 @@ var AG3DVIEW = function(element) {
     var _mousePosLabel = null;
     var _showMousePos = false;
     var _element;
+    var _showSatLabels = true;
     
     if (typeof element === 'undefined') {
         _element = '3d';    
@@ -102,13 +104,21 @@ var AG3DVIEW = function(element) {
                     plotObservers();
                 }
             });    
-    
+
     jQuery(document).bind('agsattrack.resetview',
             function(e, observer) {
                 if (_render) {
                     if (AGSETTINGS.getHaveWebGL()) {
                         plotObservers();
                     }
+                }
+            }); 
+                
+    jQuery(document).bind('agsattrack.showsatlabels',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _showSatLabels = state;
+                    createSatelliteLabels();
                 }
             });    
     
@@ -308,7 +318,37 @@ var AG3DVIEW = function(element) {
         }());
     }
 
-
+    function createSatelliteLabels() {
+        var satellites = AGSatTrack.getSatellites();
+        var now = new Cesium.JulianDate();        
+        var cpos;
+                
+        _satNameLabels.removeAll();
+        if (_showSatLabels) {     
+            _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                    Cesium.Cartesian3.ZERO); 
+            for ( var i = 0; i < satellites.length; i++) {
+                if (satellites[i].isDisplaying()) {
+                    cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
+                    cpos = cpos.multiplyByScalar(1000);               
+                    cpos = cpos.multiplyByScalar(30/1000+1); 
+                    var satLabel = _satNameLabels.add({
+                      show : true,
+                      position : cpos,
+                      text : satellites[i].getName(),
+                      font : '10px sans-serif',
+                      fillColor : 'white',
+                      outlineColor : 'white',
+                      style : Cesium.LabelStyle.FILL,
+                      scale : 1.0,
+                    });
+                    satLabel.satelliteindex = i;
+                }
+            }
+        }  
+    }
+    
     function populateSatelliteBillboard() {
         var billboard;
         var image = new Image();
@@ -318,9 +358,11 @@ var AG3DVIEW = function(element) {
         var cpos;
                 
         satBillboards.removeAll();
+
         satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                 Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                 Cesium.Cartesian3.ZERO);        
+
         for ( var i = 0; i < satellites.length; i++) {
             if (satellites[i].isDisplaying()) {
                 cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
@@ -345,6 +387,7 @@ var AG3DVIEW = function(element) {
                 ] 
         });
         satBillboards.setTextureAtlas(textureAtlas);
+        createSatelliteLabels();
     }
 
     function updateSatelliteBillboards() {
@@ -380,7 +423,9 @@ var AG3DVIEW = function(element) {
         satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                 Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                 Cesium.Cartesian3.ZERO);
-
+        _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+                Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                Cesium.Cartesian3.ZERO);
         for ( var i = 0; i < satBillboards.getLength(); i++) {
             bb = satBillboards.get(i);
             
@@ -400,6 +445,12 @@ var AG3DVIEW = function(element) {
             newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
             newpos = newpos.multiplyByScalar(1000);
             bb.setPosition(newpos);
+
+            if (_showSatLabels) {             
+                newpos = newpos.multiplyByScalar(30/1000+1);            
+                var satLabel = _satNameLabels.get(i);
+                satLabel.setPosition(newpos);
+            }
         }
         
         setupOrbit();
@@ -608,7 +659,8 @@ var AG3DVIEW = function(element) {
         passLines = new Cesium.PolylineCollection();;
         footprintCircle = new Cesium.PolylineCollection();
         clock = new Cesium.Clock();
-
+        _satNameLabels = new Cesium.LabelCollection();
+        
         TILE_PROVIDERS = {
             'bing' : new Cesium.BingMapsImageryProvider(
                     {
@@ -662,7 +714,7 @@ var AG3DVIEW = function(element) {
             outlineColor : 'black',
             style : Cesium.LabelStyle.FILL,
         });
-        scene.getPrimitives().add(_labels);
+        scene.getPrimitives().add(_satNameLabels);
                 
      /*   scene.getCamera().controller.lookAt(new Cesium.Cartesian3(4000000.0, -15000000.0,  10000000.0), // eye
             Cesium.Cartesian3.ZERO, // target
@@ -673,7 +725,8 @@ var AG3DVIEW = function(element) {
         scene.getPrimitives().add(orbitLines);
         scene.getPrimitives().add(passLines);
         scene.getPrimitives().add(footprintCircle);
-
+        scene.getPrimitives().add(_labels);
+        
         jQuery(window).trigger('resize');
     }
     
