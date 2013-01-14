@@ -304,12 +304,14 @@ var AGUI = function() {
         jQuery('#visible').html(satellite.get('visibility'));
         jQuery('#velocity').html(satellite.get('velocity').toFixed(3));
         jQuery('#range').html(satellite.get('range').toFixed(3));
+        jQuery('#doppler').html(satellite.get('dopplershift').toFixed(0));
+        jQuery('#loss').html(satellite.get('signalloss').toFixed(0));
+        jQuery('#delay').html(satellite.get('signaldelay').toFixed(0));
         jQuery('#rangerate').html(satellite.get('rangerate').toFixed(3));
         jQuery('#footprint').html(satellite.get('footprint').toFixed(3));
         jQuery('#elevation').html(satellite.get('elevation').toFixed(3));
         jQuery('#azimuth').html(satellite.get('azimuth').toFixed(3));      
-        jQuery('#orbitalphase').html(satellite.get('orbitalphase').toFixed(3));      
-        jQuery('#aoshappens').html(satellite.aosHappens());      
+        jQuery('#orbitalphase').html(satellite.get('orbitalphase').toFixed(3));        
     }
     
 /*    

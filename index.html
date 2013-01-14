@@ -447,6 +447,15 @@
                             <span class="button-title" unselectable="on"></span>
                             <span class="button-help"><strong>Show Mouse Pos.</strong><br /><br />Toggle displaying the lat and lon of the mouse position.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
                         </div>
+
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showsatlabels">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/label.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/label.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/label.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying the name of the satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>
+                        
                     </div>                                        
                 </div>
 
@@ -619,7 +628,7 @@
 						<th colspan="2">Element Values</th>
 					</tr>
 					<tr>
-						<td width="50%">Norad Id</td>
+						<td width="50%">Cat Num</td>
 						<td id="noradid" class="sat-info"></td>
 					</tr>
 					<tr>
@@ -682,6 +691,18 @@
                         <td>Range rate</td>
                         <td id="rangerate" class="sat-info"></td>
                     </tr>
+                    <tr>
+                        <td>Doppler Shift (Hz)</td>
+                        <td id="doppler" class="sat-info"></td>
+                    </tr>
+                    <tr>
+                        <td>Signal Loss (dB)</td>
+                        <td id="loss" class="sat-info"></td>
+                    </tr>
+                    <tr>
+                        <td>Signal Delay (ms)</td>
+                        <td id="delay" class="sat-info"></td>
+                    </tr>                                                               
 					<tr>
 						<td>Elevation</td>
 						<td id="elevation" class="sat-info"></td>
@@ -694,14 +715,6 @@
                         <td>Orbital Phase</td>
                         <td id="orbitalphase" class="sat-info"></td>
                     </tr>
-                    <tr>
-                        <td>AOS Happens</td>
-                        <td id="aoshappens" class="sat-info"></td>
-                    </tr>
-					<tr>
-						<td>AOS</td>
-						<td id="aos" class="sat-info"></td>
-					</tr>
 				</table>
 			</div>
 
@@ -744,11 +757,14 @@
                                 <thead>
                                     <tr>
                                         <th field="date" width="170">Date</th>
-                                        <th field="az" width="100">Azimuth</th>
-                                        <th field="el" width="80">Elevation</th>
-                                        <th field="viz" width="80">Visibility</th>
-                                        <th field="range" width="80" align="right">Range</th>
-                                        <th field="footprint" width="80" align="right">Footprint</th>
+                                        <th field="az" width="70">Azimuth</th>
+                                        <th field="el" width="70">Elevation</th>
+                                        <th field="viz" width="70">Visibility</th>
+                                        <th field="range" width="60" align="right">Range</th>
+                                        <th field="footprint" width="60" align="right">Footprint</th>
+                                        <th field="doppler" width="105" align="right">Doppler Shift (Hz)</th>
+                                        <th field="loss" width="105" align="right">Signal Loss (dB)</th>
+                                        <th field="delay" width="105" align="right">Signal Delay (ms)</th>
                                     </tr>
                                 </thead>
                             </table>                        

@@ -90,6 +90,9 @@ var AGPASSESVIEW = function() {
                 range: passData.pass[i].range.toFixed(0),
                 footprint: passData.pass[i].footprint.toFixed(0),
                 viz: passData.pass[i].viz,
+                delay: passData.pass[i].signaldelay.toFixed(0),
+                loss: passData.pass[i].signalloss.toFixed(0),
+                doppler: passData.pass[i].dopplershift.toFixed(0)
             });
         }
 

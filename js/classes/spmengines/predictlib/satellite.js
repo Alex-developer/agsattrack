@@ -52,7 +52,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'y' : 'sat_y',     
         'z' : 'sat_z',
         'epoc' : 'sat_epoch' ,
-        'orbitnumber' : 'rv'   
+        'orbitnumber' : 'rv',
+        'signaldelay' : 'signaldelay',
+        'signalloss' : 'signalloss',
+        'dopplershift' : 'dopplershift'   
     };
     var _passes = null;
     var _passesCache = [];
@@ -146,7 +149,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                     footprint: _satOrbit.fk,
                     viz: _satOrbit.visibility,
                     range: _satOrbit.sat_range,
-                    date: _satOrbit.Daynum2Date(time)
+                    date: _satOrbit.Daynum2Date(time),
+                    signaldelay: _satOrbit.signaldelay,
+                    signalloss: _satOrbit.signalloss,
+                    dopplershift: _satOrbit.dopplershift
                 };
                 passData.pass.push(orbitdata);
                 time += (0.00035); // 30 Seconds
@@ -159,6 +165,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         return passData;
     }
     
+
+
+
     /**
     * Calculate the satellites orbit.
     */

@@ -1591,6 +1591,10 @@ var PLib =
             PLib.iel = PLib.sat_ele;
             PLib.ma256 = 256.0 * (PLib.phase / PLib.twopi);
         
+            PLib.signaldelay = PLib.sat_range / 299.7924580;
+            PLib.signalloss = 72.4 + 20.0*PLib.log10(PLib.sat_range);
+            PLib.dopplershift = -100.0e06 * (PLib.sat_range_rate / 299792.4580);;
+
             if (PLib.sat_sun_status)
             {
                 if (PLib.sun_ele <= -12.0 && PLib.sat_ele >= 0.0)
@@ -1603,7 +1607,11 @@ var PLib =
                 
               //  sat_aos = PLib.FindAOS();
         },
-        
+    
+        log10 : function (val) {
+            return Math.log(val) / Math.LN10;
+        },
+            
         AosHappens: function(x)
         {
             x = 0;

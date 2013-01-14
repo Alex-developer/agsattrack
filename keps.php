@@ -16,8 +16,7 @@ class KEPS {
 	private $baseUrl = 'http://www.celestrak.com/NORAD/elements/';
 	
 	public function update() {
-		$groups = Tlegroup::find('all');
-		
+		$groups = Tlegroup::find('all');	
 		foreach ($groups as $group) {
 			$groupFilename = $group->id . '.txt';
 			
@@ -30,8 +29,7 @@ class KEPS {
 				$sat->elements = $tle;
 				$sat->date = time();
 				$sat->save();
-
-			}
+			}        
 		}
 	}
 	
