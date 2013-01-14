@@ -81,7 +81,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     function getPassforTime(observer, time) {
         var pass = null;
         for (var i=0; i < _passesCache.length; i++) {
-            if (_passesCache[i].aosTime === time) {
+            if (_passesCache[i].aosTime.toString() === time.toString()) {
                 pass = _passesCache[i];
                 break;    
             }
@@ -98,6 +98,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     */
     function getPass(observer, time) {
         var date = new Date(); 
+        var startDate = new Date(); 
         var passData = {
             pass: [],
             aosTime: null,
@@ -105,11 +106,13 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             maxEle: 0,
             orbitNumber: 0
         };
+        var backTrack = false;
         
         passData.pass = [];
         
         if (typeof time === 'undefined') {
-            time = (date.getTime() - 315446400000) / 86400000;    
+            time = (date.getTime() - 315446400000) / 86400000;  
+            backTrack = true;  
         } else {
             time = (time.getTime() - 315446400000) / 86400000;    
         }
@@ -118,7 +121,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         //_satOrbit.PreCalc(0);
         
         _satOrbit.doCalc(time);
-        if (_satOrbit.elevation >= 0) {
+        if (_satOrbit.elevation >= 0 && backTrack) {
             while (_satOrbit.elevation >= 0) {
                 time -= 0.007;
                 _satOrbit.doCalc(time);   
@@ -161,7 +164,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                 }
             }     
         }
-        
+        var endDate = new Date();
+        passData.calcTime = endDate - startDate;
         return passData;
     }
     
@@ -175,6 +179,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         var date = new Date();
         var time;
         _orbitrequested = false;
+//        var startDate = new Date();
         
         AGSatTrack.getUI().updateInfo('Calculating Orbit For ' + _sat.sat[0].name + ' Started');
         
@@ -225,7 +230,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             time += 0.00035;            
         }                    
         _orbitAge = new Date();
-        
+        var endDate = new Date();
+    //    passData.calcTime = endDate - startDate;
+                
         AGSatTrack.getUI().updateInfo('Calculating Orbit Complete For ' + _sat.sat[0].name);
 
     }
@@ -241,7 +248,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             z: _satOrbit.sat_z,
             el: _satOrbit.elevation,
             az: _satOrbit.azimuth,
-            date: _satOrbit.Daynum2Date(time)
+            date: _satOrbit.Daynum2Date(time),
+            signaldelay: _satOrbit.signaldelay,
+            signalloss: _satOrbit.signalloss,
+            dopplershift: _satOrbit.dopplershift            
         };
         orbit.push(orbitdata);         
     }
@@ -385,7 +395,11 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         getNextPass : function() {
             return _passesCache[0];    
         },
-         
+
+        getPassCache : function() {
+            return _passesCache;    
+        },
+                 
         getPassforTime: function(observer, time) {
             return getPassforTime(observer, time);
         }

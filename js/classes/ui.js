@@ -342,6 +342,11 @@ var AGUI = function() {
         jQuery('#info').html(params.text); 
     });        
 
+    if (AGSETTINGS.getDebugView() === false) {
+        jQuery('#ribbon-tab-header-8').hide();         
+    }
+    
+    
     ctrl.remove();
     jQuery(document.body).show();
     jQuery('#status').html('Idle');

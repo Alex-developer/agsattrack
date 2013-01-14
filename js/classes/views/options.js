@@ -67,7 +67,13 @@ var AGOPTIONS = function() {
         } else {
             jQuery('#observergelocate').prop('checked', false);
         }
-        setObserverForm(observer.getAutoGeo());       
+        setObserverForm(observer.getAutoGeo());
+        
+        if (AGSETTINGS.getDebugView()) {
+            jQuery('#debugger-show').prop('checked', true);
+        } else {
+            jQuery('#debugger-show').prop('checked', false);
+        }             
     }
     
     jQuery('#observergelocate').on('click', function(e){
@@ -92,6 +98,11 @@ var AGOPTIONS = function() {
         }        
     }
     
+    
+    jQuery('.options-cb').on('click', function(e){
+        enableSave();        
+    });
+        
     jQuery('.observerhome').on('change', function(e){
         enableSave();        
     });
@@ -166,6 +177,15 @@ var AGOPTIONS = function() {
         } else {
             jQuery(document).trigger('agsattrack.locationAvailable',observer);     
         }
+        
+        temp = jQuery('#debugger-show').prop('checked');
+        AGSETTINGS.setDebugView(temp)  
+        if (temp) {
+            jQuery('#ribbon-tab-header-8').show(); 
+        } else {
+            AGVIEWS.stopView('debug');
+            jQuery('#ribbon-tab-header-8').hide(); 
+        }       
         AGSETTINGS.saveSettings();               
 		jQuery('#options-save').disable();         
 	});

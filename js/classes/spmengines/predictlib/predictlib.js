@@ -1860,6 +1860,8 @@ var PLib =
             var x = 0, y = 0, z = 0, lastel = 0;
             var start = 0, now = 0;
 
+            var startTime, endTime;
+            
             for (z = 0; z < PLib.sat.length; z++)
             {
                 indx = 0;
@@ -1880,6 +1882,7 @@ var PLib =
 
                     if (PLib.AosHappens(indx) && PLib.Geostationary(indx) == 0 && PLib.Decayed(indx, PLib.daynum) == 0)
                     {
+                        startTime = new Date();
                         PLib.daynum = PLib.FindAOS();
 
                         while (PLib.Daynum2Date(PLib.daynum) < PLib.addDay(d) || satInfoColl.length > 50)
@@ -1947,6 +1950,10 @@ var PLib =
                                 satInfo.visibility = '*';
                             }
 
+                            endTime = new Date();
+                            satInfo.calcTime = endTime - startTime;
+                            startTime = new Date();
+                            
                             satInfoColl[arrIdx++] = satInfo;
 
                             PLib.daynum += (1 / 24 / 6);

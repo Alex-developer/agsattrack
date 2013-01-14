@@ -40,6 +40,7 @@
 <script type="text/javascript" src="/js/classes/views/timelineview.js"></script>
 <script type="text/javascript" src="/js/classes/views/listview.js"></script>
 <script type="text/javascript" src="/js/classes/views/options.js"></script>
+<script type="text/javascript" src="/js/classes/views/debug.js"></script>
 <script type="text/javascript" src="/js/classes/observer.js"></script>
 <script type="text/javascript" src="/js/classes/spmengine.js"></script>
 
@@ -607,7 +608,31 @@
                     </div>  
                                         
                  </div>                
-            </div>            
+            </div> 
+            
+            <div class="ribbon-tab" id="debug-tab">
+                <span class="ribbon-title" data-tab="7">Debug View</span>
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="7">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                    
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reload<br />Data
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
+                    </div>  
+                                        
+                 </div>                
+            </div>
+                                   
         </div>
 
 
@@ -815,6 +840,18 @@
                                 </td>
                             </tr>                          
                         </table>
+                        
+                        <h3>Debugging</h3>
+                        <table class="form-table">
+                            <tr valign="top">
+                                <th>Enable Debug View</th>
+                                <td>
+                                    <input type="checkbox" id="debugger-show" value="on" class="options-cb">
+                                    <p class="description"><strong>NOTE:</strong> You will need to refresh the page to enable the debugger after enabling this option.</p>
+                                </td>
+                            </tr>                          
+                        </table>
+                                                
                     </div>
 					
                     <div title="Observer" data-options="" style="padding: 20px;">
@@ -901,6 +938,24 @@
 					</div>
 				</div>
 			</div>
+            
+            <div title="Debug View" style="padding: 1px;" width=1000 height=600 id="debug">   
+                <table id="debuggrid" class="easyui-treegrid" style="width:600px;height:400px"  
+                        data-options="idField:'id',treeField:'satellite',title:'Satellite Data'">  
+                    <thead>  
+                        <tr>  
+                            <th data-options="field:'satellite',width:180">Satellite</th>  
+                            <th data-options="field:'orbits',width:60,align:'right'">Orbits</th>  
+                            <th data-options="field:'orbitno',width:80">Orbit Number</th>  
+                            <th data-options="field:'aos',width:80">AoS</th>  
+                            <th data-options="field:'los',width:80">LoS</th>  
+                            <th data-options="field:'points',width:80">Points</th>  
+                            <th data-options="field:'calctime',width:80">Calc Time (ms)</th>  
+                        </tr>  
+                    </thead>  
+                </table>                      
+            </div>    
+                        
 		</div>
 	</div>
 

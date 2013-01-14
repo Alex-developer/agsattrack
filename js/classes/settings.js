@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ var AGSETTINGS = (function() {
         showPopupHelp : false,
         switchViewOnTabClick : true,
         autoAddSats: true,
-        defaultTleGroup: 'amateur'
+        defaultTleGroup: 'amateur',
+        debugView: false
     };
     var COOKIENAME = 'agsattrack';
     var COOKIEEXPIRES = 30;
@@ -81,7 +82,8 @@ var AGSETTINGS = (function() {
     */
     if (jQuery.cookie(COOKIENAME) !== null) {
         var cookieData = jQuery.cookie(COOKIENAME);
-        _settings = JSON.parse(cookieData); 
+        var savedSettings = JSON.parse(cookieData);
+        _settings = $.extend({}, _settings, savedSettings);
     }
     
 	return {
@@ -105,6 +107,14 @@ var AGSETTINGS = (function() {
             return _requireEUCookieLaw;    
         },
 
+        
+        getDebugView : function() {
+            return _settings.debugView;    
+        },
+        setDebugView : function(value) {
+            _settings.debugView = value;
+        }, 
+                
         getDefaultTLEgroup : function() {
             return _settings.defaultTleGroup;    
         },

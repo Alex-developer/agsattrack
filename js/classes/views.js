@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -49,13 +49,32 @@ var AGVIEWS = (function(element) {
             classname : 'AGOPTIONS',
             active : false,
             index: 6
-        }        
+        },
+        'debug' : {
+            classname : 'AGDEBUG',
+            active : false,
+            index: 7
+        }         
     };
     
     return {
     
         getViews : function() {
             return _views;
+        },
+        
+        stopView : function(name) {
+            var view = null;
+            jQuery.each(_views, function(_view, _options) {
+                if (_options.active) {
+                    view = _options;
+                }  
+            });
+            if (view !== null) {
+                if (typeof view.instance !== 'undefined') {
+                    view.instance.stopRender();
+                }    
+            }
         },
         
         getNewView : function(name, params) {
