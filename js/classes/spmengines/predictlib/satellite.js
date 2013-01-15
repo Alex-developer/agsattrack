@@ -116,56 +116,57 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         } else {
             time = (time.getTime() - 315446400000) / 86400000;    
         }
-        
-        _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
-        //_satOrbit.PreCalc(0);
-        
-        _satOrbit.doCalc(time);
-        if (_satOrbit.elevation >= 0 && backTrack) {
-            while (_satOrbit.elevation >= 0) {
-                time -= 0.007;
-                _satOrbit.doCalc(time);   
-            }
-        }
-        
-        _satOrbit.daynum = time;
-        var aos = _satOrbit.FindAOS();
-        
-        if (aos !== 0.0) {
-            var los = _satOrbit.FindLOS2();
-            passData.orbit = [];
-            passData.aosTime = _satOrbit.Daynum2Date(aos);
-            passData.losTime = _satOrbit.Daynum2Date(los);
-            passData.orbitNumber = _satOrbit.orbitNumber;
+        if (_satOrbit.AosHappens(0) && _satOrbit.Geostationary(0) == 0 && _satOrbit.Decayed(0, time) == 0) {
+            _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
+            //_satOrbit.PreCalc(0);
             
-            _satOrbit.doCalc(aos);
-
-            var time = aos;
-            while (_satOrbit.elevation >= 0) {
-                _satOrbit.doCalc(time);
-                var orbitdata = {
-                    x: _satOrbit.sat_x,
-                    y: _satOrbit.sat_y,
-                    z: _satOrbit.sat_z,
-                    el: _satOrbit.elevation,
-                    az: _satOrbit.azimuth,
-                    footprint: _satOrbit.fk,
-                    viz: _satOrbit.visibility,
-                    range: _satOrbit.sat_range,
-                    date: _satOrbit.Daynum2Date(time),
-                    signaldelay: _satOrbit.signaldelay,
-                    signalloss: _satOrbit.signalloss,
-                    dopplershift: _satOrbit.dopplershift
-                };
-                passData.pass.push(orbitdata);
-                time += (0.00035); // 30 Seconds
-                if (_satOrbit.elevation > passData.maxEle) {
-                    passData.maxEle = _satOrbit.elevation;  
+            _satOrbit.doCalc(time);
+            if (_satOrbit.elevation >= 0 && backTrack) {
+                while (_satOrbit.elevation >= 0) {
+                    time -= 0.007;
+                    _satOrbit.doCalc(time);   
                 }
-            }     
+            }
+            
+            _satOrbit.daynum = time;
+            var aos = _satOrbit.FindAOS();
+            
+            if (aos !== 0.0) {
+                var los = _satOrbit.FindLOS2();
+                passData.orbit = [];
+                passData.aosTime = _satOrbit.Daynum2Date(aos);
+                passData.losTime = _satOrbit.Daynum2Date(los);
+                passData.orbitNumber = _satOrbit.orbitNumber;
+                
+                _satOrbit.doCalc(aos);
+
+                var time = aos;
+                while (_satOrbit.elevation >= 0) {
+                    _satOrbit.doCalc(time);
+                    var orbitdata = {
+                        x: _satOrbit.sat_x,
+                        y: _satOrbit.sat_y,
+                        z: _satOrbit.sat_z,
+                        el: _satOrbit.elevation,
+                        az: _satOrbit.azimuth,
+                        footprint: _satOrbit.fk,
+                        viz: _satOrbit.visibility,
+                        range: _satOrbit.sat_range,
+                        date: _satOrbit.Daynum2Date(time),
+                        signaldelay: _satOrbit.signaldelay,
+                        signalloss: _satOrbit.signalloss,
+                        dopplershift: _satOrbit.dopplershift
+                    };
+                    passData.pass.push(orbitdata);
+                    time += (0.00035); // 30 Seconds
+                    if (_satOrbit.elevation > passData.maxEle) {
+                        passData.maxEle = _satOrbit.elevation;  
+                    }
+                }     
+            }
+            var endDate = new Date();
+            passData.calcTime = endDate - startDate;
         }
-        var endDate = new Date();
-        passData.calcTime = endDate - startDate;
         return passData;
     }
     
@@ -196,6 +197,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         */
         _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
         time = (date.getTime() - 315446400000) / 86400000;
+
+
         _satOrbit.doCalc(time);
         var thisOrbit = _satOrbit.orbitNumber;
 
@@ -232,7 +235,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         _orbitAge = new Date();
         var endDate = new Date();
     //    passData.calcTime = endDate - startDate;
-                
+
         AGSatTrack.getUI().updateInfo('Calculating Orbit Complete For ' + _sat.sat[0].name);
 
     }
@@ -402,6 +405,19 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                  
         getPassforTime: function(observer, time) {
             return getPassforTime(observer, time);
+        },
+        
+        isGeostationary: function() {
+            var result = false;
+            var date = new Date();
+            
+            var time = (date.getTime() - 315446400000) / 86400000;  
+            if (_sat.AosHappens(0) && _sat.Geostationary(0) == 0 && _sat.Decayed(0, time) == 0) {
+                result = false;
+            } else {
+                result = true;
+            }
+            return result;
         }
 	}
 };

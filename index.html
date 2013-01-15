@@ -740,6 +740,10 @@
                         <td>Orbital Phase</td>
                         <td id="orbitalphase" class="sat-info"></td>
                     </tr>
+                    <tr>
+                        <td>Geostationary</td>
+                        <td id="geostationary" class="sat-info"></td>
+                    </tr>                    
 				</table>
 			</div>
 
@@ -773,9 +777,14 @@
 			</div>
 			<div title="3D View" style="padding: 1px;" id="3d"></div>
 			<div title="Passes" style="overflow: hidden" id="passes">
+                
+                <div id="pass-info-geostationary" class="hidden">
+                    <h1>The selected satellite is Geostationary</h1>
+                    <p>A geostationary orbit, or Geostationary Earth Orbit (GEO), is a circular orbit 35,786 kilometres (22,236 mi) above the Earth's equator and following the direction of the Earth's rotation. An object in such an orbit has an orbital period equal to the Earth's rotational period (one sidereal day), and thus appears motionless, at a fixed position in the sky, to ground observers. Communications satellites and weather satellites are often given geostationary orbits, so that the satellite antennas that communicate with them do not have to move to track them, but can be pointed permanently at the position in the sky where they stay.</p>
+                    <img src="/images/orbits.png "/>
+                </div>
 
-
-                <table width="98%" height="100%">
+                <table width="98%" height="100%" id="pass-info-table">
                     <tr>
                         <td height="50%" width="100%" colspan="2" valign="top">                    
                             <table id="passesgrid" class="easyui-datagrid" title="Passes" data-options="rownumbers:true, singleSelect:true, autoRowHeight:false, pagination:true, pageSize:20">

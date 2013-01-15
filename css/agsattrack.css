@@ -309,3 +309,12 @@ p.description {
 .pac-container {
     z-index: 99999 !important;
 }
+
+.hidden {
+    display: none;
+}
+
+#pass-info-geostationary p {
+    font-size: 1.2em;
+    margin: 10px;    
+}

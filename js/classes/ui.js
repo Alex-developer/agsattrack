@@ -311,7 +311,16 @@ var AGUI = function() {
         jQuery('#footprint').html(satellite.get('footprint').toFixed(3));
         jQuery('#elevation').html(satellite.get('elevation').toFixed(3));
         jQuery('#azimuth').html(satellite.get('azimuth').toFixed(3));      
-        jQuery('#orbitalphase').html(satellite.get('orbitalphase').toFixed(3));        
+        jQuery('#orbitalphase').html(satellite.get('orbitalphase').toFixed(3));
+        if (satellite.isGeostationary()) {
+            if (satellite.get('elevation') > 0) {
+                jQuery('#geostationary').html('Yes - Visible');
+            } else {
+                jQuery('#geostationary').html('Yes - Not Visible');
+            }
+        } else {
+            jQuery('#geostationary').html('No');
+        }        
     }
     
 /*    

@@ -495,7 +495,11 @@ var AGPOLARVIEW = function(element) {
                     pass = passData.pass;                       
                 } else {
                     passData = satellite.getNextPass();
-                    pass = passData.pass;                    
+                    if (typeof passData === 'undefined') {
+                        okToDraw = false;    
+                    } else {
+                        pass = passData.pass;
+                    }
                 }
                 
                 if (okToDraw) {
@@ -690,7 +694,22 @@ var AGPOLARVIEW = function(element) {
         _infoLayer.removeChildren();
         var following = AGSatTrack.getFollowing();
         if (following !== null) {
-            var nextEvent = following.getNextEvent(true);
+            
+            if (following.isGeostationary()) {
+                if (following.get('elevation') > 0) {
+                    nextEvent = {
+                        eventlong : 'Satellite is geostationary',
+                        time: 'N/A'    
+                    }; 
+                } else {
+                    nextEvent = {
+                        eventlong : 'Geostationary Not Visible',
+                        time: 'N/A'    
+                    }; 
+                }
+            } else {
+                var nextEvent = following.getNextEvent(true);
+            }
 
             var elFontSize = 10;
             if (_mode === AGPOLARVIEW.modes.SINGLE) {

@@ -577,14 +577,15 @@ var AG3DVIEW = function(element) {
     
     function addOrbitLine(sat) {    
         var orbit = sat.getOrbitData();
-        var plottingAos = false;
-        var pos;
-        
-        var pass = sat.getNextPass();
         
         if (typeof (orbit[0]) !== 'undefined') {
-            plotLine(orbit, Cesium.Color.RED, passLines, 1);
-            plotLine(pass.pass, Cesium.Color.GREEN, passLines, 5);
+            if (sat.isGeostationary() && sat.get('elevation') > 0) {
+                plotLine(orbit, Cesium.Color.GREEN, passLines, 1);
+            } else {
+                var pass = sat.getNextPass();
+                plotLine(orbit, Cesium.Color.RED, passLines, 1);
+                plotLine(pass.pass, Cesium.Color.GREEN, passLines, 5);
+            }
         }
         
         /*

@@ -78,7 +78,7 @@ var AGLISTVIEW = function() {
 			var rowCSSArray = ['listviewsat'];
 			if (_calcAoS) {
 				var rowCSS = '';
-				if (satellite.get('elevation').toFixed(0) > AGSETTINGS.getAosEl()) {
+				if (parseInt(satellite.get('elevation').toFixed(0),10) > parseInt(AGSETTINGS.getAosEl(),10)) {
 					rowCSSArray.push('green');
 				}				
 			}
@@ -100,7 +100,11 @@ var AGLISTVIEW = function() {
             html += '<td align="right">' + satellite.get('velocity').toFixed(0) + '</td>';
 			
             if (AGSETTINGS.getCalculateEvents()) {
-                html += '<td>' + satellite.getNextEvent() + '</td>';
+                if (satellite.isGeostationary()) {
+                    html += '<td>Geostationary</td>';
+                } else {
+                    html += '<td>' + satellite.getNextEvent() + '</td>';
+                }
             } else {
                 html += '<td>Disabled</td>';
             }

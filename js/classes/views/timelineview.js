@@ -203,34 +203,68 @@ var AGTIMELINE = function() {
                 textFill : 'white'
             }));            
 
-            _timelineLayer.add(new Kinetic.Line({
-                points : [ _viewLeftMargin, yPos+10, _fixedStageWidth-_viewLeftMargin, yPos+10 ],
-                stroke : '#777',
-                strokeWidth : 1
-            }));
-                        
-            var xpos = _viewLeftMargin;
-            var passes = sat.getTodaysPasses();           
-            if (passes !== null) {
-                for (var i=0; i<passes.length;i++) {
-                    var sdiff = Date.DateDiff('n', _startDate, passes[i].dateTimeStart);
-                    var startPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeStart) * _pixelsPerMin) + _viewLeftMargin;
-                    var endPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeEnd) * _pixelsPerMin) + _viewLeftMargin;
-                   /*
-                    _timelineLayer.add(new Kinetic.Line({
-                        points : [ startPos, 10, endPos, 10 ],
-                        stroke : '#ccc',
-                        strokeWidth : 1
-                    }));
-                    */
+            if (sat.isGeostationary()) {
+                if (sat.get('elevation') > 0) {
                     _timelineLayer.add(new Kinetic.Rect({
                         fill: 'white',
-                        x : startPos,
+                        x : _viewLeftMargin,
                         y : yPos,
-                        width : endPos - startPos,
+                        width : _fixedStageWidth-_viewLeftMargin,
                         height : 20
                     }));
-                                                            
+                    _timelineLayer.add(new Kinetic.Text({
+                        x : _viewLeftMargin + 10,
+                        y : yPos + 5,
+                        width: 400,
+                        height: 15,
+                        text : 'Satellite is geostationary always visible',
+                        fontSize : 12,
+                        fontFamily : 'Verdana',
+                        textFill : 'black'
+                    }));                                         
+                } else {
+                    _timelineLayer.add(new Kinetic.Text({
+                        x : _viewLeftMargin + 10,
+                        y : yPos + 5,
+                        width: 400,
+                        height: 15,
+                        text : 'Satellite is geostationary and never visible',
+                        fontSize : 12,
+                        fontFamily : 'Verdana',
+                        textFill : 'red'
+                    }));                      
+                }
+            } else {
+            
+                _timelineLayer.add(new Kinetic.Line({
+                    points : [ _viewLeftMargin, yPos+10, _fixedStageWidth-_viewLeftMargin, yPos+10 ],
+                    stroke : '#777',
+                    strokeWidth : 1
+                }));
+                                               
+                var xpos = _viewLeftMargin;
+                var passes = sat.getTodaysPasses();           
+                if (passes !== null) {
+                    for (var i=0; i<passes.length;i++) {
+                        var sdiff = Date.DateDiff('n', _startDate, passes[i].dateTimeStart);
+                        var startPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeStart) * _pixelsPerMin) + _viewLeftMargin;
+                        var endPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeEnd) * _pixelsPerMin) + _viewLeftMargin;
+                       /*
+                        _timelineLayer.add(new Kinetic.Line({
+                            points : [ startPos, 10, endPos, 10 ],
+                            stroke : '#ccc',
+                            strokeWidth : 1
+                        }));
+                        */
+                        _timelineLayer.add(new Kinetic.Rect({
+                            fill: 'white',
+                            x : startPos,
+                            y : yPos,
+                            width : endPos - startPos,
+                            height : 20
+                        }));
+                                                                
+                    }
                 }
             }
             

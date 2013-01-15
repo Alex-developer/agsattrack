@@ -99,6 +99,9 @@ var AGUTIL = (function() {
 			if (date === '') {
 				return '';
 			}
+            if (date === null) {
+                return 'N/A';
+            }
 			var shortDate = '';
 			
             shortDate += pad(date.getDate(),2) + '/';
