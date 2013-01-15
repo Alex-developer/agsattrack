@@ -87,7 +87,7 @@
                 jQuery('#leftsat').append(jQuery(selectedOpts).clone());
                 jQuery(selectedOpts).remove();                
             }
-            
+            selectedOpts = jQuery('#rightsat option');
             return selectedOpts;           
         }
              
@@ -120,7 +120,7 @@
                 });
 
                 jQuery(document).trigger('agsattrack.satsselected', {
-                    selections : []
+                    selections : sourceData
                 }); 
                 jQuery(document).trigger('agsattrack.forceupdate', {});                                        
 
