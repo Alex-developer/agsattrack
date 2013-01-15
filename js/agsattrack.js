@@ -234,6 +234,10 @@ var agsattrack = function() {
 				}
 			});
 
+            bindEvents();
+            
+            AGVIEWS.startView(AGVIEWS.getCurrentView().name);  
+            
             /**
              * Fire up the user Inerface
              */
@@ -245,9 +249,6 @@ var agsattrack = function() {
 			 */
 			_observers[0] = new AGOBSERVER(0).init();
 
-			bindEvents();
-			
-			jQuery('#viewtabs').tabs('select',_views[_active].index);
 
             jQuery.each(_views, function(view, options) {
                 if (typeof options.instance.postInit === 'function') {
