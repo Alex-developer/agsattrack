@@ -20,7 +20,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     var _satOrbit = new AGPREDICTLIB(tle0, tle1, tle2);
     var _satPasses = new AGPREDICTLIB(tle0, tle1, tle2);
      
-    var orbit = [];
+    var orbit = {
+        calcTime: 0,
+        points: []
+    };
     var _nextPass = {
         pass: [],
         aosTime: null,
@@ -180,7 +183,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         var date = new Date();
         var time;
         _orbitrequested = false;
-//        var startDate = new Date();
+        var startDate = new Date();
+        var orbitPoints = [];
         
         AGSatTrack.getUI().updateInfo('Calculating Orbit For ' + _sat.sat[0].name + ' Started');
         
@@ -220,7 +224,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         * Add points at 20 second intervals whilst we are on the same orbit
         */
         while (thisOrbit === _satOrbit.orbitNumber) {
-            addPoint(time);   
+            addPoint(time, orbitPoints);   
             time += 0.00035;
         }
         
@@ -229,13 +233,16 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         * required to complete the orbit.
         */
         for (i=i;i<20;i++) {
-            addPoint(time);   
+            addPoint(time, orbitPoints);   
             time += 0.00035;            
         }                    
         _orbitAge = new Date();
         var endDate = new Date();
-    //    passData.calcTime = endDate - startDate;
-
+        
+        orbit = {
+            points: orbitPoints,
+            calcTime: endDate - startDate
+        };
         AGSatTrack.getUI().updateInfo('Calculating Orbit Complete For ' + _sat.sat[0].name);
 
     }
@@ -243,7 +250,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     /**
     * Add a point to the orbit data
     */
-    function addPoint(time) {
+    function addPoint(time, orbitPoints) {
         _satOrbit.doCalc(time);
         var orbitdata = {
             x: _satOrbit.sat_x,
@@ -256,7 +263,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             signalloss: _satOrbit.signalloss,
             dopplershift: _satOrbit.dopplershift            
         };
-        orbit.push(orbitdata);         
+        orbitPoints.push(orbitdata);         
     }
     
     

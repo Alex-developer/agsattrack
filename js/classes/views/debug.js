@@ -66,6 +66,36 @@ var AGDEBUG = function() {
                 id:i+200,
                 orbits: passcache.length               
             });
+            
+            var fullOrbit = sats[i].getOrbitData();
+            
+            if (fullOrbit.points.length === 0) {
+                row = {
+                    satellite: 'Full Orbit',
+                    orbits: '',
+                    orbitno: '',
+                    calctime: 'N/A',
+                    points: 0,
+                    aos: '',
+                    los: '',
+                    _parentId:i+200,
+                    id:id++
+                };                
+            } else {
+                row = {
+                    satellite: 'Full Orbit',
+                    orbits: '',
+                    orbitno: '',
+                    calctime: fullOrbit.calcTime,
+                    points: fullOrbit.points.length,
+                    aos: '',
+                    los: '',
+                    _parentId:i+200,
+                    id:id++
+                };
+            }
+            rows.push(row);
+             
             var passes = [];  
             for (var j=0; j < passcache.length; j++) {
                 row = {

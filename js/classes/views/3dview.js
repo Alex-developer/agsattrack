@@ -578,12 +578,12 @@ var AG3DVIEW = function(element) {
     function addOrbitLine(sat) {    
         var orbit = sat.getOrbitData();
         
-        if (typeof (orbit[0]) !== 'undefined') {
+        if (typeof orbit !== 'undefined' && typeof orbit.points[0] !== 'undefined') {
             if (sat.isGeostationary() && sat.get('elevation') > 0) {
-                plotLine(orbit, Cesium.Color.GREEN, passLines, 1);
+                plotLine(orbit.points, Cesium.Color.GREEN, passLines, 1);
             } else {
                 var pass = sat.getNextPass();
-                plotLine(orbit, Cesium.Color.RED, passLines, 1);
+                plotLine(orbit.points, Cesium.Color.RED, passLines, 1);
                 plotLine(pass.pass, Cesium.Color.GREEN, passLines, 5);
             }
         }
