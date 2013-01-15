@@ -63,6 +63,24 @@ var AGVIEWS = (function(element) {
             return _views;
         },
         
+        startView : function(name) {
+            var view = null;
+            jQuery.each(_views, function(_view, _options) {
+                if (_options.active) {
+                    view = _options;
+                }
+                if (typeof _options.instance !== 'undefined') {
+                    _options.instance.stopRender();
+                }                 
+            });
+            if (view !== null) {
+                if (typeof view.instance !== 'undefined') {
+                    jQuery('#viewtabs').tabs('select',view.index)
+                    view.instance.startRender();
+                }    
+            }            
+        },
+        
         stopView : function(name) {
             var view = null;
             jQuery.each(_views, function(_view, _options) {
