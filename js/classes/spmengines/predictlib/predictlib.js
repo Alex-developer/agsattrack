@@ -98,7 +98,7 @@ var PLib =
             sat_lat: 0.0, sat_lon: 0.0, sat_alt: 0.0, sat_vel: 0.0, phase: 0.0,
             sun_azi: 0.0, sun_ele: 0.0, daynum: 0.0, fm: 0.0, fk: 0.0, age: 0.0, aostime: 0.0,
             lostime: 0.0, ax: 0.0, ay: 0.0, az: 0.0, rx: 0.0, ry: 0.0, rz: 0.0, squint: 0.0, alat: 0.0, alon: 0.0,
-
+        
         ephem: "", sat_sun_status: "", findsun: "",
 
         indx: 0, iaz: 0, iel: 0, ma256: 0, isplat: 0, isplong: 0, Flags: 0,
