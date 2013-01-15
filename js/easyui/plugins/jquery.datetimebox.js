@@ -1,11 +1,13 @@
 ﻿/**
- * jQuery EasyUI 1.3.1
+ * jQuery EasyUI 1.3.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
+ *
  */
 (function($){
 function _1(_2){
@@ -101,17 +103,24 @@ _1(this);
 });
 };
 $.fn.datetimebox.methods={options:function(jq){
-return $.data(jq[0],"datetimebox").options;
+var _20=$.data(jq[0],"datetimebox").options;
+_20.originalValue=jq.datebox("options").originalValue;
+return _20;
 },spinner:function(jq){
 return $.data(jq[0],"datetimebox").spinner;
-},setValue:function(jq,_20){
+},setValue:function(jq,_21){
 return jq.each(function(){
-_9(this,_20);
+_9(this,_21);
+});
+},reset:function(jq){
+return jq.each(function(){
+var _22=$(this).datetimebox("options");
+$(this).datetimebox("setValue",_22.originalValue);
 });
 }};
-$.fn.datetimebox.parseOptions=function(_21){
-var t=$(_21);
-return $.extend({},$.fn.datebox.parseOptions(_21),$.parser.parseOptions(_21,["timeSeparator",{showSeconds:"boolean"}]));
+$.fn.datetimebox.parseOptions=function(_23){
+var t=$(_23);
+return $.extend({},$.fn.datebox.parseOptions(_23),$.parser.parseOptions(_23,["timeSeparator",{showSeconds:"boolean"}]));
 };
 $.fn.datetimebox.defaults=$.extend({},$.fn.datebox.defaults,{showSeconds:true,timeSeparator:":",keyHandler:{up:function(){
 },down:function(){
@@ -119,17 +128,17 @@ $.fn.datetimebox.defaults=$.extend({},$.fn.datebox.defaults,{showSeconds:true,ti
 _f(this);
 },query:function(q){
 _d(this,q);
-}},formatter:function(_22){
-var h=_22.getHours();
-var M=_22.getMinutes();
-var s=_22.getSeconds();
-function _23(_24){
-return (_24<10?"0":"")+_24;
+}},formatter:function(_24){
+var h=_24.getHours();
+var M=_24.getMinutes();
+var s=_24.getSeconds();
+function _25(_26){
+return (_26<10?"0":"")+_26;
 };
-var _25=$(this).datetimebox("spinner").timespinner("options").separator;
-var r=$.fn.datebox.defaults.formatter(_22)+" "+_23(h)+_25+_23(M);
+var _27=$(this).datetimebox("spinner").timespinner("options").separator;
+var r=$.fn.datebox.defaults.formatter(_24)+" "+_25(h)+_27+_25(M);
 if($(this).datetimebox("options").showSeconds){
-r+=_25+_23(s);
+r+=_27+_25(s);
 }
 return r;
 },parser:function(s){
@@ -141,12 +150,12 @@ var d=$.fn.datebox.defaults.parser(dt[0]);
 if(dt.length<2){
 return d;
 }
-var _26=$(this).datetimebox("spinner").timespinner("options").separator;
-var tt=dt[1].split(_26);
-var _27=parseInt(tt[0],10)||0;
-var _28=parseInt(tt[1],10)||0;
-var _29=parseInt(tt[2],10)||0;
-return new Date(d.getFullYear(),d.getMonth(),d.getDate(),_27,_28,_29);
+var _28=$(this).datetimebox("spinner").timespinner("options").separator;
+var tt=dt[1].split(_28);
+var _29=parseInt(tt[0],10)||0;
+var _2a=parseInt(tt[1],10)||0;
+var _2b=parseInt(tt[2],10)||0;
+return new Date(d.getFullYear(),d.getMonth(),d.getDate(),_29,_2a,_2b);
 }});
 })(jQuery);
 

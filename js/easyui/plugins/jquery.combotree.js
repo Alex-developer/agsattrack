@@ -1,11 +1,13 @@
 ﻿/**
- * jQuery EasyUI 1.3.1
+ * jQuery EasyUI 1.3.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
+ *
  */
 (function($){
 function _1(_2){
@@ -104,46 +106,57 @@ _1(this);
 });
 };
 $.fn.combotree.methods={options:function(jq){
-return $.data(jq[0],"combotree").options;
+var _1d=$.data(jq[0],"combotree").options;
+_1d.originalValue=jq.combo("options").originalValue;
+return _1d;
 },tree:function(jq){
 return $.data(jq[0],"combotree").tree;
-},loadData:function(jq,_1d){
+},loadData:function(jq,_1e){
 return jq.each(function(){
-var _1e=$.data(this,"combotree").options;
-_1e.data=_1d;
-var _1f=$.data(this,"combotree").tree;
-_1f.tree("loadData",_1d);
+var _1f=$.data(this,"combotree").options;
+_1f.data=_1e;
+var _20=$.data(this,"combotree").tree;
+_20.tree("loadData",_1e);
 });
 },reload:function(jq,url){
 return jq.each(function(){
-var _20=$.data(this,"combotree").options;
-var _21=$.data(this,"combotree").tree;
+var _21=$.data(this,"combotree").options;
+var _22=$.data(this,"combotree").tree;
 if(url){
-_20.url=url;
+_21.url=url;
 }
-_21.tree({url:_20.url});
+_22.tree({url:_21.url});
 });
-},setValues:function(jq,_22){
+},setValues:function(jq,_23){
 return jq.each(function(){
-_13(this,_22);
+_13(this,_23);
 });
-},setValue:function(jq,_23){
+},setValue:function(jq,_24){
 return jq.each(function(){
-_13(this,[_23]);
+_13(this,[_24]);
 });
 },clear:function(jq){
 return jq.each(function(){
-var _24=$.data(this,"combotree").tree;
-_24.find("div.tree-node-selected").removeClass("tree-node-selected");
-var cc=_24.tree("getChecked");
+var _25=$.data(this,"combotree").tree;
+_25.find("div.tree-node-selected").removeClass("tree-node-selected");
+var cc=_25.tree("getChecked");
 for(var i=0;i<cc.length;i++){
-_24.tree("uncheck",cc[i].target);
+_25.tree("uncheck",cc[i].target);
 }
 $(this).combo("clear");
 });
+},reset:function(jq){
+return jq.each(function(){
+var _26=$(this).combotree("options");
+if(_26.multiple){
+$(this).combotree("setValues",_26.originalValue);
+}else{
+$(this).combotree("setValue",_26.originalValue);
+}
+});
 }};
-$.fn.combotree.parseOptions=function(_25){
-return $.extend({},$.fn.combo.parseOptions(_25),$.fn.tree.parseOptions(_25));
+$.fn.combotree.parseOptions=function(_27){
+return $.extend({},$.fn.combo.parseOptions(_27),$.fn.tree.parseOptions(_27));
 };
 $.fn.combotree.defaults=$.extend({},$.fn.combo.defaults,$.fn.tree.defaults,{editable:false});
 })(jQuery);

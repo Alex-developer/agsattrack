@@ -1,10 +1,12 @@
 /**
  * propertygrid - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  * 
  * Dependencies:
  * 	 datagrid
@@ -21,46 +23,75 @@
 			view:(opts.showGroup ? groupview : undefined),
 			onClickRow:function(index, row){
 				if (currTarget != this){
-					leaveCurrRow();
+//					leaveCurrRow();
+					stopEditing(currTarget);
 					currTarget = this;
 				}
 				if (opts.editIndex != index && row.editor){
 					var col = $(this).datagrid('getColumnOption', "value");
 					col.editor = row.editor;
-					leaveCurrRow();
+//					leaveCurrRow();
+					stopEditing(currTarget);
 					$(this).datagrid('beginEdit', index);
 					$(this).datagrid('getEditors', index)[0].target.focus();
 					opts.editIndex = index;
 				}
 				opts.onClickRow.call(target, index, row);
 			},
+			loadFilter:function(data){
+				stopEditing(this);
+				return opts.loadFilter.call(this, data);
+			},
 			onLoadSuccess:function(data){
-				$(target).datagrid('getPanel').find('div.datagrid-group').css('border','');
+//				$(target).datagrid('getPanel').find('div.datagrid-group').css('border','');
+				$(target).datagrid('getPanel').find('div.datagrid-group').attr('style','');
 				opts.onLoadSuccess.call(target,data);
 			}
 		}));
 		$(document).unbind('.propertygrid').bind('mousedown.propertygrid', function(e){
-			var p = $(e.target).closest('div.propertygrid,div.combo-panel');
+			var p = $(e.target).closest('div.datagrid-view,div.combo-panel');
+//			var p = $(e.target).closest('div.propertygrid,div.combo-panel');
 			if (p.length){return;}
-			leaveCurrRow();
+			stopEditing(currTarget);
+			currTarget = undefined;
 		});
 		
-		function leaveCurrRow(){
-			var t = $(currTarget);
-			if (!t.length){return;}
-			var opts = $.data(currTarget, 'propertygrid').options;
-			var index = opts.editIndex;
-			if (index == undefined){return;}
-			t.datagrid('getEditors', index)[0].target.blur();
+//		function leaveCurrRow(){
+//			var t = $(currTarget);
+//			if (!t.length){return;}
+//			var opts = $.data(currTarget, 'propertygrid').options;
+//			var index = opts.editIndex;
+//			if (index == undefined){return;}
+//			var ed = t.datagrid('getEditors', index)[0];
+//			if (ed){
+//				ed.target.blur();
+//				if (t.datagrid('validateRow', index)){
+//					t.datagrid('endEdit', index);
+//				} else {
+//					t.datagrid('cancelEdit', index);
+//				}
+//			}
+//			opts.editIndex = undefined;
+//		}
+	}
+	
+	function stopEditing(target){
+		var t = $(target);
+		if (!t.length){return}
+		var opts = $.data(target, 'propertygrid').options;
+		var index = opts.editIndex;
+		if (index == undefined){return;}
+		var ed = t.datagrid('getEditors', index)[0];
+		if (ed){
+			ed.target.blur();
 			if (t.datagrid('validateRow', index)){
 				t.datagrid('endEdit', index);
 			} else {
 				t.datagrid('cancelEdit', index);
 			}
-			opts.editIndex = undefined;
 		}
+		opts.editIndex = undefined;
 	}
-	
 	
 	$.fn.propertygrid = function(options, param){
 		if (typeof options == 'string'){
@@ -90,6 +121,9 @@
 	}
 	
 	$.fn.propertygrid.methods = {
+		options: function(jq){
+			return $.data(jq[0], 'propertygrid').options;
+		}
 	};
 	
 	$.fn.propertygrid.parseOptions = function(target){
@@ -157,11 +191,11 @@
 			} else {
 				var group = view2.find('div.datagrid-group');
 			}
-			$('<td style="border:0"><div class="datagrid-row-expander datagrid-row-collapse" style="width:25px;height:16px;cursor:pointer"></div></td>').insertBefore(group.find('td'));
+			$('<td style="border:0;text-align:center;width:25px"><span class="datagrid-row-expander datagrid-row-collapse" style="display:inline-block;width:16px;height:16px;cursor:pointer">&nbsp;</span></td>').insertBefore(group.find('td'));
 			
 			view.find('div.datagrid-group').each(function(){
 				var groupIndex = $(this).attr('group-index');
-				$(this).find('div.datagrid-row-expander').bind('click', {groupIndex:groupIndex}, function(e){
+				$(this).find('span.datagrid-row-expander').bind('click', {groupIndex:groupIndex}, function(e){
 					if ($(this).hasClass('datagrid-row-collapse')){
 						$(target).datagrid('collapseGroup', e.data.groupIndex);
 					} else {
@@ -221,7 +255,7 @@
 	            } else {
 	                var group = view.find('div.datagrid-group');
 	            }
-	            var expander = group.find('div.datagrid-row-expander');
+	            var expander = group.find('span.datagrid-row-expander');
 	            if (expander.hasClass('datagrid-row-expand')){
 	                expander.removeClass('datagrid-row-expand').addClass('datagrid-row-collapse');
 	                group.next('table').show();
@@ -237,7 +271,7 @@
 	            } else {
 	                var group = view.find('div.datagrid-group');
 	            }
-	            var expander = group.find('div.datagrid-row-expander');
+	            var expander = group.find('span.datagrid-row-expander');
 	            if (expander.hasClass('datagrid-row-collapse')){
 	                expander.removeClass('datagrid-row-collapse').addClass('datagrid-row-expand');
 	                group.next('table').hide();

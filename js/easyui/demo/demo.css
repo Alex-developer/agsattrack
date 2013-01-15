@@ -9,7 +9,6 @@ body {
 }
 h2 {
     font-size:18px;
-    color:#333;
     font-weight:bold;
     margin:0;
     margin-bottom:15px;
@@ -20,7 +19,8 @@ h2 {
 	padding:12px;
 }
 .demo-tip{
-	width:24px;
+	width:16px;
 	height:16px;
+	margin-right:8px;
 	float:left;
 }

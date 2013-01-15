@@ -1,11 +1,13 @@
-/**
- * jQuery EasyUI 1.3.1
+﻿/**
+ * jQuery EasyUI 1.3.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
+ *
  */
 (function($){
 var _1=false;
@@ -13,15 +15,7 @@ function _2(_3){
 var _4=$.data(_3,"layout").options;
 var _5=$.data(_3,"layout").panels;
 var cc=$(_3);
-if(_4.fit==true){
-var p=cc.parent();
-p.addClass("panel-noscroll");
-if(p[0].tagName=="BODY"){
-$("html").addClass("panel-fit");
-}
-cc.width(p.width());
-cc.height(p.height());
-}
+_4.fit?cc.css(cc._fit()):cc._fit(false);
 var _6={top:0,left:0,width:cc.width(),height:cc.height()};
 function _7(pp){
 if(pp.length==0){

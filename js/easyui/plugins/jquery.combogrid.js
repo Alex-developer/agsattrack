@@ -1,11 +1,13 @@
 ﻿/**
- * jQuery EasyUI 1.3.1
+ * jQuery EasyUI 1.3.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
+ *
  */
 (function($){
 function _1(_2){
@@ -68,6 +70,9 @@ function _14(_15,_16){
 var _17=$.data(_15,"combogrid").options;
 var _18=$.data(_15,"combogrid").grid;
 var _19=_18.datagrid("getRows").length;
+if(!_19){
+return;
+}
 $.data(_15,"combogrid").remainText=false;
 var _1a;
 var _1b=_18.datagrid("getSelections");
@@ -165,26 +170,37 @@ _1(this);
 });
 };
 $.fn.combogrid.methods={options:function(jq){
-return $.data(jq[0],"combogrid").options;
+var _2d=$.data(jq[0],"combogrid").options;
+_2d.originalValue=jq.combo("options").originalValue;
+return _2d;
 },grid:function(jq){
 return $.data(jq[0],"combogrid").grid;
-},setValues:function(jq,_2d){
+},setValues:function(jq,_2e){
 return jq.each(function(){
-_1c(this,_2d);
+_1c(this,_2e);
 });
-},setValue:function(jq,_2e){
+},setValue:function(jq,_2f){
 return jq.each(function(){
-_1c(this,[_2e]);
+_1c(this,[_2f]);
 });
 },clear:function(jq){
 return jq.each(function(){
 $(this).combogrid("grid").datagrid("clearSelections");
 $(this).combo("clear");
 });
+},reset:function(jq){
+return jq.each(function(){
+var _30=$(this).combogrid("options");
+if(_30.multiple){
+$(this).combogrid("setValues",_30.originalValue);
+}else{
+$(this).combogrid("setValue",_30.originalValue);
+}
+});
 }};
-$.fn.combogrid.parseOptions=function(_2f){
-var t=$(_2f);
-return $.extend({},$.fn.combo.parseOptions(_2f),$.fn.datagrid.parseOptions(_2f),$.parser.parseOptions(_2f,["idField","textField","mode"]));
+$.fn.combogrid.parseOptions=function(_31){
+var t=$(_31);
+return $.extend({},$.fn.combo.parseOptions(_31),$.fn.datagrid.parseOptions(_31),$.parser.parseOptions(_31,["idField","textField","mode"]));
 };
 $.fn.combogrid.defaults=$.extend({},$.fn.combo.defaults,$.fn.datagrid.defaults,{loadMsg:null,idField:null,textField:null,mode:"local",keyHandler:{up:function(){
 _14(this,-1);
@@ -196,8 +212,8 @@ $(this).combo("hidePanel");
 },query:function(q){
 _24(this,q);
 }},filter:function(q,row){
-var _30=$(this).combogrid("options");
-return row[_30.textField].indexOf(q)==0;
+var _32=$(this).combogrid("options");
+return row[_32.textField].indexOf(q)==0;
 }});
 })(jQuery);
 

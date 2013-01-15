@@ -1,10 +1,12 @@
 /**
  * datebox - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  * 
  * Dependencies:
  * 	 calendar
@@ -121,7 +123,9 @@
 	
 	$.fn.datebox.methods = {
 		options: function(jq){
-			return $.data(jq[0], 'datebox').options;
+			var opts = $.data(jq[0], 'datebox').options;
+			opts.originalValue = jq.combo('options').originalValue;
+			return opts;
 		},
 		calendar: function(jq){	// get the calendar object
 			return $.data(jq[0], 'datebox').calendar;
@@ -129,6 +133,12 @@
 		setValue: function(jq, value){
 			return jq.each(function(){
 				setValue(this, value);
+			});
+		},
+		reset: function(jq){
+			return jq.each(function(){
+				var opts = $(this).datebox('options');
+				$(this).datebox('setValue', opts.originalValue);
 			});
 		}
 	};

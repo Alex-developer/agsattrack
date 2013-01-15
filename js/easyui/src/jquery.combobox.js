@@ -1,10 +1,12 @@
 /**
  * combobox - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  * 
  * Dependencies:
  *   combo
@@ -322,7 +324,9 @@
 	
 	$.fn.combobox.methods = {
 		options: function(jq){
-			return $.data(jq[0], 'combobox').options;
+			var opts = $.data(jq[0], 'combobox').options;
+			opts.originalValue = jq.combo('options').originalValue;
+			return opts;
 		},
 		getData: function(jq){
 			return $.data(jq[0], 'combobox').data;
@@ -342,6 +346,16 @@
 				$(this).combo('clear');
 				var panel = $(this).combo('panel');
 				panel.find('div.combobox-item-selected').removeClass('combobox-item-selected');
+			});
+		},
+		reset: function(jq){
+			return jq.each(function(){
+				var opts = $(this).combobox('options');
+				if (opts.multiple){
+					$(this).combobox('setValues', opts.originalValue);
+				} else {
+					$(this).combobox('setValue', opts.originalValue);
+				}
 			});
 		},
 		loadData: function(jq, data){

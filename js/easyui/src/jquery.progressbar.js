@@ -1,10 +1,12 @@
 /**
  * progressbar - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  * 
  * Dependencies:
  * 	 none
@@ -13,7 +15,7 @@
 (function($){
 	function init(target){
 		$(target).addClass('progressbar');
-		$(target).html('<div class="progressbar-text"></div><div class="progressbar-value">&nbsp;</div>');
+		$(target).html('<div class="progressbar-text"></div><div class="progressbar-value"><div class="progressbar-text"></div></div>');
 		return $(target);
 	}
 	
@@ -21,8 +23,13 @@
 		var opts = $.data(target, 'progressbar').options;
 		var bar = $.data(target, 'progressbar').bar;
 		if (width) opts.width = width;
-		bar._outerWidth(opts.width);
+		bar._outerWidth(opts.width)._outerHeight(opts.height);
+		
 		bar.find('div.progressbar-text').width(bar.width());
+		bar.find('div.progressbar-text,div.progressbar-value').css({
+			height: bar.height()+'px',
+			lineHeight: bar.height()+'px'
+		});
 	}
 	
 	$.fn.progressbar = function(options, param){
@@ -79,11 +86,12 @@
 	};
 	
 	$.fn.progressbar.parseOptions = function(target){
-		return $.extend({}, $.parser.parseOptions(target, ['width','text',{value:'number'}]));
+		return $.extend({}, $.parser.parseOptions(target, ['width','height','text',{value:'number'}]));
 	};
 	
 	$.fn.progressbar.defaults = {
 		width: 'auto',
+		height: 22,
 		value: 0,	// percentage value
 		text: '{value}%',
 		onChange:function(newValue,oldValue){}

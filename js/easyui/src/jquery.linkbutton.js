@@ -1,10 +1,12 @@
 /**
  * linkbutton - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  */
 (function($){
 	
@@ -34,7 +36,7 @@
 					'</span>'
 			);
 			if (opts.iconCls){
-				$(target).find('.l-btn-text').addClass(opts.iconCls).css('padding-left', '20px');
+				$(target).find('.l-btn-text').addClass(opts.iconCls).addClass(opts.iconAlign=='left' ? 'l-btn-icon-left' : 'l-btn-icon-right');
 			}
 		} else {
 			$(target).html('&nbsp;').wrapInner(
@@ -129,7 +131,7 @@
 	
 	$.fn.linkbutton.parseOptions = function(target){
 		var t = $(target);
-		return $.extend({}, $.parser.parseOptions(target, ['id','iconCls',{plain:'boolean'}]), {
+		return $.extend({}, $.parser.parseOptions(target, ['id','iconCls','iconAlign',{plain:'boolean'}]), {
 			disabled: (t.attr('disabled') ? true : undefined),
 			text: $.trim(t.html()),
 			iconCls: (t.attr('icon') || t.attr('iconCls'))
@@ -141,7 +143,8 @@
 		disabled: false,
 		plain: false,
 		text: '',
-		iconCls: null
+		iconCls: null,
+		iconAlign: 'left'
 	};
 	
 })(jQuery);

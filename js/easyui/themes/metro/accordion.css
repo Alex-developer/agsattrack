@@ -1,33 +1,41 @@
-.accordion{
-	background:#fff;
-	overflow:hidden;
-	border:1px solid #ddd;
+.accordion {
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
 }
-.accordion .accordion-header{
-	border-width:0 0 1px;
-	cursor:pointer;
+.accordion .accordion-header {
+  border-width: 0 0 1px;
+  cursor: pointer;
 }
-.accordion .accordion-body{
-	border-width:0 0 1px;
+.accordion .accordion-body {
+  border-width: 0 0 1px;
 }
-.accordion .accordion-header .panel-title{
-	font-weight:normal;
+.accordion-noborder {
+  border-width: 0;
 }
-.accordion .accordion-header-selected .panel-title{
-	font-weight:bold;
+.accordion-noborder .accordion-header {
+  border-width: 0 0 1px;
 }
-.accordion-noborder{
-	border-width:0;
+.accordion-noborder .accordion-body {
+  border-width: 0 0 1px;
 }
-.accordion-noborder .accordion-header{
-	border-width:0 0 1px;
+.accordion-collapse {
+  background: url('images/accordion_arrows.png') no-repeat 0 0;
 }
-.accordion-noborder .accordion-body{
-	border-width:0 0 1px;
+.accordion-expand {
+  background: url('images/accordion_arrows.png') no-repeat -16px 0;
 }
-.accordion-collapse{
-	background:url('images/accordion_collapse.png') no-repeat;
+.accordion {
+  background: #fff;
+  border-color: #ddd;
 }
-.accordion-expand{
-	background:url('images/accordion_expand.png') no-repeat;
+.accordion .accordion-header {
+  background: #ffffff;
+  filter: none;
+}
+.accordion .accordion-header-selected {
+  background: #CCE6FF;
+}
+.accordion .accordion-header-selected .panel-title {
+  color: #000;
 }

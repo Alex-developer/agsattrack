@@ -1,11 +1,13 @@
 ﻿/**
- * jQuery EasyUI 1.3.1
+ * jQuery EasyUI 1.3.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
+ *
  */
 (function($){
 var _1;
@@ -14,201 +16,210 @@ var _4=$.data(_3,"propertygrid");
 var _5=$.data(_3,"propertygrid").options;
 $(_3).datagrid($.extend({},_5,{cls:"propertygrid",view:(_5.showGroup?_6:undefined),onClickRow:function(_7,_8){
 if(_1!=this){
-_9();
+_c(_1);
 _1=this;
 }
 if(_5.editIndex!=_7&&_8.editor){
-var _a=$(this).datagrid("getColumnOption","value");
-_a.editor=_8.editor;
-_9();
+var _9=$(this).datagrid("getColumnOption","value");
+_9.editor=_8.editor;
+_c(_1);
 $(this).datagrid("beginEdit",_7);
 $(this).datagrid("getEditors",_7)[0].target.focus();
 _5.editIndex=_7;
 }
 _5.onClickRow.call(_3,_7,_8);
+},loadFilter:function(_a){
+_c(this);
+return _5.loadFilter.call(this,_a);
 },onLoadSuccess:function(_b){
-$(_3).datagrid("getPanel").find("div.datagrid-group").css("border","");
+$(_3).datagrid("getPanel").find("div.datagrid-group").attr("style","");
 _5.onLoadSuccess.call(_3,_b);
 }}));
 $(document).unbind(".propertygrid").bind("mousedown.propertygrid",function(e){
-var p=$(e.target).closest("div.propertygrid,div.combo-panel");
+var p=$(e.target).closest("div.datagrid-view,div.combo-panel");
 if(p.length){
 return;
 }
-_9();
+_c(_1);
+_1=undefined;
 });
-function _9(){
-var t=$(_1);
+};
+function _c(_d){
+var t=$(_d);
 if(!t.length){
 return;
 }
-var _c=$.data(_1,"propertygrid").options;
-var _d=_c.editIndex;
-if(_d==undefined){
+var _e=$.data(_d,"propertygrid").options;
+var _f=_e.editIndex;
+if(_f==undefined){
 return;
 }
-t.datagrid("getEditors",_d)[0].target.blur();
-if(t.datagrid("validateRow",_d)){
-t.datagrid("endEdit",_d);
+var ed=t.datagrid("getEditors",_f)[0];
+if(ed){
+ed.target.blur();
+if(t.datagrid("validateRow",_f)){
+t.datagrid("endEdit",_f);
 }else{
-t.datagrid("cancelEdit",_d);
+t.datagrid("cancelEdit",_f);
 }
-_c.editIndex=undefined;
+}
+_e.editIndex=undefined;
 };
-};
-$.fn.propertygrid=function(_e,_f){
-if(typeof _e=="string"){
-var _10=$.fn.propertygrid.methods[_e];
-if(_10){
-return _10(this,_f);
+$.fn.propertygrid=function(_10,_11){
+if(typeof _10=="string"){
+var _12=$.fn.propertygrid.methods[_10];
+if(_12){
+return _12(this,_11);
 }else{
-return this.datagrid(_e,_f);
+return this.datagrid(_10,_11);
 }
 }
-_e=_e||{};
+_10=_10||{};
 return this.each(function(){
-var _11=$.data(this,"propertygrid");
-if(_11){
-$.extend(_11.options,_e);
+var _13=$.data(this,"propertygrid");
+if(_13){
+$.extend(_13.options,_10);
 }else{
-var _12=$.extend({},$.fn.propertygrid.defaults,$.fn.propertygrid.parseOptions(this),_e);
-_12.frozenColumns=$.extend(true,[],_12.frozenColumns);
-_12.columns=$.extend(true,[],_12.columns);
-$.data(this,"propertygrid",{options:_12});
+var _14=$.extend({},$.fn.propertygrid.defaults,$.fn.propertygrid.parseOptions(this),_10);
+_14.frozenColumns=$.extend(true,[],_14.frozenColumns);
+_14.columns=$.extend(true,[],_14.columns);
+$.data(this,"propertygrid",{options:_14});
 }
 _2(this);
 });
 };
-$.fn.propertygrid.methods={};
-$.fn.propertygrid.parseOptions=function(_13){
-var t=$(_13);
-return $.extend({},$.fn.datagrid.parseOptions(_13),$.parser.parseOptions(_13,[{showGroup:"boolean"}]));
+$.fn.propertygrid.methods={options:function(jq){
+return $.data(jq[0],"propertygrid").options;
+}};
+$.fn.propertygrid.parseOptions=function(_15){
+var t=$(_15);
+return $.extend({},$.fn.datagrid.parseOptions(_15),$.parser.parseOptions(_15,[{showGroup:"boolean"}]));
 };
-var _6=$.extend({},$.fn.datagrid.defaults.view,{render:function(_14,_15,_16){
-var _17=$.data(_14,"datagrid");
-var _18=_17.options;
-var _19=_17.data.rows;
-var _1a=$(_14).datagrid("getColumnFields",_16);
-var _1b=[];
-var _1c=0;
-var _1d=this.groups;
-for(var i=0;i<_1d.length;i++){
-var _1e=_1d[i];
-_1b.push("<div class=\"datagrid-group\" group-index="+i+" style=\"height:25px;overflow:hidden;border-bottom:1px solid #ccc;\">");
-_1b.push("<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"height:100%\"><tbody>");
-_1b.push("<tr>");
-_1b.push("<td style=\"border:0;\">");
-if(!_16){
-_1b.push("<span style=\"color:#666;font-weight:bold;\">");
-_1b.push(_18.groupFormatter.call(_14,_1e.fvalue,_1e.rows));
-_1b.push("</span>");
+var _6=$.extend({},$.fn.datagrid.defaults.view,{render:function(_16,_17,_18){
+var _19=$.data(_16,"datagrid");
+var _1a=_19.options;
+var _1b=_19.data.rows;
+var _1c=$(_16).datagrid("getColumnFields",_18);
+var _1d=[];
+var _1e=0;
+var _1f=this.groups;
+for(var i=0;i<_1f.length;i++){
+var _20=_1f[i];
+_1d.push("<div class=\"datagrid-group\" group-index="+i+" style=\"height:25px;overflow:hidden;border-bottom:1px solid #ccc;\">");
+_1d.push("<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"height:100%\"><tbody>");
+_1d.push("<tr>");
+_1d.push("<td style=\"border:0;\">");
+if(!_18){
+_1d.push("<span style=\"color:#666;font-weight:bold;\">");
+_1d.push(_1a.groupFormatter.call(_16,_20.fvalue,_20.rows));
+_1d.push("</span>");
 }
-_1b.push("</td>");
-_1b.push("</tr>");
-_1b.push("</tbody></table>");
-_1b.push("</div>");
-_1b.push("<table class=\"datagrid-btable\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"><tbody>");
-for(var j=0;j<_1e.rows.length;j++){
-var cls=(_1c%2&&_18.striped)?"class=\"datagrid-row datagrid-row-alt\"":"class=\"datagrid-row\"";
-var _1f=_18.rowStyler?_18.rowStyler.call(_14,_1c,_1e.rows[j]):"";
-var _20=_1f?"style=\""+_1f+"\"":"";
-var _21=_17.rowIdPrefix+"-"+(_16?1:2)+"-"+_1c;
-_1b.push("<tr id=\""+_21+"\" datagrid-row-index=\""+_1c+"\" "+cls+" "+_20+">");
-_1b.push(this.renderRow.call(this,_14,_1a,_16,_1c,_1e.rows[j]));
-_1b.push("</tr>");
-_1c++;
+_1d.push("</td>");
+_1d.push("</tr>");
+_1d.push("</tbody></table>");
+_1d.push("</div>");
+_1d.push("<table class=\"datagrid-btable\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"><tbody>");
+for(var j=0;j<_20.rows.length;j++){
+var cls=(_1e%2&&_1a.striped)?"class=\"datagrid-row datagrid-row-alt\"":"class=\"datagrid-row\"";
+var _21=_1a.rowStyler?_1a.rowStyler.call(_16,_1e,_20.rows[j]):"";
+var _22=_21?"style=\""+_21+"\"":"";
+var _23=_19.rowIdPrefix+"-"+(_18?1:2)+"-"+_1e;
+_1d.push("<tr id=\""+_23+"\" datagrid-row-index=\""+_1e+"\" "+cls+" "+_22+">");
+_1d.push(this.renderRow.call(this,_16,_1c,_18,_1e,_20.rows[j]));
+_1d.push("</tr>");
+_1e++;
 }
-_1b.push("</tbody></table>");
+_1d.push("</tbody></table>");
 }
-$(_15).html(_1b.join(""));
-},onAfterRender:function(_22){
-var _23=$.data(_22,"datagrid").options;
-var dc=$.data(_22,"datagrid").dc;
-var _24=dc.view;
-var _25=dc.view1;
-var _26=dc.view2;
-$.fn.datagrid.defaults.view.onAfterRender.call(this,_22);
-if(_23.rownumbers||_23.frozenColumns.length){
-var _27=_25.find("div.datagrid-group");
+$(_17).html(_1d.join(""));
+},onAfterRender:function(_24){
+var _25=$.data(_24,"datagrid").options;
+var dc=$.data(_24,"datagrid").dc;
+var _26=dc.view;
+var _27=dc.view1;
+var _28=dc.view2;
+$.fn.datagrid.defaults.view.onAfterRender.call(this,_24);
+if(_25.rownumbers||_25.frozenColumns.length){
+var _29=_27.find("div.datagrid-group");
 }else{
-var _27=_26.find("div.datagrid-group");
+var _29=_28.find("div.datagrid-group");
 }
-$("<td style=\"border:0\"><div class=\"datagrid-row-expander datagrid-row-collapse\" style=\"width:25px;height:16px;cursor:pointer\"></div></td>").insertBefore(_27.find("td"));
-_24.find("div.datagrid-group").each(function(){
-var _28=$(this).attr("group-index");
-$(this).find("div.datagrid-row-expander").bind("click",{groupIndex:_28},function(e){
+$("<td style=\"border:0;text-align:center;width:25px\"><span class=\"datagrid-row-expander datagrid-row-collapse\" style=\"display:inline-block;width:16px;height:16px;cursor:pointer\">&nbsp;</span></td>").insertBefore(_29.find("td"));
+_26.find("div.datagrid-group").each(function(){
+var _2a=$(this).attr("group-index");
+$(this).find("span.datagrid-row-expander").bind("click",{groupIndex:_2a},function(e){
 if($(this).hasClass("datagrid-row-collapse")){
-$(_22).datagrid("collapseGroup",e.data.groupIndex);
+$(_24).datagrid("collapseGroup",e.data.groupIndex);
 }else{
-$(_22).datagrid("expandGroup",e.data.groupIndex);
+$(_24).datagrid("expandGroup",e.data.groupIndex);
 }
 });
 });
-},onBeforeRender:function(_29,_2a){
-var _2b=$.data(_29,"datagrid").options;
-var _2c=[];
-for(var i=0;i<_2a.length;i++){
-var row=_2a[i];
-var _2d=_2e(row[_2b.groupField]);
-if(!_2d){
-_2d={fvalue:row[_2b.groupField],rows:[row],startRow:i};
-_2c.push(_2d);
-}else{
-_2d.rows.push(row);
-}
-}
-function _2e(_2f){
+},onBeforeRender:function(_2b,_2c){
+var _2d=$.data(_2b,"datagrid").options;
+var _2e=[];
 for(var i=0;i<_2c.length;i++){
-var _30=_2c[i];
-if(_30.fvalue==_2f){
-return _30;
+var row=_2c[i];
+var _2f=_30(row[_2d.groupField]);
+if(!_2f){
+_2f={fvalue:row[_2d.groupField],rows:[row],startRow:i};
+_2e.push(_2f);
+}else{
+_2f.rows.push(row);
+}
+}
+function _30(_31){
+for(var i=0;i<_2e.length;i++){
+var _32=_2e[i];
+if(_32.fvalue==_31){
+return _32;
 }
 }
 return null;
 };
-this.groups=_2c;
-var _31=[];
-for(var i=0;i<_2c.length;i++){
-var _2d=_2c[i];
-for(var j=0;j<_2d.rows.length;j++){
-_31.push(_2d.rows[j]);
+this.groups=_2e;
+var _33=[];
+for(var i=0;i<_2e.length;i++){
+var _2f=_2e[i];
+for(var j=0;j<_2f.rows.length;j++){
+_33.push(_2f.rows[j]);
 }
 }
-$.data(_29,"datagrid").data.rows=_31;
+$.data(_2b,"datagrid").data.rows=_33;
 }});
-$.extend($.fn.datagrid.methods,{expandGroup:function(jq,_32){
+$.extend($.fn.datagrid.methods,{expandGroup:function(jq,_34){
 return jq.each(function(){
-var _33=$.data(this,"datagrid").dc.view;
-if(_32!=undefined){
-var _34=_33.find("div.datagrid-group[group-index=\""+_32+"\"]");
+var _35=$.data(this,"datagrid").dc.view;
+if(_34!=undefined){
+var _36=_35.find("div.datagrid-group[group-index=\""+_34+"\"]");
 }else{
-var _34=_33.find("div.datagrid-group");
+var _36=_35.find("div.datagrid-group");
 }
-var _35=_34.find("div.datagrid-row-expander");
-if(_35.hasClass("datagrid-row-expand")){
-_35.removeClass("datagrid-row-expand").addClass("datagrid-row-collapse");
-_34.next("table").show();
+var _37=_36.find("span.datagrid-row-expander");
+if(_37.hasClass("datagrid-row-expand")){
+_37.removeClass("datagrid-row-expand").addClass("datagrid-row-collapse");
+_36.next("table").show();
 }
 $(this).datagrid("fixRowHeight");
 });
-},collapseGroup:function(jq,_36){
+},collapseGroup:function(jq,_38){
 return jq.each(function(){
-var _37=$.data(this,"datagrid").dc.view;
-if(_36!=undefined){
-var _38=_37.find("div.datagrid-group[group-index=\""+_36+"\"]");
+var _39=$.data(this,"datagrid").dc.view;
+if(_38!=undefined){
+var _3a=_39.find("div.datagrid-group[group-index=\""+_38+"\"]");
 }else{
-var _38=_37.find("div.datagrid-group");
+var _3a=_39.find("div.datagrid-group");
 }
-var _39=_38.find("div.datagrid-row-expander");
-if(_39.hasClass("datagrid-row-collapse")){
-_39.removeClass("datagrid-row-collapse").addClass("datagrid-row-expand");
-_38.next("table").hide();
+var _3b=_3a.find("span.datagrid-row-expander");
+if(_3b.hasClass("datagrid-row-collapse")){
+_3b.removeClass("datagrid-row-collapse").addClass("datagrid-row-expand");
+_3a.next("table").hide();
 }
 $(this).datagrid("fixRowHeight");
 });
 }});
-$.fn.propertygrid.defaults=$.extend({},$.fn.datagrid.defaults,{singleSelect:true,remoteSort:false,fitColumns:true,loadMsg:"",frozenColumns:[[{field:"f",width:16,resizable:false}]],columns:[[{field:"name",title:"Name",width:100,sortable:true},{field:"value",title:"Value",width:100,resizable:false}]],showGroup:false,groupField:"group",groupFormatter:function(_3a,_3b){
-return _3a;
+$.fn.propertygrid.defaults=$.extend({},$.fn.datagrid.defaults,{singleSelect:true,remoteSort:false,fitColumns:true,loadMsg:"",frozenColumns:[[{field:"f",width:16,resizable:false}]],columns:[[{field:"name",title:"Name",width:100,sortable:true},{field:"value",title:"Value",width:100,resizable:false}]],showGroup:false,groupField:"group",groupFormatter:function(_3c,_3d){
+return _3c;
 }});
 })(jQuery);
 

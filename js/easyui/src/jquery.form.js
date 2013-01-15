@@ -1,10 +1,12 @@
 /**
  * form - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  */
 (function($){
 	/**
@@ -13,8 +15,9 @@
 	function ajaxSubmit(target, options){
 		options = options || {};
 		
+		var param = {};
 		if (options.onSubmit){
-			if (options.onSubmit.call(target) == false) {
+			if (options.onSubmit.call(target, param) == false) {
 				return;
 			}
 		}
@@ -33,13 +36,20 @@
 				});
 		var t = form.attr('target'), a = form.attr('action');
 		form.attr('target', frameId);
+		
+		var paramFields = $();
 		try {
 			frame.appendTo('body');
 			frame.bind('load', cb);
+			for(var n in param){
+				var f = $('<input type="hidden" name="' + n + '">').val(param[n]).appendTo(form);
+				paramFields = paramFields.add(f);
+			}
 			form[0].submit();
 		} finally {
 			form.attr('action', a);
 			t ? form.attr('target', t) : form.removeAttr('target');
+			paramFields.remove();
 		}
 		
 		var checkCount = 10;
@@ -198,6 +208,20 @@
 		validate(target);
 	}
 	
+	function reset(target){
+		target.reset();
+		var t = $(target);
+		if ($.fn.combo){t.find('.combo-f').combo('reset');}
+		if ($.fn.combobox){t.find('.combobox-f').combobox('reset');}
+		if ($.fn.combotree){t.find('.combotree-f').combotree('reset');}
+		if ($.fn.combogrid){t.find('.combogrid-f').combogrid('reset');}
+		if ($.fn.spinner){t.find('.spinner-f').spinner('reset');}
+		if ($.fn.timespinner){t.find('.timespinner-f').timespinner('reset');}
+		if ($.fn.numberbox){t.find('.numberbox-f').numberbox('reset');}
+		if ($.fn.numberspinner){t.find('.numberspinner-f').numberspinner('reset');}
+		validate(target);
+	}
+	
 	/**
 	 * set the form to make it can submit with ajax.
 	 */
@@ -268,6 +292,11 @@
 				clear(this);
 			});
 		},
+		reset: function(jq){
+			return jq.each(function(){
+				reset(this);
+			});
+		},
 		validate: function(jq){
 			return validate(jq[0]);
 		}
@@ -275,7 +304,7 @@
 	
 	$.fn.form.defaults = {
 		url: null,
-		onSubmit: function(){return $(this).form('validate');},
+		onSubmit: function(param){return $(this).form('validate');},
 		success: function(data){},
 		onBeforeLoad: function(param){},
 		onLoadSuccess: function(data){},

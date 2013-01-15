@@ -1,26 +1,20 @@
 ﻿/**
- * jQuery EasyUI 1.3.1
+ * jQuery EasyUI 1.3.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
+ *
  */
 (function($){
 function _1(_2){
 var _3=$.data(_2,"accordion").options;
 var _4=$.data(_2,"accordion").panels;
 var cc=$(_2);
-if(_3.fit==true){
-var p=cc.parent();
-p.addClass("panel-noscroll");
-if(p[0].tagName=="BODY"){
-$("html").addClass("panel-fit");
-}
-_3.width=p.width();
-_3.height=p.height();
-}
+_3.fit?$.extend(_3,cc._fit()):cc._fit(false);
 if(_3.width>0){
 cc._outerWidth(_3.width);
 }

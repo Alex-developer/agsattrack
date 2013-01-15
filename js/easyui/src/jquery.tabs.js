@@ -1,10 +1,12 @@
 /**
  * tabs - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  *
  * Dependencies:
  * 	 panel
@@ -14,26 +16,13 @@
 (function($){
 	
 	/**
-	 * get the max tabs scroll width(scope)
-	 */
-	function getMaxScrollWidth(container) {
-		var header = $(container).children('div.tabs-header');
-		var tabsWidth = 0;	// all tabs width
-		$('ul.tabs li', header).each(function(){
-			tabsWidth += $(this).outerWidth(true);
-		});
-		var wrapWidth = header.children('div.tabs-wrap').width();
-		var padding = parseInt(header.find('ul.tabs').css('padding-left'));
-		
-		return tabsWidth - wrapWidth + padding;
-	}
-	
-	/**
 	 * set the tabs scrollers to show or not,
 	 * dependent on the tabs count and width
 	 */
 	function setScrollers(container) {
 		var opts = $.data(container, 'tabs').options;
+		if (opts.tabPosition == 'left' || opts.tabPosition == 'right'){return}
+		
 		var header = $(container).children('div.tabs-header');
 		var tool = header.children('div.tabs-tool');
 		var sLeft = header.children('div.tabs-scroller-left');
@@ -52,24 +41,52 @@
 		if (tabsWidth > cWidth) {
 			sLeft.show();
 			sRight.show();
-			tool.css('right', sRight.outerWidth());
-			wrap.css({
-				marginLeft: sLeft.outerWidth(),
-				marginRight: sRight.outerWidth() + tool._outerWidth(),
-				left: 0,
-				width: cWidth - sLeft.outerWidth() - sRight.outerWidth()
-			});
+			if (opts.toolPosition == 'left'){
+				tool.css({
+					left: sLeft.outerWidth(),
+					right: ''
+				});
+				wrap.css({
+					marginLeft: sLeft.outerWidth() + tool._outerWidth(),
+					marginRight: sRight._outerWidth(),
+					width: cWidth - sLeft.outerWidth() - sRight.outerWidth()
+				});
+			} else {
+				tool.css({
+					left: '',
+					right: sRight.outerWidth()
+				});
+				wrap.css({
+					marginLeft: sLeft.outerWidth(),
+					marginRight: sRight.outerWidth() + tool._outerWidth(),
+					width: cWidth - sLeft.outerWidth() - sRight.outerWidth()
+				});
+			}
 		} else {
 			sLeft.hide();
 			sRight.hide();
-			tool.css('right', 0);
-			wrap.css({
-				marginLeft:0,
-				marginRight:tool._outerWidth(),
-				left: 0,
-				width: cWidth
-			});
-			wrap.scrollLeft(0);
+			if (opts.toolPosition == 'left'){
+				tool.css({
+					left: 0,
+					right: ''
+				});
+				wrap.css({
+					marginLeft: tool._outerWidth(),
+					marginRight: 0,
+					width: cWidth
+				});
+			} else {
+				tool.css({
+					left: '',
+					right: 0
+				});
+				wrap.css({
+					marginLeft: 0,
+					marginRight: tool._outerWidth(),
+					width: cWidth
+				});
+			}
+//			wrap.scrollLeft(0);
 		}
 	}
 	
@@ -99,32 +116,48 @@
 	function setSize(container) {
 		var opts = $.data(container, 'tabs').options;
 		var cc = $(container);
-		if (opts.fit == true){
-			var p = cc.parent();
-			p.addClass('panel-noscroll');
-			if (p[0].tagName == 'BODY') $('html').addClass('panel-fit');
-			opts.width = p.width();
-			opts.height = p.height();
-		}
+		
+		opts.fit ? $.extend(opts, cc._fit()) : cc._fit(false);
+//		if (opts.fit == true){
+//			var p = cc.parent();
+//			p.addClass('panel-noscroll');
+//			if (p[0].tagName == 'BODY') $('html').addClass('panel-fit');
+//			opts.width = p.width();
+//			opts.height = p.height();
+//		}
 		cc.width(opts.width).height(opts.height);
 		
 		var header = $(container).children('div.tabs-header');
-		header._outerWidth(opts.width);
-		
-		setScrollers(container);
-		
 		var panels = $(container).children('div.tabs-panels');
-		var height = opts.height;
-		if (!isNaN(height)) {
-			panels._outerHeight(height - header.outerHeight());
+		
+		if (opts.tabPosition == 'left' || opts.tabPosition == 'right'){
+			header._outerWidth(opts.headerWidth);
+			panels._outerWidth(cc.width() - opts.headerWidth);
+			header.add(panels)._outerHeight(opts.height);
+			var wrap = header.find('div.tabs-wrap');
+			wrap._outerWidth(header.width());
+			header.find('.tabs')._outerWidth(wrap.width());
 		} else {
-			panels.height('auto');
-		}
-		var width = opts.width;
-		if (!isNaN(width)){
-			panels._outerWidth(width);
-		} else {
-			panels.width('auto');
+			header.css('height','');
+			header.find('div.tabs-wrap').css('width','');
+			header.find('.tabs').css('width','');
+			
+			header._outerWidth(opts.width);
+			
+			setScrollers(container);
+			
+			var height = opts.height;
+			if (!isNaN(height)) {
+				panels._outerHeight(height - header.outerHeight());
+			} else {
+				panels.height('auto');
+			}
+			var width = opts.width;
+			if (!isNaN(width)){
+				panels._outerWidth(width);
+			} else {
+				panels.width('auto');
+			}
 		}
 	}
 	
@@ -189,6 +222,23 @@
 		var header = $(container).children('div.tabs-header');
 		var panels = $(container).children('div.tabs-panels');
 		
+		header.removeClass('tabs-header-top tabs-header-bottom tabs-header-left tabs-header-right');
+		panels.removeClass('tabs-panels-top tabs-panels-bottom tabs-panels-left tabs-panels-right');
+		if (opts.tabPosition == 'top'){
+			header.insertBefore(panels);
+		}else if (opts.tabPosition == 'bottom'){
+			header.insertAfter(panels);
+			header.addClass('tabs-header-bottom');
+			panels.addClass('tabs-panels-top');
+		} else if (opts.tabPosition == 'left'){
+			header.addClass('tabs-header-left');
+			panels.addClass('tabs-panels-right');
+		} else if (opts.tabPosition == 'right'){
+			header.addClass('tabs-header-right');
+//			header.addClass('tabs-header-left tabs-header-right');
+			panels.addClass('tabs-panels-left');
+		}
+		
 		if (opts.plain == true) {
 			header.addClass('tabs-header-plain');
 		} else {
@@ -203,18 +253,11 @@
 		}
 		
 		$('.tabs-scroller-left', header).unbind('.tabs').bind('click.tabs', function(){
-			var wrap = $('.tabs-wrap', header);
-			var pos = wrap.scrollLeft() - opts.scrollIncrement;
-			wrap.animate({scrollLeft:pos}, opts.scrollDuration);
+			$(container).tabs('scrollBy', -opts.scrollIncrement);
 		});
 		
 		$('.tabs-scroller-right', header).unbind('.tabs').bind('click.tabs', function(){
-			var wrap = $('.tabs-wrap', header);
-			var pos = Math.min(
-					wrap.scrollLeft() + opts.scrollIncrement,
-					getMaxScrollWidth(container)
-			);
-			wrap.animate({scrollLeft:pos}, opts.scrollDuration);
+			$(container).tabs('scrollBy', opts.scrollIncrement);
 		});
 	}
 	
@@ -256,7 +299,11 @@
 			state.options.onContextMenu.call(container, e, $(this).find('span.tabs-title').html(), getTabIndex(container, e.data.p));
 		});
 		
-		updateTab(container, {
+//		updateTab(container, {
+//			tab: pp,
+//			options: opts
+//		});
+		$(container).tabs('update', {
 			tab: pp,
 			options: opts
 		});
@@ -491,22 +538,14 @@
 		tab.addClass('tabs-selected');
 		
 		// scroll the tab to center position if required.
-		var wrap = $(container).find('>div.tabs-header div.tabs-wrap');
-		var leftPos = tab.position().left + wrap.scrollLeft();
-		var left = leftPos - wrap.scrollLeft();
+		var wrap = $(container).find('>div.tabs-header>div.tabs-wrap');
+		var left = tab.position().left;
 		var right = left + tab.outerWidth();
-		if (left < 0 || right > wrap.innerWidth()) {
-			var pos = Math.min(
-					leftPos - (wrap.width()-tab.width()) / 2,
-					getMaxScrollWidth(container)
-			);
-			wrap.animate({scrollLeft:pos}, opts.scrollDuration);
+		if (left < 0 || right > wrap.width()){
+			var deltaX = left - (wrap.width()-tab.width()) / 2;
+			$(container).tabs('scrollBy', deltaX);
 		} else {
-			var pos = Math.min(
-					wrap.scrollLeft(),
-					getMaxScrollWidth(container)
-			);
-			wrap.animate({scrollLeft:pos}, opts.scrollDuration);
+			$(container).tabs('scrollBy', 0);
 		}
 		
 		setSelectedSize(container);
@@ -602,23 +641,43 @@
 			return jq.each(function(){
 				$(this).tabs('getTab', which).panel('options').tab.addClass('tabs-disabled');
 			});
+		},
+		scrollBy: function(jq, deltaX){	// scroll the tab header by the specified amount of pixels
+			return jq.each(function(){
+				var opts = $(this).tabs('options');
+				var wrap = $(this).find('>div.tabs-header>div.tabs-wrap');
+				var pos = Math.min(wrap._scrollLeft() + deltaX, getMaxScrollWidth());
+				wrap.animate({scrollLeft: pos}, opts.scrollDuration);
+				
+				function getMaxScrollWidth(){
+					var w = 0;
+					var ul = wrap.children('ul');
+					ul.children('li').each(function(){
+						w += $(this).outerWidth(true);
+					});
+					return w - wrap.width() + (ul.outerWidth() - ul.width());
+				}
+			});
 		}
 	};
 	
 	$.fn.tabs.parseOptions = function(target){
 		return $.extend({}, $.parser.parseOptions(target, [
-			'width','height','tools',
-			{fit:'boolean',border:'boolean',plain:'boolean'}
+			'width','height','tools','toolPosition','tabPosition',
+			{fit:'boolean',border:'boolean',plain:'boolean',headerWidth:'number'}
 		]));
 	};
 	
 	$.fn.tabs.defaults = {
 		width: 'auto',
 		height: 'auto',
+		headerWidth: 150,	// the tab header width, it is valid only when tabPosition set to 'left' or 'right' 
 		plain: false,
 		fit: false,
 		border: true,
 		tools: null,
+		toolPosition: 'right',	// left,right
+		tabPosition: 'top',		// possible values: top,bottom
 		scrollIncrement: 100,
 		scrollDuration: 400,
 		onLoad: function(panel){},

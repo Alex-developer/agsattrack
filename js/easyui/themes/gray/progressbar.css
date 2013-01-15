@@ -1,15 +1,30 @@
-.progressbar{
-	border:1px solid #D3D3D3;
-	border-radius:5px;
-	overflow:hidden;
+.progressbar {
+  border-width: 1px;
+  border-style: solid;
+  -moz-border-radius: 5px 5px 5px 5px;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+  overflow: hidden;
 }
-.progressbar-text{
-	text-align:center;
-	color:#3F3F3F;
-	position:absolute;
+.progressbar-text {
+  text-align: center;
+  position: absolute;
 }
-.progressbar-value{
-	background-color:#eee;
-	border-radius:5px 0 0 5px;
-	width:0;
+.progressbar-value {
+  position: relative;
+  overflow: hidden;
+  width: 0;
+  -moz-border-radius: 5px 0 0 5px;
+  -webkit-border-radius: 5px 0 0 5px;
+  border-radius: 5px 0 0 5px;
+}
+.progressbar {
+  border-color: #D3D3D3;
+}
+.progressbar-text {
+  color: #000000;
+}
+.progressbar-value .progressbar-text {
+  background-color: #0092DC;
+  color: #fff;
 }

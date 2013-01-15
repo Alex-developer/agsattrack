@@ -1,11 +1,13 @@
 ﻿/**
- * jQuery EasyUI 1.3.1
+ * jQuery EasyUI 1.3.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
+ *
  */
 (function($){
 function _1(a,o){
@@ -24,7 +26,7 @@ a.splice(_4,1);
 };
 function _5(_6){
 var _7=$.data(_6,"treegrid").options;
-$(_6).datagrid($.extend({},_7,{url:null,loader:function(){
+$(_6).datagrid($.extend({},_7,{url:null,data:null,loader:function(){
 return false;
 },onLoadSuccess:function(){
 },onResizeColumn:function(_8,_9){
@@ -554,9 +556,12 @@ var _aa=$.data(this,"treegrid");
 if(_aa){
 $.extend(_aa.options,_a7);
 }else{
-$.data(this,"treegrid",{options:$.extend({},$.fn.treegrid.defaults,$.fn.treegrid.parseOptions(this),_a7),data:[]});
+_aa=$.data(this,"treegrid",{options:$.extend({},$.fn.treegrid.defaults,$.fn.treegrid.parseOptions(this),_a7),data:[]});
 }
 _5(this);
+if(_aa.options.data){
+$(this).treegrid("loadData",_aa.options.data);
+}
 _20(this);
 _2d(this);
 });
@@ -607,14 +612,6 @@ _b1.view.onAfterRender.call(_b1.view,this);
 }
 $(this).treegrid("fixRowHeight");
 }
-});
-},loading:function(jq){
-return jq.each(function(){
-$(this).datagrid("loading");
-});
-},loaded:function(jq){
-return jq.each(function(){
-$(this).datagrid("loaded");
 });
 },getData:function(jq){
 return $.data(jq[0],"treegrid").data;
@@ -783,7 +780,9 @@ if(col.checkbox){
 var _d8="";
 }else{
 var _d8="";
-_d8+="text-align:"+(col.align||"left")+";";
+if(col.align){
+_d8+="text-align:"+col.align+";";
+}
 if(!_d5.nowrap){
 _d8+="white-space:normal;height:auto;";
 }else{
@@ -1017,7 +1016,8 @@ return (_102==1?dc.footer1:dc.footer2).find("tr[node-id]");
 }
 }
 }
-},getRow:function(_103,id){
+},getRow:function(_103,p){
+var id=(typeof p=="object")?p.attr("node-id"):p;
 return $(_103).treegrid("find",id);
 }},onBeforeLoad:function(row,_104){
 },onLoadSuccess:function(row,data){

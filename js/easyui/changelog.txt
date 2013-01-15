@@ -1,3 +1,38 @@
+Version 1.3.2
+-------------
+* Bug
+ * datagrid: The loading message window can not be centered when changing the width of datagrid. fixed.
+ * treegrid: The 'mergeCells' method can not work normally. fixed.
+ * propertygrid: Calling 'endEdit' method to stop editing a row will cause errors. fixed.
+ * tree: Can not load empty data when 'lines' property set to true. fixed.
+* Improvement
+ * RTL feature is supported now.
+ * tabs: Add 'scrollBy' method to scroll the tab header by the specified amount of pixels
+ * tabs: Add 'toolPosition' property to set tab tools to left or right.
+ * tabs: Add 'tabPosition' property to define the tab position, possible values are: 'top','bottom','left','right'.
+ * datagrid: Add a column level property 'order' that allows users to define different default sort order per column.
+ * datagrid: Add a column level property 'halign' that allows users to define how to align the column header.
+ * datagrid: Add 'resizeHandle' property to define the resizing column position, by grabbing the left or right edge of the column.
+ * datagrid: Add 'freezeRow' method to freeze some rows that will always be displayed at the top when the datagrid is scrolled down.
+ * datagrid: Add 'clearChecked' method to clear all checked records.
+ * datagrid: Add 'data' property to initialize the datagrid data.
+ * linkbutton: Add 'iconAlgin' property to define the icon position, supported values are: 'left','right'.
+ * menu: Add 'minWidth' property.
+ * menu: The menu width can be automatically calculated.
+ * tree: New events are available including 'onBeforeDrag','onStartDrag','onDragEnter','onDragOver','onDragLeave',etc.
+ * combo: Add 'height' property to allow users to define the height of combo.
+ * combo: Add 'reset' method.
+ * numberbox: Add 'reset' method.
+ * spinner: Add 'reset' method.
+ * spinner: Add 'height' property to allow users to define the height of spinner.
+ * searchbox: Add 'height' property to allow users to define the height of searchbox.
+ * form: Add 'reset' method.
+ * validatebox: Add 'delay' property to delay validating from the last inputting value.
+ * validatebox: Add 'tipPosition' property to define the tip position, supported values are: 'left','right'.
+ * validatebox: Multiple validate rules on a field is supported now.
+ * slider: Add 'reversed' property to determine if the min value and max value will switch their positions.
+ * progressbar: Add 'height' property to allow users to define the height of progressbar.
+
 Version 1.3.1
 -------------
 * Bug

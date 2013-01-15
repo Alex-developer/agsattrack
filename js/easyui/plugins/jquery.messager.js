@@ -1,11 +1,13 @@
 ﻿/**
- * jQuery EasyUI 1.3.1
+ * jQuery EasyUI 1.3.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
+ *
  */
 (function($){
 function _1(el,_2,_3,_4){
@@ -80,6 +82,7 @@ return false;
 _7(this,_d.showType,_d.showSpeed);
 return false;
 }},{title:"",width:250,height:100,showType:"slide",showSpeed:600,msg:"",timeout:4000},_c);
+_d.style.zIndex=$.fn.window.defaults.zIndex++;
 var _e=$("<div class=\"messager-body\"></div>").html(_d.msg).appendTo("body");
 _e.window(_d);
 _e.window("window").css(_d.style);
@@ -153,7 +156,7 @@ return false;
 var win=_f(_19,_1a,_1b);
 return win;
 },prompt:function(_1c,msg,fn){
-var _1d="<div class=\"messager-icon messager-question\"></div>"+"<div>"+msg+"</div>"+"<br/>"+"<input class=\"messager-input\" type=\"text\"/>"+"<div style=\"clear:both;\"/>";
+var _1d="<div class=\"messager-icon messager-question\"></div>"+"<div>"+msg+"</div>"+"<br/>"+"<div style=\"clear:both;\"/>"+"<div><input class=\"messager-input\" type=\"text\"/></div>";
 var _1e={};
 _1e[$.messager.defaults.ok]=function(){
 win.window("close");
@@ -176,7 +179,7 @@ return win;
 var _20={bar:function(){
 return $("body>div.messager-window").find("div.messager-p-bar");
 },close:function(){
-var win=$("body>div.messager-window>div.messager-body");
+var win=$("body>div.messager-window>div.messager-body:has(div.messager-progress)");
 if(win.length){
 win.window("close");
 }

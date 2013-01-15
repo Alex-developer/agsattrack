@@ -1,10 +1,12 @@
 /**
  * parser - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  * 
  */
 
@@ -139,6 +141,49 @@
 		});
 	};
 	
+	$.fn._scrollLeft = function(left){
+		if (left == undefined){
+			return this.scrollLeft();
+		} else {
+			return this.each(function(){$(this).scrollLeft(left)});
+		}
+	}
+	
 	$.fn._propAttr = $.fn.prop || $.fn.attr;
+	
+	/**
+	 * set or unset the fit property of parent container, return the width and height of parent container
+	 */
+	$.fn._fit = function(fit){
+		fit = fit == undefined ? true : fit;
+		var p = this.parent()[0];
+		var t = this[0];
+		var fcount = p.fcount || 0;
+		if (fit){
+			if (!t.fitted){
+				t.fitted = true;
+				p.fcount = fcount + 1;
+				$(p).addClass('panel-noscroll');
+				if (p.tagName == 'BODY'){
+					$('html').addClass('panel-fit');
+				}
+			}
+		} else {
+			if (t.fitted){
+				t.fitted = false;
+				p.fcount = fcount - 1;
+				if (p.fcount == 0){
+					$(p).removeClass('panel-noscroll');
+					if (p.tagName == 'BODY'){
+						$('html').removeClass('panel-fit');
+					}
+				}
+			}
+		}
+		return {
+			width: $(p).width(),
+			height: $(p).height()
+		}
+	}
 	
 })(jQuery);

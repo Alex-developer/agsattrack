@@ -1,10 +1,12 @@
 /**
  * calendar - jQuery EasyUI
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
+ * Licensed under the GPL or commercial licenses
+ * To use it on other terms please contact us: jeasyui@gmail.com
+ * http://www.gnu.org/licenses/gpl.txt
+ * http://www.jeasyui.com/license_commercial.php
  * 
  */
 (function($){
@@ -206,7 +208,8 @@
 		
 		// group date by week
 		var weeks = [], week = [];
-		var memoDay = 0;
+//		var memoDay = 0;
+		var memoDay = -1;
 		while(dates.length > 0){
 			var date = dates.shift();
 			week.push(date);
