@@ -227,6 +227,11 @@ var AGLISTVIEW = function() {
                     jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber});
                 }
             });           
-		}
+            jQuery('#sat-list-grid').datagrid({
+                onCheck: function(index,data){
+                    jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber});
+                }
+            });   
+        }
 	}
 }
