@@ -1229,6 +1229,10 @@ Copyright 2012 Alex Greenland
         this.illum = dat[7];
         this.mag = dat[10];
         
+        this.x = dat[11];
+        this.y = dat[12];
+        this.z = dat[13];
+     
         if (this.p === MOON) {
             var j;
             var ip, ag;
@@ -1453,7 +1457,7 @@ Copyright 2012 Alex Greenland
             break;
         }
         return new Array(altaz[0], altaz[1], altaz[2], ra, dec, lon, lat, k, r,
-                dist, mag);
+                dist, mag, dx, dy, dz);
     }
 
     
