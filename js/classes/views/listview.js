@@ -232,6 +232,15 @@ var AGLISTVIEW = function() {
                     jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber});
                 }
             });   
+        },
+        
+     tlesLoaded : function() {
+         var totalTles = AGSatTrack.getTles().getCount();
+         if (totalTles > 100) {
+                AGSETTINGS.setCalculateEvents(false);
+                jQuery('#list-view-show-events').setState(false);                  
+            }            
         }
+        
 	}
 }
