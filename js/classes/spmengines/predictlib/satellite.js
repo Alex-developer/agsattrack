@@ -135,11 +135,11 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             var aos = _satOrbit.FindAOS();
             
             if (aos !== 0.0) {
+                passData.orbitNumber = _satOrbit.rv;                
                 var los = _satOrbit.FindLOS2();
                 passData.orbit = [];
                 passData.aosTime = _satOrbit.Daynum2Date(aos);
                 passData.losTime = _satOrbit.Daynum2Date(los);
-                passData.orbitNumber = _satOrbit.orbitNumber;
                 
                 _satOrbit.doCalc(aos);
 
@@ -185,6 +185,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         _orbitrequested = false;
         var startDate = new Date();
         var orbitPoints = [];
+        var increment = 0.00035;
+        
+        increment = increment * 3;
         
         AGSatTrack.getUI().updateInfo('Calculating Orbit For ' + _sat.sat[0].name + ' Started');
         
@@ -210,14 +213,14 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         * Jump back to the end of the previous orbit
         */
         while (thisOrbit === _satOrbit.orbitNumber) {
-            time -= 0.0035;
+            time -= increment;
             _satOrbit.doCalc(time);
         }
         
         /**
         * Add a little time to get us back onto the right orbit
         */
-        time += 0.0035;
+        time += increment;
         _satOrbit.doCalc(time);
         
         /**
@@ -225,7 +228,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         */
         while (thisOrbit === _satOrbit.orbitNumber) {
             addPoint(time, orbitPoints);   
-            time += 0.00035;
+            time += increment;
         }
         
         /**
@@ -234,14 +237,15 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         */
         for (i=i;i<20;i++) {
             addPoint(time, orbitPoints);   
-            time += 0.00035;            
+            time += increment;            
         }                    
         _orbitAge = new Date();
         var endDate = new Date();
         
         orbit = {
             points: orbitPoints,
-            calcTime: endDate - startDate
+            calcTime: endDate - startDate,
+            orbitNumner: thisOrbit
         };
         AGSatTrack.getUI().updateInfo('Calculating Orbit Complete For ' + _sat.sat[0].name);
 

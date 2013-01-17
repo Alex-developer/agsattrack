@@ -1579,8 +1579,8 @@ var PLib =
             PLib.fk = 12756.33 * Math.acos(PLib.xkmper / (PLib.xkmper + PLib.sat_alt));
             PLib.fm = PLib.fk / 1.609344;
         
-            PLib.rv = Math.floor((PLib.tle.xno * PLib.xmnpda / PLib.twopi + PLib.age * PLib.tle.bstar * PLib.ae) * PLib.age + PLib.tle.xmo / PLib.twopi) + parseInt(PLib.tle.revnum);
-        
+            PLib.rv = Math.floor((PLib.tle.xno * PLib.xmnpda / PLib.twopi + PLib.age * PLib.tle.bstar * PLib.ae) * PLib.age + PLib.tle.xmo / PLib.twopi) + parseInt(PLib.tle.revnum)-1;                              
+                              
             PLib.sun_azi = PLib.Degrees(solar_set.x);
             PLib.sun_ele = PLib.Degrees(solar_set.y);
         
@@ -1859,7 +1859,8 @@ var PLib =
             var arrIdx = 0;
             var x = 0, y = 0, z = 0, lastel = 0;
             var start = 0, now = 0;
-
+            var orbitNumber = 0;
+            
             var startTime, endTime;
             
             for (z = 0; z < PLib.sat.length; z++)
@@ -1885,6 +1886,8 @@ var PLib =
                         startTime = new Date();
                         PLib.daynum = PLib.FindAOS();
 
+                        orbitNumber = PLib.rv;
+                        
                         while (PLib.Daynum2Date(PLib.daynum) < PLib.addDay(d) || satInfoColl.length > 50)
                         {
                             var satInfo = new Object();
@@ -1908,6 +1911,7 @@ var PLib =
                                 = satInfo.peakRange
                                 = PLib.irk;
                             satInfo.orbitNumber = PLib.rv;
+
 
                             var plusCount = 0;
                             var asteriskCount = 0;
@@ -1940,7 +1944,8 @@ var PLib =
                             satInfo.dateTimeEnd = PLib.Daynum2Date(PLib.daynum);
                             satInfo.decayAzimuth = PLib.iaz;
                             satInfo.decayRange = PLib.irk;
-
+satInfo.orbitNumber = PLib.rv;
+debugger;
                             if ((plusCount > 3) || (plusCount > 2 && asteriskCount > 2))
                             {
                                 satInfo.visibility = '+';

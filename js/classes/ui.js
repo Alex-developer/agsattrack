@@ -44,7 +44,8 @@ var AGUI = function() {
         });
     }
    
-    
+
+            
     var source =
     {
         datatype: "json",
@@ -302,6 +303,7 @@ var AGUI = function() {
         jQuery('#longitude').html(AGUTIL.convertDecDegLon(satellite.get('longitude')));
         jQuery('#altitude').html(satellite.get('altitude').toFixed(3));
         jQuery('#visible').html(satellite.get('visibility'));
+        jQuery('#orbitnumber').html(satellite.get('orbitnumber'));
         jQuery('#velocity').html(satellite.get('velocity').toFixed(3));
         jQuery('#range').html(satellite.get('range').toFixed(3));
         jQuery('#doppler').html(satellite.get('dopplershift').toFixed(0));

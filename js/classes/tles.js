@@ -132,11 +132,14 @@ var AGTLES = function() {
 		},
 		
 		calcAll: function(date, observer) {
+            AGSatTrack.getUI().updateStatus('Updating All Satellites ...');
 			for (var i=0; i < satellites.length; i++) {
+
 				if (satellites[i].isDisplaying()) {
 					satellites[i].calc(date, observer);
 				}
 			}
+            AGSatTrack.getUI().updateStatus('Idle');
 		},
 		
         resetAll : function() {

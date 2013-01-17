@@ -24,6 +24,7 @@ var AG3DVIEW = function(element) {
     var observerBillboards = null;
     var _render = false;
     var satBillboards = null;
+    var planetsBillboards = null;
     var _satNameLabels = null;
     var gridRefresh = 1;
     var gridRefreshCounter = 0
@@ -317,12 +318,12 @@ var AG3DVIEW = function(element) {
             }
         }());
     }
-
+    
     function createSatelliteLabels() {
         var satellites = AGSatTrack.getSatellites();
         var now = new Cesium.JulianDate();        
         var cpos;
-                
+
         _satNameLabels.removeAll();
         if (_showSatLabels) {     
             _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
@@ -584,7 +585,9 @@ var AG3DVIEW = function(element) {
             } else {
                 var pass = sat.getNextPass();
                 plotLine(orbit.points, Cesium.Color.RED, passLines, 1);
-                plotLine(pass.pass, Cesium.Color.GREEN, passLines, 5);
+                if (parseInt(sat.get('orbitnumber')) === parseInt(pass.orbitNumber)) {
+                    plotLine(pass.pass, Cesium.Color.GREEN, passLines, 5);
+                }
             }
         }
         
@@ -656,6 +659,7 @@ var AG3DVIEW = function(element) {
         cb = new Cesium.CentralBody(ellipsoid);
         observerBillboards = new Cesium.BillboardCollection();
         satBillboards = new Cesium.BillboardCollection();
+        planetsBillboards = new Cesium.BillboardCollection();
         orbitLines = new Cesium.PolylineCollection();;
         passLines = new Cesium.PolylineCollection();;
         footprintCircle = new Cesium.PolylineCollection();
@@ -727,6 +731,7 @@ var AG3DVIEW = function(element) {
         scene.getPrimitives().add(passLines);
         scene.getPrimitives().add(footprintCircle);
         scene.getPrimitives().add(_labels);
+        scene.getPrimitives().add(planetsBillboards);
         
         jQuery(window).trigger('resize');
     }

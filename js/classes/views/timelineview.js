@@ -53,14 +53,14 @@ var AGTIMELINE = function() {
             height = parent.height();
         }
         
-        var stageWidth = _fixedStageWidth + _viewLeftMargin;
+        var stageWidth = _fixedStageWidth + _viewLeftMargin-20;
         
         if (width !== 0 && height !== 0) {
             
             jQuery('#timelinelegend').width(200);
             jQuery('#timelinelegend').height(height+25);
 
-            jQuery('#timelineview').width(width - 210);
+            jQuery('#timelineview').width(width - 220);
             jQuery('#timelineview').height(height);
                         
             _viewStage.setSize(stageWidth, height-25);
