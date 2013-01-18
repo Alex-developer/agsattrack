@@ -5673,6 +5673,7 @@ define('Core/Matrix3',[
      * @see Matrix3.fromRowMajorArray
      * @see Matrix3.fromQuaternion
      * @see Matrix3.fromScale
+     * @see Matrix3.fromUniformScale
      * @see Matrix2
      * @see Matrix4
      */
@@ -5840,22 +5841,192 @@ define('Core/Matrix3',[
             throw new DeveloperError('scale is required.');
         }
         if (typeof result === 'undefined') {
-            return new Matrix3(scale.x, 0.0,     0.0,
-                               0.0,     scale.y, 0.0,
-                               0.0,     0.0,     scale.z);
+            return new Matrix3(
+                scale.x, 0.0,     0.0,
+                0.0,     scale.y, 0.0,
+                0.0,     0.0,     scale.z);
         }
 
         result[0] = scale.x;
         result[1] = 0.0;
         result[2] = 0.0;
-
         result[3] = 0.0;
         result[4] = scale.y;
         result[5] = 0.0;
-
         result[6] = 0.0;
         result[7] = 0.0;
         result[8] = scale.z;
+        return result;
+    };
+
+    /**
+     * Computes a Matrix3 instance representing a uniform scale.
+     * @memberof Matrix3
+     *
+     * @param {Number} scale The uniform scale factor.
+     * @param {Matrix3} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns The modified result parameter, or a new Matrix3 instance if one was not provided.
+     *
+     * @exception {DeveloperError} scale is required.
+     *
+     * @example
+     * // Creates
+     * //   [2.0, 0.0, 0.0]
+     * //   [0.0, 2.0, 0.0]
+     * //   [0.0, 0.0, 2.0]
+     * var m = Matrix3.fromUniformScale(2.0);
+     */
+    Matrix3.fromUniformScale = function(scale, result) {
+        if (typeof scale !== 'number') {
+            throw new DeveloperError('scale is required.');
+        }
+        if (typeof result === 'undefined') {
+            return new Matrix3(
+                scale, 0.0,   0.0,
+                0.0,   scale, 0.0,
+                0.0,   0.0,   scale);
+        }
+
+        result[0] = scale;
+        result[1] = 0.0;
+        result[2] = 0.0;
+        result[3] = 0.0;
+        result[4] = scale;
+        result[5] = 0.0;
+        result[6] = 0.0;
+        result[7] = 0.0;
+        result[8] = scale;
+        return result;
+    };
+
+    /**
+     * Creates a rotation matrix around the x-axis.
+     *
+     * @param {Number} angle The angle, in radians, of the rotation.  Positive angles are counterclockwise.
+     * @param {Matrix3} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     *
+     * @returns The modified result parameter, or a new Matrix3 instance if one was not provided.
+     *
+     * @exception {DeveloperError} angle is required.
+     *
+     * @example
+     * // Rotate a point 45 degrees counterclockwise around the x-axis.
+     * var p = new Cartesian3(5, 6, 7);
+     * var m = Matrix3.fromRotationX(CesiumMath.toRadians(45.0));
+     * var rotated = m.multiplyByVector(p);
+     */
+    Matrix3.fromRotationX = function(angle, result) {
+        if (typeof angle === 'undefined') {
+            throw new DeveloperError('angle is required.');
+        }
+
+        var cosAngle = Math.cos(angle);
+        var sinAngle = Math.sin(angle);
+
+        if (typeof result === 'undefined') {
+            return new Matrix3(
+                1.0, 0.0, 0.0,
+                0.0, cosAngle, -sinAngle,
+                0.0, sinAngle, cosAngle);
+        }
+
+        result[0] = 1.0;
+        result[1] = 0.0;
+        result[2] = 0.0;
+        result[3] = 0.0;
+        result[4] = cosAngle;
+        result[5] = sinAngle;
+        result[6] = 0.0;
+        result[7] = -sinAngle;
+        result[8] = cosAngle;
+
+        return result;
+    };
+
+    /**
+     * Creates a rotation matrix around the y-axis.
+     *
+     * @param {Number} angle The angle, in radians, of the rotation.  Positive angles are counterclockwise.
+     * @param {Matrix3} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     *
+     * @returns The modified result parameter, or a new Matrix3 instance if one was not provided.
+     *
+     * @exception {DeveloperError} angle is required.
+     *
+     * @example
+     * // Rotate a point 45 degrees counterclockwise around the y-axis.
+     * var p = new Cartesian3(5, 6, 7);
+     * var m = Matrix3.fromRotationY(CesiumMath.toRadians(45.0));
+     * var rotated = m.multiplyByVector(p);
+     */
+    Matrix3.fromRotationY = function(angle, result) {
+        if (typeof angle === 'undefined') {
+            throw new DeveloperError('angle is required.');
+        }
+
+        var cosAngle = Math.cos(angle);
+        var sinAngle = Math.sin(angle);
+
+        if (typeof result === 'undefined') {
+            return new Matrix3(
+                cosAngle, 0.0, sinAngle,
+                0.0, 1.0, 0.0,
+                -sinAngle, 0.0, cosAngle);
+        }
+
+        result[0] = cosAngle;
+        result[1] = 0.0;
+        result[2] = -sinAngle;
+        result[3] = 0.0;
+        result[4] = 1.0;
+        result[5] = 0.0;
+        result[6] = sinAngle;
+        result[7] = 0.0;
+        result[8] = cosAngle;
+
+        return result;
+    };
+
+    /**
+     * Creates a rotation matrix around the z-axis.
+     *
+     * @param {Number} angle The angle, in radians, of the rotation.  Positive angles are counterclockwise.
+     * @param {Matrix3} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     *
+     * @returns The modified result parameter, or a new Matrix3 instance if one was not provided.
+     *
+     * @exception {DeveloperError} angle is required.
+     *
+     * @example
+     * // Rotate a point 45 degrees counterclockwise around the z-axis.
+     * var p = new Cartesian3(5, 6, 7);
+     * var m = Matrix3.fromRotationZ(CesiumMath.toRadians(45.0));
+     * var rotated = m.multiplyByVector(p);
+     */
+    Matrix3.fromRotationZ = function(angle, result) {
+        if (typeof angle === 'undefined') {
+            throw new DeveloperError('angle is required.');
+        }
+
+        var cosAngle = Math.cos(angle);
+        var sinAngle = Math.sin(angle);
+
+        if (typeof result === 'undefined') {
+            return new Matrix3(
+                cosAngle, -sinAngle, 0.0,
+                sinAngle, cosAngle, 0.0,
+                0.0, 0.0, 1.0);
+        }
+
+        result[0] = cosAngle;
+        result[1] = sinAngle;
+        result[2] = 0.0;
+        result[3] = -sinAngle;
+        result[4] = cosAngle;
+        result[5] = 0.0;
+        result[6] = 0.0;
+        result[7] = 0.0;
+        result[8] = 1.0;
 
         return result;
     };
@@ -6677,6 +6848,7 @@ define('Core/Matrix4',[
      * @see Matrix4.fromRotationTranslation
      * @see Matrix4.fromTranslation
      * @see Matrix4.fromScale
+     * @see Matrix4.fromUniformScale
      * @see Matrix4.fromCamera
      * @see Matrix4.computePerspectiveFieldOfView
      * @see Matrix4.computeOrthographicOffCenter
@@ -6885,10 +7057,11 @@ define('Core/Matrix4',[
             throw new DeveloperError('scale is required.');
         }
         if (typeof result === 'undefined') {
-            return new Matrix4(scale.x, 0.0,     0.0,     0.0,
-                               0.0,     scale.y, 0.0,     0.0,
-                               0.0,     0.0,     scale.z, 0.0,
-                               0.0,     0.0,     0.0,     1.0);
+            return new Matrix4(
+                scale.x, 0.0,     0.0,     0.0,
+                0.0,     scale.y, 0.0,     0.0,
+                0.0,     0.0,     scale.z, 0.0,
+                0.0,     0.0,     0.0,     1.0);
         }
 
         result[0] = scale.x;
@@ -6902,6 +7075,54 @@ define('Core/Matrix4',[
         result[8] = 0.0;
         result[9] = 0.0;
         result[10] = scale.z;
+        result[11] = 0.0;
+        result[12] = 0.0;
+        result[13] = 0.0;
+        result[14] = 0.0;
+        result[15] = 1.0;
+        return result;
+    };
+
+    /**
+     * Computes a Matrix4 instance representing a uniform scale.
+     * @memberof Matrix4
+     *
+     * @param {Number} scale The uniform scale factor.
+     * @param {Matrix4} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns The modified result parameter, or a new Matrix4 instance if one was not provided.
+     *
+     * @exception {DeveloperError} scale is required.
+     *
+     * @example
+     * // Creates
+     * //   [2.0, 0.0, 0.0, 0.0]
+     * //   [0.0, 2.0, 0.0, 0.0]
+     * //   [0.0, 0.0, 2.0, 0.0]
+     * //   [0.0, 0.0, 0.0, 1.0]
+     * var m = Matrix4.fromScale(2.0);
+     */
+    Matrix4.fromUniformScale = function(scale, result) {
+        if (typeof scale !== 'number') {
+            throw new DeveloperError('scale is required.');
+        }
+        if (typeof result === 'undefined') {
+            return new Matrix4(scale, 0.0,   0.0,   0.0,
+                               0.0,   scale, 0.0,   0.0,
+                               0.0,   0.0,   scale, 0.0,
+                               0.0,   0.0,   0.0,   1.0);
+        }
+
+        result[0] = scale;
+        result[1] = 0.0;
+        result[2] = 0.0;
+        result[3] = 0.0;
+        result[4] = 0.0;
+        result[5] = scale;
+        result[6] = 0.0;
+        result[7] = 0.0;
+        result[8] = 0.0;
+        result[9] = 0.0;
+        result[10] = scale;
         result[11] = 0.0;
         result[12] = 0.0;
         result[13] = 0.0;
@@ -7696,7 +7917,7 @@ define('Core/Matrix4',[
      * @exception {DeveloperError} matrix is required.
      * @exception {DeveloperError} translation is required.
      *
-     * @see Matrix.#fromTranslation
+     * @see Matrix4#fromTranslation
      *
      * @example
      * // Instead of Matrix4.multiply(m, Matrix4.fromTranslation(position), m);
@@ -7741,6 +7962,67 @@ define('Core/Matrix4',[
         result[13] = ty;
         result[14] = tz;
         result[15] = matrix[15];
+        return result;
+    };
+
+    /**
+     * Multiplies a transformation matrix (with a bottom row of <code>[0.0, 0.0, 0.0, 1.0]</code>)
+     * by an implicit uniform scale matrix.  This is an optimization
+     * for <code>Matrix4.multiply(m, Matrix4.fromScale(scale), m);</code> with less allocations and arithmetic operations.
+     *
+     * @memberof Matrix4
+     *
+     * @param {Matrix4} matrix The matrix on the left-hand side.
+     * @param {Number} scale The uniform scale on the right-hand side.
+     * @param {Matrix4} [result] The object onto which to store the result.
+     *
+     * @return {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
+     *
+     * @exception {DeveloperError} matrix is required.
+     * @exception {DeveloperError} scale is required.
+     *
+     * @see Matrix4#fromUniformScale
+     *
+     * @example
+     * // Instead of Matrix4.multiply(m, Matrix4.fromUniformScale(scale), m);
+     * Matrix4.multiplyByUniformScale(m, scale, m);
+     */
+    Matrix4.multiplyByUniformScale = function(matrix, scale, result) {
+        if (typeof matrix === 'undefined') {
+            throw new DeveloperError('matrix is required');
+        }
+        if (typeof scale !== 'number') {
+            throw new DeveloperError('scale is required');
+        }
+
+        if (scale === 1.0) {
+            return Matrix4.clone(matrix, result);
+        }
+
+        if (typeof result === 'undefined') {
+            return new Matrix4(
+                scale * matrix[0], scale * matrix[4], scale * matrix[8],  matrix[12],
+                scale * matrix[1], scale * matrix[5], scale * matrix[9],  matrix[13],
+                scale * matrix[2], scale * matrix[6], scale * matrix[10], matrix[14],
+                0.0,               0.0,               0.0,                1.0);
+        }
+
+        result[0] = scale * matrix[0];
+        result[1] = scale * matrix[1];
+        result[2] = scale * matrix[2];
+        result[3] = 0.0;
+        result[4] = scale * matrix[4];
+        result[5] = scale * matrix[5];
+        result[6] = scale * matrix[6];
+        result[7] = 0.0;
+        result[8] = scale * matrix[8];
+        result[9] = scale * matrix[9];
+        result[10] = scale * matrix[10];
+        result[11] = 0.0;
+        result[12] = matrix[12];
+        result[13] = matrix[13];
+        result[14] = matrix[14];
+        result[15] = 1.0;
         return result;
     };
 
@@ -8492,6 +8774,23 @@ define('Core/Matrix4',[
      */
     Matrix4.prototype.multiplyByTranslation = function(translation, result) {
         return Matrix4.multiplyByTranslation(this, translation, result);
+    };
+
+    /**
+     * Multiplies this matrix, assuming it is a transformation matrix (with a bottom row of
+     * <code>[0.0, 0.0, 0.0, 1.0]</code>), by an implicit uniform scale matrix.
+     *
+     * @memberof Matrix4
+     *
+     * @param {Number} scale The scale on the right-hand side of the multiplication.
+     * @param {Matrix4} [result] The object onto which to store the result.
+     *
+     * @return {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
+     *
+     * @exception {DeveloperError} scale is required.
+     */
+    Matrix4.prototype.multiplyByUniformScale = function(scale, result) {
+        return Matrix4.multiplyByUniformScale(this, scale, result);
     };
 
     /**
@@ -16272,7 +16571,38 @@ define('Core/EncodedCartesian3',[
         this.low = Cartesian3.ZERO.clone();
     };
 
-    function spilt(value, result) {
+    /**
+     * Encodes a 64-bit floating-point value as two floating-point values that, when converted to
+     * 32-bit floating-point and added, approximate the original input.  The returned object
+     * has <code>high</code> and <code>low</code> properties for the high and low bits, respectively.
+     * <p>
+     * The fixed-point encoding follows <a href="http://blogs.agi.com/insight3d/index.php/2008/09/03/precisions-precisions/">Precisions, Precisions</a>.
+     * </p>
+     * @memberof EncodedCartesian3
+     *
+     * @param {Number} value The floating-point value to encode.
+     * @param {Object} [result] The object onto which to store the result.
+     *
+     * @return {Object} The modified result parameter or a new instance if one was not provided.
+     *
+     * @exception {DeveloperError} value is required.
+     *
+     * @example
+     * var value = 1234567.1234567;
+     * var splitValue = EncodedCartesian3.encode(value);
+     */
+    EncodedCartesian3.encode = function(value, result) {
+        if (typeof value === 'undefined') {
+            throw new DeveloperError('value is required');
+        }
+
+        if (typeof result === 'undefined') {
+            result = {
+                high : 0.0,
+                low : 0.0
+            };
+        }
+
         var doubleHigh;
         if (value >= 0.0) {
             doubleHigh = Math.floor(value / 65536.0) * 65536.0;
@@ -16283,11 +16613,13 @@ define('Core/EncodedCartesian3',[
             result.high = -doubleHigh;
             result.low = value + doubleHigh;
         }
-    }
 
-    var scratchSpilt = function() {
-        this.high = 0.0;
-        this.low = 0.0;
+        return result;
+    };
+
+    var scratchEncode = {
+        high : 0.0,
+        low : 0.0
     };
 
     /**
@@ -16320,17 +16652,17 @@ define('Core/EncodedCartesian3',[
         var high = result.high;
         var low = result.low;
 
-        spilt(cartesian.x, scratchSpilt);
-        high.x = scratchSpilt.high;
-        low.x = scratchSpilt.low;
+        EncodedCartesian3.encode(cartesian.x, scratchEncode);
+        high.x = scratchEncode.high;
+        low.x = scratchEncode.low;
 
-        spilt(cartesian.y, scratchSpilt);
-        high.y = scratchSpilt.high;
-        low.y = scratchSpilt.low;
+        EncodedCartesian3.encode(cartesian.y, scratchEncode);
+        high.y = scratchEncode.high;
+        low.y = scratchEncode.low;
 
-        spilt(cartesian.z, scratchSpilt);
-        high.z = scratchSpilt.high;
-        low.z = scratchSpilt.low;
+        EncodedCartesian3.encode(cartesian.z, scratchEncode);
+        high.z = scratchEncode.high;
+        low.z = scratchEncode.low;
 
         return result;
     };
@@ -18087,6 +18419,8 @@ define('Core/Matrix2',[
      *
      * @see Matrix2.fromColumnMajor
      * @see Matrix2.fromRowMajorArray
+     * @see Matrix2.fromScale
+     * @see Matrix2.fromUniformScale
      * @see Matrix3
      * @see Matrix4
      */
@@ -18158,6 +18492,108 @@ define('Core/Matrix2',[
         result[1] = values[2];
         result[2] = values[1];
         result[3] = values[3];
+        return result;
+    };
+
+    /**
+     * Computes a Matrix2 instance representing a non-uniform scale.
+     * @memberof Matrix2
+     *
+     * @param {Cartesian2} scale The x and y scale factors.
+     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns The modified result parameter, or a new Matrix2 instance if one was not provided.
+     *
+     * @exception {DeveloperError} scale is required.
+     *
+     * @example
+     * // Creates
+     * //   [7.0, 0.0]
+     * //   [0.0, 8.0]
+     * var m = Matrix2.fromScale(new Cartesian2(7.0, 8.0));
+     */
+    Matrix2.fromScale = function(scale, result) {
+        if (typeof scale === 'undefined') {
+            throw new DeveloperError('scale is required.');
+        }
+        if (typeof result === 'undefined') {
+            return new Matrix2(
+                scale.x, 0.0,
+                0.0,     scale.y);
+        }
+
+        result[0] = scale.x;
+        result[1] = 0.0;
+        result[2] = 0.0;
+        result[3] = scale.y;
+        return result;
+    };
+
+    /**
+     * Computes a Matrix2 instance representing a uniform scale.
+     * @memberof Matrix2
+     *
+     * @param {Number} scale The uniform scale factor.
+     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns The modified result parameter, or a new Matrix2 instance if one was not provided.
+     *
+     * @exception {DeveloperError} scale is required.
+     *
+     * @example
+     * // Creates
+     * //   [2.0, 0.0]
+     * //   [0.0, 2.0]
+     * var m = Matrix2.fromUniformScale(2.0);
+     */
+    Matrix2.fromUniformScale = function(scale, result) {
+        if (typeof scale !== 'number') {
+            throw new DeveloperError('scale is required.');
+        }
+        if (typeof result === 'undefined') {
+            return new Matrix2(
+                scale, 0.0,
+                0.0,   scale);
+        }
+
+        result[0] = scale;
+        result[1] = 0.0;
+        result[2] = 0.0;
+        result[3] = scale;
+        return result;
+    };
+
+    /**
+     * Creates a rotation matrix.
+     *
+     * @param {Number} angle The angle, in radians, of the rotation.  Positive angles are counterclockwise.
+     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     *
+     * @returns The modified result parameter, or a new Matrix2 instance if one was not provided.
+     *
+     * @exception {DeveloperError} angle is required.
+     *
+     * @example
+     * // Rotate a point 45 degrees counterclockwise.
+     * var p = new Cartesian2(5, 6);
+     * var m = Matrix2.fromRotation(CesiumMath.toRadians(45.0));
+     * var rotated = m.multiplyByVector(p);
+     */
+    Matrix2.fromRotation = function(angle, result) {
+        if (typeof angle === 'undefined') {
+            throw new DeveloperError('angle is required.');
+        }
+
+        var cosAngle = Math.cos(angle);
+        var sinAngle = Math.sin(angle);
+
+        if (typeof result === 'undefined') {
+            return new Matrix2(
+                cosAngle, -sinAngle,
+                sinAngle, cosAngle);
+        }
+        result[0] = cosAngle;
+        result[1] = sinAngle;
+        result[2] = -sinAngle;
+        result[3] = cosAngle;
         return result;
     };
 
@@ -19079,15 +19515,19 @@ define('Core/Tipsify',['./DeveloperError'], function(DeveloperError) {
 
 /*global define*/
 define('Core/MeshFilters',[
+        './defaultValue',
         './DeveloperError',
         './Cartesian3',
+        './EncodedCartesian3',
         './GeographicProjection',
         './ComponentDatatype',
         './PrimitiveType',
         './Tipsify'
     ], function(
+        defaultValue,
         DeveloperError,
         Cartesian3,
+        EncodedCartesian3,
         GeographicProjection,
         ComponentDatatype,
         PrimitiveType,
@@ -19415,7 +19855,7 @@ define('Core/MeshFilters',[
         return newAttributes;
     };
 
-    MeshFilters._copyVertex = function(destinationAttributes, sourceAttributes, index) {
+    function copyVertex(destinationAttributes, sourceAttributes, index) {
         for ( var attribute in sourceAttributes) {
             if (sourceAttributes.hasOwnProperty(attribute) && sourceAttributes[attribute].values) {
                 var attr = sourceAttributes[attribute];
@@ -19425,7 +19865,7 @@ define('Core/MeshFilters',[
                 }
             }
         }
-    };
+    }
 
     /**
      * DOC_TBA.  Old mesh is not guaranteed to be copied.
@@ -19481,7 +19921,7 @@ define('Core/MeshFilters',[
                             i0 = currentIndex++;
                             oldToNewIndex[x0] = i0;
 
-                            MeshFilters._copyVertex(newAttributes, mesh.attributes, x0);
+                            copyVertex(newAttributes, mesh.attributes, x0);
                         }
 
                         var i1 = oldToNewIndex[x1];
@@ -19489,7 +19929,7 @@ define('Core/MeshFilters',[
                             i1 = currentIndex++;
                             oldToNewIndex[x1] = i1;
 
-                            MeshFilters._copyVertex(newAttributes, mesh.attributes, x1);
+                            copyVertex(newAttributes, mesh.attributes, x1);
                         }
 
                         var i2 = oldToNewIndex[x2];
@@ -19497,7 +19937,7 @@ define('Core/MeshFilters',[
                             i2 = currentIndex++;
                             oldToNewIndex[x2] = i2;
 
-                            MeshFilters._copyVertex(newAttributes, mesh.attributes, x2);
+                            copyVertex(newAttributes, mesh.attributes, x2);
                         }
 
                         newIndices.push(i0);
@@ -19528,8 +19968,6 @@ define('Core/MeshFilters',[
         return meshes;
     };
 
-    ///////////////////////////////////////////////////////////////////////////
-
     /**
      * DOC_TBA
      */
@@ -19559,6 +19997,84 @@ define('Core/MeshFilters',[
             };
             delete mesh.attributes.position;
         }
+
+        return mesh;
+    };
+
+    var encodedResult = {
+        high : 0.0,
+        low : 0.0
+    };
+
+    /**
+     * Encodes floating-point mesh attribute values as two separate attributes to improve
+     * rendering precision using the same encoding as {@link EncodedCartesian3}.
+     * <p>
+     * This is commonly used to create high-precision position vertex attributes.
+     * </p>
+     *
+     * @param {Object} mesh The mesh to filter, which is modified in place.
+     * @param {String} [attributeName='position'] The name of the attribute.
+     * @param {String} [attributeHighName='positionHigh'] The name of the attribute for the encoded high bits.
+     * @param {String} [attributeLowName='positionLow'] The name of the attribute for the encoded low bits.
+     *
+     * @returns The modified <code>mesh</code> argument, with its encoded attribute.
+     *
+     * @exception {DeveloperError} mesh is required.
+     * @exception {DeveloperError} mesh must have an attributes property.
+     * @exception {DeveloperError} mesh must have attribute matching the attributeName argument.
+     * @exception {DeveloperError} The attribute componentDatatype must be ComponentDatatype.FLOAT.
+     *
+     * @example
+     * mesh = MeshFilters.encodeAttribute(mesh, 'position3D', 'position3DHigh', 'position3DLow');
+     *
+     * @see EncodedCartesian3
+     */
+    MeshFilters.encodeAttribute = function(mesh, attributeName, attributeHighName, attributeLowName) {
+        attributeName = defaultValue(attributeName, 'position');
+        attributeHighName = defaultValue(attributeHighName, 'positionHigh');
+        attributeLowName = defaultValue(attributeLowName, 'positionLow');
+
+        if (typeof mesh === 'undefined') {
+            throw new DeveloperError('mesh is required.');
+        }
+
+        if (typeof mesh.attributes === 'undefined') {
+            throw new DeveloperError('mesh must have an attributes property.');
+        }
+
+        var attribute = mesh.attributes[attributeName];
+
+        if (typeof attribute === 'undefined') {
+            throw new DeveloperError('mesh must have attribute matching the attributeName argument: ' + attributeName + '.');
+        }
+
+        if (attribute.componentDatatype !== ComponentDatatype.FLOAT) {
+            throw new DeveloperError('The attribute componentDatatype must be ComponentDatatype.FLOAT.');
+        }
+
+        var values = attribute.values;
+        var length = values.length;
+        var highValues = new Array(length);
+        var lowValues = new Array(length);
+
+        for (var i = 0; i < length; ++i) {
+            EncodedCartesian3.encode(values[i], encodedResult);
+            highValues[i] = encodedResult.high;
+            lowValues[i] = encodedResult.low;
+        }
+
+        mesh.attributes[attributeHighName] = {
+            componentDatatype : attribute.componentDatatype,
+            componentsPerAttribute : attribute.componentsPerAttribute,
+            values : highValues
+        };
+        mesh.attributes[attributeLowName] = {
+            componentDatatype : attribute.componentDatatype,
+            componentsPerAttribute : attribute.componentsPerAttribute,
+            values : lowValues
+        };
+        delete mesh.attributes[attributeName];
 
         return mesh;
     };
@@ -23267,7 +23783,7 @@ define('Core/Shapes',[
          * @param {Cartesian3} center The ellipse's center point in the fixed frame.
          * @param {Number} semiMajorAxis The length of the ellipse's semi-major axis in meters.
          * @param {Number} semiMinorAxis The length of the ellipse's semi-minor axis in meters.
-         * @param {Number} [bearing] The angle from north (counter-clockwise) in radians. The default is zero.
+         * @param {Number} [bearing] The angle from north (clockwise) in radians. The default is zero.
          * @param {Number} [granularity] The angular distance between points on the circle.
          *
          * @exception {DeveloperError} ellipsoid, center, semiMajorAxis, and semiMinorAxis are required.
@@ -29810,7 +30326,7 @@ define('Renderer/Texture',[
      * @see Context#createTexture2D
      * @see Context#createTexture2DFromFramebuffer
      */
-    var Texture = function(gl, textureFilterAnisotropic, textureTarget, texture, pixelFormat, pixelDatatype, width, height, preMultiplyAlpha) {
+    var Texture = function(gl, textureFilterAnisotropic, textureTarget, texture, pixelFormat, pixelDatatype, width, height, preMultiplyAlpha, flipY) {
         this._gl = gl;
         this._textureFilterAnisotropic = textureFilterAnisotropic;
         this._textureTarget = textureTarget;
@@ -29821,6 +30337,7 @@ define('Renderer/Texture',[
         this._height = height;
         this._dimensions = new Cartesian2(width, height);
         this._preMultiplyAlpha = preMultiplyAlpha;
+        this._flipY = flipY;
         this._sampler = undefined;
 
         this.setSampler();
@@ -29879,7 +30396,7 @@ define('Renderer/Texture',[
 
         // TODO: gl.pixelStorei(gl._UNPACK_ALIGNMENT, 4);
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this._preMultiplyAlpha);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this._flipY);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(target, this._texture);
 
@@ -30099,6 +30616,20 @@ define('Renderer/Texture',[
     };
 
     /**
+     * Returns true if the source pixels are flipped vertically when the texture is created or updated, i.e.,
+     * <code>UNPACK_FLIP_Y_WEBGL</code> is used.
+     *
+     * @memberof Texture
+     *
+     * @return {Boolean} True if the source pixels are flipped vertically; otherwise, false.
+     *
+     * @exception {DeveloperError} This texture was destroyed, i.e., destroy() was called.
+     */
+    Texture.prototype.getFlipY = function() {
+        return this._flipY;
+    };
+
+    /**
      * DOC_TBA
      * @memberof Texture
      * @exception {DeveloperError} This texture was destroyed, i.e., destroy() was called.
@@ -30185,7 +30716,7 @@ define('Renderer/CubeMapFace',[
      *
      * @see CubeMap
      */
-    var CubeMapFace = function(gl, texture, textureTarget, targetFace, pixelFormat, pixelDatatype, size, preMultiplyAlpha) {
+    var CubeMapFace = function(gl, texture, textureTarget, targetFace, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY) {
         this._gl = gl;
         this._texture = texture;
         this._textureTarget = textureTarget;
@@ -30194,6 +30725,7 @@ define('Renderer/CubeMapFace',[
         this._pixelDatatype = pixelDatatype;
         this._size = size;
         this._preMultiplyAlpha = preMultiplyAlpha;
+        this._flipY = flipY;
     };
 
     /**
@@ -30256,7 +30788,7 @@ define('Renderer/CubeMapFace',[
 
         // TODO: gl.pixelStorei(gl._UNPACK_ALIGNMENT, 4);
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this._preMultiplyAlpha);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this._flipY);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(target, this._texture);
 
@@ -30389,7 +30921,7 @@ define('Renderer/CubeMap',[
      *
      * @see Context#createCubeMap
      */
-    var CubeMap = function(gl, textureFilterAnisotropic, textureTarget, texture, pixelFormat, pixelDatatype, size, preMultiplyAlpha) {
+    var CubeMap = function(gl, textureFilterAnisotropic, textureTarget, texture, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY) {
         this._gl = gl;
         this._textureFilterAnisotropic = textureFilterAnisotropic;
         this._textureTarget = textureTarget;
@@ -30398,14 +30930,15 @@ define('Renderer/CubeMap',[
         this._pixelDatatype = pixelDatatype;
         this._size = size;
         this._preMultiplyAlpha = preMultiplyAlpha;
+        this._flipY = flipY;
         this._sampler = undefined;
 
-        this._positiveX = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_POSITIVE_X, pixelFormat, pixelDatatype, size, preMultiplyAlpha);
-        this._negativeX = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, pixelFormat, pixelDatatype, size, preMultiplyAlpha);
-        this._positiveY = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, pixelFormat, pixelDatatype, size, preMultiplyAlpha);
-        this._negativeY = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, pixelFormat, pixelDatatype, size, preMultiplyAlpha);
-        this._positiveZ = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, pixelFormat, pixelDatatype, size, preMultiplyAlpha);
-        this._negativeZ = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, pixelFormat, pixelDatatype, size, preMultiplyAlpha);
+        this._positiveX = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_POSITIVE_X, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY);
+        this._negativeX = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY);
+        this._positiveY = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY);
+        this._negativeY = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY);
+        this._positiveZ = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY);
+        this._negativeZ = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY);
 
         this.setSampler();
     };
@@ -30639,10 +31172,24 @@ define('Renderer/CubeMap',[
      *
      * @returns {Boolean} true if the cubemap was created with premultiplied alpha; otherwise, false.
      *
-     * @exception {DeveloperError} This texture was destroyed, i.e., destroy() was called.
+     * @exception {DeveloperError} This cube map was destroyed, i.e., destroy() was called.
      */
     CubeMap.prototype.getPreMultiplyAlpha = function() {
         return this._preMultiplyAlpha;
+    };
+
+    /**
+     * Returns true if the source pixels are flipped vertically when cube-map faces are created or updated, i.e.,
+     * <code>UNPACK_FLIP_Y_WEBGL</code> is used.
+     *
+     * @memberof CubeMap
+     *
+     * @return {Boolean} True if the source pixels are flipped vertically; otherwise, false.
+     *
+     * @exception {DeveloperError} This cube map was destroyed, i.e., destroy() was called.
+     */
+    CubeMap.prototype.getFlipY = function() {
+        return this._flipY;
     };
 
     CubeMap.prototype._getTexture = function() {
@@ -34933,6 +35480,13 @@ define('Renderer/BlendingState',[
         /**
          * DOC_TBA
          */
+        DISABLED : {
+            enabled : false
+        },
+
+        /**
+         * DOC_TBA
+         */
         ALPHA_BLEND : {
             enabled : true,
             equationRgb : BlendEquation.ADD,
@@ -38938,7 +39492,7 @@ define('Scene/EllipsoidPrimitive',[
             ellipsoidCommandLists.pickList.push(pickCommand);
         }
 
-        commandList.push(this._commandLists);
+        commandList.push(ellipsoidCommandLists);
     };
 
     /**
@@ -44905,8 +45459,10 @@ define('Renderer/VertexLayout',['../Core/Enumeration'], function(Enumeration) {
 /*global define*/
 define('Shaders/PolygonVS',[],function() {
     
-    return "attribute vec2 position2D;\n\
-attribute vec3 position3D;\n\
+    return "attribute vec3 position3DHigh;\n\
+attribute vec3 position3DLow;\n\
+attribute vec2 position2DHigh;\n\
+attribute vec2 position2DLow;\n\
 attribute vec2 textureCoordinates;\n\
 uniform float u_morphTime;\n\
 uniform float u_height;\n\
@@ -44915,11 +45471,26 @@ varying vec3 v_positionEC;\n\
 varying vec2 v_textureCoordinates;\n\
 void main()\n\
 {\n\
-vec4 p = czm_columbusViewMorph(vec3(u_height, position2D), position3D, u_morphTime);\n\
-v_positionMC = position3D;\n\
-v_positionEC = (czm_modelView * p).xyz;\n\
+vec4 p;\n\
+if (u_morphTime == 1.0)\n\
+{\n\
+p = vec4(czm_translateRelativeToEye(position3DHigh, position3DLow), 1.0);\n\
+}\n\
+else if (u_morphTime == 0.0)\n\
+{\n\
+p = vec4(czm_translateRelativeToEye(vec3(u_height, position2DHigh), vec3(u_height, position2DLow)), 1.0);\n\
+}\n\
+else\n\
+{\n\
+p = czm_columbusViewMorph(\n\
+czm_translateRelativeToEye(vec3(u_height, position2DHigh), vec3(u_height, position2DLow)),\n\
+czm_translateRelativeToEye(position3DHigh, position3DLow),\n\
+u_morphTime);\n\
+}\n\
+v_positionMC = position3DHigh + position3DLow;\n\
+v_positionEC = (czm_modelViewRelativeToEye * p).xyz;\n\
 v_textureCoordinates = textureCoordinates;\n\
-gl_Position = czm_modelViewProjection * p;\n\
+gl_Position = czm_modelViewProjectionRelativeToEye * p;\n\
 }\n\
 ";
 });
@@ -44965,14 +45536,31 @@ gl_FragColor = czm_phong(normalize(positionToEyeEC), material);\n\
 /*global define*/
 define('Shaders/PolygonVSPick',[],function() {
     
-    return "attribute vec2 position2D;\n\
-attribute vec3 position3D;\n\
+    return "attribute vec3 position3DHigh;\n\
+attribute vec3 position3DLow;\n\
+attribute vec2 position2DHigh;\n\
+attribute vec2 position2DLow;\n\
 uniform float u_morphTime;\n\
 uniform float u_height;\n\
 void main()\n\
 {\n\
-vec4 p = czm_columbusViewMorph(vec3(u_height, position2D), position3D, u_morphTime);\n\
-gl_Position = czm_modelViewProjection * p;\n\
+vec4 p;\n\
+if (u_morphTime == 1.0)\n\
+{\n\
+p = vec4(czm_translateRelativeToEye(position3DHigh, position3DLow), 1.0);\n\
+}\n\
+else if (u_morphTime == 0.0)\n\
+{\n\
+p = vec4(czm_translateRelativeToEye(vec3(u_height, position2DHigh), vec3(u_height, position2DLow)), 1.0);\n\
+}\n\
+else\n\
+{\n\
+p = czm_columbusViewMorph(\n\
+czm_translateRelativeToEye(vec3(u_height, position2DHigh), vec3(u_height, position2DLow)),\n\
+czm_translateRelativeToEye(position3DHigh, position3DLow),\n\
+u_morphTime);\n\
+}\n\
+gl_Position = czm_modelViewProjectionRelativeToEye * p;\n\
 }\n\
 ";
 });
@@ -45009,6 +45597,8 @@ define('Scene/Polygon',[
         '../Core/WindingOrder',
         '../Core/ExtentTessellator',
         '../Core/Queue',
+        '../Core/Matrix3',
+        '../Core/Quaternion',
         '../Renderer/BlendingState',
         '../Renderer/BufferUsage',
         '../Renderer/CommandLists',
@@ -45043,6 +45633,8 @@ define('Scene/Polygon',[
         WindingOrder,
         ExtentTessellator,
         Queue,
+        Matrix3,
+        Quaternion,
         BlendingState,
         BufferUsage,
         CommandLists,
@@ -45059,9 +45651,11 @@ define('Scene/Polygon',[
     
 
     var attributeIndices = {
-        position2D : 0,
-        position3D : 1,
-        textureCoordinates : 2
+        position3DHigh : 0,
+        position3DLow : 1,
+        position2DHigh : 2,
+        position2DLow : 3,
+        textureCoordinates : 4
     };
 
     function PositionVertices() {
@@ -45191,6 +45785,7 @@ define('Scene/Polygon',[
         };
 
         this._positions = undefined;
+        this._textureRotationAngle = undefined;
         this._extent = undefined;
         this._polygonHierarchy = undefined;
         this._createVertexArray = false;
@@ -45296,8 +45891,9 @@ define('Scene/Polygon',[
      *
      * @see Polygon#getPositions
      *
-     * @param {Array} positions. The cartesian positions of the polygon.
-     * @param {double} [height=0.0]. The height of the polygon.
+     * @param {Array} positions The cartesian positions of the polygon.
+     * @param {Number} [height=0.0] The height of the polygon.
+     * @param {Number} [textureRotationAngle=0.0] The angle, in radians, to rotate the texture.  Positive angles are counter-clockwise.
      *
      * @example
      * polygon.setPositions([
@@ -45306,12 +45902,13 @@ define('Scene/Polygon',[
      *   ellipsoid.cartographicToCartesian(new Cartographic(...))
      * ], 10.0);
      */
-    Polygon.prototype.setPositions = function(positions, height) {
+    Polygon.prototype.setPositions = function(positions, height, textureRotationAngle) {
         // positions can be undefined
         if (typeof positions !== 'undefined' && (positions.length < 3)) {
             throw new DeveloperError('At least three positions are required.');
         }
         this.height = defaultValue(height, 0.0);
+        this._textureRotationAngle = defaultValue(textureRotationAngle, 0.0);
         this._extent = undefined;
         this._polygonHierarchy = undefined;
         this._positions = positions;
@@ -45346,7 +45943,8 @@ define('Scene/Polygon',[
      * }
      * </code>
      * </pre>
-     * @param {double} [height=0.0] The height of the polygon.
+     * @param {Number} [height=0.0] The height of the polygon.
+     * @param {Number} [textureRotationAngle=0.0] The angle to rotate the texture in radians.
      *
      * @exception {DeveloperError} At least three positions are required.
      *
@@ -45363,7 +45961,7 @@ define('Scene/Polygon',[
      *      }]
      *  };
      */
-    Polygon.prototype.configureFromPolygonHierarchy  = function(hierarchy, height) {
+    Polygon.prototype.configureFromPolygonHierarchy  = function(hierarchy, height, textureRotationAngle) {
         // Algorithm adapted from http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
         var polygons = [];
         var queue = new Queue();
@@ -45403,6 +46001,7 @@ define('Scene/Polygon',[
         }
 
         this.height = defaultValue(height, 0.0);
+        this._textureRotationAngle = defaultValue(textureRotationAngle, 0.0);
         this._positions = undefined;
         this._extent = undefined;
         this._polygonHierarchy = polygons;
@@ -45429,6 +46028,7 @@ define('Scene/Polygon',[
     Polygon.prototype.configureExtent = function(extent, height) {
         this._extent = extent;
         this.height = defaultValue(height, 0.0);
+        this._textureRotationAngle = undefined;
         this._positions = undefined;
         this._polygonHierarchy = undefined;
         this._createVertexArray = true;
@@ -45436,9 +46036,10 @@ define('Scene/Polygon',[
 
     var appendTextureCoordinatesCartesian2 = new Cartesian2();
     var appendTextureCoordinatesCartesian3 = new Cartesian3();
+    var appendTextureCoordinatesQuaternion = new Quaternion();
+    var appendTextureCoordinatesMatrix3 = new Matrix3();
 
-    function appendTextureCoordinates(tangentPlane, positions2D, mesh) {
-        var boundingRectangle = new BoundingRectangle.fromPoints(positions2D);
+    function appendTextureCoordinates(tangentPlane, boundingRectangle, mesh, angle) {
         var origin = new Cartesian2(boundingRectangle.x, boundingRectangle.y);
 
         var positions = mesh.attributes.position.values;
@@ -45446,6 +46047,9 @@ define('Scene/Polygon',[
 
         var textureCoordinates = new Float32Array(2 * (length / 3));
         var j = 0;
+
+        var rotation = Quaternion.fromAxisAngle(tangentPlane._normal, angle, appendTextureCoordinatesQuaternion);
+        var textureMatrix = Matrix3.fromQuaternion(rotation, appendTextureCoordinatesMatrix3);
 
         // PERFORMANCE_IDEA:  Instead of storing texture coordinates per-vertex, we could
         // save memory by computing them in the fragment shader.  However, projecting
@@ -45455,6 +46059,7 @@ define('Scene/Polygon',[
             p.x = positions[i];
             p.y = positions[i + 1];
             p.z = positions[i + 2];
+            Matrix3.multiplyByVector(textureMatrix, p, p);
             var st = tangentPlane.projectPointOntoPlane(p, appendTextureCoordinatesCartesian2);
             st.subtract(origin, st);
 
@@ -45471,9 +46076,50 @@ define('Scene/Polygon',[
         return mesh;
     }
 
-    var createMeshFromPositionsPositions = [];
+    var computeBoundingRectangleCartesian2 = new Cartesian2();
+    var computeBoundingRectangleCartesian3 = new Cartesian3();
+    var computeBoundingRectangleQuaternion = new Quaternion();
+    var computeBoundingRectangleMatrix3 = new Matrix3();
 
-    function createMeshFromPositions(polygon, positions, outerPositions2D) {
+    function computeBoundingRectangle(tangentPlane, positions, angle, result) {
+        var rotation = Quaternion.fromAxisAngle(tangentPlane._normal, angle, computeBoundingRectangleQuaternion);
+        var textureMatrix = Matrix3.fromQuaternion(rotation,computeBoundingRectangleMatrix3);
+
+        var minX = Number.POSITIVE_INFINITY;
+        var maxX = Number.NEGATIVE_INFINITY;
+        var minY = Number.POSITIVE_INFINITY;
+        var maxY = Number.NEGATIVE_INFINITY;
+
+        var length = positions.length;
+        for ( var i = 0; i < length; ++i) {
+            var p = Cartesian3.clone(positions[i], computeBoundingRectangleCartesian3);
+            Matrix3.multiplyByVector(textureMatrix, p, p);
+            var st = tangentPlane.projectPointOntoPlane(p, computeBoundingRectangleCartesian2);
+
+            if (typeof st !== 'undefined') {
+                minX = Math.min(minX, st.x);
+                maxX = Math.max(maxX, st.x);
+
+                minY = Math.min(minY, st.y);
+                maxY = Math.max(maxY, st.y);
+            }
+        }
+
+        if (typeof result === 'undefined') {
+            result = new BoundingRectangle();
+        }
+
+        result.x = minX;
+        result.y = minY;
+        result.width = maxX - minX;
+        result.height = maxY - minY;
+        return result;
+    }
+
+    var createMeshFromPositionsPositions = [];
+    var createMeshFromPositionsBoundingRectangle = new BoundingRectangle();
+
+    function createMeshFromPositions(polygon, positions, angle, outerPositions) {
         var cleanedPositions = PolygonPipeline.cleanUp(positions);
         if (cleanedPositions.length < 3) {
             // Duplicate positions result in not enough positions to form a polygon.
@@ -45490,12 +46136,11 @@ define('Scene/Polygon',[
         }
         var indices = PolygonPipeline.earClip2D(positions2D);
         var mesh = PolygonPipeline.computeSubdivision(cleanedPositions, indices, polygon._granularity);
-        var boundary2D = outerPositions2D || positions2D;
-        mesh = appendTextureCoordinates(tangentPlane, boundary2D, mesh);
+        var boundary = outerPositions || cleanedPositions;
+        var boundingRectangle = computeBoundingRectangle(tangentPlane, boundary, angle, createMeshFromPositionsBoundingRectangle);
+        mesh = appendTextureCoordinates(tangentPlane, boundingRectangle, mesh, angle);
         return mesh;
     }
-
-    var createMeshesOuterPositions2D = [];
 
     function createMeshes(polygon) {
         // PERFORMANCE_IDEA:  Move this to a web-worker.
@@ -45513,17 +46158,15 @@ define('Scene/Polygon',[
                 polygon._boundingVolume2D.center = new Cartesian3(0.0, center2D.x, center2D.y);
             }
         } else if (typeof polygon._positions !== 'undefined') {
-            mesh = createMeshFromPositions(polygon, polygon._positions);
+            mesh = createMeshFromPositions(polygon, polygon._positions, polygon._textureRotationAngle);
             if (typeof mesh !== 'undefined') {
                 meshes.push(mesh);
                 polygon._boundingVolume = BoundingSphere.fromPoints(polygon._positions, polygon._boundingVolume);
             }
         } else if (typeof polygon._polygonHierarchy !== 'undefined') {
             var outerPositions =  polygon._polygonHierarchy[0];
-            var tangentPlane = EllipsoidTangentPlane.fromPoints(outerPositions, polygon.ellipsoid);
-            var outerPositions2D = tangentPlane.projectPointsOntoPlane(outerPositions, createMeshesOuterPositions2D);
             for (i = 0; i < polygon._polygonHierarchy.length; i++) {
-                mesh = createMeshFromPositions(polygon, polygon._polygonHierarchy[i], outerPositions2D);
+                mesh = createMeshFromPositions(polygon, polygon._polygonHierarchy[i], polygon._textureRotationAngle, outerPositions);
                 if (typeof mesh !== 'undefined') {
                     meshes.push(mesh);
                 }
@@ -45549,29 +46192,33 @@ define('Scene/Polygon',[
             mesh = MeshFilters.reorderForPreVertexCache(mesh);
 
             if (polygon._mode === SceneMode.SCENE3D) {
-                mesh.attributes.position2D = { // Not actually used in shader
-                        value : [0.0, 0.0]
-                    };
-                mesh.attributes.position3D = mesh.attributes.position;
-                delete mesh.attributes.position;
+                mesh.attributes.position2DHigh = { // Not actually used in shader
+                    value : [0.0, 0.0]
+                };
+                mesh.attributes.position2DLow = { // Not actually used in shader
+                    value : [0.0, 0.0]
+                };
+                mesh = MeshFilters.encodeAttribute(mesh, 'position', 'position3DHigh', 'position3DLow');
             } else {
                 mesh = MeshFilters.projectTo2D(mesh, polygon._projection);
+
+                if ((i === 0) && (polygon._mode !== SceneMode.SCENE3D)) {
+                    var projectedPositions = mesh.attributes.position2D.values;
+                    var positions = [];
+
+                    for (var j = 0; j < projectedPositions.length; j += 2) {
+                        positions.push(new Cartesian3(projectedPositions[j], projectedPositions[j + 1], 0.0));
+                    }
+
+                    polygon._boundingVolume2D = BoundingSphere.fromPoints(positions, polygon._boundingVolume2D);
+                    var center2DPositions = polygon._boundingVolume2D.center;
+                    polygon._boundingVolume2D.center = new Cartesian3(0.0, center2DPositions.x, center2DPositions.y);
+                }
+
+                mesh = MeshFilters.encodeAttribute(mesh, 'position3D', 'position3DHigh', 'position3DLow');
+                mesh = MeshFilters.encodeAttribute(mesh, 'position2D', 'position2DHigh', 'position2DLow');
             }
             processedMeshes = processedMeshes.concat(MeshFilters.fitToUnsignedShortIndices(mesh));
-        }
-
-        if (polygon._mode !== SceneMode.SCENE3D) {
-            mesh = meshes[0];
-            var projectedPositions = mesh.attributes.position2D.values;
-            var positions = [];
-
-            for (i = 0; i < projectedPositions.length; i += 2) {
-                positions.push(new Cartesian3(projectedPositions[i], projectedPositions[i + 1], 0.0));
-            }
-
-            polygon._boundingVolume2D = BoundingSphere.fromPoints(positions, polygon._boundingVolume2D);
-            var center2DPositions = polygon._boundingVolume2D.center;
-            polygon._boundingVolume2D.center = new Cartesian3(0.0, center2DPositions.x, center2DPositions.y);
         }
 
         return processedMeshes;
@@ -57072,13 +57719,13 @@ define('Renderer/Context',[
      * // Example 1. Create a stream index buffer of unsigned shorts that is
      * // 16 bytes in size.
      * var buffer = context.createIndexBuffer(16, BufferUsage.STREAM_DRAW,
-     *     IndexType.unsignedShort);
+     *     IndexDatatype.UNSIGNED_SHORT);
      *
      * ////////////////////////////////////////////////////////////////////////////////
      *
      * // Example 2. Create a static index buffer containing three unsigned shorts.
      * var buffer = context.createIndexBuffer(new Uint16Array([0, 1, 2]),
-     *     BufferUsage.STATIC_DRAW, IndexType.unsignedShort)
+     *     BufferUsage.STATIC_DRAW, IndexDatatype.UNSIGNED_SHORT)
      */
     Context.prototype.createIndexBuffer = function(typedArrayOrSizeInBytes, usage, indexDatatype) {
         var bytesPerIndex;
@@ -57287,6 +57934,7 @@ define('Renderer/Context',[
         // Use premultiplied alpha for opaque textures should perform better on Chrome:
         // http://media.tojicode.com/webglCamp4/#20
         var preMultiplyAlpha = description.preMultiplyAlpha || pixelFormat === PixelFormat.RGB || pixelFormat === PixelFormat.LUMINANCE;
+        var flipY = defaultValue(description.flipY, true);
 
         var gl = this._gl;
         var textureTarget = gl.TEXTURE_2D;
@@ -57298,7 +57946,7 @@ define('Renderer/Context',[
         if (source) {
             // TODO: _gl.pixelStorei(_gl._UNPACK_ALIGNMENT, 4);
             gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, preMultiplyAlpha);
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
 
             if (source.arrayBufferView) {
                 // Source: typed array
@@ -57312,7 +57960,7 @@ define('Renderer/Context',[
         }
         gl.bindTexture(textureTarget, null);
 
-        return new Texture(gl, this._textureFilterAnisotropic, textureTarget, texture, pixelFormat, pixelDatatype, width, height, preMultiplyAlpha);
+        return new Texture(gl, this._textureFilterAnisotropic, textureTarget, texture, pixelFormat, pixelDatatype, width, height, preMultiplyAlpha, flipY);
     };
 
     /**
@@ -57496,6 +58144,7 @@ define('Renderer/Context',[
         // Use premultiplied alpha for opaque textures should perform better on Chrome:
         // http://media.tojicode.com/webglCamp4/#20
         var preMultiplyAlpha = description.preMultiplyAlpha || ((pixelFormat === PixelFormat.RGB) || (pixelFormat === PixelFormat.LUMINANCE));
+        var flipY = defaultValue(description.flipY, true);
 
         var gl = this._gl;
         var textureTarget = gl.TEXTURE_CUBE_MAP;
@@ -57515,7 +58164,7 @@ define('Renderer/Context',[
         if (source) {
             // TODO: _gl.pixelStorei(_gl._UNPACK_ALIGNMENT, 4);
             gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, preMultiplyAlpha);
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
 
             createFace(gl.TEXTURE_CUBE_MAP_POSITIVE_X, source.positiveX);
             createFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, source.negativeX);
@@ -57533,7 +58182,7 @@ define('Renderer/Context',[
         }
         gl.bindTexture(textureTarget, null);
 
-        return new CubeMap(gl, this._textureFilterAnisotropic, textureTarget, texture, pixelFormat, pixelDatatype, size, preMultiplyAlpha);
+        return new CubeMap(gl, this._textureFilterAnisotropic, textureTarget, texture, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY);
     };
 
     /**
@@ -61817,7 +62466,7 @@ define('Scene/BingMapsImageryProvider',[
         }
 
         this._server = description.server;
-        this._key = defaultValue(description.key, 'AquXz3981-1ND5jGs8qQn7R7YUP8qkWi77yZSVM7o3nIvzb-Mg0W2Ta57xuUyywX');
+        this._key = defaultValue(description.key, 'Auc5O1omLRY_ub2safz0m2vJbzhYhSfTkO9eRDtLOauonIVoAiy6BV8c-L4jl1MT');
         this._mapStyle = defaultValue(description.mapStyle, BingMapsStyle.AERIAL);
         this._tileDiscardPolicy = description.tileDiscardPolicy;
         this._proxy = description.proxy;
@@ -72999,7 +73648,7 @@ define('Scene/Scene',[
 
         this._clearColorCommand = new ClearCommand();
         this._clearColorCommand.clearState = context.createClearState({
-            color : Color.BLACK
+            color : new Color()
         });
         this._clearDepthStencilCommand = new ClearCommand();
         this._clearDepthStencilCommand.clearState = context.createClearState({
@@ -73013,6 +73662,8 @@ define('Scene/Scene',[
          * @type SkyBox
          *
          * @default undefined
+         *
+         * @see Scene#backgroundColor
          */
         this.skyBox = undefined;
 
@@ -73024,6 +73675,17 @@ define('Scene/Scene',[
          * @default undefined
          */
         this.skyAtmosphere = undefined;
+
+        /**
+         * The background color, which is only visible if there is no sky box, i.e., {@link Scene#skyBox} is undefined.
+         *
+         * @type Color
+         *
+         * @default Color.BLACK
+         *
+         * @see Scene#skyBox
+         */
+        this.backgroundColor = Color.BLACK.clone();
 
         /**
          * The current mode of the scene.
@@ -73294,7 +73956,9 @@ define('Scene/Scene',[
         var skyBoxCommand = (typeof scene.skyBox !== 'undefined') ? scene.skyBox.update(context, scene._frameState) : undefined;
         var skyAtmosphereCommand = (typeof scene.skyAtmosphere !== 'undefined') ? scene.skyAtmosphere.update(context, scene._frameState) : undefined;
 
-        scene._clearColorCommand.execute(context, framebuffer);
+        var clear = scene._clearColorCommand;
+        Color.clone(defaultValue(scene.backgroundColor, Color.BLACK), clear.clearState.color);
+        clear.execute(context, framebuffer);
 
         // Ideally, we would render the sky box and atmosphere last for
         // early-z, but we would have to draw it in each frustum
