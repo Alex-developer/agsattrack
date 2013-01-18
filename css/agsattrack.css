@@ -318,3 +318,11 @@ p.description {
     font-size: 1.2em;
     margin: 10px;    
 }
+
+.icon-sum {
+    background: url('/images/sum-16.png') no-repeat;  
+}
+
+.icon-info {
+    background: url('/images/info-16.png') no-repeat !important;  
+}

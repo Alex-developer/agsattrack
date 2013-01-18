@@ -44,23 +44,41 @@ var AGDEBUG = function() {
         var row = {};
         var data = {};
         var id = 1000;
+        var openLeaves = 'closed';
         var rows = [{satellite: 'Satellites', id:1}];
         var sats = AGSatTrack.getSatellites();
+        var lastCalcTime;
         for (var i=0; i < sats.length; i++) {
+            lastCalcTime = sats[i].getLastcalcTime();
+            if (sats[i].getSelected()) {
+                openLeaves = 'open';
+            } else {
+                openLeaves = 'closed';    
+            }
             var passcache = sats[i].getPassCache();
             row = {
                 satellite: sats[i].getName(),
                 orbits: '',
                 _parentId:1,
-                id:i+2
+                id:i+2,
+                'state': openLeaves,
+                calctime: lastCalcTime 
             };
             rows.push(row);
+           
+            rows.push({
+                satellite: 'Last Calc Time',
+                _parentId:i+2,
+                id:i+900,
+                calctime: lastCalcTime,
+                iconCls: 'icon-sum'               
+            });
             rows.push({
                 satellite: 'Pass Cache',
                 _parentId:i+2,
                 id:i+200,
-                orbits: passcache.length               
-            });
+                orbits: passcache.length            
+            });            
             
             var fullOrbit = sats[i].getOrbitData();
             
@@ -74,7 +92,8 @@ var AGDEBUG = function() {
                     aos: '',
                     los: '',
                     _parentId:i+200,
-                    id:id++
+                    id:id++,
+                    iconCls: 'icon-info'
                 };                
             } else {
                 row = {
@@ -86,7 +105,8 @@ var AGDEBUG = function() {
                     aos: '',
                     los: '',
                     _parentId:i+200,
-                    id:id++
+                    id:id++,
+                    iconCls: 'icon-info'                    
                 };
             }
             rows.push(row);
@@ -102,7 +122,8 @@ var AGDEBUG = function() {
                     aos: AGUTIL.shortdate(passcache[j].aosTime),
                     los: AGUTIL.shortdate(passcache[j].losTime),
                     _parentId:i+200,
-                    id:id++
+                    id:id++,
+                    iconCls: 'icon-info'                    
                 };  
                 rows.push(row);                              
             }
@@ -130,7 +151,8 @@ var AGDEBUG = function() {
                         aos: AGUTIL.shortdate(todaysPasses[k].dateTimeStart),
                         los: AGUTIL.shortdate(todaysPasses[k].dateTimeEnd),
                         _parentId:i+400,
-                        id: id++
+                        id: id++,
+                        iconCls: 'icon-info'                        
                     };  
                     rows.push(row);                       
                 }      
@@ -138,7 +160,8 @@ var AGDEBUG = function() {
                 rows.push({
                     satellite: 'None Available Yet',
                     _parentId:i+400,
-                    id: id++               
+                    id: id++,
+                    iconCls: 'icon-info'
                 });                
             }
         }

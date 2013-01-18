@@ -62,6 +62,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     };
     var _passes = null;
     var _passesCache = [];
+    var _duration = 0;
     
     /**
     * Calculate and cache the next pass for this satellite
@@ -314,6 +315,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         },
 
 		calc: function(date, observer) {
+            var startTime = new Date();
+            
 			if (typeof date === 'undefined') {
 				var date = new Date();				
 			}
@@ -339,7 +342,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             if (_selected) { // TODO: bad code don't need to recalc this every time
                 getNextPass(observer);                
             }
-		},
+            var endTime = new Date();
+            _duration = endTime - startTime;
+        },
         
         getNextEvent : function(returnRaw) {
             var event = '';
@@ -429,6 +434,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                 result = true;
             }
             return result;
+        },
+        
+        getLastcalcTime : function() {
+            return _duration;
         }
 	}
 };
