@@ -179,6 +179,53 @@
 							});
 						}
 						
+                        /**
+                        * Group toggle button.
+                        * 
+                        * A series of toggle buttons where only ONE can be active at any one time.
+                        * 
+                        * Options
+                        * 
+                        * data-type="grouptogglebutton"  Indicates a group toggle button
+                        * data-event="some event" The event to fire
+                        * data-group="some group" The name of the group
+                        * 
+                        */
+                        if (buttonType === 'grouptogglebutton') {
+                            el.click(function(e){
+                                if (!el.hasClass('disabled')) {
+                                    var group = el.attr('data-group');
+                                    var groupButtons = $('[data-group="'+group+'"]');
+            
+                                    jQuery.each(groupButtons, function(index, button) {
+                                        if (el.prop('id') !== $(button).prop('id')) {
+                                            var removeClass = 'ribbon-button-large-active';
+                                            if (el.hasClass('ribbon-button-small')) {
+                                                removeClass = 'ribbon-button-small-active';                                    
+                                            }
+                                            if ($(button).hasClass(removeClass)) {
+                                                $(button).removeClass(removeClass);
+                                                var event = $(button).attr('data-event');
+                                                if (typeof event !== 'undefined') {
+                                                    jQuery(document).trigger(event, $(button).hasClass(removeClass));
+                                                }                                           
+                                            }
+                                        }
+                                    });
+                                                
+                                    var toggleClass = 'ribbon-button-large-active';
+                                    if (el.hasClass('ribbon-button-small')) {
+                                        toggleClass = 'ribbon-button-small-active';                                    
+                                    }
+                                    el.toggleClass(toggleClass);
+                                    var event = el.attr('data-event');
+                                    if (typeof event !== 'undefined') {
+                                        jQuery(document).trigger(event, el.hasClass(toggleClass));
+                                    }
+                                }                                
+                            });
+                        }
+                                                
 						if (buttonType === 'buttongroup') {
 							el.click(function(e){
                                 if (!el.hasClass('disabled')) {                                

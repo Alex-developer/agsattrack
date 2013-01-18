@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -127,15 +127,10 @@ var AG3DVIEW = function(element) {
             function(e, follow) {
                 if (AGSETTINGS.getHaveWebGL()) {
                     _follow = follow;
-                    if (_follow) {
-                        _followFromObserver = false;
-                    }
-                    if (!follow) {
-                        if (_render) {
-                            plotObservers();
-                            updateSatelliteBillboards();
-                        }                    
-                    }
+                    if (_render) {
+                        plotObservers();
+                        updateSatelliteBillboards();
+                    }                    
                 }
             });
     
@@ -143,15 +138,10 @@ var AG3DVIEW = function(element) {
             function(e, follow) {
                 if (AGSETTINGS.getHaveWebGL()) {
                     _followFromObserver = follow;
-                    if (_followFromObserver) {
-                        _follow = false;
+                    if (_render) {
+                        plotObservers();
+                        updateSatelliteBillboards();
                     }                    
-                    if (!_followFromObserver) {
-                        if (_render) {
-                            plotObservers();
-                            updateSatelliteBillboards();
-                        }                    
-                    }
                 }
             });    
 
