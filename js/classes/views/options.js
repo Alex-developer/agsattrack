@@ -81,7 +81,15 @@ var AGOPTIONS = function() {
             jQuery('#debugger-show').prop('checked', true);
         } else {
             jQuery('#debugger-show').prop('checked', false);
-        }             
+        }
+        
+        jQuery('#options-passes-view-bottomleft option[value="' + AGSETTINGS.getPassesBottomLeftView() + '"]').attr('selected', true);
+        jQuery('#options-passes-view-bottomright option[value="' + AGSETTINGS.getPassesBottomRightView() + '"]').attr('selected', true);
+        
+        /**
+        * Disable the save button - Just in case any of the above enabled it.
+        */
+        jQuery('#options-save').disable();              
     }
     
     jQuery('#observergelocate').on('click', function(e){
@@ -107,7 +115,7 @@ var AGOPTIONS = function() {
     }
     
     
-    jQuery('.options-cb').on('click', function(e){
+    jQuery('.options-cb').on('change', function(e){
         enableSave();        
     });
         
@@ -172,6 +180,12 @@ var AGOPTIONS = function() {
         var defaultgroup = jQuery('#options-sat-group-selector-listbox').find(":selected").val();
         AGSETTINGS.setDefaultTLEgroup(defaultgroup);  
 
+        var blView = jQuery('#options-passes-view-bottomleft').find(":selected").val();
+        AGSETTINGS.setPassesBottomLeftView(blView);  
+
+        var brView = jQuery('#options-passes-view-bottomright').find(":selected").val();
+        AGSETTINGS.setPassesBottomRightView(brView);          
+                
         var observers = AGSatTrack.getObservers();
         var observer = observers[0];   
         observer.setName(jQuery('#observername').val());
