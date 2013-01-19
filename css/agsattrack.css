@@ -326,3 +326,7 @@ p.description {
 .icon-info {
     background: url('/images/info-16.png') no-repeat !important;  
 }
+
+.backblack {
+    background: black;
+}

@@ -103,7 +103,7 @@ var AGPASSESVIEW = function() {
             jQuery('#passes').width(width);
             jQuery('#passes').height(height);
             jQuery('#passesgrid').datagrid('resize',{
-                width: width-30,
+                width: width-5,
                 height: (height-35) / 2
             });
             _bottomLeft.resizeView((width-5) / 2, height / 2);      
