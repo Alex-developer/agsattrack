@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -12,7 +12,15 @@ Copyright 2012 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSatTrack, AGVIEWS, AGSETTINGS */ 
+ 
 var AGOPTIONS = function() {
 	'use strict';
 	
@@ -46,7 +54,7 @@ var AGOPTIONS = function() {
         
         jQuery('#options-sat-group-selector-listbox').children().remove();
         var tleGroups = jQuery('#sat-group-selector-listbox').jqxListBox('getItems');
-        var selectedGroup = AGSETTINGS.getDefaultTLEgroup()
+        var selectedGroup = AGSETTINGS.getDefaultTLEgroup();
         jQuery.each(tleGroups, function(index, group) {
             var selected = '';
             if (group.value === selectedGroup) {
@@ -118,7 +126,7 @@ var AGOPTIONS = function() {
     jQuery('#popuphelp-show').on('click', function(e){
         enableSave();        
     });
-    	
+
     jQuery('#switchtabonclick').on('click', function(e){
         enableSave();        
     });
@@ -147,22 +155,22 @@ var AGOPTIONS = function() {
         var temp;
         
 		temp = jQuery('#window-preferences-calc-timer').numberspinner('getValue') * 1000;
-		AGSETTINGS.setRefreshTimerInterval(temp)
+		AGSETTINGS.setRefreshTimerInterval(temp);
 
 		temp = jQuery('#window-preferences-aos').numberspinner('getValue');
-		AGSETTINGS.setAosEl(temp)
+		AGSETTINGS.setAosEl(temp);
 
         temp = jQuery('#switchtabonclick').prop('checked');
-        AGSETTINGS.setSwitchViewOnTabClick(temp)
+        AGSETTINGS.setSwitchViewOnTabClick(temp);
 
         temp = jQuery('#popuphelp-show').prop('checked');
-        AGSETTINGS.setShowPopupHelp(temp)
+        AGSETTINGS.setShowPopupHelp(temp);
         
         temp = jQuery('#sats-autoadd').prop('checked');
-        AGSETTINGS.setAutoAddSats(temp)        
+        AGSETTINGS.setAutoAddSats(temp);        
         
         var defaultgroup = jQuery('#options-sat-group-selector-listbox').find(":selected").val();
-        AGSETTINGS.setDefaultTLEgroup(defaultgroup)  
+        AGSETTINGS.setDefaultTLEgroup(defaultgroup);  
 
         var observers = AGSatTrack.getObservers();
         var observer = observers[0];   
@@ -179,7 +187,7 @@ var AGOPTIONS = function() {
         }
         
         temp = jQuery('#debugger-show').prop('checked');
-        AGSETTINGS.setDebugView(temp)  
+        AGSETTINGS.setDebugView(temp);  
         if (temp) {
             jQuery('#ribbon-tab-header-8').show(); 
         } else {
@@ -210,5 +218,5 @@ var AGOPTIONS = function() {
                 setupOptions();
             });			
 		}
-	}
-}
+	};
+};

@@ -12,7 +12,15 @@ Copyright 2013 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSatTrack, AGSETTINGS, AGIMAGES, AGUTIL, Cesium */ 
+ 
 var AG3DVIEW = function(element) {
     'use strict';
 
@@ -27,7 +35,7 @@ var AG3DVIEW = function(element) {
     var planetsBillboards = null;
     var _satNameLabels = null;
     var gridRefresh = 1;
-    var gridRefreshCounter = 0
+    var gridRefreshCounter = 0;
     var orbitLines = null;
     var passLines = null;
     var footprintCircle = null;
@@ -231,7 +239,7 @@ var AG3DVIEW = function(element) {
                     transitioner.morphTo2D();
                     break;
                 case 'twopointfived':
-                    transitioner.toColumbusView()
+                    transitioner.toColumbusView();
                     break;
                 case 'threed':
                     transitioner.morphTo3D();
@@ -273,7 +281,7 @@ var AG3DVIEW = function(element) {
         
                 // Point the camera at us and position it directly above us if
                 // we are the first observer
-                if (i == 0) {
+                if (i === 0) {
                     scene.getCamera().controller.lookAt(eye, target, up);
                 }
             }
@@ -332,7 +340,7 @@ var AG3DVIEW = function(element) {
                       fillColor : 'white',
                       outlineColor : 'white',
                       style : Cesium.LabelStyle.FILL,
-                      scale : 1.0,
+                      scale : 1.0
                     });
                     satLabel.satelliteindex = i;
                 }
@@ -537,7 +545,7 @@ var AG3DVIEW = function(element) {
         lastPos = cartPoints[0];
         for ( var i = 0; i < cartPoints.length; i++) {    
             if (checkOkToPlot(lastPos, cartPoints[i])) {
-                pos = new Cesium.Cartesian3(cartPoints[i].x, cartPoints[i].y, cartPoints[i].z)
+                pos = new Cesium.Cartesian3(cartPoints[i].x, cartPoints[i].y, cartPoints[i].z);
                 pos = pos.multiplyByScalar(1000);
                 points.push(pos);
             }
@@ -575,7 +583,7 @@ var AG3DVIEW = function(element) {
             } else {
                 var pass = sat.getNextPass();
                 plotLine(orbit.points, Cesium.Color.RED, passLines, 1);
-                if (parseInt(sat.get('orbitnumber')) === parseInt(pass.orbitNumber)) {
+                if (parseInt(sat.get('orbitnumber'),10) === parseInt(pass.orbitNumber,10)) {
                     plotLine(pass.pass, Cesium.Color.GREEN, passLines, 5);
                 }
             }
@@ -650,8 +658,8 @@ var AG3DVIEW = function(element) {
         observerBillboards = new Cesium.BillboardCollection();
         satBillboards = new Cesium.BillboardCollection();
         planetsBillboards = new Cesium.BillboardCollection();
-        orbitLines = new Cesium.PolylineCollection();;
-        passLines = new Cesium.PolylineCollection();;
+        orbitLines = new Cesium.PolylineCollection();
+        passLines = new Cesium.PolylineCollection();
         footprintCircle = new Cesium.PolylineCollection();
         clock = new Cesium.Clock();
         _satNameLabels = new Cesium.LabelCollection();
@@ -669,7 +677,7 @@ var AG3DVIEW = function(element) {
             'osm' : new Cesium.OpenStreetMapImageryProvider({
                 url : 'http://otile1.mqcdn.com/tiles/1.0.0/osm'
             }),
-            'static' : new Cesium.SingleTileImageryProvider({
+            'staticimage' : new Cesium.SingleTileImageryProvider({
                 url : 'images/NE2_50M_SR_W_4096.jpg'
             })
         };
@@ -683,7 +691,7 @@ var AG3DVIEW = function(element) {
         scene = new Cesium.Scene(canvas);
         transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
 
-        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.static);
+        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.staticimage);
         cb.showSkyAtmosphere = true;
 
         scene.getPrimitives().setCentralBody(cb);
@@ -707,7 +715,7 @@ var AG3DVIEW = function(element) {
             font : '18px sans-serif',
             fillColor : 'black',
             outlineColor : 'black',
-            style : Cesium.LabelStyle.FILL,
+            style : Cesium.LabelStyle.FILL
         });
         scene.getPrimitives().add(_satNameLabels);
                 
@@ -762,6 +770,11 @@ var AG3DVIEW = function(element) {
             _render = false;
         },
 
+        destroy : function() {
+            _render = false;
+            jQuery('#'+_element).html('');    
+        },
+                
         resizeView : function(width, height) {
             if (AGSETTINGS.getHaveWebGL()) {
                 resize(width, height);     
@@ -779,5 +792,5 @@ var AG3DVIEW = function(element) {
                 initNo3DView();
             }            
         }
-    }
-}
+    };
+};

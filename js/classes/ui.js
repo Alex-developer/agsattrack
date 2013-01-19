@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,6 +13,14 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSatTrack, AGSETTINGS, AGPOPUPHELP, AGVIEWS, AGUTIL, AGLOCATION, ctrl */ 
+
 var AGUI = function() {
 	'use strict';
     
@@ -37,7 +45,6 @@ var AGUI = function() {
     function loadAvailablesatellites(item) {
         if (typeof item === 'undefined') {
             item = jQuery("#sat-group-selector-listbox").jqxListBox('getSelectedItem');
-            debugger;
         }
         jQuery(document).trigger('agsattrack.loadelements', {
             filename : item
@@ -101,7 +108,7 @@ var AGUI = function() {
 	});
 
 	jQuery('#home-observer').click(function() {
-		var observers = AGSatTrack.getObservers()
+		var observers = AGSatTrack.getObservers();
 		var window = new AGLOCATION('window-home-location', observers[0]);
 	});
 
@@ -134,21 +141,21 @@ var AGUI = function() {
 	 * Bind to the view menu options and select the appropriate tab
 	 */
 	jQuery('.satview').click(function() {
-		var newTab = jQuery(this).attr('data-options')
-		jQuery('#viewtabs').tabs('select', parseInt(newTab));
+		var newTab = jQuery(this).attr('data-options');
+		jQuery('#viewtabs').tabs('select', parseInt(newTab,10));
 	});
 
     
     jQuery('.viewswitcher').on('click', function(e){
-        var newTab = jQuery(this).attr('data-tab')
-        jQuery('#viewtabs').tabs('select', parseInt(newTab));                
+        var newTab = jQuery(this).attr('data-tab');
+        jQuery('#viewtabs').tabs('select', parseInt(newTab,10));                
     });
 
     jQuery('.ribbon-tab-header').on('click', function(e){
         if (AGSETTINGS.getSwitchViewOnTabClick()) {
             var newTab = jQuery(this).find('span').attr('data-tab');
             if (typeof newTab !== 'undefined') {
-                jQuery('#viewtabs').tabs('select', parseInt(newTab));                
+                jQuery('#viewtabs').tabs('select', parseInt(newTab,10));                
             }
         }
     });    
@@ -158,7 +165,7 @@ var AGUI = function() {
 	 * Bind to the 3D view menu options and fire and event to select the view.
 	 */
 	jQuery('.3dview').click(function(e) {
-		var view = jQuery(this).attr('data-options')
+		var view = jQuery(this).attr('data-options');
 		jQuery(document).trigger('agsattrack.change3dview', view);
 	});
 
@@ -166,7 +173,7 @@ var AGUI = function() {
 	 * Bind to the tile provider options and fire an event when selected
 	 */
 	jQuery('.tile').click(function() {
-		var provider = jQuery(this).attr('data-options')
+		var provider = jQuery(this).attr('data-options');
 		jQuery(document).trigger('agsattrack.changetile', provider);
 	});
      
@@ -221,7 +228,7 @@ var AGUI = function() {
         var args = e.args;
         var selectedSatellite = AGSatTrack.getSatelliteByName(args.item.value); 
         AGSatTrack.setFollowing(selectedSatellite);
-        UpdateSatelliteData(selectedSatellite);
+        updateSatelliteData(selectedSatellite);
 	});
 
     
@@ -240,20 +247,24 @@ var AGUI = function() {
     * is updated.
     */
     jQuery(document).bind('agsattrack.newsatselected', function(e, selectedInfo) {
+        var i;
+        var satelliteName;
+        var catalogNumber;
+        
         jQuery('#sat-info-selector').jqxListBox('beginUpdate');
         clearDataPane();        
         var selectedItem = jQuery('#sat-info-selector').jqxDropDownList('getSelectedItem');
         jQuery('#sat-info-selector').jqxDropDownList('clear');
         if (selectedInfo.satellites.length > 1 ) {
-            for (var i=0; i < selectedInfo.satellites.length; i++) {
-                var satelliteName = selectedInfo.satellites[i].getName();
-                var catalogNumber = selectedInfo.satellites[i].getCatalogNumber();
+            for (i=0; i < selectedInfo.satellites.length; i++) {
+                satelliteName = selectedInfo.satellites[i].getName();
+                catalogNumber = selectedInfo.satellites[i].getCatalogNumber();
                 jQuery('#sat-info-selector').jqxDropDownList('addItem', {label: satelliteName, value: catalogNumber});
             }
             if (selectedItem !== null) {
                 var items = jQuery('#sat-info-selector').jqxDropDownList('getItems');
                 if (items !== null) {
-                    for (var i=0; i<items.length; i++) {
+                    for (i=0; i<items.length; i++) {
                         if (items[i].value === selectedItem.value) {
                             jQuery('#sat-info-selector').jqxDropDownList('selectIndex', items[i].index);
                             break;
@@ -266,12 +277,12 @@ var AGUI = function() {
             jQuery('#satinfo-message').hide();             
         } else {
             if (selectedInfo.satellites.length > 0) {
-                var satelliteName = selectedInfo.satellites[0].getName();
-                var catalogNumber = selectedInfo.satellites[0].getCatalogNumber();
+                satelliteName = selectedInfo.satellites[0].getName();
+                catalogNumber = selectedInfo.satellites[0].getCatalogNumber();
                 jQuery('#sat-info-selector').jqxDropDownList('addItem', {label: satelliteName, value: catalogNumber});    
                 jQuery('#sat-info-selector').jqxDropDownList('selectIndex', 0);
                 jQuery('#sat-info-selector').hide();
-                UpdateSatelliteData(selectedInfo.satellites[0]);
+                updateSatelliteData(selectedInfo.satellites[0]);
                 jQuery('.satinfo').show();
                 jQuery('#satinfo-message').hide();                
             } else {
@@ -283,7 +294,7 @@ var AGUI = function() {
         jQuery('#sat-info-selector').jqxListBox('endUpdate');        
     });    
 
-    function UpdateSatelliteData(satellite) {
+    function updateSatelliteData(satellite) {
         var catalogNumber = satellite.getCatalogNumber();
         var url = 'ajax.php?id=' + catalogNumber;
         jQuery.getJSON(url, function(data) {
@@ -394,7 +405,7 @@ var AGUI = function() {
                 
                 if (totalTles > 0 && totalDisplaying === 0) {
                     var helpText = jQuery('#help-1').html();
-                    helpText = helpText.replace(/{tlecount}/g, totalTles);
+                    helpText = helpText.replace(/\{tlecount\}/g, totalTles);
                     _helper.showHelp(helpText, true);
                     showingHelp = true;
                 }
@@ -405,5 +416,5 @@ var AGUI = function() {
             }
             
         }
-	}
-}
+	};
+};

@@ -13,6 +13,19 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
+ 
+/* Options for JSHint http://www.jshint.com/ 
+* NOTE: JSHint does not like
+* var x = (0.5 + (az * _xstep)) | 0;
+* It produces an Unexpected use of '|'. Error
+* The | 0 is a much faster way to get an int from a float rather than use Math.floor
+* 
+* Last Checked: 19/01/2013
+*
+*/
+/*jshint bitwise: true*/
+/*global AGSatTrack, AGUTIL, AGSETTINGS, Kinetic, requestAnimFrame */ 
+
 var AGTIMELINE = function() {
 	'use strict';
 
@@ -128,6 +141,8 @@ var AGTIMELINE = function() {
         var hour = _startHour;
         var counter = 0;
         var length;
+        var xTextPos;
+        
         for (var i=0; i <= _fixedStageWidth; i += (_pixelsPerMin * 5)) {
             
             switch (counter) {
@@ -147,7 +162,7 @@ var AGTIMELINE = function() {
                 default:
                     length = 5;
                     break;
-            };
+            }
             
             _backgroundLayer.add(new Kinetic.Line({
                 points : [ i + _viewLeftMargin, _height - _legendHeight, i + _viewLeftMargin, _height - _legendHeight + length ],
@@ -160,9 +175,9 @@ var AGTIMELINE = function() {
             }
             if (length === 20) {
                 if (i === 0) {
-                    var xTextPos = _viewLeftMargin;    
+                    xTextPos = _viewLeftMargin;    
                 } else {
-                    var xTextPos = i + _viewLeftMargin - (hour < 10?3:7);
+                    xTextPos = i + _viewLeftMargin - (hour < 10?3:7);
                 }
                 _backgroundLayer.add(new Kinetic.Text({
                     x : xTextPos,
@@ -269,7 +284,7 @@ var AGTIMELINE = function() {
             }
             
             
-            yPos +=_satHeight  
+            yPos +=_satHeight; 
         });           
     
         _timelineLayer.draw();
@@ -277,7 +292,7 @@ var AGTIMELINE = function() {
     }
     
 	function drawMousePos() {
-	    getDimensions();
+        getDimensions();
         
         _mousePosLayer.removeChildren();
         _mousePosTimeLayer.clear();
@@ -401,5 +416,5 @@ var AGTIMELINE = function() {
             });
             drawTimeline();           
         }
-	}
-}
+	};
+};

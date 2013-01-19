@@ -12,7 +12,20 @@ Copyright 2012 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
+ 
+/* Options for JSHint http://www.jshint.com/ 
+* NOTE: JSHint does not like
+* var x = (0.5 + (az * _xstep)) | 0;
+* It produces an Unexpected use of '|'. Error
+* The | 0 is a much faster way to get an int from a float rather than use Math.floor
+* 
+* Last Checked: 19/01/2013
+*
+*/
+/*jshint bitwise: true*/
+/*global AGSatTrack, AGIMAGES, AGVIEWS, AGSETTINGS, AGUTIL, Kinetic, requestAnimFrame */
+  
 var AGPOLARVIEW = function(element) {
 	'use strict';
     
@@ -87,7 +100,7 @@ var AGPOLARVIEW = function(element) {
      * Listen for an event telling us a new set of data is available
      */
     jQuery(document).bind('agsattrack.updatesatdata', function(event) {
-        if (_render) {
+        if (_render && _mode !== AGVIEWS.modes.SINGLE) {
             drawPolarView();
         }
     });
@@ -98,12 +111,12 @@ var AGPOLARVIEW = function(element) {
 	 */
 	jQuery(document).bind('agsattrack.tlesloaded', function(event, group) {
         if (_render) {
-		    _satLayer.clear();
+            _satLayer.clear();
         }
 	});
 
     jQuery(document).bind('agsattrack.newfollowing', function(event, group) {
-        if (_render) {
+        if (_render && _mode !== AGVIEWS.modes.SINGLE) {
             drawBackground();
             drawPolarView();
         }
@@ -122,18 +135,14 @@ var AGPOLARVIEW = function(element) {
     * Elevation.
     */
 	function convertMousePos() {
-		var rel = _radius
-				- Math.sqrt((_mousePos.x - _cx) * (_mousePos.x - _cx)
-						+ (_mousePos.y - _cy) * (_mousePos.y - _cy));
+		var rel = _radius - Math.sqrt((_mousePos.x - _cx) * (_mousePos.x - _cx) + (_mousePos.y - _cy) * (_mousePos.y - _cy));
 		_mousePos.el = 90.0 * rel / _radius;
 		if (_mousePos.x >= _cx) {
 			/* 1. and 2. quadrant */
-			_mousePos.az = Math.atan2(_mousePos.x - _cx, _cy - _mousePos.y)
-					/ _de2ra;
+			_mousePos.az = Math.atan2(_mousePos.x - _cx, _cy - _mousePos.y) / _de2ra;
 		} else {
 			/* 3 and 4. quadrant */
-			_mousePos.az = 360
-					+ Math.atan2(_mousePos.x - _cx, _cy - _mousePos.y) / _de2ra;
+			_mousePos.az = 360 + Math.atan2(_mousePos.x - _cx, _cy - _mousePos.y) / _de2ra;
 		}
 
 		if (_mousePos.az < 0 || _mousePos.el < 0) {
@@ -161,8 +170,8 @@ var AGPOLARVIEW = function(element) {
 		}
 
 		/* convert angles to radians */
-		var az = _de2ra * az;
-		var el = _de2ra * el;
+		az = _de2ra * az;
+		el = _de2ra * el;
 
 		/* radius @ el */
 		var rel = _radius - (2 * _radius * el) / Math.PI;
@@ -203,7 +212,8 @@ var AGPOLARVIEW = function(element) {
 		var _circle;
 		var _line;
 		var _text;
-
+        var radius;
+        
 		setDimensions();
 		_backgroundLayer.removeChildren();
 
@@ -248,7 +258,7 @@ var AGPOLARVIEW = function(element) {
 		_backgroundLayer.add(_circle);
 
         for (var i=0; i<90; i+=15) {
-            var radius = (0.5 + (_radius * (i/90))) | 0;
+            radius = (0.5 + (_radius * (i/90))) | 0;
             _backgroundLayer.add(new Kinetic.Circle({
                 x : _cx,
                 y : _cy,
@@ -263,11 +273,11 @@ var AGPOLARVIEW = function(element) {
         * the font size for this case.
         */
         var elFontSize = 10;
-        if (_mode === AGPOLARVIEW.modes.SINGLE) {
+        if (_mode === AGVIEWS.modes.SINGLE) {
             elFontSize = 8;    
         }
-        for (var i=15; i<90; i+=15) {
-            var radius = (0.5 + (_radius * (i/90))) | 0;
+        for (i=15; i<90; i+=15) {
+            radius = (0.5 + (_radius * (i/90))) | 0;
             _backgroundLayer.add(new Kinetic.Text({
                 x : _cx - radius - 7,
                 y : _cy + 5,
@@ -287,14 +297,15 @@ var AGPOLARVIEW = function(element) {
         }
         
         var long=0;
-        for (var i=0; i< 360; i+= 5) {
+        var len;
+        for (i=0; i< 360; i+= 5) {
             
             var rad = i * (Math.PI/180);
             
             if (long) {
-                var len = 10;    
+                len = 10;    
             } else {
-                var len = 15;
+                len = 15;
             }
             long = !long;
             
@@ -361,8 +372,8 @@ var AGPOLARVIEW = function(element) {
             textFill : 'white'
         }));
 
-        var elFontSize = 10;
-        if (_mode === AGPOLARVIEW.modes.SINGLE) {
+        elFontSize = 10;
+        if (_mode === AGVIEWS.modes.SINGLE) {
             elFontSize = 8;    
         }        
 		_backgroundLayer.add(new Kinetic.Text({
@@ -418,11 +429,11 @@ var AGPOLARVIEW = function(element) {
     */
 	function drawPolarView() {
         switch (_mode) {
-            case AGPOLARVIEW.modes.DEFAULT:
+            case AGVIEWS.modes.DEFAULT:
                 _drawDefaultView();  
                 break;
                 
-            case AGPOLARVIEW.modes.SINGLE:
+            case AGVIEWS.modes.SINGLE:
                 _drawSingleView();
                 break;
         }
@@ -466,6 +477,8 @@ var AGPOLARVIEW = function(element) {
 	}
     
     function plotSatellite(satellite) {
+        var pos;
+        
         if (satellite.isDisplaying()) {
 
             var az = satellite.get('azimuth');
@@ -502,11 +515,10 @@ var AGPOLARVIEW = function(element) {
                     }
                 }
                 
-                if (okToDraw) {
-                                        
+                if (okToDraw) {             
                     points = []; 
                     for ( var i = 0; i < pass.length; i++) {
-                        var pos = convertAzEltoXY(pass[i].az, pass[i].el);
+                        pos = convertAzEltoXY(pass[i].az, pass[i].el);
                         if (pass[i].el >= AGSETTINGS.getAosEl()) {
                             
                             if (points.length ===0) {
@@ -603,7 +615,7 @@ var AGPOLARVIEW = function(element) {
                 */
                 if (el < AGSETTINGS.getAosEl()) {
                     if (aostime !== null) {
-                        var pos = convertAzEltoXY(max.az, max.el);
+                        pos = convertAzEltoXY(max.az, max.el);
                         _orbitLayer.add(new Kinetic.Text({
                             x : pos.x + 5,
                             y : pos.y + 5,
@@ -615,7 +627,7 @@ var AGPOLARVIEW = function(element) {
                     }                   
                 } 
                 if (max.az !== 0 && max.el !== 0 && okToDraw) {
-                    var pos = convertAzEltoXY(max.az, max.el);
+                    pos = convertAzEltoXY(max.az, max.el);
                     _orbitLayer.add(new Kinetic.Circle({
                         x : pos.x,
                         y : pos.y,
@@ -652,7 +664,7 @@ var AGPOLARVIEW = function(element) {
 
             if (el > AGSETTINGS.getAosEl()) {
                                 
-                var pos = convertAzEltoXY(az, el);
+                pos = convertAzEltoXY(az, el);
                 var _style = 'normal';
 
                 if (satellite.getSelected()) {
@@ -691,6 +703,8 @@ var AGPOLARVIEW = function(element) {
     }
     
     function drawInfoLayer() {
+        var nextEvent;
+        
         _infoLayer.removeChildren();
         var following = AGSatTrack.getFollowing();
         if (following !== null) {
@@ -708,14 +722,14 @@ var AGPOLARVIEW = function(element) {
                     }; 
                 }
             } else {
-                var nextEvent = following.getNextEvent(true);
+                nextEvent = following.getNextEvent(true);
             }
 
             var elFontSize = 10;
-            if (_mode === AGPOLARVIEW.modes.SINGLE) {
+            if (_mode === AGVIEWS.modes.SINGLE) {
                 elFontSize = 6;    
             }
-            if (_mode !== AGPOLARVIEW.modes.SINGLE) {             
+            if (_mode !== AGVIEWS.modes.SINGLE) {             
                  _infoLayer.add(new Kinetic.Text({
                     x : 10,
                     y : _height-50,
@@ -736,7 +750,7 @@ var AGPOLARVIEW = function(element) {
              
              _infoLayer.add(new Kinetic.Text({
                 x : 10,
-                y : _height-23,
+                y : _height-21,
                 text : 'Event Time: ' + nextEvent.time,
                 fontSize : elFontSize,
                 fontFamily : 'Verdana',
@@ -797,7 +811,7 @@ var AGPOLARVIEW = function(element) {
                 }
             }
 			drawMousePos();
-		    requestAnimFrame(animate);
+            requestAnimFrame(animate);
         }
 		
 	}
@@ -814,6 +828,10 @@ var AGPOLARVIEW = function(element) {
 			_render = false;
 		},
 
+        destroy : function() {
+            _render = false;
+            jQuery('#'+_element).html('');    
+        },
         resizeView : function(width, height) {
             resize(width, height);     
         },
@@ -824,7 +842,7 @@ var AGPOLARVIEW = function(element) {
              
 		init : function(mode) {     
             if (typeof mode === 'undefined') {
-                mode = AGPOLARVIEW.modes.DEFAULT;    
+                mode = AGVIEWS.modes.DEFAULT;    
             }
             _mode = mode;
             
@@ -858,7 +876,7 @@ var AGPOLARVIEW = function(element) {
             });
             
             var elFontSize = 10;
-            if (_mode === AGPOLARVIEW.modes.SINGLE) {
+            if (_mode === AGVIEWS.modes.SINGLE) {
                 elFontSize = 8;    
             }               
             _mousePosTextAz = new Kinetic.Text({
@@ -884,19 +902,17 @@ var AGPOLARVIEW = function(element) {
 		},
         
         reset : function() {
+            _singleSat = null;
+            _passToShow = null;
+            drawPolarView();
         },
         
         setSingleSat : function(satellite) {
-            _singleSat = satellite
+            _singleSat = satellite;
         },
         
         setPassToShow : function(passToShow) {
             _passToShow = passToShow;
         }
-	}
-}
-
-AGPOLARVIEW.modes = {
-    DEFAULT : 1,
-    SINGLE : 2
+	};
 };

@@ -41,6 +41,7 @@
 <script type="text/javascript" src="/js/classes/views/listview.js"></script>
 <script type="text/javascript" src="/js/classes/views/options.js"></script>
 <script type="text/javascript" src="/js/classes/views/debug.js"></script>
+<script type="text/javascript" src="/js/classes/views/azelview.js"></script>
 <script type="text/javascript" src="/js/classes/observer.js"></script>
 <script type="text/javascript" src="/js/classes/spmengine.js"></script>
 
@@ -412,7 +413,7 @@
                             <div class="ribbon-menu ribbon-menu-closed">
                                 <div class="title">Select Provider</div>
                                 <ul>
-                                    <li class="tile" data-options="static"><img src="images/ribbon/list.png"><span>Static Image</span></li>
+                                    <li class="tile" data-options="staticImage"><img src="images/ribbon/list.png"><span>Static Image</span></li>
                                     <li class="tile" data-options="bing"><img src="images/ribbon/table.png"><span>Bing maps</span></li>
                                     <li class="tile" data-options="osm"><img src="images/ribbon/globe.png"><span>Open StreetMap</span></li>
                                 </ul>
@@ -507,7 +508,55 @@
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
                     </div>  
                  </div>                
-                               
+                      
+                <div class="ribbon-section">
+                    <span class="section-title">View Layout</span>
+                    <div style="width: 100px; float:left;">
+                        <table width="100%">
+                            <tr>
+                                <td colspan="2" style="border:1px solid #ccc" align="center">Pass Table</td>
+                            </tr>
+                            <tr>
+                                <td width="50%" style="border:1px solid #ccc">
+                                
+                                    <div class="ribbon-button ribbon-button-small" id="passes-bl-view-select" data-type="dropdownmenu" data-event="agsattrack.passesblview">
+                                        <span class="button-title"><img src="/js/ribbon/arrow_down-16.png"></span> 
+                                        <img class="ribbon-icon ribbon-normal" src="/images/ribbon/polar.png" /> 
+                                        <img class="ribbon-icon ribbon-hot" src="/images/ribbon/polar.png" /> 
+                                        <img class="ribbon-icon ribbon-disabled" src="/images/ribbon/polar.png" />
+                                        <div class="ribbon-menu ribbon-menu-wide ribbon-menu-closed">
+                                            <div class="title">Select Bottom left View</div>
+                                            <ul>
+                                                <li class="passesbl" data-event-param="3d" data-icon="/images/ribbon/globe.png"><img src="/images/ribbon/globe.png"><span>3D View</span></li>
+                                                <li class="passesbl" data-event-param="polar" data-icon="/images/ribbon/polar.png"><img src="/images/ribbon/polar.png"><span>Polar View</span></li>
+                                                <li class="passesbl" data-event-param="sky" data-icon="/images/ribbon/sky.png"><img src="/images/ribbon/sky.png"><span>Sky View</span></li>
+                                                <li class="passesbl" data-event-param="azel" data-icon="/images/ribbon/azel-16.png"><img src="/images/ribbon/azel-16.png"><span>Az/El View</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>                                
+                                </td>
+                                <td style="border:1px solid #ccc">
+                                    <div class="ribbon-button ribbon-button-small" id="passes-br-view-select" data-type="dropdownmenu" data-event="agsattrack.passesbrview">
+                                        <span class="button-title"><img src="/js/ribbon/arrow_down-16.png"></span> 
+                                        <img class="ribbon-icon ribbon-normal" src="/images/ribbon/azel-16.png" /> 
+                                        <img class="ribbon-icon ribbon-hot" src="/images/ribbon/azel-16.png" /> 
+                                        <img class="ribbon-icon ribbon-disabled" src="/images/ribbon/azel-16.png" />
+                                        <div class="ribbon-menu ribbon-menu-wide ribbon-menu-closed">
+                                            <div class="title">Select Bottom Right View</div>
+                                            <ul>
+                                                <li class="passesbl" data-event-param="3d" data-icon="/images/ribbon/globe.png"><img src="/images/ribbon/globe.png"><span>3D View</span></li>
+                                                <li class="passesbl" data-event-param="polar" data-icon="/images/ribbon/polar.png"><img src="/images/ribbon/polar.png"><span>Polar View</span></li>
+                                                <li class="passesbl" data-event-param="sky" data-icon="/images/ribbon/sky.png"><img src="/images/ribbon/sky.png"><span>Sky View</span></li>
+                                                <li class="passesbl" data-event-param="azel" data-icon="/images/ribbon/azel-16.png"><img src="/images/ribbon/azel-16.png"><span>Az/El View</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>                                 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                                               
                 <div class="ribbon-section">
                     <span class="section-title">Satellite</span>
                     <select id="passes-sat"></select>
@@ -799,8 +848,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td height="50%" width="50%"><div id="passespolar"></div></td>
-                        <td height="50" width="50%"><div id="passessky"></div></td>
+                        <td height="50%" width="50%"><div id="passbottomleft"></div></td>
+                        <td height="50" width="50%"><div id="passbottomright"></div></td>
                     </tr>                    
                 </table>
 

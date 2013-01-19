@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,7 +13,15 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-;var AGOBSERVER = function(index) {
+
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSETTINGS */
+
+var AGOBSERVER = function(index) {
     'use strict';
     
     var _lat = 0; // The observers latitude
@@ -27,7 +35,7 @@ Copyright 2012 Alex Greenland
     var that = this;
     
     function showGeoWindow() {
-        var that = this;
+        var that = this; // JSHint - This is ok
         
         jQuery('#geowindow').remove();
         var form = '<form><input id="geocomplete" type="text" placeholder="Type in an address" value="'+_lat+','+_lon+'" /><input id="find" type="button" value="find" /><div class="map_canvas"></div><fieldset style="display:none"><label>Latitude</label><input name="lat" type="text" value=""><label>Longitude</label><input name="lng" type="text" value=""><label>Formatted Address</label><input name="formatted_address" type="text" value=""></fieldset></form>';  
@@ -121,7 +129,7 @@ Copyright 2012 Alex Greenland
             * that an observer is now available.
             */
             if (_autoGeo) {
-			    var that = this;
+                var that = this;
                 geoLocate();
             } else {
                 _ready = true;
@@ -130,7 +138,7 @@ Copyright 2012 Alex Greenland
                 */
                 jQuery(document).delayedTrigger(1000, 'agsattrack.locationAvailable', that);                
             }
-		    return this;
+            return this;
 		},
 		
 		isReady : function() {
@@ -148,7 +156,7 @@ Copyright 2012 Alex Greenland
             return _autoGeo;
         },
         doGeoLocate: function() {
-            geoLocate()
+            geoLocate();
         },        
         /**
         * Getter and setter for the observers name
@@ -200,5 +208,5 @@ Copyright 2012 Alex Greenland
 		toString : function() {
 			return 'name=' + _name + ', lat=' + _lat + ', lon=' + _lon;
 		}
-	}
+	};
 };

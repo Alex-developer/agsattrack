@@ -13,16 +13,20 @@ Copyright 2013 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */
- 
+
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSatTrack, Agsattrack, Modernizr, AGUTIL, AGSETTINGS, AGSPMENGINE */ 
+
  /**
  * Shim to support animation frames
  */
 window.requestAnimFrame = (function() {
-    return window.requestAnimationFrame
-            || window.webkitRequestAnimationFrame
-            || window.mozRequestAnimationFrame
-            || window.oRequestAnimationFrame
-            || window.msRequestAnimationFrame || function(callback) {
+ 'use strict';    
+    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
                 window.setTimeout(callback, 1000 / 60);
             };
 })();
@@ -31,6 +35,8 @@ window.requestAnimFrame = (function() {
 * Delayed trigger hack
 */
 $.fn.delayedTrigger = function(duration, eventName, event) {
+ 'use strict';
+     
   var target = this;
   var timeoutId = $.delayedEvents[eventName];
   if (timeoutId) {
@@ -40,10 +46,12 @@ $.fn.delayedTrigger = function(duration, eventName, event) {
     delete $.delayedEvents[eventName];
     target.trigger(eventName, event);
   }, duration);
-}
+};
 $.delayedEvents = {}; 
     
 jQuery(document).ready(function() {
+    'use strict';    
+    
     Modernizr.load({
       test: AGUTIL.webGlTest(),
       yep : 'js/cesium/Unminified/Cesium.js',
@@ -52,7 +60,7 @@ jQuery(document).ready(function() {
           AGSETTINGS.setHaveCanvas(Modernizr.canvas);          
           
           AGSPMENGINE.loadSPMEngine(function(){
-            AGSatTrack = new agsattrack();
+            AGSatTrack = new Agsattrack();
             AGSatTrack.init();      
             
             if (AGSETTINGS.getRequireEUCookieLaw()) {
@@ -67,3 +75,5 @@ jQuery(document).ready(function() {
       }
     });
 });
+
+var AGSatTrack;

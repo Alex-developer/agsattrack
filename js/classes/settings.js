@@ -12,7 +12,15 @@ Copyright 2013 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSatTrack */ 
+
 var AGSETTINGS = (function() {
     'use strict';
     
@@ -32,7 +40,9 @@ var AGSETTINGS = (function() {
         switchViewOnTabClick : true,
         autoAddSats: true,
         defaultTleGroup: 'amateur',
-        debugView: false
+        debugView: false,
+        passesbl: 'polar',
+        passesbr: 'azel'
     };
     var COOKIENAME = 'agsattrack';
     var COOKIEEXPIRES = 30;
@@ -68,8 +78,9 @@ var AGSETTINGS = (function() {
         
         if (_requireEUCookieLaw) {
             if(jQuery.cookie('cc_cookie_accept') === null && jQuery.cookie('cc_cookie_decline') === null) { 
+                var dummy = false;
             } else {
-                if (jQuery.cookie('cc_cookie_decline') == "cc_cookie_decline") {
+                if (jQuery.cookie('cc_cookie_decline') === "cc_cookie_decline") {
                     result = false;
                 }    
             }    
@@ -107,7 +118,20 @@ var AGSETTINGS = (function() {
             return _requireEUCookieLaw;    
         },
 
-        
+        getPassesBottomRightView : function() {
+            return _settings.passesbr;    
+        },
+        setPassesBottomRightView : function(value) {
+            _settings.passesbr = value;
+        },
+                
+        getPassesBottomLeftView : function() {
+            return _settings.passesbl;    
+        },
+        setPassesBottomLeftView : function(value) {
+            _settings.passesbl = value;
+        },
+                
         getDebugView : function() {
             return _settings.debugView;    
         },

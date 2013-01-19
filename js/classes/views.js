@@ -12,8 +12,17 @@ Copyright 2013 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+ 
 var AGVIEWS = (function(element) {
+    "use strict" ;
+    
     var _views = {
         '3d' : {
             classname : 'AG3DVIEW',
@@ -54,7 +63,12 @@ var AGVIEWS = (function(element) {
             classname : 'AGDEBUG',
             active : false,
             index: 7
-        }         
+        },
+        'azel' : {
+            classname : 'AGAZELVIEW',
+            active : false,
+            init: false
+        }          
     };
     
     return {
@@ -75,7 +89,7 @@ var AGVIEWS = (function(element) {
             });
             if (view !== null) {
                 if (typeof view.instance !== 'undefined') {
-                    jQuery('#viewtabs').tabs('select',view.index)
+                    jQuery('#viewtabs').tabs('select',view.index);
                     view.instance.startRender();
                 }    
             }            
@@ -99,7 +113,7 @@ var AGVIEWS = (function(element) {
             var view = null;
             jQuery.each(_views, function(_view, _options) {
                 if (_view === name) {
-                    view = new window[_options.classname](params)
+                    view = new window[_options.classname](params);
                 }  
             });
             return view;  
@@ -127,7 +141,7 @@ var AGVIEWS = (function(element) {
         
         sendViewReset : function() {
             jQuery.each(_views, function(_view, _options) {
-                if (typeof _options.instance.reset === 'function') {
+                if (typeof _options.instance !== 'undefined' && typeof _options.instance.reset === 'function') {
                     _options.instance.reset();
                 }  
             });            
@@ -135,11 +149,21 @@ var AGVIEWS = (function(element) {
         
         tlesLoaded : function() {
             jQuery.each(_views, function(_view, _options) {
-                if (typeof _options.instance.tlesLoaded === 'function') {
+                if (typeof _options.instance !== 'undefined' && typeof _options.instance.tlesLoaded === 'function') {
                     _options.instance.tlesLoaded();
                 }  
             });              
+        },
+        
+        destroyView : function(view) {
+            if (typeof view.destroy !== 'undefined' && typeof view.destroy === 'function') {
+                view.destroy();    
+            }
         }  
-
-    }
+    };
 })();
+
+AGVIEWS.modes = {
+    DEFAULT : 1,
+    SINGLE : 2
+};

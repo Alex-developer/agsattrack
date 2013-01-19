@@ -13,13 +13,21 @@ Copyright 2013 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSETTINGS, AGSATELLITE, yepnope */
  
  /**
  * Singleton class to handle Simplified Perturbation Model (SPM) Engines. This
  * class is responsible for loading an engine and all of its associated files.
  */
 var AGSPMENGINE = (function() {
-
+    'use strict';
+    
     /**
     * Default Simplified Perturbation Model
     */
@@ -70,8 +78,10 @@ var AGSPMENGINE = (function() {
         * @param callback   The callback to use after the load is complete
         */
         setSPM : function(value, doLoad, callback) {
+            var spmEngine;
+            
             if (typeof doLoad === 'undefined') {
-                doLoad == false;    
+                doLoad = false;    
             }
             _spm = value;
             
@@ -93,5 +103,5 @@ var AGSPMENGINE = (function() {
         loadSPMEngine : function(spmEngine, callback) {
             loadSPMEngine(spmEngine, callback);                
         }
-    }
+    };
 })();

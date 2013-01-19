@@ -12,7 +12,15 @@ Copyright 2013 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSatTrack, AGUTIL */ 
+ 
 var AGDEBUG = function() {
     'use strict';
     
@@ -138,7 +146,7 @@ var AGDEBUG = function() {
                 id:i+400,
                 orbits: total                
             });
-            var todaysPasses = sats[i].getTodaysPasses();
+            todaysPasses = sats[i].getTodaysPasses();
           //  debugger;
             if (todaysPasses !== null) {
                 for (var k=0; k < todaysPasses.length; k++) {
@@ -165,7 +173,7 @@ var AGDEBUG = function() {
                 });                
             }
         }
-        data.rows = rows
+        data.rows = rows;
         jQuery('#debuggrid').treegrid('loadData',data);
     }
                   
@@ -187,5 +195,5 @@ var AGDEBUG = function() {
         resizeView : function(width, height) {
             resize(width, height);     
         }        
-    }
-}
+    };
+};

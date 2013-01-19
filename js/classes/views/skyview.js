@@ -13,6 +13,19 @@ Copyright 2013 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
+ 
+/* Options for JSHint http://www.jshint.com/ 
+* NOTE: JSHint does not like
+* var x = (0.5 + (az * _xstep)) | 0;
+* It produces an Unexpected use of '|'. Error
+* The | 0 is a much faster way to get an int from a float rather than use Math.floor
+* 
+* Last Checked: 19/01/2013
+*
+*/
+/*jshint bitwise: true*/
+/*global AGVIEWS,AGIMAGES,AGSatTrack,AGUTIL,AGSETTINGS,Kinetic,requestAnimFrame */
+
 var AGSKYVIEW = function(element) {
 	'use strict';
 
@@ -183,7 +196,7 @@ var AGSKYVIEW = function(element) {
 
 		}
 
-		for ( var i = 15; i <= 90; i+=15) {
+		for (i = 15; i <= 90; i+=15) {
 			var yPos = (0.5 + (i * _ystep)) | 0;
 			_backgroundLayer.add(new Kinetic.Line({
 				points : [ 0, yPos, _width, yPos ],
@@ -341,12 +354,12 @@ var AGSKYVIEW = function(element) {
     }
     
     function drawOrbits() {
-        getDimensions()
+        getDimensions();
         _orbitLayer.removeChildren();
         var satellites = AGSatTrack.getSatellites();
 
         jQuery.each(satellites, function(index, satellite) {
-            drawPass(satellite)
+            drawPass(satellite);
         });
         _orbitLayer.draw();        
     }
@@ -354,13 +367,12 @@ var AGSKYVIEW = function(element) {
     function drawPass(satellite) {
         var pos;
         var orbit;
-        var points;
+        var points = [];
         if (satellite.isDisplaying() && satellite.getSelected()) {
             var passData;
             var pass;
             var haveAos = false;
-            var prePoints = [];                        
-            var points = [];                        
+            var prePoints = [];                                           
             var postPoints = [];  
             var max = {az:0, el:0};
             var aostime = null;                
@@ -376,7 +388,7 @@ var AGSKYVIEW = function(element) {
             }
                             
             for ( var i = 0; i < pass.length; i++) {
-                var pos = convertAzEltoScreen(pass[i].az, pass[i].el);
+                pos = convertAzEltoScreen(pass[i].az, pass[i].el);
                 if (pass[i].el >= AGSETTINGS.getAosEl()) {
                     
                     if (points.length ===0) {
@@ -452,7 +464,7 @@ var AGSKYVIEW = function(element) {
                 var lastX = points[0];
                 var points1 = [];
                 var halfWidth = _stage.getWidth() / 2;
-                for (var i=2; i < points.length; i+=2) {
+                for (i=2; i < points.length; i+=2) {
                     if (Math.abs(lastX - points[i]) > halfWidth) {
                         points1 = points.slice(i,points.length);
                         points = points.slice(0,i);
@@ -496,7 +508,7 @@ var AGSKYVIEW = function(element) {
             
             var el = satellite.get('elevation');
             if (el < AGSETTINGS.getAosEl() && aostime !== null) {
-                var pos = convertAzEltoScreen(max.az, max.el);
+                pos = convertAzEltoScreen(max.az, max.el);
                 var label = '(AOS: '+AGUTIL.shortdatetime(aostime, true)+')';
                 _orbitLayer.add(new Kinetic.Text({
                     x : pos.x,
@@ -523,11 +535,11 @@ var AGSKYVIEW = function(element) {
 
 		drawPlanets();
         switch (_mode) {
-            case AGSKYVIEW.modes.DEFAULT:
+            case AGVIEWS.modes.DEFAULT:
                 _drawDefaultView();  
                 break;
                 
-            case AGSKYVIEW.modes.SINGLE:
+            case AGVIEWS.modes.SINGLE:
                 _drawSingleView();
                 break;
         }
@@ -539,14 +551,14 @@ var AGSKYVIEW = function(element) {
     }
 
     function _drawSingleView() {
+        _satLayer.removeChildren();
+        _orbitLayer.removeChildren();
         if (_singleSat !== null) {
-            _satLayer.removeChildren();
-            _orbitLayer.removeChildren();
             drawSatellite(_singleSat);
             drawPass(_singleSat);
-            _satLayer.draw();
-            _orbitLayer.draw();            
         }
+        _satLayer.draw();
+        _orbitLayer.draw();
     }
         
     var _debugCounter=0;    
@@ -575,7 +587,12 @@ var AGSKYVIEW = function(element) {
 		stopRender : function() {
 			_render = false;
 		},
-
+        
+        destroy : function() {
+            _render = false;
+            jQuery('#'+_element).html('');    
+        },
+        
         resizeView : function(width, height) {
             resize(width, height);     
         },
@@ -586,7 +603,7 @@ var AGSKYVIEW = function(element) {
                            
 		init : function(mode) {
             if (typeof mode === 'undefined') {
-                mode = AGSKYVIEW.modes.DEFAULT;    
+                mode = AGVIEWS.modes.DEFAULT;    
             }
             _mode = mode;
                     
@@ -615,19 +632,19 @@ var AGSKYVIEW = function(element) {
             _stage.add(_cityLayer);
                                                 
 			_infoGroup = new Kinetic.Group({
-		        draggable: true
-		      });
+                draggable: true
+            });
 			
 			_infoGroup.add(new Kinetic.Rect({
-		        x: 20,
-		        y: 5,
-		        width: 120,
-		        height: 60,
-		        fill: 'white',
-		        stroke: '#ddd',
-		        strokeWidth: 4,
-		        opacity: 0.2
-		      }));
+                x: 20,
+                y: 5,
+                width: 120,
+                height: 60,
+                fill: 'white',
+                stroke: '#ddd',
+                strokeWidth: 4,
+                opacity: 0.2
+            }));
 			
 			_infoGroup.add(new Kinetic.Text({
 				x : 30,
@@ -689,17 +706,18 @@ var AGSKYVIEW = function(element) {
 			jQuery(window).trigger('resize');
 		},
         
+        reset: function() {
+            _singleSat = null;
+            _passToShow = null;
+            drawSkyView();    
+        },
+        
         setSingleSat : function(satellite) {
-            _singleSat = satellite
+            _singleSat = satellite;
         },
         
         setPassToShow : function(passToShow) {
             _passToShow = passToShow;
         }        
-	}
-}
-
-AGSKYVIEW.modes = {
-    DEFAULT : 1,
-    SINGLE : 2
+	};
 };

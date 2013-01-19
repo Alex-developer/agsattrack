@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -12,9 +12,19 @@ Copyright 2012 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+
+/*jshint bitwise: true*/
+/*global platform, Modernizr */ 
+ 
 var AGUTIL = (function() {
-    'use strict'
+    'use strict';
 	
 	function convertDecDeg(v,tipo, html) {
         
@@ -34,28 +44,27 @@ var AGUTIL = (function() {
            symbol = 'º';             
         }
         
-    	if (!tipo) tipo='N';
-    	var deg;
-    	deg = v;
-    	if (!deg){
-    		return "";
-    	} else if (deg > 180 || deg < 0){
-    		// convert coordinate from north to south or east to west if wrong tipo
-    		return convertDecDeg(-v,(tipo=='N'?'S': (tipo=='E'?'W':tipo) ), html);
-    	} else {
-    		var gpsdeg = parseInt(deg);
-    		var remainder = deg - (gpsdeg * 1.0);
-    		var gpsmin = remainder * 60.0;
-    		var D = gpsdeg;
-    		var M = parseInt(gpsmin);
-    		var remainder2 = gpsmin - (parseInt(gpsmin)*1.0);
-    		var S = parseInt(remainder2*60.0);
-    		return pad(D,3)+symbol+' '+pad(M,2)+"' "+pad(S,2)+"'' "+tipo;
-    	}
-        
-        
+        if (!tipo) {
+            tipo='N';
+        }
+        var deg;
+        deg = v;
+        if (!deg){
+            return "";
+        } else if (deg > 180 || deg < 0){
+            // convert coordinate from north to south or east to west if wrong tipo
+            return convertDecDeg(-v,(tipo==='N'?'S': (tipo==='E'?'W':tipo) ), html);
+        } else {
+            var gpsdeg = parseInt(deg,10);
+            var remainder = deg - (gpsdeg * 1.0);
+            var gpsmin = remainder * 60.0;
+            var D = gpsdeg;
+            var M = parseInt(gpsmin, 10);
+            var remainder2 = gpsmin - (parseInt(gpsmin, 10)*1.0);
+            var S = parseInt(remainder2*60.0,10);
+            return pad(D,3)+symbol+' '+pad(M,2)+"' "+pad(S,2)+"'' "+tipo;
+        }
     }                   
-
     
     function pad(num, size) {
         var s = "00" + num;
@@ -72,29 +81,52 @@ var AGUTIL = (function() {
             var loadedImages = 0;
             var numImages = 0;
             for (var src in sources) {
-                numImages++;
+                if(sources.hasOwnProperty(src)) {
+                    numImages++;
+                }
             }
-            for (var src in sources) {
-                images[src] = new Image();
-                images[src].onload = function(){
-                    if (++loadedImages >= numImages) {
-                        callback(images);
-                    }
-                };
-                images[src].src = sources[src];
+            
+            var loadedFunc = function(){
+                if (++loadedImages >= numImages) {
+                    callback(images);
+                }
+            };
+                    
+            for (src in sources) {
+                if(sources.hasOwnProperty(src)) {                
+                    images[src] = new Image();
+                    images[src].onload = loadedFunc;
+                    images[src].src = sources[src];
+                }
             }
         },
         
 		convertDecDegLat: function(lat,html) {
             var dir = (lat>0?'N':'S');
-	        var lat = convertDecDeg(lat,dir,html);
-	        return lat;
+            lat = convertDecDeg(lat,dir,html);
+            return lat;
 		},
 		convertDecDegLon: function(lon,html) {
-	        var dir = (lon>0?'E':'W');
-	        var lon = convertDecDeg(lon,dir,html);
-	        return lon;
+            var dir = (lon>0?'E':'W');
+            lon = convertDecDeg(lon,dir,html);
+            return lon;
 		},
+
+        date : function(date) {
+            if (date === '') {
+                return '';
+            }
+            if (date === null) {
+                return 'N/A';
+            }
+            var shortDate = '';
+            
+            shortDate += pad(date.getDate(),2) + '/';
+            shortDate += pad(date.getMonth()+1,2) + '/';
+            shortDate += date.getFullYear();
+            return shortDate;
+        },
+                
 		shortdate : function(date) {
 			if (date === '') {
 				return '';
@@ -114,16 +146,20 @@ var AGUTIL = (function() {
 			return shortDate;
 		},
         
-        shortdatetime : function(date, hideDate) {
+        shortdatetime : function(date, hideDate, forceHidedate) {
             if (date === '') {
                 return '';
+            }
+            
+            if (typeof forceHidedate === 'undefined') {
+                forceHidedate = false;
             }
             var shortDate = '';
             var cDate = new Date();
             
-            if (cDate.getFullYear() === date.getFullYear() &&
+            if ((cDate.getFullYear() === date.getFullYear() &&
                 cDate.getMonth() === date.getMonth() &&
-                cDate.getDate() === date.getDate() && hideDate) {
+                cDate.getDate() === date.getDate() && hideDate) || forceHidedate) {
                 
                 shortDate = '';
             } else {
@@ -139,6 +175,19 @@ var AGUTIL = (function() {
             return shortDate;
         },        
         
+        shortTime : function(date) {
+            var shortTime = '';
+            if (date === '') {
+                return '';
+            }
+        
+
+            shortTime += pad(date.getHours(),2) + ':';
+            shortTime += pad(date.getMinutes(),2);
+            
+            return shortTime;
+        },
+                
         /**
         * Check if webGL is really supported. Some devices, like the iPad report, via Modernizer that webGL
         * is available when in fact it is not.
@@ -154,13 +203,15 @@ var AGUTIL = (function() {
                 var result = true;
                 
                 for(var property in disableWebGLOn){
-                    for (var i=0;i<disableWebGLOn[property].length;i++) {
-                        if (platform[property]) {
-                            if (disableWebGLOn[property][i] === platform[property].toLowerCase()) {
-                                result = false;
-                                break;
-                            }
-                        }    
+                    if(disableWebGLOn.hasOwnProperty(property)) {                     
+                        for (var i=0;i<disableWebGLOn[property].length;i++) {
+                            if (platform[property]) {
+                                if (disableWebGLOn[property][i] === platform[property].toLowerCase()) {
+                                    result = false;
+                                    break;
+                                }
+                            }    
+                        }
                     }
                 }
                 return result;  
@@ -176,9 +227,7 @@ var AGUTIL = (function() {
         },
         
         loadEphemerisEngine : function(engineName) {
-            
         }
-		
-	}
+	};
 	
 })();

@@ -153,6 +153,21 @@
                                 e.stopImmediatePropagation();
                             });
 							
+                            var event = el.attr('data-event');
+                            if (typeof event !== 'undefined') {
+                                $(el).find('li').on('click',function(){
+                                    var eventParam = $(this).attr('data-event-param');
+                                    jQuery(document).trigger(event, eventParam);
+                                    
+                                    var buttonIcon = $(this).attr('data-icon');
+                                    if (typeof buttonIcon !== 'undefined') {                                    
+                                        $(el).find('.ribbon-icon').attr('src', buttonIcon);
+                                    }
+                                    $(menu).addClass('ribbon-menu-closed');
+                                    $(menu).removeClass('ribbon-menu-open');                                    
+                                });
+                            }
+                            
                             if (buttonType == 'dropdownmenu') {
 							    menu.on('mouseleave', function(){
                                     if (!el.hasClass('disabled')) {                                    

@@ -13,13 +13,84 @@ Copyright 2013 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
+ 
+/* Options for JSHint http://www.jshint.com/ 
+* 
+* Last Checked: 19/01/2013
+*/
+/*global AGVIEWS,AGSatTrack,AGUTIL,AGSETTINGS */
+  
 var AGPASSESVIEW = function() {
 	'use strict';
+    
 	var _render = false;
-    var _polar;
-	var _sky;
+    var _bottomLeft = null;
+	var _bottomRight = null;
     var _currentPass = null;
     
+    /**
+    * when a new set of elements are loaded ensure that the views are reset
+    * 
+    */
+    jQuery(document).bind('agsattrack.tlesloaded', function(e, group) {
+        _bottomLeft.reset();
+        _bottomRight.reset();
+        jQuery('#passesgrid').datagrid('loadData',[]);    
+    });
+    
+    /**
+    * Update the view in the bottom left
+    */
+    jQuery(document).bind('agsattrack.passesblview', function(event, view) {
+        if (_render) {
+            AGVIEWS.destroyView(_bottomLeft);
+            _bottomLeft = AGVIEWS.getNewView(view,'passbottomleft');
+            _bottomLeft.init(AGVIEWS.modes.SINGLE);
+            
+            var catalogNumber = jQuery('#passes-sat').find(":selected").val();
+            if (catalogNumber !== '-1') {
+                var sat = AGSatTrack.getSatelliteByName(catalogNumber);
+                _bottomLeft.setSingleSat(sat);
+                
+                var time = jQuery('#passes-passes').find(":selected").val();
+                time = new Date(time);               
+                _bottomLeft.setPassToShow(time);             
+            } else {
+                _bottomLeft.setSingleSat(null);    
+            }
+            _bottomLeft.startRender();
+            resize();          
+        }
+    });
+
+    /**
+    * Update the view in the bottom right
+    */
+    
+    jQuery(document).bind('agsattrack.passesbrview', function(event, view) {
+        if (_render) {
+            AGVIEWS.destroyView(_bottomRight);
+            _bottomRight = AGVIEWS.getNewView(view,'passbottomright');
+            _bottomRight.init(AGVIEWS.modes.SINGLE);
+            var catalogNumber = jQuery('#passes-sat').find(":selected").val();
+            if (catalogNumber !== '-1') {
+                var sat = AGSatTrack.getSatelliteByName(catalogNumber);
+                _bottomRight.setSingleSat(sat);
+                
+                var time = jQuery('#passes-passes').find(":selected").val();
+                time = new Date(time);               
+                _bottomRight.setPassToShow(time);             
+            } else {
+                _bottomRight.setSingleSat(null);    
+            }                         
+            _bottomRight.startRender();
+            resize();
+        }
+    });
+    
+    /**
+    * resize the view
+    */
     function resize(width, height) {
 
         if (typeof width === 'undefined' || typeof height === 'undefined') {
@@ -35,8 +106,8 @@ var AGPASSESVIEW = function() {
                 width: width-30,
                 height: (height-35) / 2
             });
-            _polar.resizeView((width-5) / 2, height / 2);      
-            _sky.resizeView((width-5) / 2, height / 2);            
+            _bottomLeft.resizeView((width-5) / 2, height / 2);      
+            _bottomRight.resizeView((width-5) / 2, height / 2);            
         }          
 
     }
@@ -46,7 +117,7 @@ var AGPASSESVIEW = function() {
     */
     function initToolbar() {
         jQuery('#passes-sat').children().remove();
-        var sats = AGSatTrack.getSatellites();;
+        var sats = AGSatTrack.getSatellites();
         var following = AGSatTrack.getFollowing();
         if (following !== null) {
             if (following.isGeostationary()) {
@@ -57,8 +128,8 @@ var AGPASSESVIEW = function() {
             } else {
                 jQuery('#pass-info-geostationary').hide();  
                 jQuery('#pass-info-table').show();              
-                _polar.setSingleSat(following);
-                _sky.setSingleSat(following);
+                _bottomLeft.setSingleSat(following);
+                _bottomRight.setSingleSat(following);
                 updatePassgrid(following);
                 updatePassesList(following);
             }
@@ -76,10 +147,11 @@ var AGPASSESVIEW = function() {
             }
             jQuery('#passes-sat').append('<option value="'+sat.getCatalogNumber()+'"'+selected+'>'+sat.getName()+'</option>'); 
         }); 
-        
-               
     }
-    
+
+    /**
+    * Update the datagrid with details of the satellites pass.    
+    */
     function updatePassgrid(sat, time) {
         var passData;
         var observers = AGSatTrack.getObservers();
@@ -88,7 +160,7 @@ var AGPASSESVIEW = function() {
         if (typeof time === 'undefined') {
             passData = sat.getNextPass(observer);
         } else {
-            var passData = sat.getPassforTime(observer, time);
+            passData = sat.getPassforTime(observer, time);
         }
         
         var data = [];
@@ -109,6 +181,9 @@ var AGPASSESVIEW = function() {
         jQuery('#passesgrid').datagrid('loadData',data);        
     }
     
+    /**
+    * Update the list of available passes for a satellite
+    */
     function updatePassesList(sat) {
         var catalogNumber = sat.getCatalogNumber();
         var passes = sat.getTodaysPasses();
@@ -148,30 +223,38 @@ var AGPASSESVIEW = function() {
         
     }
     
+    /**
+    * Create the default views
+    */
+    function setDefaultViews() {
+        _bottomLeft = AGVIEWS.getNewView(AGSETTINGS.getPassesBottomLeftView(),'passbottomleft');
+        _bottomLeft.init(AGVIEWS.modes.SINGLE);
+        _bottomRight = AGVIEWS.getNewView(AGSETTINGS.getPassesBottomRightView(),'passbottomright');
+        _bottomRight.init(AGVIEWS.modes.SINGLE);       
+    }
+    
 	return {
 		startRender : function() {
             resize();
             initToolbar();
 			_render = true;
-            _polar.startRender();
-            _sky.startRender();		
+            _bottomLeft.startRender();
+            _bottomRight.startRender();		
 		},
 		
 		stopRender : function() {
 			_render = false;
-            _polar.stopRender();			
-            _sky.stopRender();
+            _bottomLeft.stopRender();			
+            _bottomRight.stopRender();
 		},
 
         resizeView : function(width, height) {
             resize(width, height);     
         },
-        		
+	
 		init : function() {
-            _polar = AGVIEWS.getNewView('polar','passespolar');
-            _polar.init(AGPOLARVIEW.modes.SINGLE);
-            _sky = AGVIEWS.getNewView('sky','passessky');
-            _sky.init(AGSKYVIEW.modes.SINGLE);
+            
+            setDefaultViews();
             
             /**
             * Set the following sat when a new sat is selected in the 
@@ -192,35 +275,35 @@ var AGPASSESVIEW = function() {
                     } else {
                         jQuery('#pass-info-geostationary').hide();  
                         jQuery('#pass-info-table').show();  
-                        _polar.setSingleSat(sat);
-                        _sky.setSingleSat(sat);
+                        _bottomLeft.setSingleSat(sat);
+                        _bottomRight.setSingleSat(sat);
                         updatePassesList(sat);
                         updatePassgrid(sat);
                     }
                 } else {
                     AGSatTrack.setFollowing(null);
-                    _polar.setSingleSat(null);   
-                    _sky.setSingleSat(null);
+                    _bottomLeft.setSingleSat(null);   
+                    _bottomRight.setSingleSat(null);
                     jQuery('#passes-passes').children().remove();
                     jQuery('#passes-available').hide();
                     jQuery('#passes-available').next().hide();
                     jQuery('#passesgrid').datagrid('loadData',[]);  
                 }
-                _polar.reDraw();
-                _sky.reDraw();
+                _bottomLeft.reDraw();
+                _bottomRight.reDraw();
             });
             
             jQuery('#passes-passes').on('change', function(e){
                 var time = jQuery('#passes-passes').find(":selected").val();
                 var sat =  AGSatTrack.getFollowing();
                 time = new Date(time);               
-                _polar.setPassToShow(time);
-                _sky.setPassToShow(time);
+                _bottomLeft.setPassToShow(time);
+                _bottomRight.setPassToShow(time);
                 updatePassgrid(sat, time);
-                _polar.reDraw();
-                _sky.reDraw();
+                _bottomLeft.reDraw();
+                _bottomRight.reDraw();
             });
             
 		}		
-	}
-}
+	};
+};

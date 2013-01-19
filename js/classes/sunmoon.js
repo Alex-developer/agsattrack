@@ -60,7 +60,7 @@ var AGSUNMOON = function() {
 	// julian days
 	function sunrise(obs, twilight) {
 		// obs is a reference variable make a copy
-		var obscopy = new Object();
+		var obscopy = {};
 		for ( var i in obs) {
 			obscopy[i] = obs[i];
 		}

@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Alex Greenland
+Copyright 2013 Alex Greenland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -12,8 +12,16 @@ Copyright 2012 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */  
-var agsattrack = function() {
+ */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGTLES, AGPLANETS, AGVIEWS, AGSETTINGS, Cesium, AGUI, AGOBSERVER */ 
+  
+var Agsattrack = function() {
 	'use strict';
 
 	var _observers = [];
@@ -104,7 +112,7 @@ var agsattrack = function() {
 			jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
             _ui.updateInfoPane();
 		});
-	    
+
 		jQuery(document).bind('agsattrack.forceupdate', function(event) {
 			calculate(true);
 		});
@@ -135,7 +143,7 @@ var agsattrack = function() {
         } else {
             julianDate = Date.Date2Julian(new Date());
         }
-            		
+		
 		_planets.update(julianDate, _observers[0]);
 		
 		if (_tles.getTotalDisplaying() > 0) {
@@ -143,8 +151,8 @@ var agsattrack = function() {
             if (typeof activeView.instance.calculate === 'function') {
                 activeView.instance.calculate(_observers[0]);    
             } else {
-			    var date = new Date();
-			    _tles.calcAll(date, _observers[0]);
+                var date = new Date();
+                _tles.calcAll(date, _observers[0]);
             }
             
 			refreshCounter++;
@@ -209,7 +217,7 @@ var agsattrack = function() {
             var index = _tles.getSatelliteIndex(name);
             return _tles.getSatellite(index);
         },
-                		
+
 		getObservers : function() {
 			return _observers;
 		},
@@ -227,11 +235,16 @@ var agsattrack = function() {
 			 * Create instances of the views
 			 */
 			jQuery.each(_views, function(view, options) {
-				options.instance = new window[options.classname];
-				options.instance.init();
-				if (options.active) {
-					_active = view;
-				}
+				if (typeof options.init === 'undefined') {
+                    options.init = true;    
+                }
+                if (options.init) {
+                    options.instance = new window[options.classname]();
+                    options.instance.init();
+                    if (options.active) {
+                        _active = view;
+                    }
+                }
 			});
 
             bindEvents();
@@ -251,13 +264,10 @@ var agsattrack = function() {
 
 
             jQuery.each(_views, function(view, options) {
-                if (typeof options.instance.postInit === 'function') {
+                if (typeof options.instance !== 'undefined' && typeof options.instance.postInit === 'function') {
                     options.instance.postInit();
                 }
             });            
-			
 		}
-
-	}
-
+	};
 };

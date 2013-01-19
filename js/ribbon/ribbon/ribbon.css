@@ -417,6 +417,10 @@ body
 	border: 1px solid #8492A6;
 }
 
+#ribbon .ribbon-menu-wide {
+    min-width:170px !important;    
+}
+
 #ribbon .ribbon-menu ul {
 	list-style-type: none;
 	padding: 0;

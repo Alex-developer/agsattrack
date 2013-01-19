@@ -13,6 +13,13 @@ Copyright 2013 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
+
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*global AGSatTrack, AGUTIL, AGSETTINGS */ 
  
  /**
  * The list view display. Contains a grid listing all of the satellites
@@ -28,7 +35,7 @@ var AGLISTVIEW = function() {
 	 */
 	jQuery(document).bind('agsattrack.satsselectedcomplete', function(event, group) {
 		if (_render) {
-            clearSatelliteGrid()
+            clearSatelliteGrid();
 		}
 	});
 	
@@ -151,13 +158,13 @@ var AGLISTVIEW = function() {
     * @returns {Object}
     */
     function pagerFilter(data){
-        if (typeof data.length == 'number' && typeof data.splice == 'function'){    // is array
+        if (typeof data.length === 'number' && typeof data.splice === 'function'){    // is array
             data = {
                 total: data.length,
                 rows: data
-            }
+            };
         }
-        var dg = $(this);
+        var dg = jQuery(this); // JSHint - This is fine.
         var opts = dg.datagrid('options');
         var pager = dg.datagrid('getPager');
         pager.pagination({
@@ -174,8 +181,8 @@ var AGLISTVIEW = function() {
         if (!data.originalRows){
             data.originalRows = (data.rows);
         }
-        var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
-        var end = start + parseInt(opts.pageSize);
+        var start = (opts.pageNumber-1)*parseInt(opts.pageSize,10);
+        var end = start + parseInt(opts.pageSize,10);
         data.rows = (data.originalRows.slice(start, end));
         return data;
     } 
@@ -241,6 +248,5 @@ var AGLISTVIEW = function() {
                 jQuery('#list-view-show-events').setState(false);                  
             }            
         }
-        
-	}
-}
+	};
+};

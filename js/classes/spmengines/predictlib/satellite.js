@@ -12,7 +12,15 @@ Copyright 2012 Alex Greenland
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */ 
+ */
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 19/01/2013
+* 
+*/
+/*jshint bitwise: true*/
+/*global AGSatTrack, AGPREDICTLIB, AGSETTINGS, AGUTIL */ 
 var AGSATELLITE = function(tle0, tle1, tle2) {
     'use strict';
     
@@ -120,7 +128,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         } else {
             time = (time.getTime() - 315446400000) / 86400000;    
         }
-        if (_satOrbit.AosHappens(0) && _satOrbit.Geostationary(0) == 0 && _satOrbit.Decayed(0, time) == 0) {
+        if (_satOrbit.AosHappens(0) && _satOrbit.Geostationary(0) === 0 && _satOrbit.Decayed(0, time) === 0) {
             _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
             //_satOrbit.PreCalc(0);
             
@@ -140,11 +148,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                 var los = _satOrbit.FindLOS2();
                 passData.orbit = [];
                 passData.aosTime = _satOrbit.Daynum2Date(aos);
-                passData.losTime = _satOrbit.Daynum2Date(los);
-                
+                passData.aosDayNum = aos;
                 _satOrbit.doCalc(aos);
 
-                var time = aos;
+                time = aos;
                 while (_satOrbit.elevation >= 0) {
                     _satOrbit.doCalc(time);
                     var orbitdata = {
@@ -166,7 +173,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                     if (_satOrbit.elevation > passData.maxEle) {
                         passData.maxEle = _satOrbit.elevation;  
                     }
-                }     
+                }
+                passData.losTime = _satOrbit.Daynum2Date(_satOrbit.daynum);
+                passData.losDayNum = _satOrbit.daynum;
+                passData.duration = (passData.losTime - passData.aosTime) / 1000;                
             }
             var endDate = new Date();
             passData.calcTime = endDate - startDate;
@@ -187,6 +197,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         var startDate = new Date();
         var orbitPoints = [];
         var increment = 0.00035;
+        var i;
         
         increment = increment * 3;
         
@@ -318,7 +329,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             var startTime = new Date();
             
 			if (typeof date === 'undefined') {
-				var date = new Date();				
+				date = new Date();				
 			}
             _sat.configureGroundStation(observer.getLat(), observer.getLon());
             _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
@@ -428,7 +439,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             var date = new Date();
             
             var time = (date.getTime() - 315446400000) / 86400000;  
-            if (_sat.AosHappens(0) && _sat.Geostationary(0) == 0 && _sat.Decayed(0, time) == 0) {
+            if (_sat.AosHappens(0) && _sat.Geostationary(0) === 0 && _sat.Decayed(0, time) === 0) {
                 result = false;
             } else {
                 result = true;
@@ -438,16 +449,16 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         
         getLastcalcTime : function() {
             return _duration;
+        },
+        
+        convertDate : function(date) {
+            return _sat.Daynum2Date(date);
         }
-	}
+	};
 };
 
 AGSATELLITE.getFiles = function() {
+    'use strict';
+        
     return ['/js/classes/spmengines/predictlib/predictlib.js'];
-}
-
-
-var clone = (function(){ 
-  return function (obj) { Clone.prototype=obj; return new Clone() };
-  function Clone(){}
-}());
+};
