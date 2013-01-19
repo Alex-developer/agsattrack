@@ -42,7 +42,29 @@ var AGSETTINGS = (function() {
         defaultTleGroup: 'amateur',
         debugView: false,
         passesbl: 'polar',
-        passesbr: 'azel'
+        passesbr: 'azel',
+        views: {
+            polar: {
+                colours: {
+                    background: '001224',
+                    border: '38554d',
+                    grid: 'cccccc',
+                    text: 'ffffff',
+                    degcolour: '999999',
+                    gradientstart: '374553',
+                    gradientend: '001224'
+                },
+                defaultColours: {
+                    background: '001224',
+                    border: '38554d',
+                    grid: 'cccccc',
+                    text: 'ffffff',
+                    degcolour: '999999',
+                    gradientstart: '374553',
+                    gradientend: '001224'
+                }                
+            }
+        }
     };
     var COOKIENAME = 'agsattrack';
     var COOKIEEXPIRES = 30;
@@ -100,6 +122,15 @@ var AGSETTINGS = (function() {
 	return {
 		init: function() {
 		},
+        
+        getViewSettings : function(view) {
+            return _settings.views[view];    
+        },
+        
+        setViewColours: function(view, colours) {
+            _settings.views[view].colours = colours;    
+        },
+        
         getObserver: function(index) {
             var result = null;
             

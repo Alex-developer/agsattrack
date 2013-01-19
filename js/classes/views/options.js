@@ -26,7 +26,8 @@ var AGOPTIONS = function() {
 	
 	var _render = false;
 	var _dirty = false;
-	
+	var _polarPreview = null;
+    
 	jQuery(document).bind('agsattrack.satclicked', function() {
 		setupOptions();
 		_dirty = false;		
@@ -86,6 +87,16 @@ var AGOPTIONS = function() {
         jQuery('#options-passes-view-bottomleft option[value="' + AGSETTINGS.getPassesBottomLeftView() + '"]').attr('selected', true);
         jQuery('#options-passes-view-bottomright option[value="' + AGSETTINGS.getPassesBottomRightView() + '"]').attr('selected', true);
         
+        if (_polarPreview === null) {
+            _polarPreview = AGVIEWS.getNewView('polar','polar-preview');
+            _polarPreview.init(AGVIEWS.modes.PREVIEW);
+            _polarPreview.startRender();
+
+            var colours = AGSETTINGS.getViewSettings('polar').colours;            
+            setPolarColours(colours);
+        }
+      
+        
         /**
         * Disable the save button - Just in case any of the above enabled it.
         */
@@ -113,6 +124,36 @@ var AGOPTIONS = function() {
             jQuery('#geoshow').prop('disabled',false);           
         }        
     }
+    
+    function setPolarColours(colours) {
+        jQuery('#polar-background-color')[0].color.fromString(colours.background);
+        jQuery('#polar-border-color')[0].color.fromString(colours.border);
+        jQuery('#polar-gradient-start')[0].color.fromString(colours.gradientstart);
+        jQuery('#polar-gradient-end')[0].color.fromString(colours.gradientend);
+        jQuery('#polar-grid')[0].color.fromString(colours.grid);
+        jQuery('#polar-text')[0].color.fromString(colours.text);
+        jQuery('#polar-degrees-text')[0].color.fromString(colours.degcolour);        
+    }
+    
+    jQuery('.polarcolour').on('change', function(e){
+        var colours = {
+            background: jQuery('#polar-background-color')[0].color.toString(),
+            border: jQuery('#polar-border-color')[0].color.toString(),
+            grid: jQuery('#polar-grid')[0].color.toString(),
+            text: jQuery('#polar-text')[0].color.toString(),
+            degcolour: jQuery('#polar-degrees-text')[0].color.toString(),
+            gradientstart: jQuery('#polar-gradient-start')[0].color.toString(),
+            gradientend: jQuery('#polar-gradient-end')[0].color.toString()
+        }
+        _polarPreview.setPreviewColours(colours);            
+        enableSave();        
+    });
+    jQuery('#polar-reset-colours').on('click', function(e){
+        var colours = AGSETTINGS.getViewSettings('polar').defaultColours;
+        setPolarColours(colours);
+        _polarPreview.setPreviewColours(colours);           
+        enableSave();        
+    });    
     
     
     jQuery('.options-cb').on('change', function(e){
@@ -207,7 +248,21 @@ var AGOPTIONS = function() {
         } else {
             AGVIEWS.stopView('debug');
             jQuery('#ribbon-tab-header-8').hide(); 
-        }       
+        }
+        
+        
+        var colours = {
+            background: jQuery('#polar-background-color')[0].color.toString(),
+            border: jQuery('#polar-border-color')[0].color.toString(),
+            grid: jQuery('#polar-grid')[0].color.toString(),
+            text: jQuery('#polar-text')[0].color.toString(),
+            degcolour: jQuery('#polar-degrees-text')[0].color.toString(),
+            gradientstart: jQuery('#polar-gradient-start')[0].color.toString(),
+            gradientend: jQuery('#polar-gradient-end')[0].color.toString()
+        }        
+        AGSETTINGS.setViewColours('polar', colours);
+        AGVIEWS.optionsUpdated('polar');
+             
         AGSETTINGS.saveSettings();               
 		jQuery('#options-save').disable();         
 	});

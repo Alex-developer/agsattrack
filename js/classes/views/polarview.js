@@ -65,7 +65,8 @@ var AGPOLARVIEW = function(element) {
     var _mode;
     var _singleSat = null;
     var _passToShow = null;
-    
+    var _colours = AGSETTINGS.getViewSettings('polar').colours;
+        
     /**
     * Set the parent element for this view.    
     */
@@ -95,7 +96,12 @@ var AGPOLARVIEW = function(element) {
             drawPolarView();
         }          
     }
-	
+
+    jQuery(document).bind('agsattrack.polaroptionsupdated', function(event, options) {
+        _colours = options.colours;
+        drawPolarView();
+    });
+    	
     /**
      * Listen for an event telling us a new set of data is available
      */
@@ -222,17 +228,16 @@ var AGPOLARVIEW = function(element) {
             y: 0,
             width: _width,
             height: _height,
-            fill: '#001224'
+            fill: '#' + _colours.background
         }));
       
-
         _backgroundLayer.add(new Kinetic.Circle({
             x : _cx,
             y : _cy,
             radius : _radius + _halfMargin,
-            stroke : '#38554d',
+            stroke : '#' + _colours.border,
             strokeWidth : 10,
-            fill: '#001224' 
+            fill: '#' + _colours.background 
         })); 
         
 		_circle = new Kinetic.Circle({
@@ -248,7 +253,7 @@ var AGPOLARVIEW = function(element) {
                   x: 0,
                   y: 100
                 },
-                colorStops: [0, '#374553', 1, '#001224']
+                colorStops: [0, '#' + _colours.gradientstart, 1, '#' + _colours.gradientend]
             }            
 		});
                     
@@ -263,7 +268,7 @@ var AGPOLARVIEW = function(element) {
                 x : _cx,
                 y : _cy,
                 radius : radius,
-                stroke : '#ccc',
+                stroke : '#' + _colours.grid,
                 strokeWidth : 1
             }));    
         }
@@ -284,7 +289,7 @@ var AGPOLARVIEW = function(element) {
                 text : (90-i) + 'º',
                 fontSize : elFontSize,
                 fontFamily : 'Verdana',
-                textFill : '#999'
+                textFill : '#' + _colours.degcolour
             }));
             _backgroundLayer.add(new Kinetic.Text({
                 x : _cx + radius - 7,
@@ -292,7 +297,7 @@ var AGPOLARVIEW = function(element) {
                 text : (90-i) + 'º',
                 fontSize : elFontSize,
                 fontFamily : 'Verdana',
-                textFill : '#999'
+                textFill : '#' + _colours.degcolour
             }));                 
         }
         
@@ -317,7 +322,7 @@ var AGPOLARVIEW = function(element) {
             
             _backgroundLayer.add(new Kinetic.Line({
                 points : [ startX, startY, endX, endY ],
-                stroke : '#ccc',
+                stroke : '#' + _colours.grid,
                 strokeWidth : 1
             }));           
         }      
@@ -325,14 +330,14 @@ var AGPOLARVIEW = function(element) {
 		_backgroundLayer.add(new Kinetic.Line({
             points : [ _cx - _radius - _halfMargin + 5, _cy,
                     _cx + _radius + _halfMargin - 5, _cy ],
-            stroke : '#ccc',
+            stroke : '#' + _colours.grid,
             strokeWidth : 1
         }));
 
 		_backgroundLayer.add(new Kinetic.Line({
             points : [ _cx, _cy - _radius - _halfMargin + 5, _cx,
                     _cy + _radius + _halfMargin - 5 ],
-            stroke : '#ccc',
+            stroke : '#' + _colours.grid,
             strokeWidth : 1
         }));
 
@@ -342,7 +347,7 @@ var AGPOLARVIEW = function(element) {
             text : 'N',
             fontSize : 15,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            textFill : '#' + _colours.text
         }));
 
 		_backgroundLayer.add(new Kinetic.Text({
@@ -351,7 +356,7 @@ var AGPOLARVIEW = function(element) {
             text : 'E',
             fontSize : 15,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            textFill : '#' + _colours.text
         }));
 
 		_backgroundLayer.add(new Kinetic.Text({
@@ -360,7 +365,7 @@ var AGPOLARVIEW = function(element) {
             text : 'W',
             fontSize : 15,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            textFill : '#' + _colours.text
         }));
 
 		_backgroundLayer.add(new Kinetic.Text({
@@ -369,7 +374,7 @@ var AGPOLARVIEW = function(element) {
             text : 'S',
             fontSize : 15,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            textFill : '#' + _colours.text
         }));
 
         elFontSize = 10;
@@ -382,7 +387,7 @@ var AGPOLARVIEW = function(element) {
             text : 'Mouse Position',
             fontSize : elFontSize,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            textFill : '#' + _colours.text
         }));
         
 		_backgroundLayer.add(new Kinetic.Text({
@@ -391,7 +396,7 @@ var AGPOLARVIEW = function(element) {
             text : 'Azimuth:',
             fontSize : elFontSize,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            textFill : '#' + _colours.text
         }));
         
 		_backgroundLayer.add(new Kinetic.Text({
@@ -400,7 +405,7 @@ var AGPOLARVIEW = function(element) {
             text : 'Elevation:',
             fontSize : elFontSize,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            textFill : '#' + _colours.text
         }));
 
 		_backgroundLayer.draw();
@@ -436,8 +441,18 @@ var AGPOLARVIEW = function(element) {
             case AGVIEWS.modes.SINGLE:
                 _drawSingleView();
                 break;
+                
+            case AGVIEWS.modes.PREVIEW:
+                _drawPreviewView();
+                break;                
         }
     }
+    
+    function _drawPreviewView() {
+        setDimensions();
+        drawBackground();
+        drawInfoLayer();              
+    }    
     
     /**
     * Draw a single satellite. We allow the layers to be cleared each time
@@ -885,7 +900,7 @@ var AGPOLARVIEW = function(element) {
                 text : 'N/A',
                 fontSize : elFontSize,
                 fontFamily : 'Verdana',
-                textFill : '#ccc'
+                textFill : '#' + _colours.text
             });
             _objectLayer.add(_mousePosTextAz);
 
@@ -895,7 +910,7 @@ var AGPOLARVIEW = function(element) {
                 text : 'N/A',
                 fontSize : elFontSize,
                 fontFamily : 'Verdana',
-                textFill : '#ccc'
+                textFill : '#' + _colours.text
             });
             _objectLayer.add(_mousePosTextEl);
                 
@@ -913,6 +928,11 @@ var AGPOLARVIEW = function(element) {
         
         setPassToShow : function(passToShow) {
             _passToShow = passToShow;
+        },
+        
+        setPreviewColours : function(colours) {
+            _colours = colours;
+            drawPolarView();    
         }
 	};
 };

@@ -159,11 +159,17 @@ var AGVIEWS = (function(element) {
             if (typeof view.destroy !== 'undefined' && typeof view.destroy === 'function') {
                 view.destroy();    
             }
+        },
+        
+        optionsUpdated : function(view) {
+            var event = 'agsattrack.'+view+'optionsupdated'; 
+            jQuery(document).trigger(event, AGSETTINGS.getViewSettings(view));    
         }  
     };
 })();
 
 AGVIEWS.modes = {
     DEFAULT : 1,
-    SINGLE : 2
+    SINGLE : 2,
+    PREVIEW : 3
 };
