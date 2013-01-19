@@ -42,7 +42,7 @@ var AGSETTINGS = (function() {
         defaultTleGroup: 'amateur',
         debugView: false,
         passesbl: 'polar',
-        passesbr: 'azel',
+        passesbr: 'sky',
         views: {
             polar: {
                 colours: {
