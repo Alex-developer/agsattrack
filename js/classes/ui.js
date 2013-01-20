@@ -113,8 +113,8 @@ var AGUI = function() {
 	});
 
 	jQuery('#options').click(function() {
+        AGVIEWS.switchView('options');
         jQuery(document).trigger('agsattrack.setupoptions');
-		jQuery('#viewtabs').tabs('select', 6);
 	});
 
     jQuery('#help-tour').click(function() {
@@ -155,7 +155,7 @@ var AGUI = function() {
         if (AGSETTINGS.getSwitchViewOnTabClick()) {
             var newTab = jQuery(this).find('span').attr('data-tab');
             if (typeof newTab !== 'undefined') {
-                jQuery('#viewtabs').tabs('select', parseInt(newTab,10));                
+                AGVIEWS.switchView(newTab);              
             }
         }
     });    
@@ -175,18 +175,6 @@ var AGUI = function() {
 	jQuery('.tile').click(function() {
 		var provider = jQuery(this).attr('data-options');
 		jQuery(document).trigger('agsattrack.changetile', provider);
-	});
-     
-
-	
-	jQuery('#viewtabs').tabs({
-		onSelect : function(title, index) {
-			if (index === 6) {
-				jQuery(document).trigger('agsattrack.optionsselected');
-			}			
-			var view = jQuery('#viewtabs').tabs('getTab', index).attr('id');
-			jQuery(document).trigger('agsattrack.changeview', view);
-		}
 	});
         
     /**
