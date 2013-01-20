@@ -1944,8 +1944,8 @@ var PLib =
                             satInfo.dateTimeEnd = PLib.Daynum2Date(PLib.daynum);
                             satInfo.decayAzimuth = PLib.iaz;
                             satInfo.decayRange = PLib.irk;
-satInfo.orbitNumber = PLib.rv;
-debugger;
+                            satInfo.orbitNumber = PLib.rv;
+
                             if ((plusCount > 3) || (plusCount > 2 && asteriskCount > 2))
                             {
                                 satInfo.visibility = '+';

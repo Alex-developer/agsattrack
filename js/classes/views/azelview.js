@@ -267,31 +267,36 @@ var AGAZELVIEW = function(element) {
                 elPoints.push(pos.y);          
             }
             
-            _plotLayer.add(new Kinetic.Polygon({
-                    points: elPoints,
-                    fill: {
-                        start: {
-                            x: 0,
-                            y: -10
+            if (elPoints.length > 0) {
+                _plotLayer.add(new Kinetic.Polygon({
+                        points: elPoints,
+                        fill: {
+                            start: {
+                                x: 0,
+                                y: -10
+                            },
+                            end: {
+                              x: 0,
+                              y: _height
+                            },
+                            colorStops: [0, '#374553', 1, '#001224']
                         },
-                        end: {
-                          x: 0,
-                          y: _height
-                        },
-                        colorStops: [0, '#374553', 1, '#001224']
-                    },
-                    lineCap: 'round',
-                    lineJoin: 'round'
-                })
-            ); 
-            _plotLayer.add(new Kinetic.Line({
-                    points: azPoints,
-                    stroke: 'green',
-                    strokeWidth: 1,
-                    lineCap: 'round',
-                    lineJoin: 'round'
-                })
-            );
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                    })
+                );
+            }
+            
+            if (azPoints.length > 0) {
+                _plotLayer.add(new Kinetic.Line({
+                        points: azPoints,
+                        stroke: 'green',
+                        strokeWidth: 1,
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                    })
+                );
+            }
         }
         _plotLayer.draw();
     }

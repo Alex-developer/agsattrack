@@ -25,7 +25,8 @@ var AGDEBUG = function() {
     'use strict';
     
     var _render = false;
-
+    var _selectedSat = null;
+    
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#debug');
@@ -47,6 +48,15 @@ var AGDEBUG = function() {
                     buildDebugGrid();
                 }
             }); 
+
+    jQuery(document).bind('agsattrack.deletesatcache', function(e) {
+        var sat = AGSatTrack.getSatelliteByName(_selectedSat);
+        sat.clearCache();
+        buildDebugGrid();
+        jQuery('#debug-clear-cache').disable();
+    }); 
+                         
+             
                                                 
     function buildDebugGrid() {       
         var row = {};
@@ -70,7 +80,9 @@ var AGDEBUG = function() {
                 _parentId:1,
                 id:i+2,
                 'state': openLeaves,
-                calctime: lastCalcTime 
+                calctime: lastCalcTime,
+                isSat: true,
+                catalogNumber: sats[i].getCatalogNumber() 
             };
             rows.push(row);
            
@@ -189,7 +201,18 @@ var AGDEBUG = function() {
         },
         
         init : function() {
-            
+            jQuery('#debuggrid').treegrid({
+                onClickRow : function(row) {
+                    if (typeof row.isSat !== 'undefined' && row.isSat) {
+                        _selectedSat = row.catalogNumber;
+                        jQuery('#debug-clear-cache').enable();    
+                    } else {
+                        _selectedSat = null;
+                        jQuery('#debug-clear-cache').disable();    
+                    }
+                }
+            });
+                
         },
         
         resizeView : function(width, height) {

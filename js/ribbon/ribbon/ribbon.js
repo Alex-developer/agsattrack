@@ -193,7 +193,18 @@
                                 }								
 							});
 						}
-						
+
+                        if (buttonType === 'button') {
+                            el.click(function(e){
+                                if (!el.hasClass('disabled')) {
+                                    var event = el.attr('data-event');
+                                    if (typeof event !== 'undefined') {
+                                        jQuery(document).trigger(event);
+                                    }
+                                }                                
+                            });
+                        }
+                        						
                         /**
                         * Group toggle button.
                         * 
