@@ -24,6 +24,11 @@ var AGVIEWS = (function(element) {
     "use strict" ;
     
     var _views = {
+        'home' : {
+            classname : 'AGHOMEVIEW',
+            active : true,
+            index: 8
+        },
         '3d' : {
             classname : 'AG3DVIEW',
             active : false,
@@ -46,7 +51,7 @@ var AGVIEWS = (function(element) {
         },
         'list' : {
             classname : 'AGLISTVIEW',
-            active : true,
+            active : false,
             index: 0
         },
         'timeline' : {
@@ -77,20 +82,32 @@ var AGVIEWS = (function(element) {
             return _views;
         },
         
-        startView : function(name) {
-            var view = null;
-            jQuery.each(_views, function(_view, _options) {
-                if (_options.active) {
-                    view = _options;
+        switchView : function(name) {
+            var newView = null;
+            jQuery.each(_views, function(viewName, view) {
+                if (viewName === name) {
+                    newView = view;
                 }
-                if (typeof _options.instance !== 'undefined') {
-                    _options.instance.stopRender();
+                if (typeof view.instance !== 'undefined') {
+                    view.instance.stopRender();
                 }                 
             });
-            if (view !== null) {
-                if (typeof view.instance !== 'undefined') {
-                    jQuery('#viewtabs').tabs('select',view.index);
-                    view.instance.startRender();
+            if (newView !== null) {
+                if (typeof newView.instance === 'undefined') {
+                    if (typeof newView.init === 'undefined') {
+                        newView.init = true;    
+                    }
+                    if (newView.init) {
+                        newView.instance = new window[newView.classname]();
+                        newView.instance.init();
+                    } 
+                    if (typeof newView.instance !== 'undefined' && typeof newView.instance.postInit === 'function') {
+                        newView.instance.postInit();
+                    }                                                           
+                }
+                if (typeof newView.instance !== 'undefined') {
+                    jQuery('#viewtabs').tabs('select',newView.index);
+                    newView.instance.startRender();
                 }    
             }            
         },
@@ -128,7 +145,17 @@ var AGVIEWS = (function(element) {
             });
             return view;             
         },
-            
+        
+        getCurrentViewName : function() {
+            var view = null;
+            jQuery.each(_views, function(_view, _options) {
+                if (_options.active) {
+                    view = _view;
+                }  
+            });
+            return view;             
+        },
+                    
         getViewFromIndex : function(index) {
             var view = null;
             jQuery.each(_views, function(_view, _options) {
@@ -164,6 +191,10 @@ var AGVIEWS = (function(element) {
         optionsUpdated : function(view) {
             var event = 'agsattrack.'+view+'optionsupdated'; 
             jQuery(document).trigger(event, AGSETTINGS.getViewSettings(view));    
+        },
+        
+        resizeLayout : function() {
+            jQuery('body').layout('resize');
         }  
     };
 })();

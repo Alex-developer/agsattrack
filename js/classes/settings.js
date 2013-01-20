@@ -62,7 +62,7 @@ var AGSETTINGS = (function() {
                     degcolour: '999999',
                     gradientstart: '374553',
                     gradientend: '001224'
-                }                
+                }              
             }
         }
     };

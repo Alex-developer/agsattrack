@@ -49,30 +49,6 @@ var Agsattrack = function() {
 		jQuery(document).bind('agsattrack.loadelements', function(event, params) {
 			_tles.load(params.filename);
 		});
-		
-		/**
-		 * Listen for the view being changed. When the view changes stop the current
-		 * view from rendering and start the new view rendering.
-		 */
-		jQuery(document).bind('agsattrack.changeview', function(event, view) {
-	
-            var _views = AGVIEWS.getViews();
-            
-			jQuery.each(_views, function(view, options) {
-				if (options.active) {
-					options.active = false;
-					options.instance.stopRender();
-				}
-			});
-
-			_views[view].active = true;
-			_views[view].instance.startRender();
-	
-			if (_initComplete) {
-				calculate(true);
-			}
-		});
-
 
 		/**
 		 * Listen for an event indicating the observer position is now set. After it is
@@ -148,7 +124,7 @@ var Agsattrack = function() {
 		
 		if (_tles.getTotalDisplaying() > 0) {
             var activeView = AGVIEWS.getCurrentView();
-            if (typeof activeView.instance.calculate === 'function') {
+            if (typeof activeView.instance !== 'undefined' && typeof activeView.instance.calculate === 'function') {  // TODO: Move this
                 activeView.instance.calculate(_observers[0]);    
             } else {
                 var date = new Date();
@@ -229,45 +205,22 @@ var Agsattrack = function() {
 		init : function() {
 			var _active = 0;
 			
-            var _views = AGVIEWS.getViews();
-
-			/**
-			 * Create instances of the views
-			 */
-			jQuery.each(_views, function(view, options) {
-				if (typeof options.init === 'undefined') {
-                    options.init = true;    
-                }
-                if (options.init) {
-                    options.instance = new window[options.classname]();
-                    options.instance.init();
-                    if (options.active) {
-                        _active = view;
-                    }
-                }
-			});
-
             bindEvents();
-            
-            AGVIEWS.startView(AGVIEWS.getCurrentView().name);  
             
             /**
              * Fire up the user Inerface
              */
             _ui = new AGUI();
 
+            AGVIEWS.switchView(AGVIEWS.getCurrentViewName());  
+            
+            AGVIEWS.resizeLayout();
             
 			/**
 			 * Setup the first observer, this will be the 'Home' observer
 			 */
 			_observers[0] = new AGOBSERVER(0).init();
-
-
-            jQuery.each(_views, function(view, options) {
-                if (typeof options.instance !== 'undefined' && typeof options.instance.postInit === 'function') {
-                    options.instance.postInit();
-                }
-            });            
+            
 		}
 	};
 };

@@ -330,3 +330,28 @@ p.description {
 .backblack {
     background: black;
 }
+
+#home {
+    padding: 10px;
+}
+
+#home h2 {
+    margin-top: 2px;
+}
+
+#home .heading {
+    font-size: 2em;
+}
+
+#home p {
+    line-height: 1.5em;    
+}
+
+#home li {
+    line-height: 1.4em;
+    margin-bottom: 5px;    
+}
+
+#home .vertical {
+    vertical-align:middle;        
+}
