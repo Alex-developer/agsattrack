@@ -131,7 +131,8 @@ var AGAZELVIEW = function(element) {
         var startTime = 0;
         var timeStep = 0;
         var date;
-
+        var okToDraw = true;
+        
         for (var i=1; i < 7; i++) {
             _backgroundLayer.add(new Kinetic.Line({
                 points : [ _margin, ypos, _margin+10, ypos],
@@ -167,46 +168,56 @@ var AGAZELVIEW = function(element) {
             ypos += _ystep;              
         }
         
-        if (_satellite !== null && _passData !== null) {
-            startTime = _passData.aosDayNum;   
-            timeStep = _passData.duration / 6;
-            date = _satellite.convertDate(startTime);
-            var dateLabel = AGUTIL.date(date);             
-            for (i=0; i < 7; i++) {
-                if (i !== 0 && i !== 6) {  
-                    _timeLayer.add(new Kinetic.Line({
-                        points : [ xpos, _height - _margin, xpos, _height - _margin - 10],
-                        stroke : '#ccc',
-                        strokeWidth : 1
-                    }));
-                }
-                if (_passToShow !== 0) {
-                    var formattedDate = AGUTIL.shortTime(date);
-                    _timeLayer.add(new Kinetic.Text({
-                        x : xpos - 17,
-                        y : _height - _margin + 7,
-                        text : formattedDate,
-                        align: 'left',
-                        fontSize : 8,
-                        fontFamily : 'Verdana',
-                        textFill : 'white'
-                    }));
-                    date = Date.DateAdd('s', timeStep , date);
-                }
-                                                                  
-                xpos += _xstep;
+        if (_satellite !== null) {
+            
+            if (_passData === null || typeof _passData === 'undefined') {
+                _passData = _satellite.getNextPass();
+                if (typeof _passData === 'undefined') {
+                    okToDraw = false;    
+                }                
             }
             
-            _timeLayer.add(new Kinetic.Text({
-                x : 0,
-                y : _height - _margin + 25,
-                width: _width,
-                text : dateLabel,
-                align: 'center',
-                fontSize : 8,
-                fontFamily : 'Verdana',
-                textFill : 'white'
-            }));            
+            if (okToDraw) {
+                startTime = _passData.aosDayNum;   
+                timeStep = _passData.duration / 6;
+                date = _satellite.convertDate(startTime);
+                var dateLabel = AGUTIL.date(date);             
+                for (i=0; i < 7; i++) {
+                    if (i !== 0 && i !== 6) {  
+                        _timeLayer.add(new Kinetic.Line({
+                            points : [ xpos, _height - _margin, xpos, _height - _margin - 10],
+                            stroke : '#ccc',
+                            strokeWidth : 1
+                        }));
+                    }
+                    if (_passToShow !== 0) {
+                        var formattedDate = AGUTIL.shortTime(date);
+                        _timeLayer.add(new Kinetic.Text({
+                            x : xpos - 17,
+                            y : _height - _margin + 7,
+                            text : formattedDate,
+                            align: 'left',
+                            fontSize : 8,
+                            fontFamily : 'Verdana',
+                            textFill : 'white'
+                        }));
+                        date = Date.DateAdd('s', timeStep , date);
+                    }
+                                                                      
+                    xpos += _xstep;
+                }
+                
+                _timeLayer.add(new Kinetic.Text({
+                    x : 0,
+                    y : _height - _margin + 25,
+                    width: _width,
+                    text : dateLabel,
+                    align: 'center',
+                    fontSize : 8,
+                    fontFamily : 'Verdana',
+                    textFill : 'white'
+                }));
+            }           
         }
         
         _backgroundLayer.add(new Kinetic.Text({
@@ -247,55 +258,65 @@ var AGAZELVIEW = function(element) {
     }
     
     function drawAzEl() {
+        var okToDraw = true;
         _plotLayer.removeChildren();
 
-        if (_satellite !== null && _passData !== null) {
-            var azPoints = [];
-            var elPoints = [
-                _width - _margin,
-                _height - _margin,
-                _margin,
-                _height - _margin            
-            ];
-            for (var i=0; i < _passData.pass.length; i++) {
-                var pos = convertAztoXY(_passData.pass[i]);
-                azPoints.push(pos.x);   
-                azPoints.push(pos.y);   
+        if (_satellite !== null) {
+            if (_passData === null || typeof _passData === 'undefined') {
+                _passData = _satellite.getNextPass();
+                if (typeof _passData === 'undefined') {
+                    okToDraw = false;    
+                }                
+            }
+            
+            if (okToDraw) {
+                var azPoints = [];
+                var elPoints = [
+                    _width - _margin,
+                    _height - _margin,
+                    _margin,
+                    _height - _margin            
+                ];
+                for (var i=0; i < _passData.pass.length; i++) {
+                    var pos = convertAztoXY(_passData.pass[i]);
+                    azPoints.push(pos.x);   
+                    azPoints.push(pos.y);   
 
-                pos = convertEltoXY(_passData.pass[i]);
-                elPoints.push(pos.x);   
-                elPoints.push(pos.y);          
-            }
-            
-            if (elPoints.length > 0) {
-                _plotLayer.add(new Kinetic.Polygon({
-                        points: elPoints,
-                        fill: {
-                            start: {
-                                x: 0,
-                                y: -10
+                    pos = convertEltoXY(_passData.pass[i]);
+                    elPoints.push(pos.x);   
+                    elPoints.push(pos.y);          
+                }
+                
+                if (elPoints.length > 0) {
+                    _plotLayer.add(new Kinetic.Polygon({
+                            points: elPoints,
+                            fill: {
+                                start: {
+                                    x: 0,
+                                    y: -10
+                                },
+                                end: {
+                                  x: 0,
+                                  y: _height
+                                },
+                                colorStops: [0, '#374553', 1, '#001224']
                             },
-                            end: {
-                              x: 0,
-                              y: _height
-                            },
-                            colorStops: [0, '#374553', 1, '#001224']
-                        },
-                        lineCap: 'round',
-                        lineJoin: 'round'
-                    })
-                );
-            }
-            
-            if (azPoints.length > 0) {
-                _plotLayer.add(new Kinetic.Line({
-                        points: azPoints,
-                        stroke: 'green',
-                        strokeWidth: 1,
-                        lineCap: 'round',
-                        lineJoin: 'round'
-                    })
-                );
+                            lineCap: 'round',
+                            lineJoin: 'round'
+                        })
+                    );
+                }
+                
+                if (azPoints.length > 0) {
+                    _plotLayer.add(new Kinetic.Line({
+                            points: azPoints,
+                            stroke: 'green',
+                            strokeWidth: 1,
+                            lineCap: 'round',
+                            lineJoin: 'round'
+                        })
+                    );
+                }
             }
         }
         _plotLayer.draw();
@@ -439,7 +460,8 @@ var AGAZELVIEW = function(element) {
         },
         
         setSingleSat : function(satellite) {
-            _satellite = satellite;      
+            _satellite = satellite;
+            _passData = null;     
         }    
     };
 };

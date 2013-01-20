@@ -130,7 +130,6 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                     _satOrbit.doCalc(time);   
                 }
             }
-            
             _satOrbit.daynum = time;
             var aos = _satOrbit.FindAOS();
             if (aos !== 0.0) {
