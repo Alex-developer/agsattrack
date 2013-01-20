@@ -121,7 +121,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         }
         if (_satOrbit.AosHappens(0) && _satOrbit.Geostationary(0) === 0 && _satOrbit.Decayed(0, time) === 0) {
             _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
-            //_satOrbit.PreCalc(0);
+            _satOrbit.PreCalc(0);
             
             _satOrbit.doCalc(time);
             if (_satOrbit.elevation >= 0 && backTrack) {
@@ -135,7 +135,6 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             var aos = _satOrbit.FindAOS();
             if (aos !== 0.0) {
                 passData.orbitNumber = _satOrbit.rv;                
-                //var los = _satOrbit.FindLOS2();
                 passData.orbit = [];
                 passData.aosTime = _satOrbit.Daynum2Date(aos);
                 passData.aosDayNum = aos;
