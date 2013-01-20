@@ -29,6 +29,7 @@ var AGLISTVIEW = function() {
 	
 	var _render = false;            // Flag to indicate this view is active and needs rendering
     var _gridPolulated = false;     // Flag to indicate that the grid is populated. Used to call populate or update
+    var _ignoreEvents = false;
        
 	/**
 	 * Listen for an event telling us a new set of elements were loaded
@@ -38,7 +39,18 @@ var AGLISTVIEW = function() {
             clearSatelliteGrid();
 		}
 	});
-	
+
+    jQuery(document).bind('agsattrack.newsatselected', function(event, group) {
+        if (_render) {
+            if (!_gridPolulated) {
+                populateSatelliteGrid();
+            } else {
+                updateSatelliteGrid();
+            }
+        }
+    });	
+    
+    
 	/**
 	 * Listen for an event telling us that new satellite propogation values are
 	 * available.
@@ -101,7 +113,8 @@ var AGLISTVIEW = function() {
                     alt: satellite.get('altitude').toFixed(0),
                     vel: satellite.get('velocity').toFixed(0),
                     nextevent: theNextEvent,
-                    catalognumber: satellite.getCatalogNumber()
+                    catalognumber: satellite.getCatalogNumber(),
+                    ck: satellite.getSelected()
                 }); 
         
             });
@@ -144,9 +157,18 @@ var AGLISTVIEW = function() {
                     lon: AGUTIL.convertDecDegLon(satellite.get('longitude')),
                     alt: satellite.get('altitude').toFixed(0),
                     vel: satellite.get('velocity').toFixed(0),
-                    nextevent: theNextEvent
+                    nextevent: theNextEvent                  
                 }
-            });                
+            });
+            if (satellite.getSelected()) {
+                _ignoreEvents = true;
+                dataGrid.datagrid('checkRow',i);    
+                _ignoreEvents = false;
+            } else {
+                _ignoreEvents = true;
+                dataGrid.datagrid('uncheckRow',i);    
+                _ignoreEvents = false;                
+            }                 
         }
     }
     
@@ -228,15 +250,19 @@ var AGLISTVIEW = function() {
                     {field:'nextevent',title:'Next Event',width:150,align:'right'}
          
                 ]]  
-            });                            
+            });                                    
             jQuery('#sat-list-grid').datagrid({
-                onClickRow: function(index,data){
-                    jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber});
+                onUncheck: function(index,data){
+                    if (!_ignoreEvents) {
+                        jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber, state: false});
+                    }
                 }
-            });           
+            });  
             jQuery('#sat-list-grid').datagrid({
                 onCheck: function(index,data){
-                    jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber});
+                    if (!_ignoreEvents) {
+                        jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber, state: true});
+                    }
                 }
             });   
         },
