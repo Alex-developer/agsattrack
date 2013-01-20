@@ -817,7 +817,7 @@ var AGPOLARVIEW = function(element) {
     
     var _debugCounter=0;
 	function animate() {
-		if (_render) {
+		if (_render && _mode !== AGVIEWS.modes.PREVIEW) {
             if (AGSETTINGS.getDebugLevel() > 0) {
                 _debugCounter++;
                 if (_debugCounter > 100) {
