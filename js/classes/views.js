@@ -81,7 +81,7 @@ var AGVIEWS = (function(element) {
     * If a view is specified in the settings then set it as the default
     */
     var view = AGSETTINGS.getDefaultView();
-    if (typeof _views[view] !== undefined) {
+    if (typeof _views[view] !== 'undefined') {
         if (_views[view].active === false) {
             jQuery.each(_views, function(_view, _viewOptions) {
                 _viewOptions.active = false;
