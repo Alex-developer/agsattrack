@@ -29,7 +29,9 @@ var AGTLES = function() {
     var _groupName = '';
 	var rawKeps = '';
 	var satellites = [];
-	
+	var satIndex;
+    var sat;
+    
 	function processRawData() {
         var tle = [];
         for (var linenum = 0; linenum < rawKeps.length; linenum++) {

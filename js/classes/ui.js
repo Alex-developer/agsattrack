@@ -183,14 +183,38 @@ var AGUI = function() {
 	jQuery(document).bind('agsattrack.tlesloaded',
 		function(e, group) {
             var tles = AGSatTrack.getTles();
+            var doAutoLoad = true;
+            var sat;
+            
+            if (AGSETTINGS.getDefaultTLEgroup() === group) {
+                var sats = AGSETTINGS.getDefaultSats();
+                if (sats !== '') {
+                    AGSETTINGS.setDefaultSats('');
+                    doAutoLoad = false;
+                    var satsList = sats.split(',');
+                    var foundSats = [];
+                    for (var i=0; i < satsList.length; i++) {
+                        sat = AGSatTrack.getSatelliteByName(satsList[i]);
+                        if (typeof sat !== 'undefined') {
+                           // sat.setDisplaying(true);
+                           foundSats.push(satsList[i]);
+                        }
+                    }
+                    jQuery(document).trigger('agsattrack.satsselected', {
+                        selections : foundSats
+                    }); 
+                    jQuery(document).trigger('agsattrack.forceupdate', {});                        
+                }
+            }
+                        
             jQuery('#statustotalloaded').html(tles.getCount() + ' Satellites Loaded');
             jQuery('#sat-info-selector').jqxDropDownList('clear');
             clearDataPane();
             jQuery('#ag-satselector').agsatbox('setData', tles);
             AGVIEWS.sendViewReset();
             jQuery('#quick-sat-selector').agcheckList('clear');
-            
-            if (AGSETTINGS.getAutoAddSats()) {
+                                
+            if (AGSETTINGS.getAutoAddSats() && doAutoLoad) {
                 jQuery('#ag-satselector').agsatbox('moveAllSats','right');        
             }
             var groupName = AGSatTrack.getTles().getGroupName();

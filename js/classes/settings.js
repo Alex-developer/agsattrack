@@ -32,6 +32,8 @@ var AGSETTINGS = (function() {
     var _debugLevel = 1;
     var _calculateEvents = true;
     var _requireEUCookieLaw = true;
+    var _defaultView = 'home';
+    var _defaultSats = '';
     
     var _settings = {
         aosEl: 5,
@@ -43,7 +45,6 @@ var AGSETTINGS = (function() {
         debugView: false,
         passesbl: 'polar',
         passesbr: 'sky',
-        defaultView: 'home',
         views: {
             polar: {
                 colours: {
@@ -129,26 +130,35 @@ var AGSETTINGS = (function() {
     */
     var qsView = AGQUERYSTRING.value('view');
     var qsGroup = AGQUERYSTRING.value('group');
+    var qsSats = AGQUERYSTRING.value('sats');
     
     if (typeof qsGroup !== 'undefined') {
         _settings.defaultTleGroup = qsGroup;
     }
     if (typeof qsView !== 'undefined') {
-        _settings.defaultView = qsView;
+        _defaultView = qsView;
     }    
-    
-    
+    if (typeof qsSats !== 'undefined') {
+        _defaultSats = qsSats;
+    }      
+
 	return {
 		init: function() {
 		},
-        
+
+        getDefaultSats : function() {
+            return _defaultSats;    
+        },
+        setDefaultSats : function(value) {
+            _defaultSats = value;
+        },
+                
         getDefaultView : function() {
-            return _settings.defaultView;    
+            return _defaultView;    
         },
         setDefaultView : function(value) {
-            _settings.defaultView = value;
+            _defaultView = value;
         },        
-        
         
         getViewSettings : function(view) {
             return _settings.views[view];    
