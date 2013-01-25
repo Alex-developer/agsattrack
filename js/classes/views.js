@@ -16,9 +16,10 @@ Copyright 2013 Alex Greenland
  
 /* Options for JSHint http://www.jshint.com/
 * 
-* Last Checked: 19/01/2013
+* Last Checked: 25/01/2013
 * 
 */
+/*global AGSETTINGS */ 
  
 var AGVIEWS = (function(element) {
     "use strict" ;
@@ -76,6 +77,19 @@ var AGVIEWS = (function(element) {
         }          
     };
     
+    /**
+    * If a view is specified in the settings then set it as the default
+    */
+    var view = AGSETTINGS.getDefaultView();
+    if (typeof _views[view] !== undefined) {
+        if (_views[view].active === false) {
+            jQuery.each(_views, function(_view, _viewOptions) {
+                _viewOptions.active = false;
+            });            
+        }
+        _views[view].active = true;
+    }
+
     return {
     
         getViews : function() {

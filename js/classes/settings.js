@@ -16,10 +16,10 @@ Copyright 2013 Alex Greenland
  
 /* Options for JSHint http://www.jshint.com/
 * 
-* Last Checked: 19/01/2013
+* Last Checked: 25/01/2013
 * 
 */
-/*global AGSatTrack */ 
+/*global AGSatTrack, AGQUERYSTRING */ 
 
 var AGSETTINGS = (function() {
     'use strict';
@@ -43,6 +43,7 @@ var AGSETTINGS = (function() {
         debugView: false,
         passesbl: 'polar',
         passesbr: 'sky',
+        defaultView: 'home',
         views: {
             polar: {
                 colours: {
@@ -119,9 +120,35 @@ var AGSETTINGS = (function() {
         _settings = $.extend({}, _settings, savedSettings);
     }
     
+    /**
+    * Look for any paramateres on the quesrystring and override
+    * the defaults.
+    * 
+    * NOTE: This will also override any settings saved in the cookie
+    * 
+    */
+    var qsView = AGQUERYSTRING.value('view');
+    var qsGroup = AGQUERYSTRING.value('group');
+    
+    if (typeof qsGroup !== 'undefined') {
+        _settings.defaultTleGroup = qsGroup;
+    }
+    if (typeof qsView !== 'undefined') {
+        _settings.defaultView = qsView;
+    }    
+    
+    
 	return {
 		init: function() {
 		},
+        
+        getDefaultView : function() {
+            return _settings.defaultView;    
+        },
+        setDefaultView : function(value) {
+            _settings.defaultView = value;
+        },        
+        
         
         getViewSettings : function(view) {
             return _settings.views[view];    

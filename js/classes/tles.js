@@ -13,6 +13,14 @@ Copyright 2012 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */ 
+ 
+/* Options for JSHint http://www.jshint.com/
+* 
+* Last Checked: 25/01/2013
+* 
+*/
+/*global AGSatTrack, AGVIEWS, AGSATELLITE, AGSETTINGS */ 
+ 
 var AGTLES = function() {
 	'use strict';
 	
@@ -49,11 +57,13 @@ var AGTLES = function() {
 	 * Listen for changes in the satellite selection
 	 */
 	jQuery(document).bind('agsattrack.satsselected', function(event, selection) {
-		for (var i=0; i < satellites.length; i++) {
+		var i;
+        
+        for (i=0; i < satellites.length; i++) {
 			satellites[i].setDisplaying(false);
 		}
 		if (typeof selection.selections !== 'undefined') {
-			for (var i=0; i < selection.selections.length; i++) {
+			for (i=0; i < selection.selections.length; i++) {
                 var index = getSatelliteIndexFromCatalogNumber(selection.selections[i]);
 				satellites[index].setDisplaying(true);
 			}
@@ -125,7 +135,7 @@ var AGTLES = function() {
 			var total = 0;
 			for (var i=0; i < satellites.length; i++) {
 				if (satellites[i].isDisplaying()) {
-					total++
+					total++;
 				}
 			}
 			return total;
@@ -179,11 +189,12 @@ var AGTLES = function() {
 				satellites = [];
 				_group = data.id;
                 var groupData = jQuery('#sat-group-selector-listbox').jqxListBox('getItemByValue', group);
-                _groupName = groupData.label;
-				rawKeps = data.keps.split('\n');
-				processRawData();
+                if (typeof groupData !== 'undefined') {
+                    _groupName = groupData.label;
+                    rawKeps = data.keps.split('\n');
+                    processRawData();
+                }
 			});			
 		}
-	
-	}
-}
+	};
+};
