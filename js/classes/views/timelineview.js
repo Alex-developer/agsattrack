@@ -38,6 +38,8 @@ var AGTIMELINE = function() {
 	var _timelineLayer = null;
     var _mousePosLayer = null;
     var _mousePosTimeLayer = null;
+    var _toolTipLayer = null;
+    var _toolTip = null;
 	var _width;
 	var _height;
 	var _pixelsPerMin;
@@ -279,13 +281,34 @@ var AGTIMELINE = function() {
                             strokeWidth : 1
                         }));
                         */
-                        _timelineLayer.add(new Kinetic.Rect({
+                        var rect = new Kinetic.Rect({
                             fill: 'white',
                             x : startPos,
                             y : yPos,
                             width : endPos - startPos,
                             height : 20
-                        }));
+                        });
+                        rect.on('mouseout', function(){
+                            _toolTip.hide();
+                            _toolTipLayer.draw();
+                        });
+                        var aosTime = AGUTIL.shortdatetime(passes[i].dateTimeStart,false,false);
+                        var losTime = AGUTIL.shortdatetime(passes[i].dateTimeEnd,false,false);
+                        var maxEl = passes[i].peakElevation.toFixed(2);
+                        var maxAz = passes[i].peakAzimuth.toFixed(2);
+                        var orbitNumber = passes[i].orbitNumber;
+                        var text = sat.getName() + '\n\n';
+                        text += 'Aos: ' + aosTime + '\n';
+                        text += 'Los: ' + losTime + '\n';
+                        text += 'Max El: ' + maxEl + ' Max Az: ' + maxAz + '\n';
+                        text += 'orbit Number: ' + orbitNumber;                        
+                        rect.on('mousemove', function(){
+                            _toolTip.setPosition(_mousePos.x + 5, _mousePos.y + 5);
+                            _toolTip.setText(text);
+                            _toolTip.show();
+                            _toolTipLayer.draw();
+                        });
+                        _timelineLayer.add(rect);
                                                                 
                     }
                 }
@@ -389,6 +412,20 @@ var AGTIMELINE = function() {
                 width: _satLegendWidth
             });
 			_viewStage.add(_timelineLayer);			
+            
+            _toolTipLayer = new Kinetic.Layer();
+            _toolTip = new Kinetic.Text({
+                text: '',
+                fontFamily: 'Calibri',
+                fontSize: 10,
+                padding: 5,
+                textFill: 'white',
+                fill: 'black',
+                alpha: 0.50,
+                visible: false
+            });
+            _toolTipLayer.add(_toolTip);            
+            _viewStage.add(_toolTipLayer);            
             
             _legendStage = new Kinetic.Stage({
                 container : 'timelinelegend',
