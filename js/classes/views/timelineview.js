@@ -58,7 +58,15 @@ var AGTIMELINE = function() {
 			y : 0,
 			show : false
 		};
-	
+	/*
+    jQuery(document).bind('agsattrack.satsselectedcomplete', function() {
+        if (_render) {
+            if (AGSETTINGS.getHaveWebGL()) {        
+                drawTimeline();
+            }
+        }
+    });
+      */  
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#timeline');

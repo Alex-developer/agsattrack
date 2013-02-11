@@ -104,6 +104,7 @@ var AGVIEWS = (function(element) {
                 }
                 if (typeof view.instance !== 'undefined') {
                     view.instance.stopRender();
+                    view.active = false;
                 }                 
             });
             if (newView !== null) {
@@ -120,6 +121,7 @@ var AGVIEWS = (function(element) {
                     }                                                           
                 }
                 if (typeof newView.instance !== 'undefined') {
+                    newView.active = true;
                     jQuery('#viewtabs').tabs('select',newView.index);
                     newView.instance.startRender();
                 }    
