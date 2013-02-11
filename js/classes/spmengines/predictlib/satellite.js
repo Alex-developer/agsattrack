@@ -157,7 +157,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                         dopplershift: _satOrbit.dopplershift
                     };
                     passData.pass.push(orbitdata);
-                    time += (0.00035); // 30 Seconds
+                    time += (0.00035 / 4); // 30 /4  Seconds
                     if (_satOrbit.elevation > passData.maxEle) {
                         passData.maxEle = _satOrbit.elevation;  
                     }
@@ -223,9 +223,14 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         /**
         * Add points at 20 second intervals whilst we are on the same orbit
         */
+        var temporbitData = null;
         while (thisOrbit === _satOrbit.orbitNumber) {
-            addPoint(time, orbitPoints);   
-            time += increment;
+            temporbitData = addPoint(time, orbitPoints);   
+            if (temporbitData.el > -1) {
+                time += increment / 4;
+            } else {
+                time += increment;
+            }
         }
         
         /**
@@ -265,6 +270,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             dopplershift: _satOrbit.dopplershift            
         };
         orbitPoints.push(orbitdata);         
+        return orbitdata;
     }
     
     function reset() {
