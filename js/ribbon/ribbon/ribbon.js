@@ -301,7 +301,38 @@
             }
             $(this).toggleClass(toggleClass);
         }
-                
+
+        $.fn.closeMenu = function() {
+            if (this.hasClass('ribbon-button')) {
+                if (!this.hasClass('disabled')) { 
+                    var menu = this.find('.ribbon-menu');                                  
+                    $(menu).addClass('ribbon-menu-closed');
+                    $(menu).removeClass('ribbon-menu-open');
+                }
+            }
+        }
+
+        $.fn.setTitle = function(before, after) {
+            if (this.hasClass('ribbon-button')) {
+                var title = this.find('.button-title');
+                var buttonType = this.attr('data-type');
+                if (typeof buttonType === 'undefined') {
+                    buttonType = 'button';
+                }
+
+                switch (buttonType) {
+                    case 'dropdownmenustay':
+                        var text = before + ' <img src="js/ribbon/arrow_down.png">' + after;
+                        title.html(text);
+                        break;
+                        
+                    default:
+                        title.html(before);
+                        break;    
+                }                                               
+            }
+        }
+                                
 		$.fn.enable = function() {
 			if (this.hasClass('ribbon-button')) {
 				if (this[0] && this[0].enable) {

@@ -175,6 +175,35 @@ var AGUTIL = (function() {
             return shortDate;
         },        
         
+        usShortdatetime : function(date, hideDate, forceHidedate) {
+            if (date === '') {
+                return '';
+            }
+            
+            if (typeof forceHidedate === 'undefined') {
+                forceHidedate = false;
+            }
+            var shortDate = '';
+            var cDate = new Date();
+            
+            if ((cDate.getFullYear() === date.getFullYear() &&
+                cDate.getMonth() === date.getMonth() &&
+                cDate.getDate() === date.getDate() && hideDate) || forceHidedate) {
+                
+                shortDate = '';
+            } else {
+                shortDate += pad(date.getMonth()+1,2) + '/';
+                shortDate += pad(date.getDate(),2) + '/';
+                shortDate += date.getFullYear() + ' ';                
+            }
+
+            shortDate += pad(date.getHours(),2) + ':';
+            shortDate += pad(date.getMinutes(),2) + ':';
+            shortDate += pad(date.getSeconds(),2);
+            
+            return shortDate;
+        },
+                
         shortTime : function(date) {
             var shortTime = '';
             if (date === '') {

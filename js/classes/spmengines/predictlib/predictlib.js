@@ -1484,7 +1484,11 @@ var PLib =
             var d = new Date();
             return (d.getTime() - 315446400000) / 86400000;
         },
-        
+
+        DaynumFromDate: function(d) {
+            return (d.getTime() - 315446400000) / 86400000;
+        },
+                
         Daynum2Date: function(daynum)
         {
             var d = new Date();
@@ -1853,6 +1857,114 @@ var PLib =
             return d;
         },
 
+        getTodaysPassesBetweenTimes: function(start, end)
+        {
+            var satInfoColl = new Array();
+            var arrIdx = 0;
+            var x = 0, y = 0, z = 0, lastel = 0;
+            var now = 0;
+            var orbitNumber = 0;
+            var durationStartTime = null;
+            var durationEndTime = null;
+            debugger;
+            var startTime = PLib.DaynumFromDate(start);
+            var endTime = PLib.DaynumFromDate(end);
+
+            var originalStartTime = startTime;
+            
+            indx = 0;
+
+            now = (3651.0 + PLib.CurrentDaynum()) * 86400.0;
+
+            if (start == 0)
+                start = now;
+
+        //    if ((startTime >= now - 31557600) && (startTime <= now + 31557600)) {
+                PLib.daynum = (start / 86400.0) - 3651.0;
+                PLib.daynum = startTime
+                PLib.PreCalc(indx);
+                PLib.Calc();
+
+                var d = new Date();
+                var passNo = 1;
+
+                if (PLib.AosHappens(indx) && PLib.Geostationary(indx) == 0 && PLib.Decayed(indx, PLib.daynum) == 0) {
+                    durationStartTime = new Date();
+                    PLib.daynum = PLib.FindAOS();
+
+                    orbitNumber = PLib.rv;
+                    
+                //    while (PLib.Daynum2Date(PLib.daynum) < PLib.addDay(d) || satInfoColl.length > 50) {
+                    while (PLib.daynum < endTime && satInfoColl.length < 500) {
+                        
+                        if (PLib.daynum < originalStartTime) {
+                            break;
+                        }
+                        var satInfo = new Object();
+
+                        satInfo.number = 1;
+                        satInfo.name = PLib.sat[0].name;
+                        satInfo.passNo = passNo++;
+                        satInfo.dateTimeStart = PLib.Daynum2Date(PLib.daynum);
+                        satInfo.peakElevation = PLib.iel;
+                        satInfo.riseAzimuth = satInfo.peakAzimuth = PLib.iaz;
+                        satInfo.orbitalPhase = PLib.ma256;
+                        satInfo.latitude = PLib.isplat;
+
+                        var lng = 360 - PLib.isplong;
+                        if (lng > 180) lng = -PLib.isplong;
+                        satInfo.longitude = lng;
+
+                        satInfo.riseRange = satInfo.peakRange = PLib.irk;
+                        satInfo.orbitNumber = PLib.rv;
+
+                        var plusCount = 0;
+                        var asteriskCount = 0;
+
+                        while (PLib.iel >= 0) {
+                            if (PLib.iel > satInfo.peakElevation) {
+                                satInfo.peakElevation = PLib.iel;
+                                satInfo.peakAzimuth = PLib.iaz;
+                                satInfo.peakRange = PLib.irk;
+                            }
+
+                            if (PLib.findsun == '+')
+                                plusCount++;
+                            else if (PLib.findsun == '*')
+                                asteriskCount++;
+
+                            lastel = PLib.iel;
+                            PLib.daynum += Math.cos((PLib.sat_ele - 1.0) * PLib.deg2rad) * Math.sqrt(PLib.sat_alt) / 25000.0;
+                            PLib.Calc();
+                        }
+
+
+                        satInfo.dateTimeEnd = PLib.Daynum2Date(PLib.daynum);
+                        satInfo.decayAzimuth = PLib.iaz;
+                        satInfo.decayRange = PLib.irk;
+                        satInfo.orbitNumber = PLib.rv;
+
+                        if ((plusCount > 3) || (plusCount > 2 && asteriskCount > 2)) {
+                            satInfo.visibility = '+';
+                        } else if (asteriskCount > 2) {
+                            satInfo.visibility = '*';
+                        }
+
+                        durationEndTime = new Date();
+                        satInfo.calcTime = durationEndTime - durationStartTime;
+                        durationStartTime = new Date();
+                        
+                        satInfoColl[arrIdx++] = satInfo;
+
+                        PLib.daynum += (1 / 24 / 6);
+                        PLib.daynum = PLib.FindAOS();
+                    } 
+                }
+          //  }
+
+            return satInfoColl;
+        },
+                
         getTodaysPasses: function()
         {
             var satInfoColl = new Array();

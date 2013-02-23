@@ -430,7 +430,13 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             _passes = _satPasses.getTodaysPasses();            
             return _passes;
         },
-        
+
+        calculatePasses : function(observer, start, end) {
+            _satPasses.configureGroundStation(observer.getLat(), observer.getLon());
+            _passes = _satPasses.getTodaysPassesBetweenTimes(start, end);          
+            return _passes;
+        },
+                
         getTodaysPasses : function() {
             return _passes;
         },

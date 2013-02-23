@@ -88,6 +88,45 @@ var AGPASSESVIEW = function() {
         }
     });
     
+    jQuery(document).bind('agsattrack.toggle24', function(event, state) {
+        if (_render) {  
+            if (state) {
+                jQuery('#passes-view-start').disable();    
+                jQuery('#passes-view-end').disable();    
+                jQuery('#passes-view-calc').disable();
+                var observers = AGSatTrack.getObservers();
+                var observer = observers[0];
+                var sat = AGSatTrack.getFollowing(); 
+                if (sat !== null) {
+                    sat.calculateTodaysPasses(observer);
+                    updatePassesList(sat);
+                }
+                setTimeFrameTo24Hours();
+            } else {
+                jQuery('#passes-view-start').enable();    
+                jQuery('#passes-view-end').enable();    
+                jQuery('#passes-view-calc').enable();    
+            }  
+        }
+    });
+
+    jQuery(document).bind('agsattrack.passescalc', function(event, state) {
+        if (_render) { 
+            var start = jQuery('#passes-view-start-cal').datetimebox('getValue');
+            var end = jQuery('#passes-view-end-cal').datetimebox('getValue');
+            start = Date.CDate(start);
+            end = Date.CDate(end);
+            var following = AGSatTrack.getFollowing();
+            if (following !== null) {
+                var observers = AGSatTrack.getObservers();
+                var observer = observers[0];                
+                following.calculatePasses(observer, start, end);
+                updatePassesList(following);
+            }
+        }
+    });        
+        
+        
     /**
     * resize the view
     */
@@ -233,6 +272,15 @@ var AGPASSESVIEW = function() {
         _bottomRight.init(AGVIEWS.modes.SINGLE);       
     }
     
+    function setTimeFrameTo24Hours() {
+        var now = new Date();
+        jQuery('#passes-view-start-cal').datetimebox('setValue', AGUTIL.usShortdatetime(now,false,false));
+        jQuery('#passes-view-start').setTitle('Start Date', '<br />'+jQuery('#passes-view-start-cal').datetimebox('getValue')); 
+        now = Date.DateAdd('h',24,now);
+        jQuery('#passes-view-end-cal').datetimebox('setValue', AGUTIL.usShortdatetime(now,false,false));
+        jQuery('#passes-view-end').setTitle('End Date', '<br />'+jQuery('#passes-view-end-cal').datetimebox('getValue'));         
+    }
+    
 	return {
 		startRender : function() {
             resize();
@@ -302,6 +350,17 @@ var AGPASSESVIEW = function() {
                 updatePassgrid(sat, time);
                 _bottomLeft.reDraw();
                 _bottomRight.reDraw();
+            });           
+            setTimeFrameTo24Hours();
+      
+            jQuery('.datebox-ok, .datebox-close, .datebox-current').on('click', function() {
+                jQuery('#passes-view-start').closeMenu();    
+                jQuery('#passes-view-end').closeMenu();    
+                var start = jQuery('#passes-view-start-cal').datetimebox('getValue');
+                var end = jQuery('#passes-view-end-cal').datetimebox('getValue');
+                
+                jQuery('#passes-view-start').setTitle('Start Date', '<br />'+start);                
+                jQuery('#passes-view-end').setTitle('End Date', '<br />'+end);                
             });
             
 		}		
