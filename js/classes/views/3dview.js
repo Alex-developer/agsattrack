@@ -395,7 +395,17 @@ var AG3DVIEW = function(element) {
                 satellites = [_singleSat];
             }    
         }
-                        
+
+        var satdata = [];
+        for ( var i = 0; i < satellites.length; i++) {
+            var satObject = {
+                value : satellites[i].getCatalogNumber(),
+                text : satellites[i].getName()
+            };
+            satdata.push(satObject);
+        }            
+        jQuery('#3d-sat-finder').combobox('loadData',satdata );
+                
         satBillboards.removeAll();
 
         if (okToCreate) {
@@ -453,7 +463,6 @@ var AG3DVIEW = function(element) {
         if (following !== null && (_follow || _followFromObserver)) {
             var observer = AGSatTrack.getObservers()[0];
 
-                            
             if (_followFromObserver) {
                 target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
                 up = new Cesium.Cartesian3(0, 0, 1);                                     
@@ -723,6 +732,24 @@ var AG3DVIEW = function(element) {
 */
     }
 
+    function disableInput(scene) {
+        var controller = scene.getScreenSpaceCameraController();
+        controller.enableTranslate = false;
+        controller.enableZoom = false;
+        controller.enableRotate = false;
+        controller.enableTilt = false;
+        controller.enableLook = false;
+    }
+
+    function enableInput(scene) {
+        var controller = scene.getScreenSpaceCameraController();
+        controller.enableTranslate = true;
+        controller.enableZoom = true;
+        controller.enableRotate = true;
+        controller.enableTilt = true;
+        controller.enableLook = true;
+    }
+        
     function init3DView() {
         
         ellipsoid = Cesium.Ellipsoid.WGS84;
@@ -823,6 +850,34 @@ var AG3DVIEW = function(element) {
         
         jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[_currentProvider].toolbarTitle ); 
         jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' ); 
+        
+        jQuery('#3d-sat-finder').combobox({
+            onSelect : function(record){
+                var sat = AGSatTrack.getSatelliteByName(record.value);
+                jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: record.value});
+
+                var camera = scene.getCamera();
+
+                var now = new Cesium.JulianDate(); 
+                camera.transform = Cesium.Matrix4.fromRotationTranslation(
+                        Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                        Cesium.Cartesian3.ZERO); 
+                                
+                var pos = new Cesium.Cartesian3(sat.get('x'), sat.get('y'), sat.get('z'));
+                pos = pos.multiplyByScalar(1050);  
+
+                disableInput(scene);
+                var flight = Cesium.CameraFlightPath.createAnimation(scene.getFrameState(), {
+                    destination : pos,
+                    onComplete : function() {
+                        enableInput(scene);
+                    }
+                });
+                scene.getAnimations().add(flight);
+ 
+            }
+        });
+        
     }
     
     /**

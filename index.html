@@ -472,6 +472,12 @@
                         <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/follow-obs.png" />
                     </div>                                                         
                 </div>
+
+                <div class="ribbon-section">
+                    <span class="section-title">Select And Fly To Satellite</span>
+                    <select class="easyui-combobox" id="3d-sat-finder" style="width:200px;">
+                    </select>                    
+                </div>                
                 
                 <div style="float:right;">
                     <a href="http://cesium.agi.com/" target="_blank"><img src="/images/cesium_logo.svg" width="300" /></a>
@@ -1126,7 +1132,25 @@
                                             <img src="" id="options-3d-view-staticimage-image" width="300">
                                         </td>
                                     </tr>                                                    
-                                </table>                                
+                                </table>
+                                <h3>Following Options</h3>
+                                <p>These options control the position of the camera when following a satellite either from a location or the satellite.</p>
+                                <table class="form-table">
+                                    <tr valign="top">
+                                        <th>Height Above Observer Location</th>
+                                        <td>
+                                            <input id="options-3d-view-followobs-height" class="easyui-numberspinner" style="width: 60px;" required="required" data-options="min:0,max:1000,editable:false" value="1">                                        
+                                            <p class="description">Select the height above the observer location, this is in meters.</p>
+                                        </td>
+                                    </tr>
+                                    <tr valign="top">
+                                        <th>Height Above Satellite</th>
+                                        <td>
+                                            <input id="options-3d-view-followsat-height" class="easyui-numberspinner" style="width: 60px;" required="required" data-options="min:0,max:10000,editable:false">                                        
+                                            <p class="description">Select the height above the satellite location, this is in meters.</p>
+                                        </td>
+                                    </tr>                                                                                         
+                                </table>                                                         
                             </div>                            
                         </div>
                     </div>                    

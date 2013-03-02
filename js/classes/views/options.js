@@ -34,7 +34,7 @@ var AGOPTIONS = function() {
 	});
 	
 	function setupOptions() {
-		jQuery('#window-preferences-calc-timer').numberspinner('setValue', AGSETTINGS.getRefreshTimerInterval() /1000);
+		jQuery('#window-preferences-calc-timer').numberspinner('setValue', AGSETTINGS.getRefreshTimerInterval() / 1000);
 		jQuery('#window-preferences-aos').numberspinner('setValue', AGSETTINGS.getAosEl());
         if (AGSETTINGS.getSwitchViewOnTabClick()) {
             jQuery('#switchtabonclick').prop('checked', true);
