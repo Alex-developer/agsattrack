@@ -559,7 +559,7 @@ var AG3DVIEW = function(element) {
         drawFootprint();
     }
     
-    function plotLine(cartPoints, colour, polylineCollection, width) {
+    function plotLine(cartPoints, colour, polylineCollection, width, showSsp) {
         var pos;
         var points = [];
         var selectedPoints = [];
@@ -582,17 +582,18 @@ var AG3DVIEW = function(element) {
                 /**
                 * Add the lines from satelite point to ssp
                 */
-                /*
-                selectedPoints = [];
-                selectedPoints.push(pos);
-                cartographic = ellipsoid.cartesianToCartographic(pos);
-                target = ellipsoid.cartographicToCartesian(new Cesium.Cartographic(cartographic.longitude, cartographic.latitude, 0));                       selectedPoints.push(target);
-                polylineCollection.add({
-                    positions : selectedPoints,
-                    width : 1,
-                    color : colour
-                });
-                */
+                if (showSsp) {
+                    selectedPoints = [];
+                    selectedPoints.push(pos);
+                    cartographic = ellipsoid.cartesianToCartographic(pos);
+                    target = ellipsoid.cartographicToCartesian(new Cesium.Cartographic(cartographic.longitude, cartographic.latitude, 0));                       selectedPoints.push(target);
+                    polylineCollection.add({
+                        positions : selectedPoints,
+                        width : 1,
+                        color : colour
+                    });
+                }
+                
             }
             lastPos = cartPoints[i];
         } 
@@ -624,12 +625,12 @@ var AG3DVIEW = function(element) {
         
         if (typeof orbit !== 'undefined' && typeof orbit.points[0] !== 'undefined') {
             if (sat.isGeostationary() && sat.get('elevation') > 0) {
-                plotLine(orbit.points, Cesium.Color.GREEN, passLines, 1);
+                plotLine(orbit.points, Cesium.Color.GREEN, passLines, 1, false);
             } else {
                 var pass = sat.getNextPass();
-                plotLine(orbit.points, Cesium.Color.RED, passLines, 1);
+                plotLine(orbit.points, Cesium.Color.RED, passLines, 1, false);
                 if (parseInt(sat.get('orbitnumber'),10) === parseInt(pass.orbitNumber,10)) {
-                    plotLine(pass.pass, Cesium.Color.GREEN, passLines, 5);
+                    plotLine(pass.pass, Cesium.Color.GREEN, passLines, 2, true);
                 }
             }
         }
