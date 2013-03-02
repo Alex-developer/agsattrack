@@ -122,7 +122,7 @@ var AGSETTINGS = (function() {
     if (jQuery.cookie(COOKIENAME) !== null) {
         var cookieData = jQuery.cookie(COOKIENAME);
         var savedSettings = JSON.parse(cookieData);
-        _settings = $.extend({}, _settings, savedSettings);
+        _settings = $.extend({}, savedSettings, _settings);
     }
     
     /**
