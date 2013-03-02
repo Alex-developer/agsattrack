@@ -726,7 +726,11 @@ var AG3DVIEW = function(element) {
             }),
             'staticimage' : new Cesium.SingleTileImageryProvider({
                 url : 'images/NE2_50M_SR_W_4096.jpg'
-            })
+            }),
+            'arcgis' : new Cesium.ArcGisMapServerImageryProvider(
+                {url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
+                proxy: new Cesium.DefaultProxy('http://cesium.agi.com/proxy/')
+            })            
         };
             
         jQuery('<canvas/>', {
