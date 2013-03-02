@@ -119,7 +119,7 @@ var AGOBSERVER = function(index) {
                 _alt = settings.alt;
                 _name = settings.name;    
             }
-            
+       
             /**
             * If the browser has geolocation capabilitis then get the users current position.
             * NOTE: This will not be accurate but will give a rough idea for the users location. Also if the

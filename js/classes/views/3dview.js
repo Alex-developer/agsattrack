@@ -37,6 +37,7 @@ var AG3DVIEW = function(element) {
     var gridRefresh = 1;
     var gridRefreshCounter = 0;
     var orbitLines = null;
+    var selectedLines = null;
     var passLines = null;
     var footprintCircle = null;
     var updateCounter = 0;
@@ -95,20 +96,6 @@ var AG3DVIEW = function(element) {
         }          
     }
     
-    /**
-     * Listen for an observers location becoming available and when it does
-     * update all of the observers.
-     * 
-     * Currently we only have the home observer but this is to allow for mutual
-     * pass predicitions i.e. supports more than one observer.
-     */
-    jQuery(document).bind('agsattrack.locationAvailable',
-            function(e, observer) {
-                if (AGSETTINGS.getHaveWebGL()) {
-                    plotObservers();
-                }
-            });
-
     jQuery(document).bind('agsattrack.locationUpdated',
             function(e, observer) {
                 if (AGSETTINGS.getHaveWebGL()) {
@@ -575,8 +562,11 @@ var AG3DVIEW = function(element) {
     function plotLine(cartPoints, colour, polylineCollection, width) {
         var pos;
         var points = [];
+        var selectedPoints = [];
         var lastPos;
         var now = new Cesium.JulianDate();
+        var cartographic;
+        var target;
         
         polylineCollection.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                 Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
@@ -588,6 +578,21 @@ var AG3DVIEW = function(element) {
                 pos = new Cesium.Cartesian3(cartPoints[i].x, cartPoints[i].y, cartPoints[i].z);
                 pos = pos.multiplyByScalar(1000);
                 points.push(pos);
+                
+                /**
+                * Add the lines from satelite point to ssp
+                */
+                /*
+                selectedPoints = [];
+                selectedPoints.push(pos);
+                cartographic = ellipsoid.cartesianToCartographic(pos);
+                target = ellipsoid.cartographicToCartesian(new Cesium.Cartographic(cartographic.longitude, cartographic.latitude, 0));                       selectedPoints.push(target);
+                polylineCollection.add({
+                    positions : selectedPoints,
+                    width : 1,
+                    color : colour
+                });
+                */
             }
             lastPos = cartPoints[i];
         } 
@@ -699,6 +704,7 @@ var AG3DVIEW = function(element) {
         satBillboards = new Cesium.BillboardCollection();
         planetsBillboards = new Cesium.BillboardCollection();
         orbitLines = new Cesium.PolylineCollection();
+        selectedLines = new Cesium.PolylineCollection();
         passLines = new Cesium.PolylineCollection();
         footprintCircle = new Cesium.PolylineCollection();
         clock = new Cesium.Clock();
@@ -766,12 +772,15 @@ var AG3DVIEW = function(element) {
         satelliteClickDetails(scene);
         mouseMoveDetails(scene, ellipsoid);
         scene.getPrimitives().add(orbitLines);
+        scene.getPrimitives().add(selectedLines);
         scene.getPrimitives().add(passLines);
         scene.getPrimitives().add(footprintCircle);
         scene.getPrimitives().add(_labels);
         scene.getPrimitives().add(planetsBillboards);
         
         jQuery(window).trigger('resize');
+        
+        plotObservers();
     }
     
     /**
