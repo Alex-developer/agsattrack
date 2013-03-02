@@ -56,6 +56,8 @@ var AG3DVIEW = function(element) {
     var _showSatLabels = true;
     var _singleSat;
     var _mode;
+    var _settings = AGSETTINGS.getViewSettings('threed');
+    var _currentProvider = 'staticimage'
         
     if (typeof element === 'undefined') {
         _element = '3d';    
@@ -96,6 +98,21 @@ var AG3DVIEW = function(element) {
         }          
     }
     
+    
+
+    jQuery(document).bind('agsattrack.settingssaved',
+            function(e, observer) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _settings = AGSETTINGS.getViewSettings('threed');
+                    TILE_PROVIDERS.staticimage.provider =  new Cesium.SingleTileImageryProvider({
+                        url : 'images/maps/' + _settings.staticimage
+                    });
+                    if (_currentProvider == 'staticimage') {
+                        setProvider(_currentProvider);
+                    }
+                }
+            }); 
+                
     jQuery(document).bind('agsattrack.locationUpdated',
             function(e, observer) {
                 if (AGSETTINGS.getHaveWebGL()) {
@@ -191,10 +208,7 @@ var AG3DVIEW = function(element) {
             function(event, provider) {
                 if (AGSETTINGS.getHaveWebGL()) {
                     if (scene.mode !== Cesium.SceneMode.MORPHING) {
-                        if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
-                            cb.getImageryLayers().removeAll();
-                            cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[provider].provider);
-                            jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[provider].toolbarTitle );                                            }
+                        setProvider(provider);
                     }
                 }
             });
@@ -239,7 +253,17 @@ var AG3DVIEW = function(element) {
             }
         }
     });
-        
+    
+    
+    function setProvider(provider) {
+        if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
+            cb.getImageryLayers().removeAll();
+            cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[provider].provider);
+            jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[provider].toolbarTitle );
+            _currentProvider = provider;        
+        }
+    } 
+     
     /**
      * Plot the observers.
      */
@@ -712,7 +736,7 @@ var AG3DVIEW = function(element) {
         footprintCircle = new Cesium.PolylineCollection();
         clock = new Cesium.Clock();
         _satNameLabels = new Cesium.LabelCollection();
-        
+
         TILE_PROVIDERS = {
             'bing' : {
                 provider : new Cesium.BingMapsImageryProvider({
@@ -730,7 +754,7 @@ var AG3DVIEW = function(element) {
             },
             'staticimage' : { 
                 provider : new Cesium.SingleTileImageryProvider({
-                    url : 'images/maps/NE2_50M_SR_W_4096.jpg'
+                    url : 'images/maps/' + _settings.staticimage
                 }),
                 toolbarTitle : 'Static Image'
             },
@@ -752,7 +776,7 @@ var AG3DVIEW = function(element) {
         scene = new Cesium.Scene(canvas);
         transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
 
-        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.staticimage.provider);
+        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[_currentProvider].provider);
         cb.showSkyAtmosphere = true;
 
         scene.getPrimitives().setCentralBody(cb);
@@ -797,7 +821,7 @@ var AG3DVIEW = function(element) {
         
         plotObservers();
         
-        jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS.staticimage.toolbarTitle ); 
+        jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[_currentProvider].toolbarTitle ); 
         jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' ); 
     }
     

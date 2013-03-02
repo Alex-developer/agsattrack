@@ -96,6 +96,11 @@ var AGOPTIONS = function() {
             setPolarColours(colours);
         }
       
+        setThreedStaticImage(AGSETTINGS.getViewSettings('threed').staticimage);
+        jQuery('#options-3d-view-staticimage').on('change', function() {
+            var image = jQuery('#options-3d-view-staticimage').find(":selected").val();
+            setThreedStaticImage(image);   
+        });
         
         /**
         * Disable the save button - Just in case any of the above enabled it.
@@ -124,6 +129,19 @@ var AGOPTIONS = function() {
             jQuery('#geoshow').prop('disabled',false);           
         }        
     }
+    
+    /**
+    * 3D view functions
+    */
+    function setThreedStaticImage(image) {
+        jQuery('#options-3d-view-staticimage option[value="' + image + '"]').attr('selected', true);
+        jQuery('#options-3d-view-staticimage-image').attr('src','images/maps/' + image);
+        
+        
+    }
+    /**
+    * End 3D view functions
+    */
     
     function setPolarColours(colours) {
         jQuery('#polar-background-color')[0].color.fromString(colours.background);
@@ -262,6 +280,13 @@ var AGOPTIONS = function() {
         }        
         AGSETTINGS.setViewColours('polar', colours);
         AGVIEWS.optionsUpdated('polar');
+             
+        var threedstaticimage = jQuery('#options-3d-view-staticimage').find(":selected").val();
+        var settings = {
+            staticimage : threedstaticimage
+        }     
+        AGSETTINGS.setViewSettings('threed', settings);
+             
              
         AGSETTINGS.saveSettings();               
 		jQuery('#options-save').disable();         

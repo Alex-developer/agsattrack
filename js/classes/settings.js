@@ -65,6 +65,9 @@ var AGSETTINGS = (function() {
                     gradientstart: '374553',
                     gradientend: '001224'
                 }              
+            },
+            threed: {
+                staticimage : 'NE2_50M_SR_W_4096.jpg'
             }
         }
     };
@@ -91,6 +94,7 @@ var AGSETTINGS = (function() {
             var cookieData = JSON.stringify(_settings);
             
             jQuery.cookie(COOKIENAME, cookieData, { expires: COOKIEEXPIRES });
+            jQuery(document).trigger('agsattrack.settingssaved');
         } 
     }
     
@@ -164,6 +168,10 @@ var AGSETTINGS = (function() {
             return _settings.views[view];    
         },
         
+        setViewSettings : function(view, settings) {
+            return _settings.views[view] = settings;    
+        },
+                
         setViewColours: function(view, colours) {
             _settings.views[view].colours = colours;    
         },
