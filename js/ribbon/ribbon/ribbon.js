@@ -322,6 +322,7 @@
 
                 switch (buttonType) {
                     case 'dropdownmenustay':
+                    case 'dropdownmenu':
                         var text = before + ' <img src="js/ribbon/arrow_down.png">' + after;
                         title.html(text);
                         break;

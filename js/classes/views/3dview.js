@@ -193,9 +193,8 @@ var AG3DVIEW = function(element) {
                     if (scene.mode !== Cesium.SceneMode.MORPHING) {
                         if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
                             cb.getImageryLayers().removeAll();
-                            cb.getImageryLayers().addImageryProvider(
-                                    TILE_PROVIDERS[provider]);
-                        }
+                            cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[provider].provider);
+                            jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[provider].toolbarTitle );                                            }
                     }
                 }
             });
@@ -226,12 +225,15 @@ var AG3DVIEW = function(element) {
                 switch (view) {
                 case 'twod':
                     transitioner.morphTo2D();
+                    jQuery('#3d-projection').setTitle('Views', '<br /> 2d view' ); 
                     break;
                 case 'twopointfived':
                     transitioner.toColumbusView();
+                    jQuery('#3d-projection').setTitle('Views', '<br /> 2.5d view' ); 
                     break;
                 case 'threed':
                     transitioner.morphTo3D();
+                    jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' );                     
                     break;
                 }
             }
@@ -712,27 +714,35 @@ var AG3DVIEW = function(element) {
         _satNameLabels = new Cesium.LabelCollection();
         
         TILE_PROVIDERS = {
-            'bing' : new Cesium.BingMapsImageryProvider(
-                    {
-                        server : 'dev.virtualearth.net',
-                        mapStyle : Cesium.BingMapsStyle.AERIAL,
-                        proxy : Cesium.FeatureDetection
-                                .supportsCrossOriginImagery() ? undefined
-                                : new Cesium.DefaultProxy('/proxy/')
-
-                    }),
-            'osm' : new Cesium.OpenStreetMapImageryProvider({
-                url : 'http://otile1.mqcdn.com/tiles/1.0.0/osm'
-            }),
-            'staticimage' : new Cesium.SingleTileImageryProvider({
-                url : 'images/NE2_50M_SR_W_4096.jpg'
-            }),
-            'arcgis' : new Cesium.ArcGisMapServerImageryProvider(
-                {url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
-                proxy: new Cesium.DefaultProxy('http://cesium.agi.com/proxy/')
-            })            
+            'bing' : {
+                provider : new Cesium.BingMapsImageryProvider({
+                    server : 'dev.virtualearth.net',
+                    mapStyle : Cesium.BingMapsStyle.AERIAL,
+                    proxy : Cesium.FeatureDetection.supportsCrossOriginImagery() ? undefined : new Cesium.DefaultProxy('/proxy/')
+                }),
+                toolbarTitle : 'Bing Maps'                       
+            },
+            'osm' : {
+                provider : new Cesium.OpenStreetMapImageryProvider({
+                    url : 'http://otile1.mqcdn.com/tiles/1.0.0/osm'
+                }),
+                toolbarTitle : 'Open Street maps'                
+            },
+            'staticimage' : { 
+                provider : new Cesium.SingleTileImageryProvider({
+                    url : 'images/maps/NE2_50M_SR_W_4096.jpg'
+                }),
+                toolbarTitle : 'Static Image'
+            },
+            'arcgis' : {
+                provider : new Cesium.ArcGisMapServerImageryProvider(
+                    {url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
+                    proxy: new Cesium.DefaultProxy('http://cesium.agi.com/proxy/')
+                }),
+                toolbarTitle : 'Arc Gis'                
+            }            
         };
-            
+           
         jQuery('<canvas/>', {
             'id' : 'glCanvas'+_element,
             'class' : 'fullsize'
@@ -742,7 +752,7 @@ var AG3DVIEW = function(element) {
         scene = new Cesium.Scene(canvas);
         transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
 
-        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.staticimage);
+        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS.staticimage.provider);
         cb.showSkyAtmosphere = true;
 
         scene.getPrimitives().setCentralBody(cb);
@@ -786,6 +796,9 @@ var AG3DVIEW = function(element) {
         jQuery(window).trigger('resize');
         
         plotObservers();
+        
+        jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS.staticimage.toolbarTitle ); 
+        jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' ); 
     }
     
     /**
