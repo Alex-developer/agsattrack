@@ -117,6 +117,9 @@ var AGOPTIONS = function() {
         jQuery('#3d-label-colour-unselected')[0].color.fromString(AGSETTINGS.getViewSettings('threed').unselectedLabelColour);
         jQuery('#3d-label-colour-selected')[0].color.fromString(AGSETTINGS.getViewSettings('threed').selectedLabelColour);
 
+        jQuery('#options-3d-view option[value="' + AGSETTINGS.getViewSettings('threed').view + '"]').attr('selected', true);
+        jQuery('#options-3d-provider option[value="' + AGSETTINGS.getViewSettings('threed').provider + '"]').attr('selected', true);
+        
         
         /**
         * Disable the save button - Just in case any of the above enabled it.
@@ -312,6 +315,8 @@ var AGOPTIONS = function() {
         settings.selectedLabelSize = jQuery('#options-3d-sat-label-selected-size').find(":selected").val();
         settings.unselectedLabelColour = jQuery('#3d-label-colour-unselected')[0].color.toString();     
         settings.selectedLabelColour = jQuery('#3d-label-colour-selected')[0].color.toString();     
+        settings.view = jQuery('#options-3d-view').find(":selected").val();
+        settings.provider = jQuery('#options-3d-provider').find(":selected").val();
         AGSETTINGS.setViewSettings('threed', settings);
              
              

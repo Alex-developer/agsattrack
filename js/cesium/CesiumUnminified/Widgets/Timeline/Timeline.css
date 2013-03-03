@@ -1,0 +1,110 @@
+.timelineMain {
+	position: relative;
+	left: 0;
+	bottom: 0;
+	overflow: hidden;
+	border: solid 1px #888;
+}
+
+.timelineTrackContainer {
+	width: 100%;
+	overflow: auto;
+	border-top: solid 1px #888;
+	position: relative;
+	top: 0;
+	left: 0;
+}
+
+.timelineTracks {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.timelineNeedle {
+	position: absolute;
+	left: 0;
+	top: 1.7em;
+	bottom: 0;
+	width: 1px;
+	background: #F00;
+}
+
+.timelineBar {
+    position: relative;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    /*border: solid 1px #888;*/
+    width: 100%;
+    height: 1.7em;
+    background-color: #fafafa;
+    background: -moz-linear-gradient(top, #eeeeee 0%, #ffffff 50%, #fafafa 100%); /* FF3.6+ */
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#ffffff 50%,#fafafa 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #eeeeee 0%,#ffffff 50%,#fafafa 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #eeeeee 0%,#ffffff 50%,#fafafa 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #eeeeee 0%,#ffffff 50%,#fafafa 100%); /* W3C */
+}
+
+.timelineRuler {
+	/* NOTE: The label and the ruler must use the same font/size */
+	visibility: hidden;
+	white-space: nowrap;
+	font-size: 80%;
+	z-index: -200;
+}
+
+.timelineHighlight {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background: #08F;
+}
+
+.timelineTicLabel {
+	position: absolute;
+	top: 0;
+	left: 0;
+	white-space: nowrap;
+	font-size: 80%;
+	color: #000;
+	cursor: default;
+}
+
+.timelineTicMain {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 1px;
+	height: 50%;
+	background: #000;
+}
+
+.timelineTicSub {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 1px;
+	height: 33%;
+	background: #444;
+}
+
+.timelineTicTiny {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 1px;
+	height: 25%;
+	background: #888;
+}
+
+.timelineIcon16 {
+	display: block;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	background-image: url("../Images/TimelineIcons.png");
+	background-repeat: no-repeat;
+	z-index: 1;
+}

@@ -34,7 +34,7 @@ var AGSETTINGS = (function() {
     var _requireEUCookieLaw = true;
     var _defaultView = 'home';
     var _defaultSats = '';
-    var _cookieVersion = 1.1;
+    var _cookieVersion = 1.2;
     
     var _settings = {
         version: _cookieVersion,
@@ -70,14 +70,16 @@ var AGSETTINGS = (function() {
             },
             threed: {
                 staticimage : 'NE2_50M_SR_W_4096.jpg',
-                unselectedIcon: 0,
+                unselectedIcon: 1,
                 selectedIcon: 1,
                 unselectedIconSize: 32,
                 selectedIconSize: 64,
-                unselectedLabelSize: 10,
+                unselectedLabelSize: 12,
                 selectedLabelSize: 14,
-                unselectedLabelColour: 'ffffff',
-                selectedLabelColour: 'ff0000'                                                     
+                unselectedLabelColour: 'f7ff0a',
+                selectedLabelColour: 'ff0000',
+                view: 'threed',
+                provider : 'staticimage'                                                     
             }
         }
     };

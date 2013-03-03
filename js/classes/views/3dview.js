@@ -236,25 +236,29 @@ var AG3DVIEW = function(element) {
      */
     jQuery(document).bind('agsattrack.change3dview', function(event, view) {
         if (AGSETTINGS.getHaveWebGL()) {
-            if (scene.mode !== Cesium.SceneMode.MORPHING) {
-                switch (view) {
-                case 'twod':
-                    transitioner.morphTo2D();
-                    jQuery('#3d-projection').setTitle('Views', '<br /> 2d view' ); 
-                    break;
-                case 'twopointfived':
-                    transitioner.toColumbusView();
-                    jQuery('#3d-projection').setTitle('Views', '<br /> 2.5d view' ); 
-                    break;
-                case 'threed':
-                    transitioner.morphTo3D();
-                    jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' );                     
-                    break;
-                }
-            }
+            setView(view);
         }
     });
     
+
+    function setView(view) {
+        if (scene.mode !== Cesium.SceneMode.MORPHING) {
+            switch (view) {
+            case 'twod':
+                transitioner.morphTo2D();
+                jQuery('#3d-projection').setTitle('Views', '<br /> 2d view' ); 
+                break;
+            case 'twopointfived':
+                transitioner.toColumbusView();
+                jQuery('#3d-projection').setTitle('Views', '<br /> 2.5d view' ); 
+                break;
+            case 'threed':
+                transitioner.morphTo3D();
+                jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' );                     
+                break;
+            }
+        }
+    }
     
     function setProvider(provider) {
         if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
@@ -519,6 +523,13 @@ var AG3DVIEW = function(element) {
             if (_showSatLabels) {             
                 newpos = newpos.multiplyByScalar(30/1000+1);            
                 var satLabel = _satNameLabels.get(i);
+                if (satellites[bb.satelliteindex].getSelected()) {
+                    satLabel.setFont(_settings.selectedLabelSize + 'px sans-serif');
+                    satLabel.setFillColor(Cesium.Color.fromCssColorString('#'+_settings.selectedLabelColour));
+                } else {
+                    satLabel.setFont(_settings.unselectedLabelSize + 'px sans-serif');
+                    satLabel.setFillColor(Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour));
+                }
                 satLabel.setPosition(newpos);
             }
         }
@@ -776,7 +787,7 @@ var AG3DVIEW = function(element) {
         TILE_PROVIDERS = {
             'bing' : {
                 provider : new Cesium.BingMapsImageryProvider({
-                    server : 'dev.virtualearth.net',
+                    url : 'http://dev.virtualearth.net',
                     mapStyle : Cesium.BingMapsStyle.AERIAL,
                     proxy : Cesium.FeatureDetection.supportsCrossOriginImagery() ? undefined : new Cesium.DefaultProxy('/proxy/')
                 }),
@@ -810,9 +821,26 @@ var AG3DVIEW = function(element) {
 
         canvas = jQuery('#glCanvas'+_element)[0];
         scene = new Cesium.Scene(canvas);
+      
+      /*  
+        switch (_settings.view) {
+            case 'twod':
+                scene.mode = Cesium.SceneMode.SCENE2D
+                jQuery('#3d-projection').setTitle('Views', '<br /> 2d view' ); 
+                break;
+            case 'twopointfived':
+                scene.mode = Cesium.SceneMode.COLUMBUS_VIEW
+                jQuery('#3d-projection').setTitle('Views', '<br /> 2.5d view' ); 
+                break;
+            case 'threed':
+                scene.mode = Cesium.SceneMode.SCENE3D
+                jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' );                     
+                break;
+        }        
+        */
         transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
 
-        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[_currentProvider].provider);
+        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[_settings.provider].provider);
         cb.showSkyAtmosphere = true;
 
         scene.getPrimitives().setCentralBody(cb);
@@ -886,7 +914,6 @@ var AG3DVIEW = function(element) {
  
             }
         });
-        
     }
     
     /**
