@@ -91,6 +91,8 @@
 
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
 <script src="/js/geocomplete/jquery.geocomplete.min.js"></script>
+
+<script src="/js/imagecombo/ddslick.js"></script>
    
 </head>
 <body class='easyui-layout default' style="display: none" id="body">
@@ -1116,10 +1118,10 @@
                                 <div class="icon32" id="icon-options-general"><br></div>
                                 <h2>3D View Options</h2>
                                 <h3>Static Map Image</h3>
-                                <p>Select the static map image to use in the 3D view.</p>
                                 <table class="form-table">
                                     <tr valign="top">
-                                        <th>Static Map Image</th>
+                                        <th>Static Map Image
+                                        </th>
                                         <td>
                                             <select class="options-cb" id="options-3d-view-staticimage">
                                                 <option value="land_ocean_ice_lights_2048.jpg">Land Ocean Ice Lights 2048</option>
@@ -1127,14 +1129,102 @@
                                                 <option value="NE2_50M_SR_W_2048.jpg">NE2 50M SR W 2048</option>
                                                 <option value="NE2_50M_SR_W_4096.jpg">NE2 50M SR W 4096</option>
                                             </select>
+                                            <p class="description">Select the static map image to use in the 3D view.</p>
+
                                         </td>
                                         <td>
-                                            <img src="" id="options-3d-view-staticimage-image" width="300">
+                                            <img src="" id="options-3d-view-staticimage-image" width="200">
                                         </td>
                                     </tr>                                                    
                                 </table>
+                                
+                                
+                                
+                                
+                                <h3>Satellites</h3>
+                                <table class="form-table">
+                                    <tr valign="top">
+                                        <th width="30%" colspan="2"><strong>Unselected</strong></th>
+                                        <th colspan="1">Selected</th>
+                                    </tr>
+                                    <tr valign="top">
+                                        <th>Icon</th>
+                                        <td>
+                                            <select class="options-cb" id="options-3d-sat-icon-unselected">
+                                                <option value="1" data-imagesrc="/images/satellites/satellite0-32.png">Icon 1</option>
+                                                <option value="2" data-imagesrc="/images/satellites/satellite1-32.png">Icon 2</option>
+                                            </select>                                            
+                                        </td>
+                                        <td>
+                                            <select class="options-cb" id="options-3d-sat-icon-selected">
+                                                <option value="1" data-imagesrc="/images/satellites/satellite0-32.png">Icon 1</option>
+                                                <option value="2" data-imagesrc="/images/satellites/satellite1-32.png">Icon 2</option>
+                                            </select>                                            
+                                        </td>
+                                    </tr>
+                                    <tr valign="top">
+                                        <th>Icon Size</th>
+                                        <td>
+                                            <select class="options-cb" id="options-3d-sat-icon-unselected-size">
+                                                <option value="16">16 Pixels</option>
+                                                <option value="24">24 Pixels</option>
+                                                <option value="32">32 Pixels</option>
+                                                <option value="64">64 Pixels</option>
+                                                <option value="128">128 Pixels</option>
+                                                <option value="256">256 Pixels</option>
+                                            </select>                                          
+                                        </td>
+                                        <td>
+                                            <select class="options-cb" id="options-3d-sat-icon-selected-size">
+                                                <option value="16">16 Pixels</option>
+                                                <option value="24">24 Pixels</option>
+                                                <option value="32">32 Pixels</option>
+                                                <option value="64">64 Pixels</option>
+                                                <option value="128">128 Pixels</option>
+                                                <option value="256">256 Pixels</option>
+                                            </select>                                          
+                                        </td>
+                                    </tr>
+                                    <tr valign="top">
+                                        <th>Label Size</th>
+                                        <td>
+                                            <select class="options-cb" id="options-3d-sat-label-unselected-size">
+                                                <option value="8">8 Pixels</option>
+                                                <option value="10">10 Pixels</option>
+                                                <option value="12">12 Pixels</option>
+                                                <option value="14">14 Pixels</option>
+                                                <option value="16">16 Pixels</option>
+                                                <option value="18">18 Pixels</option>
+                                                <option value="20">20 Pixels</option>
+                                                <option value="22">22 Pixels</option>
+                                                <option value="24">24 Pixels</option>
+                                            </select>                                          
+                                        </td>
+                                        <td>
+                                            <select class="options-cb" id="options-3d-sat-label-selected-size">
+                                                <option value="8">8 Pixels</option>
+                                                <option value="10">10 Pixels</option>
+                                                <option value="12">12 Pixels</option>
+                                                <option value="14">14 Pixels</option>
+                                                <option value="16">16 Pixels</option>
+                                                <option value="18">18 Pixels</option>
+                                                <option value="20">20 Pixels</option>
+                                                <option value="22">22 Pixels</option>
+                                                <option value="24">24 Pixels</option>
+                                            </select>                                         
+                                        </td>
+                                    </tr>
+                                    <tr valign="top">
+                                        <th>Label Colour</th>
+                                        <td><input class="color polarcolour" id="3d-label-colour-unselected" type="text" value="" /></td>
+                                        <td><input class="color polarcolour" id="3d-label-colour-selected" type="text" value="" /></td>
+                                    </tr>
+                                </table>  
+                                
+                                
+                                
+                                                              
                                 <h3>Following Options</h3>
-                                <p>These options control the position of the camera when following a satellite either from a location or the satellite.</p>
                                 <table class="form-table">
                                     <tr valign="top">
                                         <th>Height Above Observer Location</th>

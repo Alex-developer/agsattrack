@@ -102,6 +102,22 @@ var AGOPTIONS = function() {
             setThreedStaticImage(image);   
         });
         
+        jQuery('#options-3d-sat-icon-unselected').ddslick();
+        jQuery('#options-3d-sat-icon-selected').ddslick();
+        
+        jQuery('#options-3d-sat-icon-unselected').ddslick('select', {index: AGSETTINGS.getViewSettings('threed').unselectedIcon});
+        jQuery('#options-3d-sat-icon-selected').ddslick('select', {index: AGSETTINGS.getViewSettings('threed').selectedIcon});
+         
+        jQuery('#options-3d-sat-icon-unselected-size option[value="' + AGSETTINGS.getViewSettings('threed').unselectedIconSize + '"]').attr('selected', true);
+        jQuery('#options-3d-sat-icon-selected-size option[value="' + AGSETTINGS.getViewSettings('threed').selectedIconSize + '"]').attr('selected', true);
+    
+        jQuery('#options-3d-sat-label-unselected-size option[value="' + AGSETTINGS.getViewSettings('threed').unselectedLabelSize + '"]').attr('selected', true);
+        jQuery('#options-3d-sat-label-selected-size option[value="' + AGSETTINGS.getViewSettings('threed').selectedLabelSize + '"]').attr('selected', true);    
+                
+        jQuery('#3d-label-colour-unselected')[0].color.fromString(AGSETTINGS.getViewSettings('threed').unselectedLabelColour);
+        jQuery('#3d-label-colour-selected')[0].color.fromString(AGSETTINGS.getViewSettings('threed').selectedLabelColour);
+
+        
         /**
         * Disable the save button - Just in case any of the above enabled it.
         */
@@ -284,7 +300,18 @@ var AGOPTIONS = function() {
         var threedstaticimage = jQuery('#options-3d-view-staticimage').find(":selected").val();
         var settings = {
             staticimage : threedstaticimage
-        }     
+        }  
+        
+        var ddData = $('#options-3d-sat-icon-unselected').data('ddslick');
+        settings.unselectedIcon = ddData.selectedIndex;
+        var ddData = $('#options-3d-sat-icon-selected').data('ddslick');
+        settings.selectedIcon = ddData.selectedIndex;
+        settings.unselectedIconSize = jQuery('#options-3d-sat-icon-unselected-size').find(":selected").val();
+        settings.selectedIconSize = jQuery('#options-3d-sat-icon-selected-size').find(":selected").val();
+        settings.unselectedLabelSize = jQuery('#options-3d-sat-label-unselected-size').find(":selected").val();
+        settings.selectedLabelSize = jQuery('#options-3d-sat-label-selected-size').find(":selected").val();
+        settings.unselectedLabelColour = jQuery('#3d-label-colour-unselected')[0].color.toString();     
+        settings.selectedLabelColour = jQuery('#3d-label-colour-selected')[0].color.toString();     
         AGSETTINGS.setViewSettings('threed', settings);
              
              

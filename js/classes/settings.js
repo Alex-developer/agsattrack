@@ -34,8 +34,10 @@ var AGSETTINGS = (function() {
     var _requireEUCookieLaw = true;
     var _defaultView = 'home';
     var _defaultSats = '';
+    var _cookieVersion = 1.1;
     
     var _settings = {
+        version: _cookieVersion,
         aosEl: 5,
         refreshTimerInterval : 5000,
         showPopupHelp : false,
@@ -67,7 +69,15 @@ var AGSETTINGS = (function() {
                 }              
             },
             threed: {
-                staticimage : 'NE2_50M_SR_W_4096.jpg'
+                staticimage : 'NE2_50M_SR_W_4096.jpg',
+                unselectedIcon: 0,
+                selectedIcon: 1,
+                unselectedIconSize: 32,
+                selectedIconSize: 64,
+                unselectedLabelSize: 10,
+                selectedLabelSize: 14,
+                unselectedLabelColour: 'ffffff',
+                selectedLabelColour: 'ff0000'                                                     
             }
         }
     };
@@ -122,7 +132,9 @@ var AGSETTINGS = (function() {
     if (jQuery.cookie(COOKIENAME) !== null) {
         var cookieData = jQuery.cookie(COOKIENAME);
         var savedSettings = JSON.parse(cookieData);
-        _settings = $.extend({}, savedSettings, _settings);
+        if (typeof savedSettings.version !== 'undefined' && savedSettings.version == _cookieVersion) {
+            _settings = $.extend({}, _settings, savedSettings);            
+        }
     }
     
     /**

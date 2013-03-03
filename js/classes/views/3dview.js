@@ -110,6 +110,7 @@ var AG3DVIEW = function(element) {
                     if (_currentProvider == 'staticimage') {
                         setProvider(_currentProvider);
                     }
+                    createSatellites();
                 }
             }); 
                 
@@ -364,9 +365,9 @@ var AG3DVIEW = function(element) {
                           show : true,
                           position : cpos,
                           text : satellites[i].getName(),
-                          font : '10px sans-serif',
-                          fillColor : 'white',
-                          outlineColor : 'white',
+                          font : _settings.unselectedLabelSize + 'px sans-serif',
+                          fillColor : Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour),
+                          outlineColor : _settings.unselectedLabelColour,
                           style : Cesium.LabelStyle.FILL,
                           scale : 1.0
                         });
@@ -428,10 +429,13 @@ var AG3DVIEW = function(element) {
             }
             scene.getPrimitives().add(satBillboards);
 
+            var satUnselected = 'satellite' + _settings.unselectedIcon + _settings.unselectedIconSize;
+            var satSelected = 'satellite' + _settings.selectedIcon + _settings.selectedIconSize;
+
             var textureAtlas = scene.getContext().createTextureAtlas({
                 images : [
-                    AGIMAGES.getImage('satellite16'), 
-                    AGIMAGES.getImage('satellite32'),
+                    AGIMAGES.getImage(satUnselected), 
+                    AGIMAGES.getImage(satSelected),
                     AGIMAGES.getImage('iss16'),
                     AGIMAGES.getImage('iss32')
                     ] 
@@ -463,6 +467,11 @@ var AG3DVIEW = function(element) {
         if (following !== null && (_follow || _followFromObserver)) {
             var observer = AGSatTrack.getObservers()[0];
 
+            var now = new Cesium.JulianDate(); 
+            scene.getCamera().transform = Cesium.Matrix4.fromRotationTranslation(
+                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                    Cesium.Cartesian3.ZERO); 
+                                
             if (_followFromObserver) {
                 target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
                 up = new Cesium.Cartesian3(0, 0, 1);                                     
@@ -473,7 +482,7 @@ var AG3DVIEW = function(element) {
                                                   
             var eye = ellipsoid
                     .cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'),following.get('latitude'), (following.get('altitude') + 10) *1000));
-            
+                                                
             if (_followFromObserver) {
                 scene.getCamera().controller.lookAt(target, eye, up);                
             } else {
