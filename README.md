@@ -42,3 +42,4 @@ Available Views
 Notes
 =====
 This is VERY MUCH work in progress at the moment, far from stable and is changing constantly .......
+For bug reports or general comments visit www.facebook.com/agsattrack
