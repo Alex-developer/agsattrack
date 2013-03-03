@@ -15,7 +15,7 @@ The Skyview. This is as if you are looking at the horizon. if the horizon image 
 
 ![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/master/screenshots/small/timeline.png)
 
-The Tineline View shows all of the passes for the selected satellites within the next 24 hours.
+The Timeline View shows all of the passes for the selected satellites within the next 24 hours.
 
 ![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/master/screenshots/small/passes.png)
 
