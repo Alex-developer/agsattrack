@@ -34,7 +34,7 @@ var AGSETTINGS = (function() {
     var _requireEUCookieLaw = true;
     var _defaultView = 'home';
     var _defaultSats = '';
-    var _cookieVersion = 1.2;
+    var _cookieVersion = 1.4;
     
     var _settings = {
         version: _cookieVersion,
@@ -79,7 +79,8 @@ var AGSETTINGS = (function() {
                 unselectedLabelColour: 'f7ff0a',
                 selectedLabelColour: 'ff0000',
                 view: 'threed',
-                provider : 'staticimage'                                                     
+                provider : 'staticimage',
+                useTerrainProvider: true                                                   
             }
         }
     };

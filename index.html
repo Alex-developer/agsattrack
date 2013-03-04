@@ -425,14 +425,14 @@
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/cube.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/cube.png" />
                             <span class="button-title" unselectable="on"></span>
-                            <span class="button-help"><strong>Show Skybox.</strong><br /><br />Toggle displaying the skybox.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <span class="button-help"><strong>Show Skybox.</strong><br /><br />Toggle displaying the skybox.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                         </div>                                             
                         <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showfps">
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/fps.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/fps.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/fps.png" />
                             <span class="button-title" unselectable="on"></span>
-                            <span class="button-help"><strong>Show FrameRate.</strong><br /><br />Display the frame rate.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <span class="button-help"><strong>Show FrameRate.</strong><br /><br />Display the frame rate.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                         </div>                                             
 
                     </div>
@@ -442,7 +442,7 @@
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/mousepos.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/mousepos.png" />
                             <span class="button-title" unselectable="on"></span>
-                            <span class="button-help"><strong>Show Mouse Pos.</strong><br /><br />Toggle displaying the lat and lon of the mouse position.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <span class="button-help"><strong>Show Mouse Pos.</strong><br /><br />Toggle displaying the lat and lon of the mouse position.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                         </div>
 
                         <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showsatlabels">
@@ -450,9 +450,16 @@
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/label.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/label.png" />
                             <span class="button-title" unselectable="on"></span>
-                            <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying the name of the satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying the name of the satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                         </div>
                         
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showterrain" id="3d-show-terrain">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/terrain.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/terrain.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/terrain.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying terrain data<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        </div>                        
                     </div>                                        
                 </div>
 
@@ -1158,6 +1165,15 @@
                                                 <option value="arcgis">Arc Gis</option>
                                             </select>                                            
                                         </td>                                        
+                                    </tr>
+                                    <tr valign="top">
+                                        <th>Use Terrain Provider</th>
+                                        <td>
+                                            <input type="checkbox" id="options-3d-terrainprovider" value="on" class="options-cb">
+                                            <p class="description">The Terrain Provider will show elevation data on the 3D view.</p>
+                                        </td>
+                                        <th></th>
+                                        <td></td>                                        
                                     </tr>
                                 </table>                                
                                 

@@ -120,6 +120,11 @@ var AGOPTIONS = function() {
         jQuery('#options-3d-view option[value="' + AGSETTINGS.getViewSettings('threed').view + '"]').attr('selected', true);
         jQuery('#options-3d-provider option[value="' + AGSETTINGS.getViewSettings('threed').provider + '"]').attr('selected', true);
         
+        if (AGSETTINGS.getViewSettings('threed').useTerrainProvider) {
+            jQuery('#options-3d-terrainprovider').prop('checked', true);
+        } else {
+            jQuery('#options-3d-terrainprovider').prop('checked', false);
+        }
         
         /**
         * Disable the save button - Just in case any of the above enabled it.
@@ -317,6 +322,8 @@ var AGOPTIONS = function() {
         settings.selectedLabelColour = jQuery('#3d-label-colour-selected')[0].color.toString();     
         settings.view = jQuery('#options-3d-view').find(":selected").val();
         settings.provider = jQuery('#options-3d-provider').find(":selected").val();
+        
+        settings.useTerrainProvider = jQuery('#options-3d-terrainprovider').prop('checked');                
         AGSETTINGS.setViewSettings('threed', settings);
              
              

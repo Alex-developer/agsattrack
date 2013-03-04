@@ -111,6 +111,7 @@ var AG3DVIEW = function(element) {
                         setProvider(_currentProvider);
                     }
                     createSatellites();
+                    setTerrainProvider(_settings.useTerrainProvider);
                 }
             }); 
                 
@@ -239,7 +240,12 @@ var AG3DVIEW = function(element) {
             setView(view);
         }
     });
-    
+
+    jQuery(document).bind('agsattrack.showterrain', function(event, state) {
+        if (AGSETTINGS.getHaveWebGL()) {
+            setTerrainProvider(state);
+        }
+    });    
 
     function setView(view) {
         if (scene.mode !== Cesium.SceneMode.MORPHING) {
@@ -502,7 +508,7 @@ var AG3DVIEW = function(element) {
                 Cesium.Cartesian3.ZERO);
         for ( var i = 0; i < satBillboards.getLength(); i++) {
             bb = satBillboards.get(i);
-            
+     
             if (satellites[bb.satelliteindex].getSelected()) {
                 if (satellites[i].getCatalogNumber() === '25544') {
                     bb.setImageIndex(3);    
@@ -769,6 +775,24 @@ var AG3DVIEW = function(element) {
         controller.enableTilt = true;
         controller.enableLook = true;
     }
+    
+    function setTerrainProvider(useTerrainProvider) {
+        var terrainProvider;
+        
+        if (useTerrainProvider) {
+            terrainProvider = new Cesium.CesiumTerrainProvider({
+                url : 'http://cesium.agi.com/smallterrain'
+            });
+        } else {
+            terrainProvider = new Cesium.EllipsoidTerrainProvider({
+                ellipsoid : Cesium.Ellipsoid.WGS84
+            });    
+        }
+        var centralBody = scene.getPrimitives().getCentralBody();
+        centralBody.terrainProvider = terrainProvider;
+        debugger;
+        jQuery('#3d-show-terrain').setButtonState(useTerrainProvider);
+    }
         
     function init3DView() {
         
@@ -842,9 +866,11 @@ var AG3DVIEW = function(element) {
 
         cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[_settings.provider].provider);
         cb.showSkyAtmosphere = true;
-
+        
         scene.getPrimitives().setCentralBody(cb);
 
+        setTerrainProvider(_settings.useTerrainProvider);
+                
         _skyAtmosphere = new Cesium.SkyAtmosphere();
         scene.skyAtmosphere = _skyAtmosphere;
         
