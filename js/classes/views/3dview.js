@@ -442,12 +442,17 @@ var AG3DVIEW = function(element) {
             var satUnselected = 'satellite' + _settings.unselectedIcon + _settings.unselectedIconSize;
             var satSelected = 'satellite' + _settings.selectedIcon + _settings.selectedIconSize;
 
+            var satUnselectedGrey = 'satellitegrey' + _settings.unselectedIcon + _settings.unselectedIconSize;
+            var satSelectedGrey = 'satellitegrey' + _settings.selectedIcon + _settings.selectedIconSize;
+
             var textureAtlas = scene.getContext().createTextureAtlas({
                 images : [
                     AGIMAGES.getImage(satUnselected), 
                     AGIMAGES.getImage(satSelected),
                     AGIMAGES.getImage('iss16'),
-                    AGIMAGES.getImage('iss32')
+                    AGIMAGES.getImage('iss32'),
+                    AGIMAGES.getImage(satUnselectedGrey),                     
+                    AGIMAGES.getImage(satSelectedGrey)
                     ] 
             });
             satBillboards.setTextureAtlas(textureAtlas);
@@ -509,17 +514,23 @@ var AG3DVIEW = function(element) {
         for ( var i = 0; i < satBillboards.getLength(); i++) {
             bb = satBillboards.get(i);
      
+            var offset = 4;
+            var visibility = satellites[bb.satelliteindex].get('visibility');
+            if ( visibility == 'Daylight' || visibility == 'Visible') {
+                offset = 0;
+            }
+            
             if (satellites[bb.satelliteindex].getSelected()) {
                 if (satellites[i].getCatalogNumber() === '25544') {
                     bb.setImageIndex(3);    
                 } else {
-                    bb.setImageIndex(1);    
+                    bb.setImageIndex(1 + offset);    
                 }
             } else {
                 if (satellites[i].getCatalogNumber() === '25544') {
                     bb.setImageIndex(2);    
                 } else {
-                    bb.setImageIndex(0);    
+                    bb.setImageIndex(0 + offset);    
                 }   
             }
             newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
@@ -790,7 +801,6 @@ var AG3DVIEW = function(element) {
         }
         var centralBody = scene.getPrimitives().getCentralBody();
         centralBody.terrainProvider = terrainProvider;
-        debugger;
         jQuery('#3d-show-terrain').setButtonState(useTerrainProvider);
     }
         
