@@ -886,12 +886,12 @@ var AG3DVIEW = function(element) {
         
         var imageryUrl = 'images/';
         _skybox = new Cesium.SkyBox({
-            positiveX : imageryUrl + 'skybox/tycho8_px_80.jpg',
-            negativeX : imageryUrl + 'skybox/tycho8_mx_80.jpg',
-            positiveY : imageryUrl + 'skybox/tycho8_py_80.jpg',
-            negativeY : imageryUrl + 'skybox/tycho8_my_80.jpg',
-            positiveZ : imageryUrl + 'skybox/tycho8_pz_80.jpg',
-            negativeZ : imageryUrl + 'skybox/tycho8_mz_80.jpg'
+            positiveX : imageryUrl + 'skybox/tycho2t3_80_px.jpg',
+            negativeX : imageryUrl + 'skybox/tycho2t3_80_mx.jpg',
+            positiveY : imageryUrl + 'skybox/tycho2t3_80_py.jpg',
+            negativeY : imageryUrl + 'skybox/tycho2t3_80_my.jpg',
+            positiveZ : imageryUrl + 'skybox/tycho2t3_80_pz.jpg',
+            negativeZ : imageryUrl + 'skybox/tycho2t3_80_mz.jpg'
         });
         scene.skyBox = _skybox;
         
