@@ -255,6 +255,10 @@ var AGUTIL = (function() {
             return result;
         },
         
+        degToRad : function(deg) {
+            return  deg * (Math.PI / 180);
+        },
+        
         loadEphemerisEngine : function(engineName) {
         }
 	};

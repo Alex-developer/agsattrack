@@ -210,11 +210,26 @@ var AGTIMELINE = function() {
 	}
 
     function drawSatellites() {
+        getDimensions();        
         _timelineLayer.removeChildren();
         _legendLayer.removeChildren();
         
         var selectedSats = AGSatTrack.getTles().getSelected();
         var yPos = _topMargin;
+        if (selectedSats.length == 0) {
+            _legendLayer.add(new Kinetic.Text({
+                x : 10 ,
+                y : (_height - _legendHeight) / 2,
+                width: _satLegendWidth - 10,
+                height: 80,
+                text : 'Please Select one or more satellites to enable the timeline view',
+                fontSize : 12,
+                lineHeight : 1.50,
+                fontFamily : 'Verdana',
+                textFill : 'white'                
+            }));            
+        }
+        
         jQuery.each(selectedSats, function(index, sat) {
 
             _legendLayer.add(new Kinetic.Text({

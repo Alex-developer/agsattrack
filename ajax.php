@@ -30,7 +30,7 @@ if (isset($_GET['id'])) {
 	$data[] = Array('field'=>'name', 'value'=>$satData->name);
 	$data[] = Array('field'=>'owner', 'value'=>$satData->owner);
 	$data[] = Array('field'=>'Launch date', 'value'=>$satData->launchdate);
-	$data[] = Array('field'=>'Launch Site', 'value'=>$satData->site_id->location);
+	//$data[] = Array('field'=>'Launch Site', 'value'=>$satData->site_id->location);
 	$data[] = Array('field'=>'period', 'value'=>$satData->period);
 	$data[] = Array('field'=>'inclination', 'value'=>$satData->inclination);
 	$data[] = Array('field'=>'apogee', 'value'=>$satData->apogee);
