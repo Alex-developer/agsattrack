@@ -323,7 +323,7 @@ var AG3DVIEW = function(element) {
      */
     var _debugCounter = 0;     
     function renderScene() {
-/*        
+        
         (function tick() {
             if (_render) {
                 if (AGSETTINGS.getDebugLevel() > 0) {                
@@ -342,7 +342,7 @@ var AG3DVIEW = function(element) {
                 Cesium.requestAnimationFrame(tick);
             }
         }());
-*/        
+        
     }
     
     function createSatelliteLabels() {
