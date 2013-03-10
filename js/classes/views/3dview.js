@@ -323,6 +323,7 @@ var AG3DVIEW = function(element) {
      */
     var _debugCounter = 0;     
     function renderScene() {
+/*        
         (function tick() {
             if (_render) {
                 if (AGSETTINGS.getDebugLevel() > 0) {                
@@ -341,6 +342,7 @@ var AG3DVIEW = function(element) {
                 Cesium.requestAnimationFrame(tick);
             }
         }());
+*/        
     }
     
     function createSatelliteLabels() {
@@ -848,12 +850,11 @@ var AG3DVIEW = function(element) {
             }            
         };
            
-        jQuery('<canvas/>', {
+        canvas = jQuery('<canvas/>', {
             'id' : 'glCanvas'+_element,
             'class' : 'fullsize'
-        }).appendTo('#'+_element);
+        }).appendTo('#'+_element)[0];
 
-        canvas = jQuery('#glCanvas'+_element)[0];
         scene = new Cesium.Scene(canvas);
       
       /*  
