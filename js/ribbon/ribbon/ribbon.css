@@ -344,6 +344,12 @@ body
 	cursor: pointer;	
 }
 
+.ribbon-button-small-active.ribbon-fl.disabled {
+    background: none repeat scroll 0 0 #cccccc;
+    border: 1px solid #333333 !important;
+    box-shadow: 0 2px 5px 0 #666666 inset;
+    cursor: pointer;    
+}
 
 #ribbon .ribbon-button:active
 {
