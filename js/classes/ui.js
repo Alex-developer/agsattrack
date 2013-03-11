@@ -324,6 +324,7 @@ var AGUI = function() {
     function updateSatelliteInfo(satellite) {
         jQuery('#latitude').html(AGUTIL.convertDecDegLat(satellite.get('latitude')));
         jQuery('#longitude').html(AGUTIL.convertDecDegLon(satellite.get('longitude')));
+        jQuery('#locator').html(satellite.get('locator'));
         jQuery('#altitude').html(satellite.get('altitude').toFixed(3));
         jQuery('#visible').html(satellite.get('visibility'));
         jQuery('#orbitnumber').html(satellite.get('orbitnumber'));

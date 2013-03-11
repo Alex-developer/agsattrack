@@ -57,7 +57,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'orbitnumber' : 'rv',
         'signaldelay' : 'signaldelay',
         'signalloss' : 'signalloss',
-        'dopplershift' : 'dopplershift'   
+        'dopplershift' : 'dopplershift',   
+        'locator' : 'sat_locator'   
     };
     var _passes = null;
     var _passesCache;

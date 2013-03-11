@@ -21,6 +21,7 @@ Copyright 2013 Alex Greenland
 */
 /*global AGSatTrack, Agsattrack, Modernizr, AGUTIL, AGSETTINGS, AGSPMENGINE */ 
 
+
  /**
  * Shim to support animation frames
  */

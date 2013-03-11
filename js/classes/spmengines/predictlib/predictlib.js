@@ -94,7 +94,7 @@ var PLib =
         tempstr: "", output: "",
 
         tsince: 0.0, jul_epoch: 0.0, jul_utc: 0.0, eclipse_depth: 0.0,
-            sat_azi: 0.0, sat_ele: 0.0, sat_range: 0.0, sat_range_rate: 0.0,
+            sat_azi: 0.0, sat_ele: 0.0, sat_range: 0.0, sat_range_rate: 0.0, sat_locator: '',
             sat_lat: 0.0, sat_lon: 0.0, sat_alt: 0.0, sat_vel: 0.0, phase: 0.0,
             sun_azi: 0.0, sun_ele: 0.0, daynum: 0.0, fm: 0.0, fk: 0.0, age: 0.0, aostime: 0.0,
             lostime: 0.0, ax: 0.0, ay: 0.0, az: 0.0, rx: 0.0, ry: 0.0, rz: 0.0, squint: 0.0, alat: 0.0, alon: 0.0,
@@ -1518,6 +1518,31 @@ var PLib =
             PLib.select_ephemeris(PLib.tle);
         },
 
+        
+         getLocator: function(lat, lng) {
+            function chr(x) { return String.fromCharCode(x); }
+            function floor(x) { return Math.floor(x); }        
+            
+            var qth = '';
+            lat += 90; lng += 180;
+            lat = lat / 10 + 0.0000001;
+            lng = lng / 20 + 0.0000001;
+            qth += chr(65 + lng) + chr(65 + lat);
+            lat = 10 * (lat - floor(lat));
+            lng = 10 * (lng - floor(lng));
+            qth += chr(48 + lng) + chr(48 + lat);
+            lat = 24 * (lat - floor(lat));
+            lng = 24 * (lng - floor(lng));
+            qth += chr(65 + lng) + chr(65 + lat);
+           // lat = 10 * (lat - floor(lat));
+            //lng = 10 * (lng - floor(lng));
+           // qth += chr(48 + lng) + chr(48 + lat);
+           // lat = 24 * (lat - floor(lat));
+           // lng = 24 * (lng - floor(lng));
+           // qth += chr(65 + lng) + chr(65 + lat);
+            return qth;
+        },         
+        
         Calc: function()
         {
             var zero_vector = new PLib.vector_t();
@@ -1579,7 +1604,8 @@ var PLib =
             PLib.sat_lat = PLib.Degrees(sat_geodetic.lat);
             PLib.sat_lon = PLib.Degrees(sat_geodetic.lon);
             PLib.sat_alt = sat_geodetic.alt;
-        
+            PLib.sat_locator = PLib.getLocator(PLib.sat_lat, PLib.sat_lon);
+
             PLib.fk = 12756.33 * Math.acos(PLib.xkmper / (PLib.xkmper + PLib.sat_alt));
             PLib.fm = PLib.fk / 1.609344;
         
