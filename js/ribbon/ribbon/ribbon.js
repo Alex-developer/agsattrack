@@ -294,6 +294,15 @@
 			$('#ribbon #' + tabNames[index]).show();
 		}
 
+        $.fn.switchToTabByIndex = function(index) {
+            var headerStrip = $('#ribbon #ribbon-tab-header-strip');
+            headerStrip.find('.ribbon-tab-header').removeClass('sel');
+            headerStrip.find('#ribbon-tab-header-' + index).addClass('sel');
+
+            $('#ribbon .ribbon-tab').hide();
+            $('#ribbon #' + tabNames[index]).show();
+        }
+                
         $.fn.setButtonState = function(state) {
             var toggleClass = 'ribbon-button-large-active';
             if ($(this).hasClass('ribbon-button-small')) {

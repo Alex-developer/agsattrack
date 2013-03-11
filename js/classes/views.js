@@ -28,37 +28,44 @@ var AGVIEWS = (function(element) {
         'home' : {
             classname : 'AGHOMEVIEW',
             active : true,
-            index: 8
+            index: 8,
+            tabIndex: 1
         },
         '3d' : {
             classname : 'AG3DVIEW',
             active : false,
-            index: 1
+            index: 1,
+            tabIndex: 3
         },
         'passes' : {
             classname : 'AGPASSESVIEW',
             active : false,
-            index: 2
+            index: 2,
+            tabIndex: 4
         },
         'sky' : {
             classname : 'AGSKYVIEW',
             active : false,
-            index: 4
+            index: 4,
+            tabIndex: 6            
         },
         'polar' : {
             classname : 'AGPOLARVIEW',
             active : false,
-            index: 3
+            index: 3,
+            tabIndex: 5           
         },
         'list' : {
             classname : 'AGLISTVIEW',
             active : false,
-            index: 0
+            index: 0,
+            tabIndex: 2            
         },
         'timeline' : {
             classname : 'AGTIMELINE',
             active : false,
-            index: 5
+            index: 5,
+            tabIndex: 7              
         },
         'options' : {
             classname : 'AGOPTIONS',
@@ -124,6 +131,9 @@ var AGVIEWS = (function(element) {
                     newView.active = true;
                     jQuery('#viewtabs').tabs('select',newView.index);
                     newView.instance.startRender();
+                    if (typeof(newView.tabIndex) !== 'undefined') {
+                        jQuery('#ribbon').switchToTabByIndex(newView.tabIndex);
+                    }
                 }    
             }            
         },
