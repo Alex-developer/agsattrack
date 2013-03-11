@@ -114,7 +114,16 @@ var AG3DVIEW = function(element) {
                     setTerrainProvider(_settings.useTerrainProvider);
                 }
             }); 
-                
+       
+       
+
+    jQuery(document).bind('agsattrack.locationAvailable',
+            function(e, observer) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    plotObservers();
+                }
+            }); 
+                            
     jQuery(document).bind('agsattrack.locationUpdated',
             function(e, observer) {
                 if (AGSETTINGS.getHaveWebGL()) {
