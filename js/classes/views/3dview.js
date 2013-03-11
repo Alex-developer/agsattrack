@@ -528,7 +528,6 @@ var AG3DVIEW = function(element) {
                 eye = target.multiplyByScalar(1000);                                                    
                 up = Cesium.Cartesian3.UNIT_X;                                
             } 
-            
             scene.getCamera().controller.lookAt(eye, target, up);                                      
 
         }
