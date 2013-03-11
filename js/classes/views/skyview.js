@@ -58,7 +58,7 @@ var AGSKYVIEW = function(element) {
     var _mode;
     var _singleSat = null;
     var _passToShow = null;
-        
+            
     if (typeof element === 'undefined') {
         _element = 'sky';    
     } else {
@@ -336,7 +336,7 @@ var AGSKYVIEW = function(element) {
                 var newSat = new Kinetic.Image({
                     x : pos.x - 8,
                     y : pos.y - 8,
-                    image : AGIMAGES.getImage('satellite16'),
+                    image : AGIMAGES.getImage('satellite116'),
                     width : 16,
                     height : 16,
                     id : satellite.getCatalogNumber()
