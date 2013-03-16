@@ -513,26 +513,7 @@ var AG3DVIEW = function(element) {
                 okToUpdate = true;
             }
         }
-                
-        if (following !== null && (_follow || _followFromObserver)) {
-            var observer = AGSatTrack.getObservers()[0];
 
-            if (_followFromObserver) {
-                eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
-                target = new Cesium.Cartesian3(following.get('x'), following.get('y'), following.get('z'));
-                target = target.multiplyByScalar(1000);
-                up = Cesium.Cartesian3.UNIT_X;                                
-            } else {
-                target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
-                eye = new Cesium.Cartesian3(following.get('x'), following.get('y'), following.get('z'));
-                eye = target.multiplyByScalar(1000);                                                    
-                up = Cesium.Cartesian3.UNIT_X;                                
-            } 
-                       
-            scene.getCamera().controller.lookAt(eye, target, up);                                      
-
-        }
-        
         satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                 Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                 Cesium.Cartesian3.ZERO);
@@ -579,6 +560,21 @@ var AG3DVIEW = function(element) {
             }
         }
         
+        if (following !== null && (_follow || _followFromObserver)) {
+            var observer = AGSatTrack.getObservers()[0];
+
+            if (_followFromObserver) {
+                eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
+                target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), following.get('altitude')*1000));   
+                up = eye.normalize();                                
+            } else {
+                target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));   
+                eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)+50));
+                up = eye.normalize();
+            }          
+            scene.getCamera().controller.lookAt(eye, target, up);                                      
+        }
+                
         setupOrbit();
     }
 
@@ -950,7 +946,7 @@ var AG3DVIEW = function(element) {
         
         jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[_currentProvider].toolbarTitle ); 
         jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' ); 
-        
+                
         jQuery('#3d-sat-finder').combobox({
             onSelect : function(record){
                 var sat = AGSatTrack.getSatelliteByName(record.value);
