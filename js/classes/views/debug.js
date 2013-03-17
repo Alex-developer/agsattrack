@@ -126,7 +126,9 @@ var AGDEBUG = function() {
                     los: '',
                     _parentId:i+200,
                     id:id++,
-                    iconCls: 'icon-info'                    
+                    iconCls: 'icon-info',
+                    type: 'fullorbit',
+                    catalogNumber: sats[i].getCatalogNumber()                    
                 };
             }
             rows.push(row);
@@ -143,7 +145,9 @@ var AGDEBUG = function() {
                     los: AGUTIL.shortdate(passcache[j].losTime),
                     _parentId:i+200,
                     id:id++,
-                    iconCls: 'icon-info'                    
+                    iconCls: 'icon-info',
+                    type: 'orbit',
+                    catalogNumber: sats[i].getCatalogNumber()                                            
                 };  
                 rows.push(row);                              
             }
@@ -172,7 +176,9 @@ var AGDEBUG = function() {
                         los: AGUTIL.shortdate(todaysPasses[k].dateTimeEnd),
                         _parentId:i+400,
                         id: id++,
-                        iconCls: 'icon-info'                        
+                        iconCls: 'icon-info',
+                        type: 'orbit',
+                        catalogNumber: sats[i].getCatalogNumber()                                                 
                     };  
                     rows.push(row);                       
                 }      
@@ -187,6 +193,77 @@ var AGDEBUG = function() {
         }
         data.rows = rows;
         jQuery('#debuggrid').treegrid('loadData',data);
+        jQuery('#debuggrid').treegrid({
+            onDblClickRow: function(node){
+                if (typeof node.type !== 'undefined') {
+                    switch(node.type) {
+                        case 'fullorbit':
+                            var sat = AGSatTrack.getSatelliteByName(node.catalogNumber);        
+                            var orbitData = sat.getOrbitData();                        
+                            showOrbitWindow(sat, '', orbitData.points);
+                            break;
+                            
+                        case 'orbit':
+                            var sat = AGSatTrack.getSatelliteByName(node.catalogNumber);
+                            var passcache = sat.getPassCache();
+                            for (var i=0; i < passcache.length; i++) {
+                                if (node.orbitno === passcache[i].orbitNumber) {
+                                    var orbitData = passcache[i].pass;                        
+                                    showOrbitWindow(sat, node.orbitno, orbitData);
+                                    break;
+                                }
+                            }
+                            break;                            
+                    }
+                }
+            }
+        });        
+    }
+    
+    function showOrbitWindow(sat, orbitNumner, orbitData) {
+        var windowElement;
+        var gridElement;
+        var data = [];
+                
+        jQuery('#orbitwindow').remove();
+        windowElement = jQuery('<div/>', {
+            'id' : 'orbitwindow'
+        }).appendTo(document.body);
+        
+        gridElement = jQuery('<div/>', {
+            'id' : 'orbitGrid'
+        }).appendTo(windowElement);
+                
+        jQuery('#orbitwindow').window({  
+            width:600,  
+            height:400,
+            title: 'Raw Orbit Data For ' + sat.getName() + '. Orbit ' + orbitNumner,  
+            modal:true  
+        }); 
+        
+        jQuery('#orbitGrid').datagrid({  
+            columns:[[  
+                {field:'orbitnumber',title:'Orbit Number',width:100},  
+                {field:'azimuth',title:'Azimuth',width:70},  
+                {field:'elevation',title:'Elevation',width:70},  
+                {field:'x',title:'X',width:90},  
+                {field:'y',title:'Y',width:90},  
+                {field:'z',title:'Z',width:90}  
+            ]]  
+        });
+       
+        for (var i=0; i < orbitData.length; i++) {
+            data.push({
+                orbitnumber: orbitData[i].orbitNumber,
+                azimuth: orbitData[i].az.toFixed(2),
+                elevation: orbitData[i].el.toFixed(2),
+                x: orbitData[i].x.toFixed(2),
+                y: orbitData[i].y.toFixed(2),
+                z: orbitData[i].z.toFixed(2)
+            });            
+        }
+        jQuery('#orbitGrid').datagrid('loadData',data);
+        
     }
                   
     return {

@@ -926,11 +926,7 @@ var AG3DVIEW = function(element) {
             style : Cesium.LabelStyle.FILL
         });
         scene.getPrimitives().add(_satNameLabels);
-                
-     /*   scene.getCamera().controller.lookAt(new Cesium.Cartesian3(4000000.0, -15000000.0,  10000000.0), // eye
-            Cesium.Cartesian3.ZERO, // target
-            new Cesium.Cartesian3(-0.1642824655609347, 0.5596076102188919, 0.8123118822806428)); // up
-       */
+
         satelliteClickDetails(scene);
         mouseMoveDetails(scene, ellipsoid);
         scene.getPrimitives().add(orbitLines);
@@ -954,14 +950,8 @@ var AG3DVIEW = function(element) {
 
                 var camera = scene.getCamera();
 
-                var now = new Cesium.JulianDate(); 
-                camera.transform = Cesium.Matrix4.fromRotationTranslation(
-                        Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                        Cesium.Cartesian3.ZERO); 
-                                
-                var pos = new Cesium.Cartesian3(sat.get('x'), sat.get('y'), sat.get('z'));
-                pos = pos.multiplyByScalar(1050);  
-
+                var pos = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(sat.get('longitude'), sat.get('latitude'), (sat.get('altitude')*1000)+1000000));
+                 
                 disableInput(scene);
                 var flight = Cesium.CameraFlightPath.createAnimation(scene.getFrameState(), {
                     destination : pos,
