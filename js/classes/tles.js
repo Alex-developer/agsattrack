@@ -24,7 +24,8 @@ Copyright 2012 Alex Greenland
 var AGTLES = function() {
 	'use strict';
 	
-	var baseUrl = 'ajax.php?keps=';
+    var baseUrl = 'index.php?controller=elements&method=getElements&group=';
+	var updateUrl = 'index.php?controller=elements&method=updateElementGroup&group=';
 	var _group = '';
     var _groupName = '';
 	var rawKeps = '';
@@ -74,6 +75,17 @@ var AGTLES = function() {
         jQuery(document).trigger('agsattrack.satsselectedcomplete', {selected: selectedSatellites});        
 	});
 
+    jQuery(document).bind('agsattrack.updategroup', function() {
+        jQuery('#home-update-elements').disable();
+        jQuery('#home-update-elements').stop();  
+        var url = updateUrl + _group;
+
+        jQuery.getJSON(url, function(data) {
+            loadElements(_group);    
+        });
+    
+    });
+        
     function getSatelliteIndexFromCatalogNumber(noradId) {
         var index = -1;
         for (var i=0; i < satellites.length; i++) {
@@ -95,6 +107,34 @@ var AGTLES = function() {
         return satelliteList;           
     }
 	
+    function loadElements(group) {
+        var url = baseUrl + group;
+
+        jQuery.getJSON(url, function(data) {
+            satellites = [];
+            _group = data.id;
+            var groupData = jQuery('#sat-group-selector-listbox').jqxListBox('getItemByValue', group);
+            if (typeof groupData !== 'undefined') {
+                _groupName = groupData.label;
+                rawKeps = data.keps.split('\n');
+                processRawData();
+                
+                if (data.averageage >= data.updateat) {
+                    jQuery('#home-update-elements').enable();
+                    jQuery('#home-update-elements').pulse({
+                        opacity: [0,1]
+                    }, {
+                        duration: 1000,
+                        times: 30,
+                        easing: 'linear',
+                        complete: function() {
+                        }
+                    });                        
+                }
+            }
+        });            
+    }
+    
 	return {
 	
         getSelected : function() {
@@ -185,18 +225,7 @@ var AGTLES = function() {
         },
         
 		load: function(group) {
-			var url = baseUrl + group;
-			
-			jQuery.getJSON(url, function(data) {
-				satellites = [];
-				_group = data.id;
-                var groupData = jQuery('#sat-group-selector-listbox').jqxListBox('getItemByValue', group);
-                if (typeof groupData !== 'undefined') {
-                    _groupName = groupData.label;
-                    rawKeps = data.keps.split('\n');
-                    processRawData();
-                }
-			});			
+            loadElements(group);
 		}
 	};
 };

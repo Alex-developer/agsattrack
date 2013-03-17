@@ -61,7 +61,7 @@ var AGUI = function() {
             { name: 'name' }
         ],
         id: 'id',
-        url: 'ajax.php'
+        url: 'index.php?controller=elements&method=getGroups'
     };
     
     var dataAdapter = new jQuery.jqx.dataAdapter(source,
