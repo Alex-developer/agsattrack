@@ -4,7 +4,7 @@ Around 2001 I developed a windows based satellite tracking program mainly to ass
 
 Shortly after its release I started to look at cross platform technology which would allow me to port the program to both Linux and OSX. At the time I could not find anything that would make the port easy so left it!
 
-In late 2012 I stumbled across the [Satellite Orbit Tracker](https://github.com/koansys/sot) project on GitHub which had a very nice rendering of a globe. I started to dig around and found that it was using another open source project on GitHub called [Cesium](https://github.com/AnalyticalGraphicsInc/cesium).
+In late 2012 I stumbled across the [Satellite Orbit Tracker](https://github.com/koansys/isat) project on GitHub which had a very nice rendering of a globe. I started to dig around and found that it was using another open source project on GitHub called [Cesium](https://github.com/AnalyticalGraphicsInc/cesium).
 
 The Cesium engine looked like it could help form the basis of an online version of agsattrack and I started to experiment. By early Feb 2013 the first version of [agsattrack.com](http://www.agsattrack.com/) went live.
 
