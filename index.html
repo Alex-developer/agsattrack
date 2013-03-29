@@ -10,7 +10,8 @@
 </script>
 
 <link rel="stylesheet" href="/css/agsattrack.css">
-<link rel="stylesheet" href="/css/menu.css">
+<link rel="stylesheet" href="/css/ribbon.css">
+<link rel="stylesheet" href="/css/statusbar.css">
 
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/gray/easyui.css">
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css">
@@ -290,9 +291,9 @@
                             <span class="button-title" unselectable="on">Community</span>
                         </div>                                                  
                     </div>
-                </div>                
-
+                </div>                                        
             </div>
+            
             <div class="ribbon-tab" id="list-tab">
                 <span class="ribbon-title" data-tab="list">List View</span>
                 
@@ -1294,13 +1295,28 @@
 		</div>
 	</div>
 
-    <div data-options="region:'south'" id="south-panel" style="height:30px;">
+    <div data-options="region:'south'" id="south-panel">
         <div id="statusbar">
-            <div id="status">Initialising</div>
-            <div id="statusgroup">Group: NONE</div>
-            <div id="statusfollowing">Following: NONE</div>
-            <div id="statustotalloaded">0 Satellites Loaded</div>
-            <div id="info">&nbsp;</div>
+            <div id="status" class="panel"><strong>Initialising</strong></div>
+            <div id="statusgroup" class="panel"><strong>Group:</strong> NONE</div>
+            <div id="statusfollowing" class="panel"><strong>Following:</strong> NONE</div>
+            <div id="statustotalloaded" class="panel">0 Satellites Loaded</div>
+            
+            <div id="social-fb" class="panel last-panel">
+                <div id="fb-root"></div>
+                    <script>(function(d, s, id) {
+                      var js, fjs = d.getElementsByTagName(s)[0];
+                      if (d.getElementById(id)) return;
+                      js = d.createElement(s); js.id = id;
+                      js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId=218900791485439";
+                      fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));</script>
+                    <div class="fb-like" data-href="http://www.facebook.com/agsattrack" data-send="true" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+            </div>
+            <div id="social-twitter" class="panel">
+                <iframe allowtransparency="true" frameborder="0" scrolling="no" src="https://platform.twitter.com/widgets/tweet_button.html?via=agsattrack" style="width:105px; height:20px;"></iframe>
+                <iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/follow_button.html?screen_name=agsattrack" style="width:200px; height:20px;"></iframe>
+            </div>            
         </div>
     </div>
         

@@ -24,6 +24,16 @@ Copyright 2013 Alex Greenland
 var AGUI = function() {
 	'use strict';
     
+    /**
+    * If we are not running on any of my domains then delete the social media
+    * element from the ribbon bar.
+    */
+    var url = jQuery(location).attr('href');
+    if (url.indexOf('ag.local') === -1 && url.indexOf('agsattrack.com') === -1) {
+        jQuery('#social-twitter').remove();    
+        jQuery('#social-fb').remove();    
+    }
+    
 	/**
 	 * Ugly hack to hide view tabs
 	 */
@@ -218,7 +228,7 @@ var AGUI = function() {
                 jQuery('#ag-satselector').agsatbox('moveAllSats','right');        
             }
             var groupName = AGSatTrack.getTles().getGroupName();
-            jQuery('#statusgroup').html('Group: ' + groupName); 
+            jQuery('#statusgroup').html('<strong>Group:</strong> ' + groupName); 
 	});
 
 	/**
