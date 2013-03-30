@@ -19,7 +19,7 @@ Copyright 2013 Alex Greenland
 * Last Checked: 19/01/2013
 * 
 */
-/*global AGSatTrack, AGSETTINGS, AGPOPUPHELP, AGVIEWS, AGUTIL, AGLOCATION, ctrl */ 
+/*global AGSatTrack, AGSETTINGS, AGVIEWS, AGUTIL, AGLOCATION, ctrl */ 
 
 var AGUI = function() {
 	'use strict';
@@ -318,7 +318,7 @@ var AGUI = function() {
 
     function updateSatelliteData(satellite) {
         var catalogNumber = satellite.getCatalogNumber();
-        var url = 'ajax.php?id=' + catalogNumber;
+        var url = 'index.php?controller=satellite&method=getSatelliteData&id=' + catalogNumber;
         jQuery.getJSON(url, function(data) {
             for ( var i = 0; i < data.length; i++) {
                 jQuery('#' + data[i].field).html(data[i].value);
@@ -396,7 +396,6 @@ var AGUI = function() {
     jQuery(document.body).show();
     jQuery('#status').html('Idle');
 
-    var _helper = new AGPOPUPHELP();
                 
 	return {
         updateInfo : function(text) {
@@ -412,7 +411,7 @@ var AGUI = function() {
             jQuery('#statusfollowing').html(text);            
         },
 		updateSatelliteInfo : function(catalogNumber) {
-			var url = 'ajax.php?id=' + catalogNumber;
+			var url = 'index.php?controller=satellite&method=getSatelliteData&id=' + catalogNumber;
 			jQuery.getJSON(url, function(data) {
 				for ( var i = 0; i < data.length; i++) {
 					jQuery('#' + data[i].field).html(data[i].value);
@@ -421,23 +420,6 @@ var AGUI = function() {
 		},
         
         updateInfoPane : function() {
-            if (AGSETTINGS.getShowPopupHelp()) {
-                var showingHelp = false;
-                var totalTles = AGSatTrack.getTles().getCount();
-                var totalDisplaying = AGSatTrack.getDisplaying().length;
-                
-                if (totalTles > 0 && totalDisplaying === 0) {
-                    var helpText = jQuery('#help-1').html();
-                    helpText = helpText.replace(/\{tlecount\}/g, totalTles);
-                    _helper.showHelp(helpText, true);
-                    showingHelp = true;
-                }
-                
-                if (!showingHelp) {
-                    _helper.closeBalloon(true);    
-                }
-            }
-            
         }
 	};
 };

@@ -41,11 +41,6 @@ var AGOPTIONS = function() {
         } else {
             jQuery('#switchtabonclick').prop('checked', false);
         }
-        if (AGSETTINGS.getShowPopupHelp()) {
-            jQuery('#popuphelp-show').prop('checked', true);
-        } else {
-            jQuery('#popuphelp-show').prop('checked', false);
-        }
         
         if (AGSETTINGS.getAutoAddSats()) {
             jQuery('#sats-autoadd').prop('checked', true);
@@ -213,10 +208,6 @@ var AGOPTIONS = function() {
     jQuery('#sats-autoadd').on('click', function(e){
         enableSave();        
     });
-        
-    jQuery('#popuphelp-show').on('click', function(e){
-        enableSave();        
-    });
 
     jQuery('#switchtabonclick').on('click', function(e){
         enableSave();        
@@ -253,9 +244,6 @@ var AGOPTIONS = function() {
 
         temp = jQuery('#switchtabonclick').prop('checked');
         AGSETTINGS.setSwitchViewOnTabClick(temp);
-
-        temp = jQuery('#popuphelp-show').prop('checked');
-        AGSETTINGS.setShowPopupHelp(temp);
         
         temp = jQuery('#sats-autoadd').prop('checked');
         AGSETTINGS.setAutoAddSats(temp);        
