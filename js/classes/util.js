@@ -26,6 +26,8 @@ Copyright 2013 Alex Greenland
 var AGUTIL = (function() {
     'use strict';
 	
+    var _elementCounter = 0;
+    
 	function convertDecDeg(v,tipo, html) {
         
         if ( v < -180) {
@@ -71,6 +73,10 @@ var AGUTIL = (function() {
         return s.substr(s.length-size);
     }
     
+    function degToRad(deg) {
+        return  deg * (Math.PI / 180);
+    }
+            
 	return {
         pad : function(num, size) {
             return pad(num, size);    
@@ -256,10 +262,29 @@ var AGUTIL = (function() {
         },
         
         degToRad : function(deg) {
-            return  deg * (Math.PI / 180);
+            return degToRad(deg);
         },
         
         loadEphemerisEngine : function(engineName) {
+        },
+        
+        getDistance : function(lat1, lon1, lat2, lon2) {
+            var distance, c, a, dLat, dLon;        
+            var R = 6372.795;
+    
+            dLat = degToRad(lat2)-degToRad(lat1);
+            dLon = degToRad(lon2)-degToRad(lon1); 
+            a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * 
+                    Math.sin(dLon/2) * Math.sin(dLon/2); 
+            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            distance = R * c;            
+            
+            return distance;
+        },
+        
+        getId : function() {
+            return 'agel' + ++_elementCounter;
         }
 	};
 	

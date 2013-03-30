@@ -97,9 +97,14 @@ var AG3DVIEW = function(element) {
             scene.getCamera().frustum.aspectRatio = width / height;
         }          
     }
-    
-    
 
+    jQuery(document).bind('agsattrack.show3dlocationinfo',
+            function(e) {
+                if (_render) {
+                    showLocationWindow();
+                }
+            }); 
+            
     jQuery(document).bind('agsattrack.settingssaved',
             function(e, observer) {
                 if (AGSETTINGS.getHaveWebGL()) {
@@ -260,6 +265,36 @@ var AG3DVIEW = function(element) {
         }
     });    
 
+    function showLocationWindow() {
+        
+        AGWINDOWMANAGER.showWindow('dx');
+        /*
+        var windowElement;
+        var gridElement;
+        var view = null;
+                
+        jQuery('#3dlocationwindow').remove();
+        windowElement = jQuery('<div/>', {
+            'id' : '3dlocationwindow'
+        }).appendTo(document.body);
+        
+        gridElement = jQuery('<div/>', {
+            'id' : '3dlocationwindowgrid'
+        }).appendTo(windowElement);
+                
+        jQuery('#3dlocationwindow').window({  
+            width:600,  
+            height:350,
+            title: 'Raw Orbit Data For ',  
+            modal:false  
+        });
+        
+        view = new AGDXVIEW('3dlocationwindowgrid');
+        view.init();
+        view.startRender();  
+        */     
+    }
+    
     function setView(view) {
         if (scene.mode !== Cesium.SceneMode.MORPHING) {
             switch (view) {

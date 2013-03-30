@@ -24,6 +24,9 @@ body {
 	z-index: -1;
 }
 
+.cb {
+    clear: both;
+}
 .fullsize {
 	display: block;
 	top: 0;

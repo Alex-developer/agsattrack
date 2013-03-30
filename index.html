@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="/css/agsattrack.css">
 <link rel="stylesheet" href="/css/ribbon.css">
 <link rel="stylesheet" href="/css/statusbar.css">
+<link rel="stylesheet" href="/css/views.css">
 
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/gray/easyui.css">
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css">
@@ -40,6 +41,7 @@
 <script type="text/javascript" src="/js/classes/views/debug.js"></script>
 <script type="text/javascript" src="/js/classes/views/home.js"></script>
 <script type="text/javascript" src="/js/classes/views/azelview.js"></script>
+<script type="text/javascript" src="/js/classes/views/dx.js"></script>
 <script type="text/javascript" src="/js/classes/observer.js"></script>
 <script type="text/javascript" src="/js/classes/spmengine.js"></script>
 
@@ -52,6 +54,7 @@
 <script type="text/javascript" src="/js/classes/util.js"></script>
 <script type="text/javascript" src="/js/classes/images.js"></script>
 <script type="text/javascript" src="/js/classes/views.js"></script>  
+<script type="text/javascript" src="/js/classes/windows.js"></script>  
 <script type="text/javascript" src="/js/agsatbox/agsatbox.js"></script>
             
 <link href="/js/ribbon/ribbon/ribbon.css" rel="stylesheet" type="text/css" />
@@ -421,7 +424,17 @@
                     </div>                                        
                 </div>
 
-
+                <div class="ribbon-section">
+                    <span class="section-title">Information</span>
+                    <div class="ribbon-button ribbon-button-large" id="3d-view-sat-info-locations" data-type="button" data-event="agsattrack.show3dlocationinfo" style="width:60px;">
+                        <span class="button-title">Visible<br/>Locations</span> 
+                        <span class="button-help"><strong>Visible Locations.</strong><br /><br />Show locations visible from the selected satellite.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/earth.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/earth.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/earth.png" />
+                    </div>                    
+                </div>
+                
                 <div class="ribbon-section">
                     <span class="section-title">Follow</span>
                     <div class="ribbon-button ribbon-button-large" id="3d-follow-sat" data-type="grouptogglebutton" data-event="agsattrack.followsatellite" data-group="follow">
@@ -664,7 +677,23 @@
                                         
                  </div>                
             </div> 
-            
+
+            <div class="ribbon-tab" id="dx-tab">
+                <span class="ribbon-title" data-tab="dx">DX View</span>
+                
+                                
+                <div class="ribbon-section" style="width:100px">
+                    <span class="section-title">Observer Options</span>
+                    <div class="ribbon-button ribbon-button-large ribbon-fl" id="dx-view-mutual" unselectable="on" data-type="togglebutton" data-event="agsattrack.toggle24">
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/disabled/mutual.png" />
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/disabled/mutual.png" />
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/mutual.png" />
+                        <span class="button-title" unselectable="on">Show<br/>Mutual</span>
+                    </div> 
+                 </div>                
+                
+            </div>
+                            
             <div class="ribbon-tab" id="debug-tab">
                 <span class="ribbon-title" data-tab="debug">Debug View</span>
                 <div class="ribbon-section">
@@ -1274,7 +1303,10 @@
                 </ul>
                 <h4>Debug View</h4>
                 <p>This must be enabled in the options. This view is primarily intended to debug issues. It shows all of the available satellites along with information about the internal calculation engine.</p>
-            </div>                        
+            </div>
+            
+            <div title="DX View" id="dx">
+            </div>                                  
             
 		</div>
 	</div>
