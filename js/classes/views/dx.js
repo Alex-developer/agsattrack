@@ -34,6 +34,7 @@ var AGDXVIEW = function(element) {
     var _infoGridHeadFollowingId = AGUTIL.getId();
     var _infoGridHeadFollowingLat = AGUTIL.getId();
     var _infoGridHeadFollowingLon = AGUTIL.getId();
+    var _infoGridNotSatSelected = AGUTIL.getId();
     
     var _pageSize = 20;
     
@@ -51,6 +52,7 @@ var AGDXVIEW = function(element) {
     * Append to html for the datagrid
     */
     jQuery('<div id="'+_infoGridId+'"></div> \
+                <div id="'+_infoGridNotSatSelected+'" class="dxwindownosatselected"><h2>No Satellite Selected</h2><p>Select a satellite to show locations visible from it.</p></div> \
                 <div id="'+_infoGridToolbarId+'" class="dx-datagrid-tb"> \
                     <div> \
                         <div id="dx-datagrid-tb-label-following" class="dx-datagrid-tb-header dx-datagrid-tb-header-label">Following:</div> \
@@ -69,6 +71,7 @@ var AGDXVIEW = function(element) {
     */
     jQuery(document).bind('agsattrack.newsatselected', function(event, group) {
         if (_render) {
+            setupDisplay();
             updateInfogrid();
         }
     });
@@ -113,9 +116,9 @@ var AGDXVIEW = function(element) {
                 remoteSort: false,
                 toolbar: '#' + _infoGridToolbarId,                
                 columns:[[  
-                    {field:'name',title:'Name',width:100},  
-                    {field:'prefix',title:'Prefix',width:100},  
-                    {field:'distance',title:'Distance',width:100,align:'right', sortable:true, order: 'asc'}  
+                    {field:'name',title:'Location',width:100},  
+                    {field:'prefix',title:'Callsign Prefix',width:100},  
+                    {field:'distance',title:'Distance (Km)',width:100,align:'right', sortable:true, order: 'asc'}  
                 ]]  
             });  
         }    
@@ -196,11 +199,23 @@ var AGDXVIEW = function(element) {
         return data;
     } 
 
+    function setupDisplay() {
+        var following = AGSatTrack.getFollowing();
+        if (following === null) {
+            jQuery('#' + _infoGridId).treegrid('getPanel').panel('panel').hide();
+            jQuery('#' + _infoGridNotSatSelected).show();
+        } else {
+            jQuery('#' + _infoGridId).treegrid('getPanel').panel('panel').show();
+            jQuery('#' + _infoGridNotSatSelected).hide();
+            jQuery('#' + _infoGridId).treegrid('resize');
+        }
+    }
                 
     return {
         startRender : function() {
             _render = true;
             checkAndLoadDXdatabase();
+            setupDisplay();
             updateInfogrid();
         },
 
@@ -220,6 +235,7 @@ var AGDXVIEW = function(element) {
             }
             _mode = mode;
             checkAndBuildDataGrid();
+            setupDisplay();
         }
         
     };

@@ -9,9 +9,11 @@ var AGDXWINDOW = function(element, params) {
                 
     jQuery(_element).window({  
         width:600,  
-        height:350,
-        title: 'Raw Orbit Data For ',  
-        modal:false  
+        height:370,
+        title: 'Visible Locations',  
+        modal:false,
+        minimizable: false,
+        maximizable : false  
     });
     
     _gridElement = jQuery(_element).window('body')[0].id;

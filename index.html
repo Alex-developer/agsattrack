@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/css/ribbon.css">
 <link rel="stylesheet" href="/css/statusbar.css">
 <link rel="stylesheet" href="/css/views.css">
+<link rel="stylesheet" href="/css/windows.css">
 
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/gray/easyui.css">
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css">
@@ -682,15 +683,22 @@
                 <span class="ribbon-title" data-tab="dx">DX View</span>
                 
                                 
-                <div class="ribbon-section" style="width:100px">
-                    <span class="section-title">Observer Options</span>
-                    <div class="ribbon-button ribbon-button-large ribbon-fl" id="dx-view-mutual" unselectable="on" data-type="togglebutton" data-event="agsattrack.toggle24">
-                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/disabled/mutual.png" />
-                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/disabled/mutual.png" />
-                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/mutual.png" />
-                        <span class="button-title" unselectable="on">Show<br/>Mutual</span>
-                    </div> 
-                 </div>                
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="10">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset<br />View
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
+                    </div>  
+                 </div>              
                 
             </div>
                             
