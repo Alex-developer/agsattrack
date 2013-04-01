@@ -388,7 +388,7 @@ var AGUI = function() {
     });        
 
     if (AGSETTINGS.getDebugView() === false) {
-        jQuery('#ribbon-tab-header-8').hide();         
+        jQuery('#ribbon-tab-header-9').hide();         
     }
     
     

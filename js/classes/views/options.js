@@ -274,10 +274,10 @@ var AGOPTIONS = function() {
         temp = jQuery('#debugger-show').prop('checked');
         AGSETTINGS.setDebugView(temp);  
         if (temp) {
-            jQuery('#ribbon-tab-header-8').show(); 
+            jQuery('#ribbon-tab-header-9').show(); 
         } else {
             AGVIEWS.stopView('debug');
-            jQuery('#ribbon-tab-header-8').hide(); 
+            jQuery('#ribbon-tab-header-9').hide(); 
         }
         
         

@@ -32,10 +32,9 @@ var AGDXVIEW = function(element) {
     var _infoGridId = AGUTIL.getId();
     var _infoGridToolbarId = AGUTIL.getId();
     var _infoGridHeadFollowingId = AGUTIL.getId();
-    var _infoGridHeadFollowingLat = AGUTIL.getId();
-    var _infoGridHeadFollowingLon = AGUTIL.getId();
     var _infoGridNotSatSelected = AGUTIL.getId();
-    
+    var _infoGridHeadSearchId = AGUTIL.getId();
+        
     var _pageSize = 20;
     
     /**
@@ -57,10 +56,8 @@ var AGDXVIEW = function(element) {
                     <div> \
                         <div id="dx-datagrid-tb-label-following" class="dx-datagrid-tb-header dx-datagrid-tb-header-label">Following:</div> \
                         <div id="'+_infoGridHeadFollowingId+'" class="dx-datagrid-tb-field">None</div> \
-                        <div id="dx-datagrid-tb-label-lat" class="dx-datagrid-tb-header dx-datagrid-tb-header-label">Latitude:</div> \
-                        <div id="'+_infoGridHeadFollowingLat+'" class="dx-datagrid-tb-field">-</div> \
-                        <div id="dx-datagrid-tb-label-lon" class="dx-datagrid-tb-header dx-datagrid-tb-header-label">Longitude:</div> \
-                        <div id="'+_infoGridHeadFollowingLon+'" class="dx-datagrid-tb-field">-</div> \
+                        <div id="dx-datagrid-tb-label-search" class="dx-datagrid-tb-header dx-datagrid-tb-header-label">Search:</div> \
+                        <div class="dx-datagrid-tb-field"><input type="text" size="10" id="'+_infoGridHeadSearchId+'"/></div> \
                     </div> \
                     <div class="cb"></div> \
     </div>').appendTo('#'+_element);
@@ -82,7 +79,11 @@ var AGDXVIEW = function(element) {
                     updateInfogrid();
                 }
             });
-                    
+
+    jQuery(document).on('keyup' , '#' + _infoGridHeadSearchId, function(e){
+        updateInfogrid();    
+    });
+                         
     /**
     * Load the DX database from the server if it has not already been loaded.
     */
@@ -142,22 +143,34 @@ var AGDXVIEW = function(element) {
             lat = following.get('latitude');
             lon = following.get('longitude');
             var footprint = following.get('footprint');
+            var searchValue = jQuery('#' + _infoGridHeadSearchId).val();
+            var check = true;
             for ( var i = 0; i < _locationDatabase.length; i++) {
-                var distance = AGUTIL.getDistance(lat, lon, _locationDatabase[i].lat, -_locationDatabase[i].lon);
-                if (distance < (footprint/2)) {
-                    data.push({
-                        name: _locationDatabase[i].name,
-                        prefix: _locationDatabase[i].prefix,
-                        distance : distance.toFixed(0)
-                    });
+                if (searchValue !== '') {
+                    var locationName = _locationDatabase[i].name.toLowerCase();
+                    if (locationName.substring(0, searchValue.length) == searchValue.toLowerCase()) {
+                        check = true;    
+                    } else {
+                        check = false;
+                    }
+                } else {
+                    check = true;
+                }
+                if (check) {
+                    var distance = AGUTIL.getDistance(lat, lon, _locationDatabase[i].lat, -_locationDatabase[i].lon);
+                    if (distance < (footprint/2)) {
+                        data.push({
+                            name: _locationDatabase[i].name,
+                            prefix: _locationDatabase[i].prefix,
+                            distance : distance.toFixed(0)
+                        });
+                    }
                 }
             }
 
             lat = AGUTIL.convertDecDegLat(lat);
             lon = AGUTIL.convertDecDegLon(lon);
         }
-        jQuery('#' + _infoGridHeadFollowingLat).html(lat);
-        jQuery('#' + _infoGridHeadFollowingLon).html(lon);
         jQuery('#' + _infoGridHeadFollowingId).html(satName);
         jQuery('#' + _infoGridId).datagrid('loadData',data);
     }

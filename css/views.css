@@ -1,6 +1,7 @@
 .dx-datagrid-tb {
     padding:5px;
-    height:auto
+    height:20px;
+    display: table;
 }
 
 .dx-datagrid-tb .dx-datagrid-tb-header {
@@ -8,33 +9,20 @@
 }
 
 .dx-datagrid-tb .dx-datagrid-tb-header-label {
-    float:left;
+    display: table-cell;
+    vertical-align: middle;    
 }
 .dx-datagrid-tb #dx-datagrid-tb-label-following {
     width: 65px;
 }
 
-.dx-datagrid-tb #dx-datagrid-tb-label-lat {
-    width: 55px;
-}
-
-.dx-datagrid-tb #dx-datagrid-tb-label-lon {
-    width: 65px;
-}
 
 .dx-datagrid-tb .dx-datagrid-tb-field {
-    float:left;
-    margin-right: 10px;
+    padding-right: 10px;
+    display: table-cell;
+    vertical-align: middle    
 }
 
 .dx-datagrid-tb #dx-datagrid-tb-following {
 
-}
-
-.dx-datagrid-tb #dx-datagrid-tb-following-lat {
-    width: 100px;
-}
-
-.dx-datagrid-tb #dx-datagrid-tb-following-lon {
-    width: 100px;
 }
