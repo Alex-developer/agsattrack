@@ -30,6 +30,8 @@ var AG3DVIEW = function(element) {
     var transitioner = null;
     var cb = null;
     var observerBillboards = null;
+    var _observerLabels = null;
+    var _observerCircles = null;
     var _render = false;
     var satBillboards = null;
     var planetsBillboards = null;
@@ -347,41 +349,76 @@ var AG3DVIEW = function(element) {
      */
     function plotObservers() {
         observerBillboards.removeAll();
+        _observerLabels.removeAll();
+        var textureAtlas = scene.getContext().createTextureAtlas({
+            image : AGIMAGES.getImage('home')
+        });
+        observerBillboards.setTextureAtlas(textureAtlas);        
         var observers = AGSatTrack.getObservers();
         for ( var i = 0; i < observers.length; i++) {
             var observer = observers[i];
-            if (observer.isReady()) {
-                var target = ellipsoid
-                        .cartographicToCartesian(Cesium.Cartographic
-                                .fromDegrees(observer.getLon(), observer
-                                        .getLat()));
-                var eye = ellipsoid
-                        .cartographicToCartesian(Cesium.Cartographic
-                                .fromDegrees(observer.getLon(), observer
-                                        .getLat(), 1e7));
-                var up = new Cesium.Cartesian3(0, 0, 1);
-                
-                
-                var textureAtlas = scene.getContext().createTextureAtlas({
-                    image : AGIMAGES.getImage('home')
-                });
-                observerBillboards.setTextureAtlas(textureAtlas);
-                observerBillboards.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(target);
+            if (observer.isReady()) { 
                 observerBillboards.add({
-                    imageIndex : 0,
-                    position : new Cesium.Cartesian3(0.0, 0.0, 0.0)
-                });        
-        
-                // Point the camera at us and position it directly above us if
-                // we are the first observer
-                if (i === 0) {
-                    scene.getCamera().controller.lookAt(eye, target, up);
-                }
+                    position : ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat())),
+                    imageIndex : 0
+                });
+                
+                _observerLabels.add({
+                    position  : ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat())),
+                    text      : '   ' + observer.getName(),
+                    font      : '12px Helvetica',
+                    fillColor : { red : 0.0, blue : 0.0, green : 0.0, alpha : 1.0 }
+                });                
             }
         }
-        scene.getPrimitives().add(observerBillboards);
+        
+        observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
+        if (observer.isReady()) {
+            var target = ellipsoid
+                    .cartographicToCartesian(Cesium.Cartographic
+                            .fromDegrees(observer.getLon(), observer
+                                    .getLat()));
+            var eye = ellipsoid
+                    .cartographicToCartesian(Cesium.Cartographic
+                            .fromDegrees(observer.getLon(), observer
+                                    .getLat(), 1e7));
+            var up = new Cesium.Cartesian3(0, 0, 1);
+            scene.getCamera().controller.lookAt(eye, target, up);
+        }
+plotMutualCircles();
     }
 
+    function plotMutualCircles() {
+        _observerCircles.removeAll();
+        var now = new Cesium.JulianDate();
+        debugger;
+        var following = AGSatTrack.getFollowing();
+        if (following !== null) {
+            debugger;
+            var footPrint = _observerCircles.add();   
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);            
+            footPrint.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                    Cesium.Cartesian3.ZERO);
+            
+            footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
+                    .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
+                            observer.getLon(), observer.getLat())),
+                    following.get('footprint') * 500));
+                    
+            footPrint = _observerCircles.add();   
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);            
+            footPrint.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+                    Cesium.Cartesian3.ZERO);
+            
+            footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
+                    .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
+                            observer.getLon(), observer.getLat())),
+                    following.get('footprint') * 500));                                   
+        }       
+    }
+    
     /**
      * Render the scene.
      * 
@@ -618,7 +655,7 @@ var AG3DVIEW = function(element) {
         
         footprintCircle.removeAll();
         var selected = AGSatTrack.getTles().getSelected();
-        for (var i=0; i< selected.length; i++) {
+        for (var i = 0; i < selected.length; i++) {
             footPrint = footprintCircle.add();
             var now = new Cesium.JulianDate();
             footPrint.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
@@ -629,16 +666,17 @@ var AG3DVIEW = function(element) {
                     .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
                             selected[i].get('longitude'), selected[i].get('latitude'))),
                     selected[i].get('footprint') * 500));  
-   /*                 
+                    
+/*                    
  var ellipse = new Cesium.Polygon();
          ellipse.setPositions(Cesium.Shapes.computeEllipseBoundary(
             ellipsoid, ellipsoid.cartographicToCartesian(
                 new Cesium.Cartographic.fromDegrees(
-                            satInfo.longitude, satInfo.latitude)), satInfo.footprint * 500,
-                    satInfo.footprint * 500, Cesium.Math.toRadians(60)));
+                            selected[i].get('longitude'), selected[i].get('latitude'))), selected[i].get('footprint') * 500,
+                    selected[i].get('footprint') * 500, Cesium.Math.toRadians(60)));
         scene.getPrimitives().add(ellipse);
-        debugger;
- */                                     
+ //       debugger;
+*/                                      
         }
 
     }
@@ -874,9 +912,11 @@ var AG3DVIEW = function(element) {
         selectedLines = new Cesium.PolylineCollection();
         passLines = new Cesium.PolylineCollection();
         footprintCircle = new Cesium.PolylineCollection();
+        _observerCircles = new Cesium.PolylineCollection();
         clock = new Cesium.Clock();
         _satNameLabels = new Cesium.LabelCollection();
-
+        _observerLabels = new Cesium.LabelCollection();
+        
         TILE_PROVIDERS = {
             'bing' : {
                 provider : new Cesium.BingMapsImageryProvider({
@@ -970,6 +1010,9 @@ var AG3DVIEW = function(element) {
         scene.getPrimitives().add(footprintCircle);
         scene.getPrimitives().add(_labels);
         scene.getPrimitives().add(planetsBillboards);
+        scene.getPrimitives().add(observerBillboards);
+        scene.getPrimitives().add(_observerLabels);
+        scene.getPrimitives().add(_observerCircles);
         
         jQuery(window).trigger('resize');
         

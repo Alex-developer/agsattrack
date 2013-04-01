@@ -34,7 +34,7 @@ var AGSETTINGS = (function() {
     var _requireEUCookieLaw = true;
     var _defaultView = 'home';
     var _defaultSats = '';
-    var _cookieVersion = 1.6;
+    var _cookieVersion = 1.7;
     
     var _settings = {
         version: _cookieVersion,
