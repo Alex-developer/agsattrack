@@ -16,7 +16,7 @@ Copyright 2013 Alex Greenland
 
 /* Options for JSHint http://www.jshint.com/
 * 
-* Last Checked: 19/01/2013
+* Last Checked: 01/04/2013
 * 
 */
 /*global AGSETTINGS */
@@ -34,51 +34,6 @@ var AGOBSERVER = function(index) {
     var _index = index;
     var that = this;
     
-    function showGeoWindow() {
-        var that = this; // JSHint - This is ok
-        
-        jQuery('#geowindow').remove();
-        var form = '<form><input id="geocomplete" type="text" placeholder="Type in an address" value="'+_lat+','+_lon+'" /><input id="find" type="button" value="find" /><div class="map_canvas"></div><fieldset style="display:none"><label>Latitude</label><input name="lat" type="text" value=""><label>Longitude</label><input name="lng" type="text" value=""><label>Formatted Address</label><input name="formatted_address" type="text" value=""></fieldset></form>';  
-                
-        var window = jQuery('<div id="geowindow"><div><img width="14" height="14" src="/images/geo.png" alt="" /> Select Location</div><div><div><div>'+form+'</div></div><div><div style="float: right; margin-top: 15px;"><input type="button" id="ok" value="OK" style="margin-right: 10px" /><input type="button" id="cancel" value="Cancel" /></div></div></div></div>');
-        jQuery(document.body).append(window);
-              
-        window.jqxWindow({ maxHeight: 640, maxWidth: 840, minHeight: 640, minWidth: 840, height: 640, width: 840,
-            resizable: false, isModal: true, modalOpacity: 0.3,
-            okButton: jQuery('#ok'), cancelButton: jQuery('#cancel'),
-            initContent: function () {
-                jQuery('#ok').jqxButton({width: '65px' });
-                jQuery('#cancel').jqxButton({width: '65px' });
-                
-                jQuery('#geocomplete').geocomplete({
-                    map: '.map_canvas',
-                    details: 'form',
-                    markerOptions: {
-                        draggable: true
-                    }
-                });
-            }
-        });
-        
-        jQuery('#find').click(function(){
-            jQuery('#geocomplete').trigger('geocode');
-        }).click();
-        
-        jQuery('#geocomplete').bind('geocode:dragged', function(event, latLng){
-            jQuery('input[name=lat]').val(latLng.lat());
-            jQuery('input[name=lng]').val(latLng.lng());
-        }); 
-
-        window.on('close', function (event) {
-            if (event.args.dialogResult.OK) {
-                jQuery('#observerlatitude').val(jQuery('input[name=lat]').val());
-                jQuery('#observerlongitude').val(jQuery('input[name=lng]').val());
-                jQuery('#options-save').enable();              
-            }
-        
-        });   
-    }
-
     function geoLocate() {
         _ready = false;
         if ('geolocation' in navigator) {
@@ -109,9 +64,8 @@ var AGOBSERVER = function(index) {
         
 	return {
 	
-		init : function() {
+		init : function(settings) {
             
-            var settings = AGSETTINGS.getObserver(_index);
             if (settings !== null) {
                 _autoGeo = settings.auto;
                 _lat = settings.lat;
@@ -129,7 +83,6 @@ var AGOBSERVER = function(index) {
             * that an observer is now available.
             */
             if (_autoGeo) {
-                var that = this;
                 geoLocate();
             } else {
                 _ready = true;
@@ -145,6 +98,10 @@ var AGOBSERVER = function(index) {
 			return _ready;
 		},
 		
+        doGeoLocate: function() {
+            geoLocate();
+        },
+                
         /**
         * Getter and setter for using the browsers inbuilt Geo Location
         * service to find the users location.
@@ -155,9 +112,7 @@ var AGOBSERVER = function(index) {
         getAutoGeo: function() {
             return _autoGeo;
         },
-        doGeoLocate: function() {
-            geoLocate();
-        },        
+       
         /**
         * Getter and setter for the observers name
         */
@@ -198,10 +153,6 @@ var AGOBSERVER = function(index) {
 			return _alt;
 		},
         
-        showGeoWindow : function() {
-            showGeoWindow();    
-        },
-        
         /**
         * Return a string representation of the observer
         */
@@ -209,4 +160,10 @@ var AGOBSERVER = function(index) {
 			return 'name=' + _name + ', lat=' + _lat + ', lon=' + _lon;
 		}
 	};
+};
+
+
+AGOBSERVER.types = {
+    HOME : 0,
+    MUTUAL : 1
 };

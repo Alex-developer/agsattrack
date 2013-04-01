@@ -442,8 +442,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         
         clearCache : function() {
             reset();
-            var observers = AGSatTrack.getObservers();
-            var observer = observers[0];
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
             var date = new Date();
             calc(date, observer);               
         },

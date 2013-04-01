@@ -59,8 +59,7 @@ var AGOPTIONS = function() {
             jQuery('#options-sat-group-selector-listbox').append('<option value="'+group.value+'"'+selected+'>'+group.label+'</option>'); 
         });        
      
-       var observers = AGSatTrack.getObservers();
-       var observer = observers[0];      
+       var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
        jQuery('#observername').val(observer.getName());
        jQuery('#observerlatitude').val(observer.getLat());
        jQuery('#observerlongitude').val(observer.getLon());
@@ -72,6 +71,20 @@ var AGOPTIONS = function() {
             jQuery('#observergelocate').prop('checked', false);
         }
         setObserverForm(observer.getAutoGeo());
+        
+       var observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+       jQuery('#mutualobservername').val(observer.getName());
+       jQuery('#mutualobserverlatitude').val(observer.getLat());
+       jQuery('#mutualobserverlongitude').val(observer.getLon());
+       jQuery('#mutualobserveraltitude').val(observer.getAlt());
+       
+        if (AGSETTINGS.getMutualObserverEnabled()) {
+            jQuery('#mutualobserver').prop('checked', true);
+        } else {
+            jQuery('#mutualobserver').prop('checked', false);
+        }
+        setMutualObserverForm(AGSETTINGS.getMutualObserverEnabled());
+                
         
         if (AGSETTINGS.getDebugView()) {
             jQuery('#debugger-show').prop('checked', true);
@@ -149,6 +162,28 @@ var AGOPTIONS = function() {
         }        
     }
     
+    jQuery('#mutualobserver').on('click', function(e){
+        var state = jQuery('#mutualobserver').prop('checked');
+        setMutualObserverForm(state);
+        enableSave();        
+    });
+    
+    function setMutualObserverForm(state) {
+        if (state) {
+            jQuery('#mutualobservername').prop('disabled',false);
+            jQuery('#mutualobserverlatitude').prop('disabled',false);
+            jQuery('#mutualobserverlongitude').prop('disabled',false);
+            jQuery('#mutualobserveraltitude').prop('disabled',false);           
+            jQuery('#mutualgeoshow').prop('disabled',false);                  
+        } else {
+            jQuery('#mutualobservername').prop('disabled',true);
+            jQuery('#mutualobserverlatitude').prop('disabled',true);
+            jQuery('#mutualobserverlongitude').prop('disabled',true);
+            jQuery('#mutualobserveraltitude').prop('disabled',true);          
+            jQuery('#mutualgeoshow').prop('disabled',true);               
+        }        
+    }
+        
     /**
     * 3D view functions
     */
@@ -257,8 +292,7 @@ var AGOPTIONS = function() {
         var brView = jQuery('#options-passes-view-bottomright').find(":selected").val();
         AGSETTINGS.setPassesBottomRightView(brView);          
                 
-        var observers = AGSatTrack.getObservers();
-        var observer = observers[0];   
+        var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
         observer.setName(jQuery('#observername').val());
         observer.setLat(jQuery('#observerlatitude').val());
         observer.setLon(jQuery('#observerlongitude').val());
@@ -271,6 +305,14 @@ var AGOPTIONS = function() {
             jQuery(document).trigger('agsattrack.locationAvailable',observer);     
         }
         
+        observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+        observer.setName(jQuery('#mutualobservername').val());
+        observer.setLat(jQuery('#mutualobserverlatitude').val());
+        observer.setLon(jQuery('#mutualobserverlongitude').val());
+        observer.setAlt(jQuery('#mutualobserveraltitude').val());
+        temp = jQuery('#mutualobserver').prop('checked');
+        AGSETTINGS.setMutualObserverEnabled(temp);
+                
         temp = jQuery('#debugger-show').prop('checked');
         AGSETTINGS.setDebugView(temp);  
         if (temp) {
@@ -320,10 +362,33 @@ var AGOPTIONS = function() {
 	});
     
     jQuery('#geoshow').on('click', function(){
-       var observers = AGSatTrack.getObservers();
-       observers[0].showGeoWindow();
+       var params = {
+           lat: jQuery('#observerlatitude').val(),
+           lon: jQuery('#observerlongitude').val(),
+           success: function(lat, lon) {
+               debugger;
+               jQuery('#observerlatitude').val(lat);
+               jQuery('#observerlongitude').val(lon);
+               jQuery('#options-save').enable();               
+           }
+       };
+       AGWINDOWMANAGER.showWindow('geocode', params);
     });
-    
+
+    jQuery('#mutualgeoshow').on('click', function(){
+       var params = {
+           lat: jQuery('#mutualobserverlatitude').val(),
+           lon: jQuery('#mutualobserverlongitude').val(),
+           success: function(lat, lon) {
+               debugger;
+               jQuery('#mutualobserverlatitude').val(lat);
+               jQuery('#mutualobserverlongitude').val(lon);
+               jQuery('#options-save').enable();               
+           }
+       };
+       AGWINDOWMANAGER.showWindow('geocode', params);
+    });
+        
 	return {
 		startRender : function() {
 			_render = true;

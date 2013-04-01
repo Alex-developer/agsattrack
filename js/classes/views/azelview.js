@@ -454,8 +454,7 @@ var AGAZELVIEW = function(element) {
         setPassToShow : function(time) {
             _passToShow = time;
 
-            var observers = AGSatTrack.getObservers();
-            var observer = observers[0];
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
             _passData = _satellite.getPassforTime(observer, _passToShow);
         },
         

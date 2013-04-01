@@ -34,7 +34,7 @@ var AGSETTINGS = (function() {
     var _requireEUCookieLaw = true;
     var _defaultView = 'home';
     var _defaultSats = '';
-    var _cookieVersion = 1.4;
+    var _cookieVersion = 1.6;
     
     var _settings = {
         version: _cookieVersion,
@@ -47,6 +47,21 @@ var AGSETTINGS = (function() {
         debugView: false,
         passesbl: 'polar',
         passesbr: 'sky',
+        observer: {
+            auto: true,
+            name: '',
+            lat: 0,
+            lon: 0,
+            height: 0    
+        },
+        mutualObserver: {
+            auto: false,
+            name: '',
+            lat: 0,
+            lon: 0,
+            height: 0    
+        },
+        mutualObserverEnabled: false,
         views: {
             polar: {
                 colours: {
@@ -92,18 +107,21 @@ var AGSETTINGS = (function() {
     */
     function saveSettings() {
         if (AGSETTINGS.cookiesOk()) {
-            var observersSettings = [];
-            var observers = AGSatTrack.getObservers();
-            jQuery.each(observers, function(index, observer) {
-                observersSettings[index] = {
-                    name: observer.getName(),
-                    lat: observer.getLat(),
-                    lon: observer.getLon(),
-                    alt: observer.getAlt(),
-                    auto: observer.getAutoGeo()
-                };
-            });              
-            _settings.observers = observersSettings;
+            
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
+            _settings.observer.name = observer.getName();
+            _settings.observer.lat = observer.getLat();
+            _settings.observer.lon = observer.getLon();
+            _settings.observer.alt = observer.getAlt();
+            _settings.observer.auto = observer.getAutoGeo();
+            
+            observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+            _settings.mutualObserver.name = observer.getName();
+            _settings.mutualObserver.lat = observer.getLat();
+            _settings.mutualObserver.lon = observer.getLon();
+            _settings.mutualObserver.alt = observer.getAlt();
+            _settings.mutualObserver.auto = observer.getAutoGeo();
+                        
             var cookieData = JSON.stringify(_settings);
             
             jQuery.cookie(COOKIENAME, cookieData, { expires: COOKIEEXPIRES });
@@ -165,6 +183,13 @@ var AGSETTINGS = (function() {
 		init: function() {
 		},
 
+        getMutualObserverEnabled : function() {
+            return _settings.mutualObserverEnabled;    
+        },
+        setMutualObserverEnabled : function(value) {
+            _settings.mutualObserverEnabled = value;
+        },
+                
         getDefaultSats : function() {
             return _defaultSats;    
         },
@@ -191,14 +216,13 @@ var AGSETTINGS = (function() {
             _settings.views[view].colours = colours;    
         },
         
-        getObserver: function(index) {
-            var result = null;
-            
-            if (typeof _settings.observers !== 'undefined' && typeof _settings.observers[index] !== 'undefined') {
-                result = _settings.observers[index];   
-            }
-            return result;  
+        getObserver: function() {
+            return _settings.observer;  
         },
+        getMutualObserver: function() {
+            return _settings.mutualObserver;  
+        },
+
         saveSettings: function() {
             saveSettings();    
         },

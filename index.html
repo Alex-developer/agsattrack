@@ -92,6 +92,7 @@
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
 <script src="/js/geocomplete/jquery.geocomplete.min.js"></script>
 
+
 <script src="/js/imagecombo/ddslick.js"></script>
    
 </head>
@@ -981,7 +982,44 @@
                                     <input size=10 id="observeraltitude" class="observerhome">
                                 </td>
                             </tr>                                                       
-                        </table>                      
+                        </table>
+                        
+                        <h3>Mutual Location</h3>
+                        <table class="form-table">
+                            <tr valign="top">
+                                <th>Enable Mutual Observer</th>
+                                <td>
+                                    <input type="checkbox" id="mutualobserver" value="on">
+                                    <p class="description">Selecting this option will enable certain features allowing indicating when a satellite is visible to both your location ansd a mutual observers location.</p>
+                                </td>
+                            </tr>    
+                            <tr valign="top">
+                                <th>Location name</th>
+                                <td>
+                                    <input size=15 id="mutualobservername" class="observerhome">
+                                    <button type="submit" id="mutualgeoshow"><img src="/images/geo.png" width=16> Select On Map</button>
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <th>Location Latitude</th>
+                                <td>
+                                    <input size=20 id="mutualobserverlatitude" class="observerhome">
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <th>Location Longitude</th>
+                                <td>
+                                    <input size=20 id="mutualobserverlongitude" class="observerhome">
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <th>Location Altitude</th>
+                                <td>
+                                    <input size=10 id="mutualobserveraltitude" class="observerhome">
+                                </td>
+                            </tr>                                                       
+                        </table>
+                                                                    
 					</div>
 					<div title="Satellites" data-options="" style="padding: 20px;">
                         <div class="icon32" id="icon-options-general"><br></div>

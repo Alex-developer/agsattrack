@@ -94,8 +94,7 @@ var AGPASSESVIEW = function() {
                 jQuery('#passes-view-start').disable();    
                 jQuery('#passes-view-end').disable();    
                 jQuery('#passes-view-calc').disable();
-                var observers = AGSatTrack.getObservers();
-                var observer = observers[0];
+                var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
                 var sat = AGSatTrack.getFollowing(); 
                 if (sat !== null) {
                     sat.calculateTodaysPasses(observer);
@@ -118,8 +117,7 @@ var AGPASSESVIEW = function() {
             end = Date.CDate(end);
             var following = AGSatTrack.getFollowing();
             if (following !== null) {
-                var observers = AGSatTrack.getObservers();
-                var observer = observers[0];                
+                var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
                 following.calculatePasses(observer, start, end);
                 updatePassesList(following);
             }
@@ -193,8 +191,7 @@ var AGPASSESVIEW = function() {
     */
     function updatePassgrid(sat, time) {
         var passData;
-        var observers = AGSatTrack.getObservers();
-        var observer = observers[0];
+        var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
                         
         if (typeof time === 'undefined') {
             passData = sat.getNextPass(observer);
@@ -227,8 +224,7 @@ var AGPASSESVIEW = function() {
         var catalogNumber = sat.getCatalogNumber();
         var passes = sat.getTodaysPasses();
         if (passes === null) {
-            var observers = AGSatTrack.getObservers();
-            var observer = observers[0];                         
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
             passes = sat.calculateTodaysPasses(observer);
         }
         

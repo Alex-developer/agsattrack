@@ -596,7 +596,7 @@ var AG3DVIEW = function(element) {
         }
         
         if (following !== null && (_follow || _followFromObserver)) {
-            var observer = AGSatTrack.getObservers()[0];
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
 
             if (_followFromObserver) {
                 eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));

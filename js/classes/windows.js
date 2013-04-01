@@ -23,12 +23,18 @@ var AGWINDOWMANAGER = (function() {
             loaded: false,
             instance: null,
             element : null
-        }
+        },
+        'geocode' : {
+            classname : 'AGGECODEWINDOW',
+            loaded: false,
+            instance: null,
+            element : null
+        }        
     };
     
     function showWindow(name, elementId, params) {
         if (_windows[name].instance === null) {
-            if (typeof elementId === 'undefined') {
+            if (typeof elementId === 'undefined' || typeof elementId === null) {
                 var elementId = AGUTIL.getId();           
             }
             var element = jQuery('<div/>', {
@@ -79,7 +85,7 @@ var AGWINDOWMANAGER = (function() {
                             _windows[name].loaded = true;
                             showWindow(name, elementId, params);
                         }
-                    })                    
+                    });                    
                 } else {
                     showWindow(name, elementId, params);
                 }   

@@ -118,8 +118,8 @@ var AGUI = function() {
 	});
 
 	jQuery('#home-observer').click(function() {
-		var observers = AGSatTrack.getObservers();
-		var window = new AGLOCATION('window-home-location', observers[0]);
+		var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
+		var window = new AGLOCATION('window-home-location', observer);
 	});
 
 	jQuery('#options').click(function() {

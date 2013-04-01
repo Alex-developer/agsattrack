@@ -24,7 +24,7 @@ Copyright 2013 Alex Greenland
 var Agsattrack = function() {
 	'use strict';
 
-	var _observers = [];
+    var _observers = [];
 	var _tles = new AGTLES();
 	var _ui = null;
 	var refreshCounter = 0;
@@ -197,7 +197,11 @@ var Agsattrack = function() {
 		getObservers : function() {
 			return _observers;
 		},
-		
+
+        getObserver : function(type) {
+            return _observers[type];
+        },
+        		
         getUI : function() {
             return _ui;    
         },
@@ -219,8 +223,9 @@ var Agsattrack = function() {
 			/**
 			 * Setup the first observer, this will be the 'Home' observer
 			 */
-			_observers[0] = new AGOBSERVER(0).init();
-            
+            _observers[0] = new AGOBSERVER(AGOBSERVER.types.HOME).init(AGSETTINGS.getObserver());
+            _observers[1] = new AGOBSERVER(AGOBSERVER.types.MUTUAL).init(AGSETTINGS.getMutualObserver());
+
 		}
 	};
 };
