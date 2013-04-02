@@ -130,6 +130,7 @@ var PLib =
             this.lon = 0.0;
             this.alt = 0.0;
             this.theta = 0.0;
+            this.enabled = true;
         },
 
         vector_t: function()
@@ -1639,11 +1640,16 @@ var PLib =
             /**
             * Calc mutual observability
             */
-            PLib.mutualDistance = PLib.getDistance(sat_geodetic.lat, sat_geodetic.lon, PLib.mutualObs_geodetic.lat, PLib.mutualObs_geodetic.lon);
-            if (PLib.mutualDistance <= (PLib.fk/2)) {
-                PLib.mutualVisible = true;
+            if (PLib.mutualObs_geodetic.enabled) {
+                PLib.mutualDistance = PLib.getDistance(sat_geodetic.lat, sat_geodetic.lon, PLib.mutualObs_geodetic.lat, PLib.mutualObs_geodetic.lon);
+                if (PLib.mutualDistance <= (PLib.fk/2)) {
+                    PLib.mutualVisible = true;
+                } else {
+                    PLib.mutualVisible = false;
+                }
             } else {
-                PLib.mutualVisible = false;
+                PLib.mutualDistance = 0;
+                PLib.mutualVisible = false;    
             }
   
         },
@@ -2146,7 +2152,7 @@ var PLib =
             PLib.obs_geodetic.theta = 0.0;
         },
         
-        configureMutualGroundStation: function(lat, lng) {
+        configureMutualGroundStation: function(lat, lng, enabled) {
             if (lng < 0) lng = -lng;
                 else lng = 360 - lng;
 
@@ -2154,6 +2160,7 @@ var PLib =
             PLib.mutualObs_geodetic.lon = -lng * PLib.deg2rad;
             PLib.mutualObs_geodetic.alt = 0;
             PLib.mutualObs_geodetic.theta = 0.0;
+            PLib.mutualObs_geodetic.enabled = enabled;
         }
                 
     };

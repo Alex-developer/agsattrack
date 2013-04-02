@@ -124,7 +124,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         }
         if (_satOrbit.AosHappens(0) && _satOrbit.Geostationary(0) === 0 && _satOrbit.Decayed(0, time) === 0) {
             _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
-            _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
+            _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon(), mutualObserver.getEnabled());
             _satOrbit.PreCalc(0);
             
             _satOrbit.doCalc(time);
@@ -202,7 +202,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         * Initialise the orbit model
         */
         _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
-        _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
+        _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon(), mutualObserver.getEnabled());
         time = (date.getTime() - 315446400000) / 86400000;
 
 
@@ -302,9 +302,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             date = new Date();                
         }
         _sat.configureGroundStation(observer.getLat(), observer.getLon());
-        _sat.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
+        _sat.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon(), mutualObserver.getEnabled());
         _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
-        _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
+        _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon(), mutualObserver.getEnabled());
 
         _sat.doCalc();
         
@@ -429,14 +429,14 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         
         calculateTodaysPasses : function(observer, mutualObserver) {
             _satPasses.configureGroundStation(observer.getLat(), observer.getLon());
-            _satPasses.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
+            _satPasses.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon(), mutualObserver.getEnabled());
             _passes = _satPasses.getTodaysPasses();            
             return _passes;
         },
 
         calculatePasses : function(observer, mutualObserver, start, end) {
             _satPasses.configureGroundStation(observer.getLat(), observer.getLon());
-            _satPasses.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
+            _satPasses.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon(), mutualObserver.getEnabled());
             _passes = _satPasses.getTodaysPassesBetweenTimes(start, end);          
             return _passes;
         },

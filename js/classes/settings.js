@@ -21,6 +21,11 @@ Copyright 2013 Alex Greenland
 */
 /*global AGSatTrack, AGQUERYSTRING */ 
 
+var clone = (function(){ 
+  return function (obj) { Clone.prototype=obj; return new Clone() };
+  function Clone(){}
+}());
+
 var AGSETTINGS = (function() {
     'use strict';
     
@@ -36,7 +41,7 @@ var AGSETTINGS = (function() {
     var _defaultSats = '';
     var _cookieVersion = 2.3;
     
-    var _settings = {
+    var _defaultSettings = {
         version: _cookieVersion,
         aosEl: 5,
         refreshTimerInterval : 5000,
@@ -104,6 +109,9 @@ var AGSETTINGS = (function() {
             }
         }
     };
+    
+    var _settings = clone(_defaultSettings);
+        
     var COOKIENAME = 'agsattrack';
     var COOKIEEXPIRES = 30;
     
@@ -195,6 +203,11 @@ var AGSETTINGS = (function() {
 		init: function() {
 		},
 
+        reset: function() {
+            _settings = _defaultSettings;
+            saveSettings();    
+        },
+        
         getMutualObserverEnabled : function() {
             return _settings.mutualObserverEnabled;    
         },

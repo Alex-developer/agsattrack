@@ -75,6 +75,12 @@ var AGLISTVIEW = function() {
                 }
             });        
 	
+    
+    jQuery(document).bind('agsattrack.settingssaved',
+            function() {
+                setGridColumns();
+            }); 
+                
     /**
     * Clear the grid of all data
     */
@@ -84,6 +90,14 @@ var AGLISTVIEW = function() {
         _gridPolulated = false;      
     }
 
+    function setGridColumns() {
+        if (AGSETTINGS.getMutualObserverEnabled()) {
+            jQuery('#sat-list-grid').datagrid('showColumn','mv');   
+        } else {
+            jQuery('#sat-list-grid').datagrid('hideColumn','mv');   
+        } 
+    }
+    
     /**
     * Do the initial population of the grid
     */
@@ -270,7 +284,8 @@ var AGLISTVIEW = function() {
                     {field:'mv',title:'Mutual Visible',width:80,align:'right'}
          
                 ]]  
-            });                                    
+            });
+            setGridColumns();                                    
             jQuery('#sat-list-grid').datagrid({
                 onUncheck: function(index,data){
                     if (!_ignoreEvents) {

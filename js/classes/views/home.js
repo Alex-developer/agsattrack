@@ -20,6 +20,10 @@ var AGHOMEVIEW = function() {
     
     var _render = false;
     
+    jQuery(document).bind('agsattrack.resetoptions', function(e) {
+        resetAllOptions();
+    });
+                
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#home');
@@ -31,6 +35,13 @@ var AGHOMEVIEW = function() {
         }          
     }
 
+    function resetAllOptions() {
+        jQuery.messager.confirm('Confirm Options Reset','Are you sure you want to reset all of the options?',function(r){  
+            if (r){  
+                AGSETTINGS.reset();  
+            }  
+        });         
+    }
                   
     return {
         startRender : function() {
