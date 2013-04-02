@@ -125,10 +125,10 @@ var Agsattrack = function() {
 		if (_tles.getTotalDisplaying() > 0) {
             var activeView = AGVIEWS.getCurrentView();
             if (typeof activeView.instance !== 'undefined' && typeof activeView.instance.calculate === 'function') {  // TODO: Move this
-                activeView.instance.calculate(_observers[0]);    
+                activeView.instance.calculate(_observers[0], _observers[1]);    
             } else {
                 var date = new Date();
-                _tles.calcAll(date, _observers[0]);
+                _tles.calcAll(date, _observers[0], _observers[1]);
             }
             
 			refreshCounter++;

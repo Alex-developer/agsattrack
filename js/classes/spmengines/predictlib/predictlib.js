@@ -99,7 +99,7 @@ var PLib =
             sun_azi: 0.0, sun_ele: 0.0, daynum: 0.0, fm: 0.0, fk: 0.0, age: 0.0, aostime: 0.0,
             lostime: 0.0, ax: 0.0, ay: 0.0, az: 0.0, rx: 0.0, ry: 0.0, rz: 0.0, squint: 0.0, alat: 0.0, alon: 0.0,
         
-        ephem: "", sat_sun_status: "", findsun: "",
+        ephem: "", sat_sun_status: "", findsun: "", mutualDistance: 0, mutualVisible: false, 
 
         indx: 0, iaz: 0, iel: 0, ma256: 0, isplat: 0, isplong: 0, Flags: 0,
 
@@ -1635,9 +1635,34 @@ var PLib =
             else
                 PLib.findsun = 'Eclipsed';
                 
-              //  sat_aos = PLib.FindAOS();
+        
+            /**
+            * Calc mutual observability
+            */
+            PLib.mutualDistance = PLib.getDistance(sat_geodetic.lat, sat_geodetic.lon, PLib.mutualObs_geodetic.lat, PLib.mutualObs_geodetic.lon);
+            if (PLib.mutualDistance <= (PLib.fk/2)) {
+                PLib.mutualVisible = true;
+            } else {
+                PLib.mutualVisible = false;
+            }
+  
         },
     
+        getDistance : function(lat1, lon1, lat2, lon2) {
+            var distance, c, a, dLat, dLon;        
+            var R = 6372.795;
+    
+            dLat = lat2-lat1;
+            dLon = lon2-lon1; 
+            a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1) * Math.cos(lat2) * 
+                    Math.sin(dLon/2) * Math.sin(dLon/2); 
+            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            distance = R * c;            
+            
+            return distance;
+        },
+            
         log10 : function (val) {
             return Math.log(val) / Math.LN10;
         },
@@ -2109,8 +2134,7 @@ var PLib =
             return satInfoColl;
         },
 
-        configureGroundStation: function(lat, lng)
-        {
+        configureGroundStation: function(lat, lng) {
             PLib.qth.stnlat = lat;
 
             if (lng < 0) PLib.qth.stnlong = -lng;
@@ -2120,10 +2144,22 @@ var PLib =
             PLib.obs_geodetic.lon = -PLib.qth.stnlong * PLib.deg2rad;
             PLib.obs_geodetic.alt = PLib.qth.stnalt / 1000.0;
             PLib.obs_geodetic.theta = 0.0;
+        },
+        
+        configureMutualGroundStation: function(lat, lng) {
+            if (lng < 0) lng = -lng;
+                else lng = 360 - lng;
+
+            PLib.mutualObs_geodetic.lat = lat * PLib.deg2rad;
+            PLib.mutualObs_geodetic.lon = -lng * PLib.deg2rad;
+            PLib.mutualObs_geodetic.alt = 0;
+            PLib.mutualObs_geodetic.theta = 0.0;
         }
+                
     };
 
 PLib.obs_geodetic = new PLib.geodetic_t();
+PLib.mutualObs_geodetic = new PLib.geodetic_t();
 PLib.tle = new PLib.tle_t();
 
     PLib.tleData =

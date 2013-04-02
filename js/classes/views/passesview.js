@@ -95,9 +95,10 @@ var AGPASSESVIEW = function() {
                 jQuery('#passes-view-end').disable();    
                 jQuery('#passes-view-calc').disable();
                 var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
+                var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
                 var sat = AGSatTrack.getFollowing(); 
                 if (sat !== null) {
-                    sat.calculateTodaysPasses(observer);
+                    sat.calculateTodaysPasses(observer, mutualObserver);
                     updatePassesList(sat);
                 }
                 setTimeFrameTo24Hours();
@@ -118,7 +119,8 @@ var AGPASSESVIEW = function() {
             var following = AGSatTrack.getFollowing();
             if (following !== null) {
                 var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
-                following.calculatePasses(observer, start, end);
+                var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+                following.calculatePasses(observer, mutualObserver, start, end);
                 updatePassesList(following);
             }
         }
@@ -192,11 +194,12 @@ var AGPASSESVIEW = function() {
     function updatePassgrid(sat, time) {
         var passData;
         var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
+        var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
                         
         if (typeof time === 'undefined') {
             passData = sat.getNextPass(observer);
         } else {
-            passData = sat.getPassforTime(observer, time);
+            passData = sat.getPassforTime(observer, mutualObserver, time);
         }
         
         var data = [];
@@ -225,7 +228,8 @@ var AGPASSESVIEW = function() {
         var passes = sat.getTodaysPasses();
         if (passes === null) {
             var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
-            passes = sat.calculateTodaysPasses(observer);
+            var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+            passes = sat.calculateTodaysPasses(observer, mutualObserver);
         }
         
         jQuery('#passes-passes').children().remove();                

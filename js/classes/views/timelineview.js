@@ -469,10 +469,10 @@ var AGTIMELINE = function() {
 			drawBackground();
 		},
         
-        calculate : function(observer) {
+        calculate : function(observer, mutualObserver) {
             var selectedSats = AGSatTrack.getTles().getSelected();
             jQuery.each(selectedSats, function(index, sat) {
-                sat.calculateTodaysPasses(observer);
+                sat.calculateTodaysPasses(observer, mutualObserver);
             });
             drawTimeline();           
         }

@@ -101,7 +101,16 @@ var AGLISTVIEW = function() {
                     }
                 } else {
                     theNextEvent = 'Disabled';
-                }            
+                }
+                var mutualVisible = 'Disabled';
+                if (AGSETTINGS.getMutualObserverEnabled()) {
+                    if (satellite.get('mutualvisible') && (satellite.get('elevation') >= AGSETTINGS.getAosEl()) ) {
+                        mutualVisible = 'Yes'; 
+                    } else {
+                        mutualVisible = 'No';    
+                    }
+                }
+                             
                 data.push({
                     name: satellite.getName(),
                     type: satellite.get('type'),
@@ -114,7 +123,8 @@ var AGLISTVIEW = function() {
                     vel: satellite.get('velocity').toFixed(0),
                     nextevent: theNextEvent,
                     catalognumber: satellite.getCatalogNumber(),
-                    ck: satellite.getSelected()
+                    ck: satellite.getSelected(),
+                    mv: mutualVisible
                 }); 
         
             });
@@ -146,7 +156,15 @@ var AGLISTVIEW = function() {
                 }
             } else {
                 theNextEvent = 'Disabled';
-            }                   
+            }
+            var mutualVisible = 'Disabled';
+            if (AGSETTINGS.getMutualObserverEnabled()) {
+                if (satellite.get('mutualvisible') && (satellite.get('elevation') >= AGSETTINGS.getAosEl()) ) {
+                    mutualVisible = 'Yes'; 
+                } else {
+                    mutualVisible = 'No';    
+                }
+            }                              
             dataGrid.datagrid('updateRow',{
                 index: i,
                 row: {
@@ -157,7 +175,8 @@ var AGLISTVIEW = function() {
                     lon: AGUTIL.convertDecDegLon(satellite.get('longitude')),
                     alt: satellite.get('altitude').toFixed(0),
                     vel: satellite.get('velocity').toFixed(0),
-                    nextevent: theNextEvent                  
+                    nextevent: theNextEvent,
+                    mv: mutualVisible                  
                 }
             });
             if (satellite.getSelected()) {
@@ -247,7 +266,8 @@ var AGLISTVIEW = function() {
                     {field:'lon',title:'Longitude',width:95,align:'right'},  
                     {field:'alt',title:'Altitude',width:60,align:'right'},  
                     {field:'vel',title:'Velocity',width:55,align:'right'},  
-                    {field:'nextevent',title:'Next Event',width:150,align:'right'}
+                    {field:'nextevent',title:'Next Event',width:150,align:'right'},
+                    {field:'mv',title:'Mutual Visible',width:80,align:'right'}
          
                 ]]  
             });                                    

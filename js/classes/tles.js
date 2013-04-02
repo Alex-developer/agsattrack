@@ -183,12 +183,12 @@ var AGTLES = function() {
 			return total;
 		},
 		
-		calcAll: function(date, observer) {
+		calcAll: function(date, observer, mutualObserver) {
             AGSatTrack.getUI().updateStatus('Updating All Satellites ...');
 			for (var i=0; i < satellites.length; i++) {
 
 				if (satellites[i].isDisplaying()) {
-					satellites[i].calc(date, observer);
+					satellites[i].calc(date, observer, mutualObserver);
 				}
 			}
             AGSatTrack.getUI().updateStatus('Idle');

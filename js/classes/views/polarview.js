@@ -518,7 +518,8 @@ var AGPOLARVIEW = function(element) {
                 
                 if (_passToShow !== null) {
                     var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
-                    passData = satellite.getPassforTime(observer, _passToShow);
+                    var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+                    passData = satellite.getPassforTime(observer, mutualObserver, _passToShow);
                     pass = passData.pass;                       
                 } else {
                     passData = satellite.getNextPass();

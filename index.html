@@ -405,16 +405,7 @@
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/mousepos.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/mousepos.png" />
                             <span class="button-title" unselectable="on"></span>
-                            <span class="button-help"><strong>Show Mouse Pos.</strong><br /><br />Toggle displaying the lat and lon of the mouse position.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
-                        </div>
-
-                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showsatlabels">
-                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/label.png" />
-                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/label.png" />
-                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/label.png" />
-                            <span class="button-title" unselectable="on"></span>
-                            <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying the name of the satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
-                        </div>
+                            <span class="button-help"><strong>Show Mouse Pos.</strong><br /><br />Toggle displaying the lat and lon of the mouse position.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                             </div>
                         
                         <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showterrain" id="3d-show-terrain">
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/terrain.png" />
@@ -426,6 +417,43 @@
                     </div>                                        
                 </div>
 
+                <div class="ribbon-section">
+                    <span class="section-title">Satellite Options</span>
+                    
+                    <div class="ribbon-button ribbon-button-large" id="3d-view-sat-info-locations" data-type="togglebutton" data-event="agsattrack.showmutuallocations">
+                        <span class="button-title">Show<br/>Mutual</span> 
+                        <span class="button-help"><strong>Show Mutual Locations.</strong><br /><br />Show Mutual locations visible from the selected satellite.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/mutual.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/mutual.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/mutual.png" />
+                    </div>   
+                                        
+                    <div class="ribbon-fl" style="width:30px;">
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showsatlabels">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/label.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/label.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/label.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying the name of the satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                                 </div>                    
+                    </div>
+                    <div class="ribbon-fl" style="width:30px;">
+                        <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.setfootprinttype">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/filledfootprint.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/filledfootprint.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/filledfootprint.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show footprints as filled circles.</strong><br /><br />Toggle displaying the  footprint as a filled circle.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>
+                        </div>  
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.setssp">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/ssp.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/ssp.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/ssp.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Satellite ssp.</strong><br /><br />Toggle displaying the sub satellite points for a pass.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>
+                        </div>  
+                    </div>
+                </div>
+                
                 <div class="ribbon-section">
                     <span class="section-title">Information</span>
                     <div class="ribbon-button ribbon-button-large" id="3d-view-sat-info-locations" data-type="button" data-event="agsattrack.show3dlocationinfo" style="width:60px;">

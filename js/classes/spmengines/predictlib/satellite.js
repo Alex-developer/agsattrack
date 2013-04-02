@@ -58,7 +58,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         'signaldelay' : 'signaldelay',
         'signalloss' : 'signalloss',
         'dopplershift' : 'dopplershift',   
-        'locator' : 'sat_locator'   
+        'locator' : 'sat_locator',   
+        'mutualdistance' : 'mutualDistance',   
+        'mutualvisible' : 'mutualVisible'   
     };
     var _passes = null;
     var _passesCache;
@@ -67,14 +69,14 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     /**
     * Calculate and cache the next pass for this satellite
     */
-    function getNextPass(observer) {
+    function getNextPass(observer, mutualObserver) {
         var date = new Date();
         
         if (typeof _passesCache[0] === 'undefined') {
-            _passesCache[0] = getPass(observer);    
+            _passesCache[0] = getPass(observer, mutualObserver);    
         }
         if (date > _passesCache[0].losTime) {
-            _passesCache[0] = getPass(observer);    
+            _passesCache[0] = getPass(observer, mutualObserver);    
         }
         return _passesCache[0];
     }
@@ -82,7 +84,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     /**
     * Calculate and cache the pass for a specific time
     */    
-    function getPassforTime(observer, time) {
+    function getPassforTime(observer, mutualObserver, time) {
         var pass = null;
         for (var i=0; i < _passesCache.length; i++) {
             if (_passesCache[i].aosTime.toString() === time.toString()) {
@@ -91,7 +93,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             }
         }
         if (pass === null) {
-            pass = getPass(observer, time);
+            pass = getPass(observer, mutualObserver, time);
             _passesCache.push(pass);    
         }
         return pass;
@@ -100,7 +102,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     /**
     * Calculate a pass   
     */
-    function getPass(observer, time) {
+    function getPass(observer, mutualObserver, time) {
         var date = new Date(); 
         var startDate = new Date(); 
         var passData = {
@@ -122,6 +124,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         }
         if (_satOrbit.AosHappens(0) && _satOrbit.Geostationary(0) === 0 && _satOrbit.Decayed(0, time) === 0) {
             _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
+            _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
             _satOrbit.PreCalc(0);
             
             _satOrbit.doCalc(time);
@@ -177,7 +180,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     /**
     * Calculate the satellites orbit.
     */
-    function calculateOrbit(observer) {
+    function calculateOrbit(observer, mutualObserver) {
         var date = new Date();
         var time;
         _orbitrequested = false;
@@ -199,6 +202,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         * Initialise the orbit model
         */
         _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
+        _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
         time = (date.getTime() - 315446400000) / 86400000;
 
 
@@ -291,19 +295,21 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     } 
     reset();
     
-    function calc(date, observer) {
+    function calc(date, observer, mutualObserver) {
         var startTime = new Date();
         
         if (typeof date === 'undefined') {
             date = new Date();                
         }
         _sat.configureGroundStation(observer.getLat(), observer.getLon());
+        _sat.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
         _satOrbit.configureGroundStation(observer.getLat(), observer.getLon());
+        _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
 
         _sat.doCalc();
         
         if (_orbitrequested) {
-            calculateOrbit(observer);    
+            calculateOrbit(observer, mutualObserver);    
         }
         
         if (AGSETTINGS.getCalculateEvents()) {
@@ -317,7 +323,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         }
 
         if (_selected) { // TODO: bad code don't need to recalc this every time
-            getNextPass(observer);                
+            getNextPass(observer, mutualObserver);                
         }
         var endTime = new Date();
         _duration = endTime - startTime;
@@ -365,8 +371,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             return _sat.sat[0].catnum;
         },
 
-		calc: function(date, observer) {
-            calc(date, observer)
+		calc: function(date, observer, mutualObserver) {
+            calc(date, observer, mutualObserver)
         },
         
         getNextEvent : function(returnRaw) {
@@ -420,18 +426,17 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 		getOrbitData : function() {
 			return orbit;
 		},
-		calculateOrbit: function(observer) {
-			calculateOrbit(observer);
-		},
         
-        calculateTodaysPasses : function(observer) {
+        calculateTodaysPasses : function(observer, mutualObserver) {
             _satPasses.configureGroundStation(observer.getLat(), observer.getLon());
+            _satPasses.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
             _passes = _satPasses.getTodaysPasses();            
             return _passes;
         },
 
-        calculatePasses : function(observer, start, end) {
+        calculatePasses : function(observer, mutualObserver, start, end) {
             _satPasses.configureGroundStation(observer.getLat(), observer.getLon());
+            _satPasses.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon());
             _passes = _satPasses.getTodaysPassesBetweenTimes(start, end);          
             return _passes;
         },
@@ -454,9 +459,9 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         getPassCache : function() {
             return _passesCache;    
         },
-                 
-        getPassforTime: function(observer, time) {
-            return getPassforTime(observer, time);
+
+        getPassforTime: function(observer, mutualObserver, time) {
+            return getPassforTime(observer, mutualObserver, time);
         },
         
         isGeostationary: function() {

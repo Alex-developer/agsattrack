@@ -19,7 +19,7 @@ Copyright 2013 Alex Greenland
 * Last Checked: 19/01/2013
 * 
 */
-/*global AGSatTrack, AGSETTINGS, AGIMAGES, AGUTIL, Cesium */ 
+/*global AGSatTrack, AGSETTINGS, AGIMAGES, AGUTIL, AGVIEWS, AGWINDOWMANAGER, AGOBSERVER, Cesium, console */ 
  
 var AG3DVIEW = function(element) {
     'use strict';
@@ -36,15 +36,11 @@ var AG3DVIEW = function(element) {
     var satBillboards = null;
     var planetsBillboards = null;
     var _satNameLabels = null;
-    var gridRefresh = 1;
-    var gridRefreshCounter = 0;
     var orbitLines = null;
     var selectedLines = null;
     var passLines = null;
     var footprintCircle = null;
-    var updateCounter = 0;
     var clock = null;
-    var _selected = null;
     var _follow = false;
     var _followFromObserver = false;
     var TILE_PROVIDERS = null;
@@ -59,7 +55,12 @@ var AG3DVIEW = function(element) {
     var _singleSat;
     var _mode;
     var _settings = AGSETTINGS.getViewSettings('threed');
-    var _currentProvider = 'staticimage'
+    var _currentProvider = 'staticimage';
+    
+    var _homeLocationCircle = null;
+    var _mutualLocationCircle = null;
+    
+    var _footprintPolygons = [];
         
     if (typeof element === 'undefined') {
         _element = '3d';    
@@ -114,7 +115,7 @@ var AG3DVIEW = function(element) {
                     TILE_PROVIDERS.staticimage.provider =  new Cesium.SingleTileImageryProvider({
                         url : 'images/maps/' + _settings.staticimage
                     });
-                    if (_currentProvider == 'staticimage') {
+                    if (_currentProvider === 'staticimage') {
                         setProvider(_currentProvider);
                     }
                     createSatellites();
@@ -128,6 +129,7 @@ var AG3DVIEW = function(element) {
             function(e, observer) {
                 if (AGSETTINGS.getHaveWebGL()) {
                     plotObservers();
+                    plotMutualCircles();
                 }
             }); 
                             
@@ -135,6 +137,7 @@ var AG3DVIEW = function(element) {
             function(e, observer) {
                 if (AGSETTINGS.getHaveWebGL()) {
                     plotObservers();
+                    plotMutualCircles();
                 }
             });    
 
@@ -146,6 +149,7 @@ var AG3DVIEW = function(element) {
                         _follow = false;
                         AGSatTrack.getTles().resetAll();
                         plotObservers();
+                        plotMutualCircles();
                         updateSatellites();
                     }
                 }
@@ -158,6 +162,32 @@ var AG3DVIEW = function(element) {
                     createSatelliteLabels();
                 }
             });    
+
+    jQuery(document).bind('agsattrack.setfootprinttype',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _settings.fillFootprints = state;
+                    drawFootprint();
+                }
+            });  
+
+    jQuery(document).bind('agsattrack.setssp',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _settings.showGroundSSP = state;
+                    setupOrbit();
+                }
+            });                 
+
+    jQuery(document).bind('agsattrack.showmutuallocations',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    AGSETTINGS.setMutualObserverEnabled(state);
+                    plotMutualCircles();
+                }
+            });
+                
+    
     
     jQuery(document).bind('agsattrack.followsatellite',
             function(e, follow) {
@@ -239,6 +269,7 @@ var AG3DVIEW = function(element) {
         if (_render && _mode !== AGVIEWS.modes.SINGLE) {
             if (AGSETTINGS.getHaveWebGL()) {        
                 createSatellites();
+                plotMutualCircles();
             }
         }
     });
@@ -348,19 +379,21 @@ var AG3DVIEW = function(element) {
      * Plot the observers.
      */
     function plotObservers() {
+        var observers = null;
+        var observer = null;
         observerBillboards.removeAll();
         _observerLabels.removeAll();
         var textureAtlas = scene.getContext().createTextureAtlas({
             image : AGIMAGES.getImage('home')
         });
         observerBillboards.setTextureAtlas(textureAtlas);        
-        var observers = AGSatTrack.getObservers();
+        observers = AGSatTrack.getObservers();
         for ( var i = 0; i < observers.length; i++) {
-            var observer = observers[i];
+            observer = observers[i];
             if (observer.isReady()) { 
                 observerBillboards.add({
                     position : ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat())),
-                    imageIndex : 0
+                    imageIndex : 0                                          
                 });
                 
                 _observerLabels.add({
@@ -385,38 +418,73 @@ var AG3DVIEW = function(element) {
             var up = new Cesium.Cartesian3(0, 0, 1);
             scene.getCamera().controller.lookAt(eye, target, up);
         }
-plotMutualCircles();
+
     }
 
     function plotMutualCircles() {
+        var observer;
+        _settings.fillMutual = true;
+        var primitives = scene.getPrimitives();        
         _observerCircles.removeAll();
-        var now = new Cesium.JulianDate();
-        debugger;
-        var following = AGSatTrack.getFollowing();
-        if (following !== null) {
-            debugger;
-            var footPrint = _observerCircles.add();   
-            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);            
-            footPrint.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                    Cesium.Cartesian3.ZERO);
-            
-            footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
-                    .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
-                            observer.getLon(), observer.getLat())),
-                    following.get('footprint') * 500));
-                    
-            footPrint = _observerCircles.add();   
-            var observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);            
-            footPrint.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                    Cesium.Cartesian3.ZERO);
-            
-            footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
-                    .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
-                            observer.getLon(), observer.getLat())),
-                    following.get('footprint') * 500));                                   
-        }       
+        primitives.remove(_homeLocationCircle);
+        primitives.remove(_mutualLocationCircle);
+        if (AGSETTINGS.getMutualObserverEnabled()) {
+            var following = AGSatTrack.getFollowing();
+            if (following !== null) {                
+                if (_settings.fillMutual) {
+                    observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);            
+                    _homeLocationCircle = new Cesium.Polygon();
+
+                    _homeLocationCircle.material.uniforms.color = {
+                      red   : 0.0,
+                      green : 0.0,
+                      blue  : 0.5,
+                      alpha : 0.1
+                    };       
+                    _homeLocationCircle.setPositions(
+                            Cesium.Shapes.computeCircleBoundary(
+                                    ellipsoid,
+                                    ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat())),
+                                    following.get('footprint') * 500));
+                    primitives.add(_homeLocationCircle);
+                    primitives.lowerToBottom(_homeLocationCircle);
+                       
+                       
+                       
+                    observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);            
+                    _mutualLocationCircle = new Cesium.Polygon();
+
+                    _mutualLocationCircle.material.uniforms.color = {
+                      red   : 0.0,
+                      green : 0.0,
+                      blue  : 0.5,
+                      alpha : 0.1
+                    };       
+                    _mutualLocationCircle.setPositions(
+                            Cesium.Shapes.computeCircleBoundary(
+                                    ellipsoid,
+                                    ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat())),
+                                    following.get('footprint') * 500));
+                    primitives.add(_mutualLocationCircle);
+                    primitives.lowerToBottom(_mutualLocationCircle);                    
+
+                } else {
+                    var footPrint = _observerCircles.add();   
+                    observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);            
+                    footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
+                            .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
+                                    observer.getLon(), observer.getLat())),
+                            following.get('footprint') * 500));
+                            
+                    footPrint = _observerCircles.add();   
+                    observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);            
+                    footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
+                            .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
+                                    observer.getLon(), observer.getLat())),
+                            following.get('footprint') * 500));                      
+                }
+            }  
+        }     
     }
     
     /**
@@ -438,11 +506,7 @@ plotMutualCircles();
                     }
                 }                 
                 scene.initializeFrame();
-             //   try {
-                    scene.render();
-        //        } catch (err) {
-                    // See told you it was a nasty hack !
-          //      }
+                scene.render();
                 Cesium.requestAnimationFrame(tick);
             }
         }());
@@ -451,10 +515,10 @@ plotMutualCircles();
     
     function createSatelliteLabels() {
         var satellites = AGSatTrack.getSatellites();
-        var now = new Cesium.JulianDate();        
         var cpos;
-
-       var okToCreate = false;
+        var labelVisible = true;
+        
+        var okToCreate = false;
         
         if (_mode !== AGVIEWS.modes.SINGLE) {
             satellites = AGSatTrack.getSatellites();
@@ -468,27 +532,38 @@ plotMutualCircles();
                 
         _satNameLabels.removeAll();
         if (okToCreate) {
-            if (_showSatLabels) {     
-                _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-                        Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                        Cesium.Cartesian3.ZERO); 
-                for ( var i = 0; i < satellites.length; i++) {
-                    if (satellites[i].isDisplaying()) {
-                        cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
-                        cpos = cpos.multiplyByScalar(1000);               
-                        cpos = cpos.multiplyByScalar(30/1000+1); 
-                        var satLabel = _satNameLabels.add({
-                          show : true,
-                          position : cpos,
-                          text : satellites[i].getName(),
-                          font : _settings.unselectedLabelSize + 'px sans-serif',
-                          fillColor : Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour),
-                          outlineColor : _settings.unselectedLabelColour,
-                          style : Cesium.LabelStyle.FILL,
-                          scale : 1.0
-                        });
-                        satLabel.satelliteindex = i;
+            for ( var i = 0; i < satellites.length; i++) {
+                if (satellites[i].isDisplaying()) {
+                    labelVisible = true;
+                    if (!_showSatLabels) {
+                        labelVisible = false;
+                        if (satellites[i].getSelected())  {
+                            labelVisible = true;    
+                        }
                     }
+                    cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
+                    cpos = cpos.multiplyByScalar(1000);               
+                    cpos = cpos.multiplyByScalar(30/1000+1); 
+                                
+                    var satLabel = _satNameLabels.add({
+                      show : labelVisible,
+                      position : cpos,
+                      text : satellites[i].getName(),
+                      font : _settings.unselectedLabelSize + 'px sans-serif',
+                      fillColor : Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour),
+                      outlineColor : _settings.unselectedLabelColour,
+                      style : Cesium.LabelStyle.FILL,
+                      scale : 1.0
+                    });
+
+                    if (satellites[i].getSelected()) {
+                        satLabel.setFont(_settings.selectedLabelSize + 'px sans-serif');
+                        satLabel.setFillColor(Cesium.Color.fromCssColorString('#'+_settings.selectedLabelColour));
+                    } else {
+                        satLabel.setFont(_settings.unselectedLabelSize + 'px sans-serif');
+                        satLabel.setFillColor(Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour));
+                    }
+                    satLabel.satelliteindex = i;
                 }
             }
         } 
@@ -496,8 +571,6 @@ plotMutualCircles();
     
     function createSatellites() {
         var billboard;
-        var image = new Image();
-        var pos;
         var now = new Cesium.JulianDate();
         var cpos;
         var satellites;
@@ -530,7 +603,7 @@ plotMutualCircles();
                     Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                     Cesium.Cartesian3.ZERO);        
 
-            for ( var i = 0; i < satellites.length; i++) {
+            for (i = 0; i < satellites.length; i++) {
                 if (satellites[i].isDisplaying()) {
                     cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
                     cpos = cpos.multiplyByScalar(1000);               
@@ -568,14 +641,14 @@ plotMutualCircles();
 
     function updateSatellites() {
         var now = new Cesium.JulianDate();
-        var pos, newpos, bb;
+        var newpos, bb;
         var following = AGSatTrack.getFollowing();
         var target;
         var up;
         var satellites;
         var okToUpdate = false;
         var eye;
-                
+               
         if (_mode !== AGVIEWS.modes.SINGLE) {
             satellites = AGSatTrack.getSatellites();
             okToUpdate = true;
@@ -597,7 +670,7 @@ plotMutualCircles();
      
             var offset = 4;
             var visibility = satellites[bb.satelliteindex].get('visibility');
-            if ( visibility == 'Daylight' || visibility == 'Visible') {
+            if ( visibility === 'Daylight' || visibility === 'Visible') {
                 offset = 0;
             }
             
@@ -617,19 +690,18 @@ plotMutualCircles();
             newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
             newpos = newpos.multiplyByScalar(1000);
             bb.setPosition(newpos);
-
-            if (_showSatLabels) {             
-                newpos = newpos.multiplyByScalar(30/1000+1);            
-                var satLabel = _satNameLabels.get(i);
-                if (satellites[bb.satelliteindex].getSelected()) {
-                    satLabel.setFont(_settings.selectedLabelSize + 'px sans-serif');
-                    satLabel.setFillColor(Cesium.Color.fromCssColorString('#'+_settings.selectedLabelColour));
-                } else {
-                    satLabel.setFont(_settings.unselectedLabelSize + 'px sans-serif');
-                    satLabel.setFillColor(Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour));
-                }
-                satLabel.setPosition(newpos);
+           
+            newpos = newpos.multiplyByScalar(30/1000+1);            
+            var satLabel = _satNameLabels.get(i);
+            if (satellites[bb.satelliteindex].getSelected()) {
+                satLabel.setFont(_settings.selectedLabelSize + 'px sans-serif');
+                satLabel.setFillColor(Cesium.Color.fromCssColorString('#'+_settings.selectedLabelColour));
+            } else {
+                satLabel.setFont(_settings.unselectedLabelSize + 'px sans-serif');
+                satLabel.setFillColor(Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour));
             }
+            satLabel.setPosition(newpos);
+
         }
         
         if (following !== null && (_follow || _followFromObserver)) {
@@ -652,31 +724,56 @@ plotMutualCircles();
 
     function drawFootprint() {
         var footPrint;
+        var i;
         
+        var primitives = scene.getPrimitives();
+        for (i=0;i<_footprintPolygons.length;i++) {
+            primitives.remove(_footprintPolygons[i]);  
+        }
         footprintCircle.removeAll();
         var selected = AGSatTrack.getTles().getSelected();
-        for (var i = 0; i < selected.length; i++) {
-            footPrint = footprintCircle.add();
-            var now = new Cesium.JulianDate();
-            footPrint.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                    Cesium.Cartesian3.ZERO);
+        for (i = 0; i < selected.length; i++) {
+            if (_settings.fillFootprints) {
+                var circle = new Cesium.Polygon();
 
-            footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
-                    .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
-                            selected[i].get('longitude'), selected[i].get('latitude'))),
-                    selected[i].get('footprint') * 500));  
-                    
-/*                    
- var ellipse = new Cesium.Polygon();
-         ellipse.setPositions(Cesium.Shapes.computeEllipseBoundary(
-            ellipsoid, ellipsoid.cartographicToCartesian(
-                new Cesium.Cartographic.fromDegrees(
-                            selected[i].get('longitude'), selected[i].get('latitude'))), selected[i].get('footprint') * 500,
-                    selected[i].get('footprint') * 500, Cesium.Math.toRadians(60)));
-        scene.getPrimitives().add(ellipse);
- //       debugger;
-*/                                      
+                if (selected[i].get('elevation') >= AGSETTINGS.getAosEl()) {
+                    circle.material.uniforms.color = {
+                      red   : 0.0,
+                      green : 0.5,
+                      blue  : 0.0,
+                      alpha : 0.4
+                    };
+                } else {
+                    circle.material.uniforms.color = {
+                      red   : 0.5,
+                      green : 0.0,
+                      blue  : 0.0,
+                      alpha : 0.4
+                    };
+                }
+                                
+                circle.setPositions(
+                        Cesium.Shapes.computeCircleBoundary(
+                                ellipsoid,
+                                ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(selected[i].get('longitude'), selected[i].get('latitude'))),
+                                selected[i].get('footprint') * 500));
+                _footprintPolygons.push(circle);
+                primitives.add(circle);
+                primitives.lowerToBottom(circle);
+            } else {
+                footPrint = footprintCircle.add();
+                
+                if (selected[i].get('elevation') >= AGSETTINGS.getAosEl()) {
+                    footPrint.setColor(new Cesium.Color(0.0, 1.0, 0.0, 1.0));
+                } else {
+                    footPrint.setColor(new Cesium.Color(1.0, 0.0, 0.0, 1.0));
+                }
+                footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
+                        .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
+                                selected[i].get('longitude'), selected[i].get('latitude'))),
+                        selected[i].get('footprint') * 500));                
+            }
+
         }
 
     }
@@ -751,7 +848,7 @@ plotMutualCircles();
                 /**
                 * Add the lines from satelite point to ssp
                 */
-                if (showSsp) {
+                if (showSsp && _settings.showGroundSSP) {
                     selectedPoints = [];
                     selectedPoints.push(pos);
                     cartographic = ellipsoid.cartesianToCartographic(pos);
@@ -1025,8 +1122,6 @@ plotMutualCircles();
             onSelect : function(record){
                 var sat = AGSatTrack.getSatelliteByName(record.value);
                 jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: record.value});
-
-                var camera = scene.getCamera();
 
                 var pos = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(sat.get('longitude'), sat.get('latitude'), (sat.get('altitude')*1000)+1000000));
                  

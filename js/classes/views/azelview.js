@@ -455,7 +455,8 @@ var AGAZELVIEW = function(element) {
             _passToShow = time;
 
             var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
-            _passData = _satellite.getPassforTime(observer, _passToShow);
+            var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+            _passData = _satellite.getPassforTime(observer, mutualObserver, _passToShow);
         },
         
         setSingleSat : function(satellite) {

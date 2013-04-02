@@ -34,7 +34,7 @@ var AGSETTINGS = (function() {
     var _requireEUCookieLaw = true;
     var _defaultView = 'home';
     var _defaultSats = '';
-    var _cookieVersion = 1.7;
+    var _cookieVersion = 2.3;
     
     var _settings = {
         version: _cookieVersion,
@@ -95,7 +95,10 @@ var AGSETTINGS = (function() {
                 selectedLabelColour: 'ff0000',
                 view: 'threed',
                 provider : 'staticimage',
-                useTerrainProvider: true                                                   
+                useTerrainProvider: true,
+                fillFootprints: false,
+                showGroundSSP: true,
+                fillMutual: false
             }
         }
     };
@@ -153,9 +156,14 @@ var AGSETTINGS = (function() {
     if (jQuery.cookie(COOKIENAME) !== null) {
         var cookieData = jQuery.cookie(COOKIENAME);
         var savedSettings = JSON.parse(cookieData);
-        if (typeof savedSettings.version !== 'undefined' && savedSettings.version == _cookieVersion) {
-            _settings = $.extend({}, _settings, savedSettings);            
+            _settings = $.extend(true, _settings, savedSettings);  
+
+/*        if (typeof savedSettings.version !== 'undefined' && savedSettings.version == _cookieVersion) {
+            _settings = $.extend({}, _settings, savedSettings);  
+        } else {
+            _forceReset = true;
         }
+ */
     }
     
     /**
