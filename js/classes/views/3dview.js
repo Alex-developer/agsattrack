@@ -119,6 +119,7 @@ var AG3DVIEW = function(element) {
                         setProvider(_currentProvider);
                     }
                     createSatellites();
+                    plotObservers();
                     setTerrainProvider(_settings.useTerrainProvider);
                 }
             }); 
@@ -390,7 +391,7 @@ var AG3DVIEW = function(element) {
         observers = AGSatTrack.getObservers();
         for ( var i = 0; i < observers.length; i++) {
             observer = observers[i];
-            if (observer.isReady()) { 
+            if (observer.isReady() && observer.getEnabled()) { 
                 observerBillboards.add({
                     position : ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat())),
                     imageIndex : 0                                          

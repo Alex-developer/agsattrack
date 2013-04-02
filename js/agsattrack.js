@@ -220,9 +220,6 @@ var Agsattrack = function() {
             
             AGVIEWS.resizeLayout();
             
-			/**
-			 * Setup the first observer, this will be the 'Home' observer
-			 */
             _observers[0] = new AGOBSERVER(AGOBSERVER.types.HOME).init(AGSETTINGS.getObserver());
             _observers[1] = new AGOBSERVER(AGOBSERVER.types.MUTUAL).init(AGSETTINGS.getMutualObserver());
 

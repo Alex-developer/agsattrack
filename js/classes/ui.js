@@ -60,9 +60,7 @@ var AGUI = function() {
             filename : item
         });
     }
-   
-
-            
+       
     var source =
     {
         datatype: "json",

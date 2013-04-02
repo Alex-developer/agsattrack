@@ -32,6 +32,7 @@ var AGOBSERVER = function(index) {
 	var _ready = false; // Flag indicating if we have geo location data
     var _autoGeo = true;
     var _index = index;
+    var _enabled = false;
     var that = this;
     
     function geoLocate() {
@@ -45,12 +46,25 @@ var AGOBSERVER = function(index) {
                     _ready = true;
                     jQuery(document).trigger('agsattrack.locationAvailable',that);
                 },
-                function () {
+                function (error) {
                     _lat = 0;
                     _lon = 0;
                     _alt = 0;
                     _ready = true;                        
                     jQuery(document).trigger('agsattrack.locationAvailable',that);
+                    
+                    var el = AGUTIL.getId();
+                    jQuery('body').append('<div id="'+el+'" />');
+                    jQuery('#'+el).dialog({  
+                        title: 'Geo Coding Error',  
+                        width: 500,  
+                        height: 240,
+                        cache: false,  
+                        content: '<div id="geoerror"><h2>Sorry we were unable to set your location</h2><p>Auto geo locating your position failed. Your location has been set to 0 Degrees, 0 Degrees</p><p>Please select the options button on the Home ribbon tab. From there you can disable auto geo locating and manually enter your location.</p><p>If you do not disable auto geo locating then this error will be displayed each time you visit this site.</p></div>',  
+                        modal: true  
+                    });
+                }, {
+                    timeout: 10000
                 }            
             );
         } else {
@@ -72,8 +86,9 @@ var AGOBSERVER = function(index) {
                 _lon = settings.lon;
                 _alt = settings.alt;
                 _name = settings.name;    
+                _enabled = settings.enabled;    
             }
-       
+ 
             /**
             * If the browser has geolocation capabilitis then get the users current position.
             * NOTE: This will not be accurate but will give a rough idea for the users location. Also if the
@@ -101,7 +116,14 @@ var AGOBSERVER = function(index) {
         doGeoLocate: function() {
             geoLocate();
         },
-                
+        
+        setEnabled: function(name) {
+            _enabled = name;
+        },
+        getEnabled: function() {
+            return _enabled;
+        },
+                        
         /**
         * Getter and setter for using the browsers inbuilt Geo Location
         * service to find the users location.

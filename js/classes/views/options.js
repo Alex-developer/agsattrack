@@ -311,6 +311,7 @@ var AGOPTIONS = function() {
         observer.setLon(jQuery('#mutualobserverlongitude').val());
         observer.setAlt(jQuery('#mutualobserveraltitude').val());
         temp = jQuery('#mutualobserver').prop('checked');
+        observer.setEnabled(temp);
         AGSETTINGS.setMutualObserverEnabled(temp);
                 
         temp = jQuery('#debugger-show').prop('checked');

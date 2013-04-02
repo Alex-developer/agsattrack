@@ -28,3 +28,16 @@
 .pac-container {
     z-index: 99999 !important;
 }
+
+#geoerror {
+    padding: 5px;
+}
+
+#geoerror h2 {
+    text-align: center;
+    color: red;
+}
+
+#geoerror p {
+    text-align: justify;
+}

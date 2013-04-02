@@ -49,6 +49,7 @@ var AGSETTINGS = (function() {
         passesbr: 'sky',
         observer: {
             auto: true,
+            enabled: true,
             name: '',
             lat: 0,
             lon: 0,
@@ -56,6 +57,7 @@ var AGSETTINGS = (function() {
         },
         mutualObserver: {
             auto: false,
+            enabled: false,
             name: '',
             lat: 0,
             lon: 0,
@@ -116,6 +118,7 @@ var AGSETTINGS = (function() {
             _settings.observer.lat = observer.getLat();
             _settings.observer.lon = observer.getLon();
             _settings.observer.alt = observer.getAlt();
+            _settings.observer.enabled = observer.getEnabled();
             _settings.observer.auto = observer.getAutoGeo();
             
             observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
@@ -123,6 +126,7 @@ var AGSETTINGS = (function() {
             _settings.mutualObserver.lat = observer.getLat();
             _settings.mutualObserver.lon = observer.getLon();
             _settings.mutualObserver.alt = observer.getAlt();
+            _settings.mutualObserver.enabled = observer.getEnabled();
             _settings.mutualObserver.auto = observer.getAutoGeo();
                         
             var cookieData = JSON.stringify(_settings);
