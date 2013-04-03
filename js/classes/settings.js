@@ -110,7 +110,7 @@ var AGSETTINGS = (function() {
         }
     };
     
-    var _settings = clone(_defaultSettings);
+    var _settings = jQuery.extend(true, {}, _defaultSettings);
         
     var COOKIENAME = 'agsattrack';
     var COOKIEEXPIRES = 30;
@@ -204,7 +204,11 @@ var AGSETTINGS = (function() {
 		},
 
         reset: function() {
-            _settings = _defaultSettings;
+            _settings = jQuery.extend(true, {}, _defaultSettings);
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
+            observer.init(_settings.observer);
+            observer = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+            observer.init(_settings.mutualObserver);
             saveSettings();    
         },
         

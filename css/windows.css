@@ -41,3 +41,7 @@
 #geoerror p {
     text-align: justify;
 }
+
+#geoerror .errorcode {
+    font-weight: bold;
+}
