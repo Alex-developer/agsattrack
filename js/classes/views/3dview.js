@@ -439,8 +439,8 @@ var AG3DVIEW = function(element) {
                     _homeLocationCircle.material.uniforms.color = {
                       red   : 0.0,
                       green : 0.0,
-                      blue  : 0.5,
-                      alpha : 0.1
+                      blue  : 0.0,
+                      alpha : 0.3
                     };       
                     _homeLocationCircle.setPositions(
                             Cesium.Shapes.computeCircleBoundary(
@@ -458,8 +458,8 @@ var AG3DVIEW = function(element) {
                     _mutualLocationCircle.material.uniforms.color = {
                       red   : 0.0,
                       green : 0.0,
-                      blue  : 0.5,
-                      alpha : 0.1
+                      blue  : 0.0,
+                      alpha : 0.3
                     };       
                     _mutualLocationCircle.setPositions(
                             Cesium.Shapes.computeCircleBoundary(
