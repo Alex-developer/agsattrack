@@ -109,17 +109,9 @@ var AGTIMELINE = function() {
 		_backgroundLayer.removeChildren();
 		
 		_backgroundLayer.add(new Kinetic.Rect({
-            fill: {
-                start: {
-                    x: 0,
-                    y: 0
-                },
-                end: {
-                  x: 0,
-                  y: _height / 2
-                },
-                colorStops: [0, '#374553', 1, '#001224']
-            }, 
+            fillLinearGradientStartPoint: [0, 0],
+            fillLinearGradientEndPoint: [0, _height / 2],
+            fillLinearGradientColorStops: [0, '#374553', 1, '#001224'], 
 			x : 0,
 			y : 0,
 			width : _width,
@@ -195,7 +187,7 @@ var AGTIMELINE = function() {
                     text : hour,
                     fontSize : 10,
                     fontFamily : 'Verdana',
-                    textFill : 'white'
+                    fill : 'white'
                 }));
                 hour++; 
             }
@@ -226,7 +218,7 @@ var AGTIMELINE = function() {
                 fontSize : 12,
                 lineHeight : 1.50,
                 fontFamily : 'Verdana',
-                textFill : 'white'                
+                fill : 'white'                
             }));            
         }
         
@@ -240,7 +232,7 @@ var AGTIMELINE = function() {
                 text : sat.getName(),
                 fontSize : 12,
                 fontFamily : 'Verdana',
-                textFill : 'white'
+                fill : 'white'
             }));            
 
             if (sat.isGeostationary()) {
@@ -260,7 +252,7 @@ var AGTIMELINE = function() {
                         text : 'Satellite is geostationary always visible',
                         fontSize : 12,
                         fontFamily : 'Verdana',
-                        textFill : 'black'
+                        fill : 'black'
                     }));                                         
                 } else {
                     _timelineLayer.add(new Kinetic.Text({
@@ -271,7 +263,7 @@ var AGTIMELINE = function() {
                         text : 'Satellite is geostationary and never visible',
                         fontSize : 12,
                         fontFamily : 'Verdana',
-                        textFill : 'red'
+                        fill : 'red'
                     }));                      
                 }
             } else {
@@ -434,8 +426,7 @@ var AGTIMELINE = function() {
                 fontFamily: 'Calibri',
                 fontSize: 10,
                 padding: 5,
-                textFill: 'white',
-                fill: 'black',
+                fill: 'white',
                 alpha: 0.50,
                 visible: false
             });
@@ -462,7 +453,7 @@ var AGTIMELINE = function() {
                 text : 'N/A',
                 fontSize : 10,
                 fontFamily : 'Verdana',
-                textFill : 'white'
+                fill : 'white'
             });
             _mousePosTimeLayer.add(_mousePosTime);
                                     

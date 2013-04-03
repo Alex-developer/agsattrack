@@ -389,7 +389,11 @@ var AGOPTIONS = function() {
        };
        AGWINDOWMANAGER.showWindow('geocode', params);
     });
+    
+    function validate() {
         
+    }
+     
 	return {
 		startRender : function() {
 			_render = true;

@@ -150,9 +150,9 @@ var AGAZELVIEW = function(element) {
                 y : ypos - 2,
                 text : ((7-i)*60) + 'º',
                 align: 'right',
-                fontSize : 8,
+                fontSize : 10,
                 fontFamily : 'Verdana',
-                textFill : 'green'
+                fill : 'green'
             }));
               
             _backgroundLayer.add(new Kinetic.Text({
@@ -160,9 +160,9 @@ var AGAZELVIEW = function(element) {
                 y : ypos - 2,
                 text : (90 / 6) * (7-i) + 'º',
                 align: 'left',
-                fontSize : 8,
+                fontSize : 10,
                 fontFamily : 'Verdana',
-                textFill : 'white'
+                fill : 'white'
             }));
 
             ypos += _ystep;              
@@ -197,9 +197,9 @@ var AGAZELVIEW = function(element) {
                             y : _height - _margin + 7,
                             text : formattedDate,
                             align: 'left',
-                            fontSize : 8,
+                            fontSize : 10,
                             fontFamily : 'Verdana',
-                            textFill : 'white'
+                            fill : 'white'
                         }));
                         date = Date.DateAdd('s', timeStep , date);
                     }
@@ -213,9 +213,9 @@ var AGAZELVIEW = function(element) {
                     width: _width,
                     text : dateLabel,
                     align: 'center',
-                    fontSize : 8,
+                    fontSize : 10,
                     fontFamily : 'Verdana',
-                    textFill : 'white'
+                    fill : 'white'
                 }));
             }           
         }
@@ -225,9 +225,9 @@ var AGAZELVIEW = function(element) {
             y : _margin - 30,
             text : 'Az',
             align: 'right',
-            fontSize : 8,
+            fontSize : 10,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            fill : 'white'
         }));        
 
         _backgroundLayer.add(new Kinetic.Text({
@@ -235,9 +235,9 @@ var AGAZELVIEW = function(element) {
             y : _margin - 30,
             text : 'El',
             align: 'right',
-            fontSize : 8,
+            fontSize : 10,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            fill : 'white'
         }));
         
         _mousePosText = new Kinetic.Text({
@@ -246,9 +246,9 @@ var AGAZELVIEW = function(element) {
             width: _width,
             text : '',
             align: 'center',
-            fontSize : 8,
+            fontSize : 10,
             fontFamily : 'Verdana',
-            textFill : 'white'
+            fill : 'white'
         }); 
         _mouseLayer.add(_mousePosText);
                                                 
@@ -290,17 +290,9 @@ var AGAZELVIEW = function(element) {
                 if (elPoints.length > 0) {
                     _plotLayer.add(new Kinetic.Polygon({
                             points: elPoints,
-                            fill: {
-                                start: {
-                                    x: 0,
-                                    y: -10
-                                },
-                                end: {
-                                  x: 0,
-                                  y: _height
-                                },
-                                colorStops: [0, '#374553', 1, '#001224']
-                            },
+                            fillLinearGradientStartPoint: [0, -10],
+                            fillLinearGradientEndPoint: [0, _height],
+                            fillLinearGradientColorStops: [0, '#374553', 1, '#001224'],                            
                             lineCap: 'round',
                             lineJoin: 'round'
                         })

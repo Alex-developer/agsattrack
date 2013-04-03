@@ -146,7 +146,7 @@ var AGSKYVIEW = function(element) {
 			text : 'N',
 			fontSize : 10,
 			fontFamily : 'Verdana',
-			textFill : 'white'
+			fill : 'white'
 		}));
 		
 		_backgroundLayer.add(new Kinetic.Text({
@@ -155,7 +155,7 @@ var AGSKYVIEW = function(element) {
 			text : 'E',
 			fontSize : 10,
 			fontFamily : 'Verdana',
-			textFill : 'white'
+			fill : 'white'
 		}));
 		
 		_backgroundLayer.add(new Kinetic.Text({
@@ -164,7 +164,7 @@ var AGSKYVIEW = function(element) {
 			text : 'S',
 			fontSize : 10,
 			fontFamily : 'Verdana',
-			textFill : 'white'
+			fill : 'white'
 		}));
 		
 		_backgroundLayer.add(new Kinetic.Text({
@@ -173,7 +173,7 @@ var AGSKYVIEW = function(element) {
 			text : 'W',
 			fontSize : 10,
 			fontFamily : 'Verdana',
-			textFill : 'white'
+			fill : 'white'
 		}));
 		
 		for ( var i = 0; i <= 36; i++) {
@@ -211,7 +211,7 @@ var AGSKYVIEW = function(element) {
                 text : (90-i) + 'º',
                 fontSize : 10,
                 fontFamily : 'Verdana',
-                textFill : '#999'
+                fill : '#999'
             }));  
                         
 		}
@@ -288,7 +288,7 @@ var AGSKYVIEW = function(element) {
                         text : planet.name,
                         fontSize : 10,
                         fontFamily : 'Verdana',
-                        textFill : 'white'
+                        fill : 'white'
                     }));                                
                 }
             });        
@@ -330,7 +330,7 @@ var AGSKYVIEW = function(element) {
                     fontSize : 10,
                     fontFamily : 'Verdana',
                     fontStyle : _style,
-                    textFill : 'white'
+                    fill : 'white'
                 }));
    
                 var newSat = new Kinetic.Image({
@@ -343,7 +343,7 @@ var AGSKYVIEW = function(element) {
                 });
                 
                 newSat.on('mouseup', function(e) {
-                    var selected = e.shape.getId();
+                    var selected = this.getId();
                     jQuery(document).trigger('agsattrack.satclicked', {
                         catalogNumber : selected
                     });
@@ -516,7 +516,7 @@ var AGSKYVIEW = function(element) {
                     text : satellite.getName(),
                     fontSize : 6,
                     fontFamily : 'Verdana',
-                    textFill : '#eee'
+                    fill : '#eee'
                 }));
                 _orbitLayer.add(new Kinetic.Text({
                     x : pos.x,
@@ -524,7 +524,7 @@ var AGSKYVIEW = function(element) {
                     text : label,
                     fontSize : 6,
                     fontFamily : 'Verdana',
-                    textFill : '#eee'
+                    fill : '#eee'
                 }));                        
             }                
         }        
@@ -581,6 +581,7 @@ var AGSKYVIEW = function(element) {
 		startRender : function() {
             _render = true;
             resize();
+            drawSkyView();
             animate();          
 		},
 
@@ -652,7 +653,7 @@ var AGSKYVIEW = function(element) {
 				text : 'Mouse Position',
 				fontSize : 10,
 				fontFamily : 'Verdana',
-				textFill : 'white'
+				fill : 'white'
 			}));
 
 			_infoGroup.add(new Kinetic.Text({
@@ -661,7 +662,7 @@ var AGSKYVIEW = function(element) {
 				text : 'Azimuth',
 				fontSize : 10,
 				fontFamily : 'Verdana',
-				textFill : 'white'
+				fill : 'white'
 			}));
 
 			_infoGroup.add(new Kinetic.Text({
@@ -670,7 +671,7 @@ var AGSKYVIEW = function(element) {
 				text : 'Elevation',
 				fontSize : 10,
 				fontFamily : 'Verdana',
-				textFill : 'white'
+				fill : 'white'
 			}));
 
 			_mousePosAz = new Kinetic.Text({
@@ -679,7 +680,7 @@ var AGSKYVIEW = function(element) {
 				text : 'N/A',
 				fontSize : 10,
 				fontFamily : 'Verdana',
-				textFill : 'white',
+				fill : 'white',
 				fontStyle: 'bold'
 			});
 			_infoGroup.add(_mousePosAz);
@@ -690,7 +691,7 @@ var AGSKYVIEW = function(element) {
 				text : 'N/A',
 				fontSize : 10,
 				fontFamily : 'Verdana',
-				textFill : 'white',
+				fill : 'white',
 				fontStyle: 'bold'
 			});
 			_infoGroup.add(_mousePosEl);
