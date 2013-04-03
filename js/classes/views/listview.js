@@ -276,6 +276,7 @@ var AGLISTVIEW = function() {
                     {field:'type',title:'Type',width:55},  
                     {field:'viz',title:'Viz',width:55},  
                     {field:'az',title:'Azimuth',width:70},  
+                    {field:'el',title:'Elevation',width:70},  
                     {field:'lat',title:'Latitude',width:95,align:'right'},  
                     {field:'lon',title:'Longitude',width:95,align:'right'},  
                     {field:'alt',title:'Altitude',width:60,align:'right'},  
