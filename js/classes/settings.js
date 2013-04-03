@@ -39,14 +39,13 @@ var AGSETTINGS = (function() {
     var _requireEUCookieLaw = true;
     var _defaultView = 'home';
     var _defaultSats = '';
-    var _cookieVersion = 2.3;
+    var _cookieVersion = 2.4;
     
     var _defaultSettings = {
         version: _cookieVersion,
         aosEl: 5,
         refreshTimerInterval : 5000,
         showPopupHelp : false,
-        switchViewOnTabClick : true,
         autoAddSats: true,
         defaultTleGroup: 'amateur',
         debugView: false,
@@ -321,12 +320,6 @@ var AGSETTINGS = (function() {
         setSPM : function(value) {
             _spm = value;
         },   
-        getSwitchViewOnTabClick : function() {
-            return _settings.switchViewOnTabClick;
-        },
-        setSwitchViewOnTabClick : function(value) {
-            _settings.switchViewOnTabClick = value;    
-        },
         getHaveWebGL : function() {
             return _haveWebGl;
         },

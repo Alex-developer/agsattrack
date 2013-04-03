@@ -36,11 +36,6 @@ var AGOPTIONS = function() {
 	function setupOptions() {
 		jQuery('#window-preferences-calc-timer').numberspinner('setValue', AGSETTINGS.getRefreshTimerInterval() / 1000);
 		jQuery('#window-preferences-aos').numberspinner('setValue', AGSETTINGS.getAosEl());
-        if (AGSETTINGS.getSwitchViewOnTabClick()) {
-            jQuery('#switchtabonclick').prop('checked', true);
-        } else {
-            jQuery('#switchtabonclick').prop('checked', false);
-        }
         
         if (AGSETTINGS.getAutoAddSats()) {
             jQuery('#sats-autoadd').prop('checked', true);
@@ -276,9 +271,6 @@ var AGOPTIONS = function() {
 
 		temp = jQuery('#window-preferences-aos').numberspinner('getValue');
 		AGSETTINGS.setAosEl(temp);
-
-        temp = jQuery('#switchtabonclick').prop('checked');
-        AGSETTINGS.setSwitchViewOnTabClick(temp);
         
         temp = jQuery('#sats-autoadd').prop('checked');
         AGSETTINGS.setAutoAddSats(temp);        

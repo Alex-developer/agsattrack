@@ -153,18 +153,10 @@ var AGUI = function() {
 		jQuery('#viewtabs').tabs('select', parseInt(newTab,10));
 	});
 
-    
-    jQuery('.viewswitcher').on('click', function(e){
-        var newTab = jQuery(this).attr('data-tab');
-        jQuery('#viewtabs').tabs('select', parseInt(newTab,10));                
-    });
-
     jQuery('.ribbon-tab-header').on('click', function(e){
-        if (AGSETTINGS.getSwitchViewOnTabClick()) {
-            var newTab = jQuery(this).find('span').attr('data-tab');
-            if (typeof newTab !== 'undefined') {
-                AGVIEWS.switchView(newTab);              
-            }
+        var newTab = jQuery(this).find('span').attr('data-tab');
+        if (typeof newTab !== 'undefined') {
+            AGVIEWS.switchView(newTab);              
         }
     });    
     
