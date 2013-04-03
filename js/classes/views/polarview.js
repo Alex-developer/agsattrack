@@ -59,6 +59,7 @@ var AGPOLARVIEW = function(element) {
     var _planetLayer;
     var _orbitLayer;
     var _infoLayer;
+    var _mutualLayer;
     var _mousePosTextAz;
     var _mousePosTextEl;
     var _naflag = false;
@@ -135,6 +136,14 @@ var AGPOLARVIEW = function(element) {
                     drawPlanets();
                 }
             });
+            
+    jQuery(document).bind('agsattrack.settingssaved',
+            function(e, observer) {
+                if (_render) {
+                    drawBackground();
+                    drawPolarView();
+                }
+            });             
 
     /**
     * Convert the current postiion of the mouse to Azimuth and
@@ -401,6 +410,30 @@ var AGPOLARVIEW = function(element) {
         }));
 
 		_backgroundLayer.draw();
+        
+        if (AGSETTINGS.getMutualObserverEnabled()) {
+            var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
+            var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
+            
+            var az = AGUTIL.getBearing(observer.getLat(),observer.getLon(), mutualObserver.getLat(), mutualObserver.getLon());
+            var pos = convertAzEltoXY(az, 0);
+            _mutualLayer.add(new Kinetic.Circle({
+                x : pos.x,
+                y : pos.y,
+                radius : 5,
+                stroke : 'red',
+                strokeWidth : 1
+            }));             
+            _mutualLayer.add(new Kinetic.Text({
+                x : pos.x,
+                y : pos.y,
+                text : mutualObserver.getName(),
+                fontSize : 10,
+                fontFamily : 'Verdana',
+                fill : 'white'
+            }));
+            _mutualLayer.draw();
+        }
 	}
     
     function drawMousePos() {
@@ -877,6 +910,9 @@ var AGPOLARVIEW = function(element) {
 
             _infoLayer = new Kinetic.Layer();
             _stage.add(_infoLayer);
+                
+            _mutualLayer = new Kinetic.Layer();
+            _stage.add(_mutualLayer);
                 
             _stage.on('mousemove', function() {
                 _mousePos = _stage.getMousePosition();

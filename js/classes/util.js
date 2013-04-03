@@ -76,7 +76,11 @@ var AGUTIL = (function() {
     function degToRad(deg) {
         return  deg * (Math.PI / 180);
     }
-            
+
+    function radToDeg(rad) {
+        return  rad * 180 / Math.PI;;
+    }
+                
 	return {
         pad : function(num, size) {
             return pad(num, size);    
@@ -280,7 +284,26 @@ var AGUTIL = (function() {
             c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
             distance = R * c;            
             
+            AGUTIL.getBearing(lat1, lon1, lat2, lon2);
             return distance;
+        },
+        
+        getBearing : function(lat1, lon1, lat2, lon2) {
+            lat1 = degToRad(lat1);
+            lon1 = degToRad(lon1);
+            lat2 = degToRad(lat2);
+            lon2 = degToRad(lon2);            
+            var dLat = lat2 - lat1;
+            var dLon = lon2 - lon1; 
+            
+            var y = Math.sin(dLon) * Math.cos(lat2);
+            var x = Math.cos(lat1)*Math.sin(lat2) -
+                    Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
+            var brng = Math.atan2(y, x);
+            brng = radToDeg(brng);
+            brng = (brng+360) % 360;        
+            
+            return brng;
         },
         
         getId : function() {
