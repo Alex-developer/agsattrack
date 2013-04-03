@@ -159,7 +159,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
                         signaldelay: _satOrbit.signaldelay,
                         signalloss: _satOrbit.signalloss,
                         dopplershift: _satOrbit.dopplershift,
-                        orbitNumber: _satOrbit.orbitNumber                          
+                        orbitNumber: _satOrbit.orbitNumber,
+                        mutual: _satOrbit.mutualVisible                           
                     };
                     passData.pass.push(orbitdata);
                     time += (0.00035 / 4); // 30 /4  Seconds
@@ -270,7 +271,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
             signaldelay: _satOrbit.signaldelay,
             signalloss: _satOrbit.signalloss,
             dopplershift: _satOrbit.dopplershift,
-            orbitNumber: _satOrbit.orbitNumber            
+            orbitNumber: _satOrbit.orbitNumber,
+            mutual: _satOrbit.mutualVisible            
         };
         orbitPoints.push(orbitdata);         
         return orbitdata;

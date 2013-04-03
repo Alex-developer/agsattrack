@@ -313,7 +313,14 @@
                             <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
                             <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
                         </div>
-                                                
+                            
+                        <div class="ribbon-button ribbon-button-large" id="list-view-show-mutual" data-type="togglebutton" data-event="agsattrack.listviewshowmutuallocations">
+                            <span class="button-title">Show<br/>Mutual</span> 
+                            <span class="button-help"><strong>Show Mutual.</strong><br /><br />Adds a column to the table which indicates if the satellite is visible from both your location and the mutual observer.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/mutual.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/mutual.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/mutual.png" />
+                        </div>                                                 
                     </div>
                 </div>
             </div>
@@ -505,10 +512,15 @@
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
                     </div>  
-                 </div>                
-                      
-                <div class="ribbon-section">
-                    <span class="section-title">View Layout</span>
+
+                    <div class="ribbon-button ribbon-button-large" id="passes-view-show-mutual" data-type="togglebutton" data-event="agsattrack.passesshowmutuallocations">
+                        <span class="button-title">Show<br/>Mutual</span> 
+                        <span class="button-help"><strong>Show Mutual.</strong><br /><br />Adds a column to the passes grid indicating if the selected satellite is visible from your home location and the mutual observers location.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/mutual.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/mutual.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/mutual.png" />
+                    </div> 
+                                        
                     <div style="width: 100px; float:left;">
                         <table width="100%">
                             <tr>
@@ -875,6 +887,7 @@
                                         <th field="doppler" width="105" align="right">Doppler Shift (Hz)</th>
                                         <th field="loss" width="105" align="right">Signal Loss (dB)</th>
                                         <th field="delay" width="105" align="right">Signal Delay (ms)</th>
+                                        <th field="mv" width="105" align="right">Mutual Visible</th>
                                     </tr>
                                 </thead>
                             </table>                        
@@ -910,7 +923,7 @@
                                 <th>Enable Debug View</th>
                                 <td>
                                     <input type="checkbox" id="debugger-show" value="on" class="options-cb">
-                                    <p class="description"><strong>NOTE:</strong> You will need to refresh the page to enable the debugger after enabling this option.</p>
+                                    <p class="description"><strong>NOTE:</strong> This is only intended for developers to examine internal data from the SPM engines.</p>
                                 </td>
                             </tr>                          
                         </table>

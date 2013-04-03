@@ -75,6 +75,12 @@ var AGLISTVIEW = function() {
                 }
             });        
 	
+    jQuery(document).bind('agsattrack.listviewshowmutuallocations',
+            function(e,state) {
+                AGSETTINGS.setMutualObserverEnabled(state);
+                setGridColumns();
+            }); 
+                
     
     jQuery(document).bind('agsattrack.settingssaved',
             function() {
@@ -92,9 +98,11 @@ var AGLISTVIEW = function() {
 
     function setGridColumns() {
         if (AGSETTINGS.getMutualObserverEnabled()) {
-            jQuery('#sat-list-grid').datagrid('showColumn','mv');   
+            jQuery('#sat-list-grid').datagrid('showColumn','mv');
+            jQuery('#list-view-show-mutual').setButtonState(true);    
         } else {
-            jQuery('#sat-list-grid').datagrid('hideColumn','mv');   
+            jQuery('#sat-list-grid').datagrid('hideColumn','mv');
+            jQuery('#list-view-show-mutual').setButtonState(false); 
         } 
     }
     
@@ -241,12 +249,20 @@ var AGLISTVIEW = function() {
         data.rows = (data.originalRows.slice(start, end));
         return data;
     } 
-                                            
+    
+    /**
+    * Sets up the view when switched to.
+    */
+    function initToolbar() {
+        setGridColumns(); 
+    }                                            
+
 	return {
         /**
         * Start to render the views
         */
 		startRender : function() {
+            initToolbar();
             populateSatelliteGrid();
             _render = true;
 		},

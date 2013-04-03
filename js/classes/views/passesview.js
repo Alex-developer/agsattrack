@@ -37,7 +37,18 @@ var AGPASSESVIEW = function() {
         _bottomRight.reset();
         jQuery('#passesgrid').datagrid('loadData',[]);    
     });
-    
+
+    jQuery(document).bind('agsattrack.settingssaved',
+            function(state) {
+                setGridColumns();
+            }); 
+                
+    jQuery(document).bind('agsattrack.passesshowmutuallocations',
+            function(e,state) {
+                AGSETTINGS.setMutualObserverEnabled(state);
+                setGridColumns();
+            }); 
+                
     /**
     * Update the view in the bottom left
     */
@@ -151,6 +162,16 @@ var AGPASSESVIEW = function() {
 
     }
     
+    function setGridColumns() {
+        if (AGSETTINGS.getMutualObserverEnabled()) {
+            jQuery('#passesgrid').datagrid('showColumn','mv');
+            jQuery('#passes-view-show-mutual').setButtonState(true);   
+        } else {
+            jQuery('#passesgrid').datagrid('hideColumn','mv');   
+            jQuery('#passes-view-show-mutual').setButtonState(false);   
+        } 
+    }
+        
     /**
     * Sets up the view when switched to.
     */
@@ -185,7 +206,8 @@ var AGPASSESVIEW = function() {
                 selected = ' selected="selected"';
             }
             jQuery('#passes-sat').append('<option value="'+sat.getCatalogNumber()+'"'+selected+'>'+sat.getName()+'</option>'); 
-        }); 
+        });
+        setGridColumns(); 
     }
 
     /**
@@ -213,7 +235,8 @@ var AGPASSESVIEW = function() {
                 viz: passData.pass[i].viz,
                 delay: passData.pass[i].signaldelay.toFixed(0),
                 loss: passData.pass[i].signalloss.toFixed(0),
-                doppler: passData.pass[i].dopplershift.toFixed(0)
+                doppler: passData.pass[i].dopplershift.toFixed(0),
+                mv: passData.pass[i].mutual
             });
         }
 
