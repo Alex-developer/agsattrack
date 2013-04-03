@@ -411,6 +411,7 @@ var AGPOLARVIEW = function(element) {
 
 		_backgroundLayer.draw();
         
+        _mutualLayer.removeChildren();
         if (AGSETTINGS.getMutualObserverEnabled()) {
             var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
             var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);
@@ -432,8 +433,8 @@ var AGPOLARVIEW = function(element) {
                 fontFamily : 'Verdana',
                 fill : 'white'
             }));
-            _mutualLayer.draw();
         }
+        _mutualLayer.draw();        
 	}
     
     function drawMousePos() {
