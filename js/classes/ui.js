@@ -358,7 +358,7 @@ var AGUI = function() {
         onResize : function(width, height) {
         
             var tab = jQuery('#viewtabs').tabs('getSelected');
-            var index = jQuery('#viewtabs').tabs('getTabIndex',tab);
+            var index = tab.panel('options').title;
             var view = AGVIEWS.getViewFromIndex(index);
             
             if (view !== null) {
