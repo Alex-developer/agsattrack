@@ -679,14 +679,36 @@
                 <span class="ribbon-title" data-tab="timeline">Timeline View</span>
                 <div class="ribbon-section">
                     <span class="section-title">View Options</span>
-                    <div class="ribbon-button ribbon-button-large view-reset">
+                    <div class="ribbon-button ribbon-button-large view-reset" unselectable="on" data-type="button" id="timline-reset" data-event="agsattrack.timeline-reset">
                         <span class="button-title">Reset</span> 
                         <span class="button-help"></span> 
                         <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
                         <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
                         <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
                     </div>  
-                                        
+                    <div class="ribbon-button ribbon-button-large" id="timeline-view-show-mutual" data-type="togglebutton" data-event="agsattrack.timelineviewshowmutuallocations">
+                        <span class="button-title">Show<br/>Mutual</span> 
+                        <span class="button-help"><strong>Show Mutual.</strong><br /><br />Displays mutal visibility in the timeline view.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/mutual.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/mutual.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/mutual.png" />
+                    </div>
+                    <div class="ribbon-fl" style="width:30px;">
+                        <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="button" id="timline-zoom-in" data-event="agsattrack.timeline-zoom-in">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/zoom_in.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/zoom_in.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/zoom_in.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Zoom In</strong><br /><br />Zoom In.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>
+                        <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="button" id="timline-zoom-out" data-event="agsattrack.timeline-zoom-out">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/zoom_out.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/zoom_out.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/zoom_out.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Zoom Out</strong><br /><br />Zoom Out.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>                        
+                    </div>                                                              
                  </div>                
             </div> 
 

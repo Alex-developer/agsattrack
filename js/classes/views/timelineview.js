@@ -20,11 +20,11 @@ Copyright 2012 Alex Greenland
 * It produces an Unexpected use of '|'. Error
 * The | 0 is a much faster way to get an int from a float rather than use Math.floor
 * 
-* Last Checked: 19/01/2013
+* Last Checked: 06/04/2013
 *
 */
-/*jshint bitwise: true*/
-/*global AGSatTrack, AGUTIL, AGSETTINGS, Kinetic, requestAnimFrame */ 
+/*jshint bitwise: true, loopfunc: true*/
+/*global AGSatTrack, AGUTIL, AGSETTINGS, AGOBSERVER, Kinetic, requestAnimFrame, console */ 
 
 var AGTIMELINE = function() {
 	'use strict';
@@ -49,26 +49,51 @@ var AGTIMELINE = function() {
     var _satHeight = 50;
     var _leftMargin = 5;
     var _topMargin = 5;
-    var _passInfo = null;
     var _viewLeftMargin = 5;
     var _startDate;
     var _startHour = 0;
     var _mousePosTime;
+    var _tooltipText = [];
+    var _zoomFactor = 1;
     
 	var _mousePos = {
 			x : 0,
 			y : 0,
 			show : false
 		};
-	/*
-    jQuery(document).bind('agsattrack.satsselectedcomplete', function() {
-        if (_render) {
-            if (AGSETTINGS.getHaveWebGL()) {        
-                drawTimeline();
-            }
+
+    jQuery(document).bind('agsattrack.timeline-reset', function() {
+        _zoomFactor = 1;
+        setupToolbar();
+        drawTimeline();
+    });
+            
+    jQuery(document).bind('agsattrack.timeline-zoom-in', function() {
+        _zoomFactor++;
+        setupToolbar();
+        drawTimeline();
+    });
+
+    jQuery(document).bind('agsattrack.timeline-zoom-out', function() {
+        if (_zoomFactor > 1) {
+            _zoomFactor--;
+            setupToolbar();
+            drawTimeline();
         }
     });
-      */  
+        
+    jQuery(document).bind('agsattrack.timelineviewshowmutuallocations', function(e,state) {
+        AGSETTINGS.setMutualObserverEnabled(state);
+        drawTimeline();
+    });
+      
+    jQuery(document).bind('agsattrack.newsatselected', function() {
+        if (_render) {
+            setupToolbar();
+        }
+    });
+    
+                     
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
             var parent = jQuery('#timeline');
@@ -100,6 +125,8 @@ var AGTIMELINE = function() {
 		_height = _viewStage.getHeight();
 		
 		_pixelsPerMin = _fixedStageWidth / 1440;
+        
+        _pixelsPerMin = _pixelsPerMin * _zoomFactor;
 	}	
 
 	function drawBackground() {
@@ -208,7 +235,7 @@ var AGTIMELINE = function() {
         
         var selectedSats = AGSatTrack.getTles().getSelected();
         var yPos = _topMargin;
-        if (selectedSats.length == 0) {
+        if (selectedSats.length === 0) {
             _legendLayer.add(new Kinetic.Text({
                 x : 10 ,
                 y : (_height - _legendHeight) / 2,
@@ -222,6 +249,7 @@ var AGTIMELINE = function() {
             }));            
         }
         
+        var tooltipPos = 0;
         jQuery.each(selectedSats, function(index, sat) {
 
             _legendLayer.add(new Kinetic.Text({
@@ -273,28 +301,23 @@ var AGTIMELINE = function() {
                     stroke : '#777',
                     strokeWidth : 1
                 }));
-                                               
-                var xpos = _viewLeftMargin;
+                     
+                var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
+                var mutualObserver = AGSatTrack.getObserver(AGOBSERVER.types.MUTUAL);                                               
                 var passes = sat.getTodaysPasses();           
                 if (passes !== null) {
                     for (var i=0; i<passes.length;i++) {
-                        var sdiff = Date.DateDiff('n', _startDate, passes[i].dateTimeStart);
                         var startPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeStart) * _pixelsPerMin) + _viewLeftMargin;
                         var endPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeEnd) * _pixelsPerMin) + _viewLeftMargin;
-                       /*
-                        _timelineLayer.add(new Kinetic.Line({
-                            points : [ startPos, 10, endPos, 10 ],
-                            stroke : '#ccc',
-                            strokeWidth : 1
-                        }));
-                        */
                         var rect = new Kinetic.Rect({
-                            fill: 'white',
+                            fill: '#3D9EFF',
                             x : startPos,
                             y : yPos,
                             width : endPos - startPos,
-                            height : 20
+                            height : 20,
+                            tooltip: tooltipPos
                         });
+                        tooltipPos = rect._id;
                         rect.on('mouseout', function(){
                             _toolTip.hide();
                             _toolTipLayer.draw();
@@ -308,25 +331,92 @@ var AGTIMELINE = function() {
                         text += 'Aos: ' + aosTime + '\n';
                         text += 'Los: ' + losTime + '\n';
                         text += 'Max El: ' + maxEl + ' Max Az: ' + maxAz + '\n';
-                        text += 'orbit Number: ' + orbitNumber;                        
+                        text += 'orbit Number: ' + orbitNumber;  
+                        _tooltipText[tooltipPos] = text;
+                                              
                         rect.on('mousemove', function(){
                             _toolTip.setPosition(_mousePos.x + 5, _mousePos.y + 5);
-                            _toolTip.setText(text);
+                            _toolTip.setText(_tooltipText[this._id]);
                             _toolTip.show();
                             _toolTipLayer.draw();
                         });
                         _timelineLayer.add(rect);
+                        
+                        if (AGSETTINGS.getMutualObserverEnabled()) {
+                            var passData = [];
+                            var mutualStart = null;
+                            var mutualEnd = null;
+                            var pos = 0;
+                            passData = sat.getPassforTime(observer, mutualObserver, passes[i].dateTimeStart);
+                            var len = passData.pass.length;
+                            
+                            while (pos < len) {
+                                mutualStart = null;
+                                mutualEnd = null;
+                                while ((pos < len) && (passData.pass[pos].mutual === false)) {
+                                    pos++;
+                                }
+                                if (pos < len) {
+                                    mutualStart = passData.pass[pos].date;
+                                    while ((pos < len) && (passData.pass[pos].mutual === true)) {
+                                        pos++;
+                                    }
+                                    if (pos < len) {
+                                        mutualEnd = passData.pass[pos].date;
+                                        pos++;
+                                        addMutual(_startDate, mutualStart, mutualEnd, yPos, tooltipPos);               
+                                    }
+                                }
+                            }
+                            /**
+                            * If we ran off of the end of the pass array add the mutual pass
+                            */
+                            if (mutualStart !== null && mutualEnd === null) {
+                                mutualEnd = passData.pass[len-1].date;
+                                addMutual(_startDate, mutualStart, mutualEnd, yPos, tooltipPos);                              
+                            }                            
+                            
+                        }
                                                                 
                     }
                 }
             }
-            
-            
             yPos +=_satHeight; 
         });           
     
         _timelineLayer.draw();
         _legendLayer.draw();
+    }
+    
+    function addMutual(_startDate, mutualStart, mutualEnd, yPos, tooltipPos) {
+        var startPos = (Date.DateDiff('n', _startDate, mutualStart) * _pixelsPerMin) + _viewLeftMargin;
+        var endPos = (Date.DateDiff('n', _startDate, mutualEnd) * _pixelsPerMin) + _viewLeftMargin;
+        var mutualRect = new Kinetic.Rect({
+            fillLinearGradientStartPoint: [0, 0],
+            fillLinearGradientEndPoint: [20, 20],
+            fillLinearGradientColorStops: [0, '#001E3D', 1, '#005EBC'],
+            x : startPos,
+            y : yPos,
+            width : endPos - startPos,
+            height : 20
+        });
+        var tipPos = mutualRect._id; 
+        var text = _tooltipText[tooltipPos];
+        text += '\nMutual Start: ' + AGUTIL.shortdatetime(mutualStart,false,false);
+        text += '\nMutual End: ' + AGUTIL.shortdatetime(mutualEnd,false,false);
+        _tooltipText[tipPos] = text;
+                              
+        mutualRect.on('mousemove', function(){
+            _toolTip.setPosition(_mousePos.x + 5, _mousePos.y + 5);
+            _toolTip.setText(_tooltipText[this._id]);
+            _toolTip.show();
+            _toolTipLayer.draw();
+        });     
+        mutualRect.on('mouseout', function(){
+            _toolTip.hide();
+            _toolTipLayer.draw();
+        });           
+        _timelineLayer.add(mutualRect);          
     }
     
 	function drawMousePos() {
@@ -346,9 +436,6 @@ var AGTIMELINE = function() {
             var mins = (_mousePos.x - _viewLeftMargin) / _pixelsPerMin;
             
             var date = Date.DateAdd('n', mins, _startDate);
-            var hour = ((mins/60) | 0);
-            var minsLeft = (mins - (hour*60)) |0;
-            var displayHour = hour + _startHour;
             
             _mousePosTime.setText(AGUTIL.shortdate(date));
         } else {
@@ -358,8 +445,6 @@ var AGTIMELINE = function() {
         _mousePosTimeLayer.draw();             
         _mousePosLayer.draw();
     }
-
-
 
 	function drawTimeline() {
 		getDimensions();
@@ -383,12 +468,38 @@ var AGTIMELINE = function() {
         
     }
     
-    animate();
+    function setupToolbar() {
+        var selectedSats = AGSatTrack.getTles().getSelected();
+        if (selectedSats.length === 0) {
+            jQuery('#timeline-view-show-mutual').setButtonState(false); // Looks better when disabled
+            jQuery('#timeline-view-show-mutual').disable();
+            jQuery('#timline-zoom-out').disable();
+            jQuery('#timline-zoom-in').disable();
+            jQuery('#timline-reset').disable();
+        } else {
+            jQuery('#timeline-view-show-mutual').enable();
+            jQuery('#timline-zoom-in').enable();
+            jQuery('#timline-reset').enable();
+
+            if (AGSETTINGS.getMutualObserverEnabled()) {
+                jQuery('#timeline-view-show-mutual').setButtonState(true);   
+            } else {
+                jQuery('#timeline-view-show-mutual').setButtonState(false);   
+            }
             
+            if (_zoomFactor === 1) {
+                jQuery('#timline-zoom-out').disable();    
+            } else {
+                jQuery('#timline-zoom-out').enable();    
+            }
+        }
+    }   
+         
 	return {
 		startRender : function() {
 			_render = true;
             resize();
+            setupToolbar();
             animate();            
 		},
 

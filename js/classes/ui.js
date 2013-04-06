@@ -322,31 +322,35 @@ var AGUI = function() {
     }
     
     function updateSatelliteInfo(satellite) {
-        jQuery('#latitude').html(AGUTIL.convertDecDegLat(satellite.get('latitude')));
-        jQuery('#longitude').html(AGUTIL.convertDecDegLon(satellite.get('longitude')));
-        jQuery('#locator').html(satellite.get('locator'));
-        jQuery('#altitude').html(satellite.get('altitude').toFixed(3));
-        jQuery('#visible').html(satellite.get('visibility'));
-        jQuery('#orbitnumber').html(satellite.get('orbitnumber'));
-        jQuery('#velocity').html(satellite.get('velocity').toFixed(3));
-        jQuery('#range').html(satellite.get('range').toFixed(3));
-        jQuery('#doppler').html(satellite.get('dopplershift').toFixed(0));
-        jQuery('#loss').html(satellite.get('signalloss').toFixed(0));
-        jQuery('#delay').html(satellite.get('signaldelay').toFixed(0));
-        jQuery('#rangerate').html(satellite.get('rangerate').toFixed(3));
-        jQuery('#footprint').html(satellite.get('footprint').toFixed(3));
-        jQuery('#elevation').html(satellite.get('elevation').toFixed(3));
-        jQuery('#azimuth').html(satellite.get('azimuth').toFixed(3));      
-        jQuery('#orbitalphase').html(satellite.get('orbitalphase').toFixed(3));
-        if (satellite.isGeostationary()) {
-            if (satellite.get('elevation') > 0) {
-                jQuery('#geostationary').html('Yes - Visible');
+        try { // TODO: Fix dopploer error
+            jQuery('#latitude').html(AGUTIL.convertDecDegLat(satellite.get('latitude')));
+            jQuery('#longitude').html(AGUTIL.convertDecDegLon(satellite.get('longitude')));
+            jQuery('#locator').html(satellite.get('locator'));
+            jQuery('#altitude').html(satellite.get('altitude').toFixed(3));
+            jQuery('#visible').html(satellite.get('visibility'));
+            jQuery('#orbitnumber').html(satellite.get('orbitnumber'));
+            jQuery('#velocity').html(satellite.get('velocity').toFixed(3));
+            jQuery('#range').html(satellite.get('range').toFixed(3));
+            jQuery('#doppler').html(satellite.get('dopplershift').toFixed(0));
+            jQuery('#loss').html(satellite.get('signalloss').toFixed(0));
+            jQuery('#delay').html(satellite.get('signaldelay').toFixed(0));
+            jQuery('#rangerate').html(satellite.get('rangerate').toFixed(3));
+            jQuery('#footprint').html(satellite.get('footprint').toFixed(3));
+            jQuery('#elevation').html(satellite.get('elevation').toFixed(3));
+            jQuery('#azimuth').html(satellite.get('azimuth').toFixed(3));      
+            jQuery('#orbitalphase').html(satellite.get('orbitalphase').toFixed(3));
+            if (satellite.isGeostationary()) {
+                if (satellite.get('elevation') > 0) {
+                    jQuery('#geostationary').html('Yes - Visible');
+                } else {
+                    jQuery('#geostationary').html('Yes - Not Visible');
+                }
             } else {
-                jQuery('#geostationary').html('Yes - Not Visible');
-            }
-        } else {
-            jQuery('#geostationary').html('No');
-        }        
+                jQuery('#geostationary').html('No');
+            }   
+        } catch(err) {
+            
+        }     
     }
     
 /*    
