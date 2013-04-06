@@ -150,7 +150,7 @@ var AGUI = function() {
 	 */
 	jQuery('.satview').click(function() {
 		var newTab = jQuery(this).attr('data-options');
-		jQuery('#viewtabs').tabs('select', parseInt(newTab,10));
+		AGVIEWS.switchView(newTab);
 	});
 
     jQuery('.ribbon-tab-header').on('click', function(e){
@@ -160,15 +160,6 @@ var AGUI = function() {
         }
     });    
     
-                
-	/**
-	 * Bind to the 3D view menu options and fire and event to select the view.
-	 */
-	jQuery('.3dview').click(function(e) {
-		var view = jQuery(this).attr('data-options');
-		jQuery(document).trigger('agsattrack.change3dview', view);
-	});
-
 	/**
 	 * Bind to the tile provider options and fire an event when selected
 	 */
