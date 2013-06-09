@@ -418,17 +418,19 @@ var AG3DVIEW = function(element) {
         }
         
         observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
-        if (observer.isReady()) {
-            var target = ellipsoid
-                    .cartographicToCartesian(Cesium.Cartographic
-                            .fromDegrees(observer.getLon(), observer
-                                    .getLat()));
-            var eye = ellipsoid
-                    .cartographicToCartesian(Cesium.Cartographic
-                            .fromDegrees(observer.getLon(), observer
-                                    .getLat(), 1e7));
-            var up = new Cesium.Cartesian3(0, 0, 1);
-            scene.getCamera().controller.lookAt(eye, target, up);
+        if (typeof observer !== 'undefined') {
+            if (observer.isReady()) {
+                var target = ellipsoid
+                        .cartographicToCartesian(Cesium.Cartographic
+                                .fromDegrees(observer.getLon(), observer
+                                        .getLat()));
+                var eye = ellipsoid
+                        .cartographicToCartesian(Cesium.Cartographic
+                                .fromDegrees(observer.getLon(), observer
+                                        .getLat(), 1e7));
+                var up = new Cesium.Cartesian3(0, 0, 1);
+                scene.getCamera().controller.lookAt(eye, target, up);
+            }
         }
 
     }

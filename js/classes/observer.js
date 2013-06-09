@@ -51,8 +51,7 @@ var AGOBSERVER = function(index) {
                     _lon = 0;
                     _alt = 0;
                     _ready = true;                        
-                    jQuery(document).trigger('agsattrack.locationAvailable',that);
-     debugger;               
+                    jQuery(document).trigger('agsattrack.locationAvailable',that);            
                     var el = AGUTIL.getId();
                     jQuery('body').append('<div id="'+el+'" />');
                     jQuery('#'+el).dialog({  
