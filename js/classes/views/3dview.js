@@ -43,6 +43,7 @@ var AG3DVIEW = function(element) {
     var clock = null;
     var _follow = false;
     var _followFromObserver = false;
+    var _showview = false;
     var TILE_PROVIDERS = null;
     var _skyAtmosphere;
     var _skybox;
@@ -188,8 +189,18 @@ var AG3DVIEW = function(element) {
                 }
             });
                 
-    
-    
+
+    jQuery(document).bind('agsattrack.followsatelliteview',
+            function(e, follow) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _showview = follow;
+                    if (_render) {
+                        plotObservers();
+                        updateSatellites();
+                    }                    
+                }
+            });
+                
     jQuery(document).bind('agsattrack.followsatellite',
             function(e, follow) {
                 if (AGSETTINGS.getHaveWebGL()) {
@@ -705,18 +716,24 @@ var AG3DVIEW = function(element) {
 
         }
         
-        if (following !== null && (_follow || _followFromObserver)) {
+        if (following !== null && (_follow || _followFromObserver || _showview)) {
             var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
 
-            if (_followFromObserver) {
-                eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
-                target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), following.get('altitude')*1000));   
-                up = eye.normalize();                                
+            if (_showview) {
+                target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), 0));   
+                eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)));
+                up = eye.normalize();              
             } else {
-                target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));   
-                eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)+50));
-                up = eye.normalize();
-            }          
+                if (_followFromObserver) {
+                    eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
+                    target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), following.get('altitude')*1000));   
+                    up = eye.normalize();                                
+                } else {
+                    target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));   
+                    eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)+50));
+                    up = eye.normalize();
+                }
+            }
             scene.getCamera().controller.lookAt(eye, target, up);                                      
         }
                 
