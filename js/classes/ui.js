@@ -167,7 +167,12 @@ var AGUI = function() {
 		var provider = jQuery(this).attr('data-options');
 		jQuery(document).trigger('agsattrack.changetile', provider);
 	});
-        
+
+    jQuery('.3dview').click(function() {
+        var view = jQuery(this).attr('data-options');
+        jQuery(document).trigger('agsattrack.change3dview', view);
+    });
+            
     /**
     * Listen for a new set of TLE's being loaded. When they are reset stuff
     */

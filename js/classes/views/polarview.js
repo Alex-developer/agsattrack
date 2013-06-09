@@ -263,6 +263,7 @@ var AGPOLARVIEW = function(element) {
 		});
 		_backgroundLayer.add(_circle);
 
+        
         for (var i=0; i<90; i+=15) {
             radius = (0.5 + (_radius * (i/90))) | 0;
             _backgroundLayer.add(new Kinetic.Circle({
@@ -271,9 +272,9 @@ var AGPOLARVIEW = function(element) {
                 radius : radius,
                 stroke : '#' + _colours.grid,
                 strokeWidth : 1
-            }));    
+            }));  
         }
-        
+          
         /**
         * we only use single mode on the passes view so for now just reduce
         * the font size for this case.

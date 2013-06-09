@@ -22,7 +22,32 @@
  */
 
 /*global define*/
-define('Core/defaultValue',[],function() {
+define('Core/freezeObject',[],function() {
+    
+
+    /**
+     * Freezes an object, using Object.freeze if available, otherwise returns
+     * the object unchanged.  This function should be used in setup code to prevent
+     * errors from completely halting JavaScript execution in legacy browsers.
+     *
+     * @private
+     *
+     * @exports freezeObject
+     */
+    var freezeObject = Object.freeze;
+    if (typeof freezeObject === 'undefined') {
+        freezeObject = function(o) {
+            return o;
+        };
+    }
+
+    return freezeObject;
+});
+/*global define*/
+define('Core/defaultValue',[
+        './freezeObject'
+    ], function(
+        freezeObject) {
     
 
     /**
@@ -40,6 +65,12 @@ define('Core/defaultValue',[],function() {
         }
         return b;
     };
+
+    /**
+     * A frozen empty object that can be used as the default value for options passed as
+     * an object literal.
+     */
+    defaultValue.EMPTY_OBJECT = freezeObject({});
 
     return defaultValue;
 });
@@ -102,789 +133,6 @@ define('Core/DeveloperError',[],function() {
     };
 
     return DeveloperError;
-});
-
-/*global define*/
-define('Core/freezeObject',[],function() {
-    
-
-    /**
-     * Freezes an object, using Object.freeze if available, otherwise returns
-     * the object unchanged.  This function should be used in setup code to prevent
-     * errors from completely halting JavaScript execution in legacy browsers.
-     *
-     * @exports freezeObject
-     */
-    var freezeObject = Object.freeze;
-    if (typeof freezeObject === 'undefined') {
-        freezeObject = function(o) {
-            return o;
-        };
-    }
-
-    return freezeObject;
-});
-/*global define*/
-define('Core/Cartesian2',[
-        './defaultValue',
-        './DeveloperError',
-        './freezeObject'
-    ], function(
-        defaultValue,
-        DeveloperError,
-        freezeObject) {
-    
-
-    /**
-     * A 2D Cartesian point.
-     * @alias Cartesian2
-     * @constructor
-     *
-     * @param {Number} [x=0.0] The X component.
-     * @param {Number} [y=0.0] The Y component.
-     *
-     * @see Cartesian3
-     * @see Cartesian4
-     */
-    var Cartesian2 = function(x, y) {
-        /**
-         * The Y component.
-         * @type Number
-         */
-        this.x = defaultValue(x, 0.0);
-
-        /**
-         * The X component.
-         * @type Number
-         */
-        this.y = defaultValue(y, 0.0);
-    };
-
-    /**
-     * Duplicates a Cartesian2 instance.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian to duplicate.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.clone = function(cartesian, result) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-
-        if (typeof result === 'undefined') {
-            return new Cartesian2(cartesian.x, cartesian.y);
-        }
-
-        result.x = cartesian.x;
-        result.y = cartesian.y;
-        return result;
-    };
-
-    /**
-     * Creates a Cartesian2 instance from an existing Cartesian3.  This simply takes the
-     * x and y properties of the Cartesian3 and drops z.
-     * @memberof Cartesian2
-     * @function
-     *
-     * @param {Cartesian3} cartesian The Cartesian3 instance to create a Cartesian2 instance from.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.fromCartesian3 = Cartesian2.clone;
-
-    /**
-     * Creates a Cartesian2 instance from an existing Cartesian4.  This simply takes the
-     * x and y properties of the Cartesian4 and drops z and w.
-     * @function
-     *
-     * @param {Cartesian4} cartesian The Cartesian4 instance to create a Cartesian2 instance from.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.fromCartesian4 = Cartesian2.clone;
-
-    /**
-     * Computes the value of the maximum component for the supplied Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} The cartesian to use.
-     * @return {Number} The value of the maximum component.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.getMaximumComponent = function(cartesian) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-        return Math.max(cartesian.x, cartesian.y);
-    };
-
-    /**
-     * Computes the value of the minimum component for the supplied Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} The cartesian to use.
-     * @return {Number} The value of the minimum component.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.getMinimumComponent = function(cartesian) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-        return Math.min(cartesian.x, cartesian.y);
-    };
-
-    /**
-     * Computes the provided Cartesian's squared magnitude.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian instance whose squared magnitude is to be computed.
-     * @return {Number} The squared magnitude.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.magnitudeSquared = function(cartesian) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-        return cartesian.x * cartesian.x + cartesian.y * cartesian.y;
-    };
-
-    /**
-     * Computes the Cartesian's magnitude (length).
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian instance whose magnitude is to be computed.
-     * @return {Number} The magnitude.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.magnitude = function(cartesian) {
-        return Math.sqrt(Cartesian2.magnitudeSquared(cartesian));
-    };
-
-    /**
-     * Computes the normalized form of the supplied Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian to be normalized.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.normalize = function(cartesian, result) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-        var magnitude = Cartesian2.magnitude(cartesian);
-        if (typeof result === 'undefined') {
-            return new Cartesian2(cartesian.x / magnitude, cartesian.y / magnitude);
-        }
-        result.x = cartesian.x / magnitude;
-        result.y = cartesian.y / magnitude;
-        return result;
-    };
-
-    /**
-     * Computes the dot (scalar) product of two Cartesians.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} left The first Cartesian.
-     * @param {Cartesian2} right The second Cartesian.
-     * @return {Number} The dot product.
-     *
-     * @exception {DeveloperError} left is required.
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.dot = function(left, right) {
-        if (typeof left === 'undefined') {
-            throw new DeveloperError('left is required');
-        }
-        if (typeof right === 'undefined') {
-            throw new DeveloperError('right is required');
-        }
-        return left.x * right.x + left.y * right.y;
-    };
-
-    /**
-     * Computes the componentwise product of two Cartesians.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} left The first Cartesian.
-     * @param {Cartesian2} right The second Cartesian.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} left is required.
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.multiplyComponents = function(left, right, result) {
-        if (typeof left === 'undefined') {
-            throw new DeveloperError('left is required');
-        }
-        if (typeof right === 'undefined') {
-            throw new DeveloperError('right is required');
-        }
-        if (typeof result === 'undefined') {
-            return new Cartesian2(left.x * right.x, left.y * right.y);
-        }
-        result.x = left.x * right.x;
-        result.y = left.y * right.y;
-        return result;
-    };
-
-    /**
-     * Computes the componentwise sum of two Cartesians.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} left The first Cartesian.
-     * @param {Cartesian2} right The second Cartesian.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} left is required.
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.add = function(left, right, result) {
-        if (typeof left === 'undefined') {
-            throw new DeveloperError('left is required');
-        }
-        if (typeof right === 'undefined') {
-            throw new DeveloperError('right is required');
-        }
-        if (typeof result === 'undefined') {
-            return new Cartesian2(left.x + right.x, left.y + right.y);
-        }
-        result.x = left.x + right.x;
-        result.y = left.y + right.y;
-        return result;
-    };
-
-    /**
-     * Computes the componentwise difference of two Cartesians.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} left The first Cartesian.
-     * @param {Cartesian2} right The second Cartesian.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} left is required.
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.subtract = function(left, right, result) {
-        if (typeof left === 'undefined') {
-            throw new DeveloperError('left is required');
-        }
-        if (typeof right === 'undefined') {
-            throw new DeveloperError('right is required');
-        }
-        if (typeof result === 'undefined') {
-            return new Cartesian2(left.x - right.x, left.y - right.y);
-        }
-        result.x = left.x - right.x;
-        result.y = left.y - right.y;
-        return result;
-    };
-
-    /**
-     * Multiplies the provided Cartesian componentwise by the provided scalar.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian to be scaled.
-     * @param {Number} scalar The scalar to multiply with.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     * @exception {DeveloperError} scalar is required and must be a number.
-     */
-    Cartesian2.multiplyByScalar = function(cartesian, scalar, result) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-        if (typeof scalar !== 'number') {
-            throw new DeveloperError('scalar is required and must be a number.');
-        }
-        if (typeof result === 'undefined') {
-            return new Cartesian2(cartesian.x * scalar, cartesian.y * scalar);
-        }
-        result.x = cartesian.x * scalar;
-        result.y = cartesian.y * scalar;
-        return result;
-    };
-
-    /**
-     * Divides the provided Cartesian componentwise by the provided scalar.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian to be divided.
-     * @param {Number} scalar The scalar to divide by.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     * @exception {DeveloperError} scalar is required and must be a number.
-     */
-    Cartesian2.divideByScalar = function(cartesian, scalar, result) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-        if (typeof scalar !== 'number') {
-            throw new DeveloperError('scalar is required and must be a number.');
-        }
-        if (typeof result === 'undefined') {
-            return new Cartesian2(cartesian.x / scalar, cartesian.y / scalar);
-        }
-        result.x = cartesian.x / scalar;
-        result.y = cartesian.y / scalar;
-        return result;
-    };
-
-    /**
-     * Negates the provided Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian to be negated.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.negate = function(cartesian, result) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-        if (typeof result === 'undefined') {
-            return new Cartesian2(-cartesian.x, -cartesian.y);
-        }
-        result.x = -cartesian.x;
-        result.y = -cartesian.y;
-        return result;
-    };
-
-    /**
-     * Computes the absolute value of the provided Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian whose absolute value is to be computed.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.abs = function(cartesian, result) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
-        }
-        if (typeof result === 'undefined') {
-            return new Cartesian2(Math.abs(cartesian.x), Math.abs(cartesian.y));
-        }
-        result.x = Math.abs(cartesian.x);
-        result.y = Math.abs(cartesian.y);
-        return result;
-    };
-
-    var lerpScratch = new Cartesian2();
-    /**
-     * Computes the linear interpolation or extrapolation at t using the provided cartesians.
-     * @memberof Cartesian2
-     *
-     * @param start The value corresponding to t at 0.0.
-     * @param end The value corresponding to t at 1.0.
-     * @param t The point along t at which to interpolate.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} start is required.
-     * @exception {DeveloperError} end is required.
-     * @exception {DeveloperError} t is required and must be a number.
-     */
-    Cartesian2.lerp = function(start, end, t, result) {
-        if (typeof start === 'undefined') {
-            throw new DeveloperError('start is required.');
-        }
-        if (typeof end === 'undefined') {
-            throw new DeveloperError('end is required.');
-        }
-        if (typeof t !== 'number') {
-            throw new DeveloperError('t is required and must be a number.');
-        }
-        Cartesian2.multiplyByScalar(end, t, lerpScratch);
-        result = Cartesian2.multiplyByScalar(start, 1.0 - t, result);
-        return Cartesian2.add(lerpScratch, result, result);
-    };
-
-    var angleBetweenScratch = new Cartesian2();
-    var angleBetweenScratch2 = new Cartesian2();
-    /**
-     * Returns the angle, in radians, between the provided Cartesians.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} left The first Cartesian.
-     * @param {Cartesian2} right The second Cartesian.
-     * @return {Number} The angle between the Cartesians.
-     *
-     * @exception {DeveloperError} left is required.
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.angleBetween = function(left, right) {
-        if (typeof left === 'undefined') {
-            throw new DeveloperError('left is required');
-        }
-        if (typeof right === 'undefined') {
-            throw new DeveloperError('right is required');
-        }
-        Cartesian2.normalize(left, angleBetweenScratch);
-        Cartesian2.normalize(right, angleBetweenScratch2);
-        return Math.acos(Cartesian2.dot(angleBetweenScratch, angleBetweenScratch2));
-    };
-
-    var mostOrthogonalAxisScratch = new Cartesian2();
-    /**
-     * Returns the axis that is most orthogonal to the provided Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} cartesian The Cartesian on which to find the most orthogonal axis.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The most orthogonal axis.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Cartesian2.mostOrthogonalAxis = function(cartesian, result) {
-        if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required.');
-        }
-
-        var f = Cartesian2.normalize(cartesian, mostOrthogonalAxisScratch);
-        Cartesian2.abs(f, f);
-
-        if (f.x <= f.y) {
-            result = Cartesian2.clone(Cartesian2.UNIT_X, result);
-        } else {
-            result = Cartesian2.clone(Cartesian2.UNIT_Y, result);
-        }
-
-        return result;
-    };
-
-    /**
-     * Compares the provided Cartesians componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [left] The first Cartesian.
-     * @param {Cartesian2} [right] The second Cartesian.
-     * @return {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
-     */
-    Cartesian2.equals = function(left, right) {
-        return (left === right) ||
-               ((typeof left !== 'undefined') &&
-                (typeof right !== 'undefined') &&
-                (left.x === right.x) &&
-                (left.y === right.y));
-    };
-
-    /**
-     * Compares the provided Cartesians componentwise and returns
-     * <code>true</code> if they are within the provided epsilon,
-     * <code>false</code> otherwise.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [left] The first Cartesian.
-     * @param {Cartesian2} [right] The second Cartesian.
-     * @param {Number} epsilon The epsilon to use for equality testing.
-     * @return {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
-     *
-     * @exception {DeveloperError} epsilon is required and must be a number.
-     */
-    Cartesian2.equalsEpsilon = function(left, right, epsilon) {
-        if (typeof epsilon !== 'number') {
-            throw new DeveloperError('epsilon is required and must be a number.');
-        }
-        return (left === right) ||
-               ((typeof left !== 'undefined') &&
-                (typeof right !== 'undefined') &&
-                (Math.abs(left.x - right.x) <= epsilon) &&
-                (Math.abs(left.y - right.y) <= epsilon));
-    };
-
-    /**
-     * An immutable Cartesian2 instance initialized to (0.0, 0.0).
-     * @memberof Cartesian2
-     */
-    Cartesian2.ZERO = freezeObject(new Cartesian2(0.0, 0.0));
-
-    /**
-     * An immutable Cartesian2 instance initialized to (1.0, 0.0).
-     * @memberof Cartesian2
-     */
-    Cartesian2.UNIT_X = freezeObject(new Cartesian2(1.0, 0.0));
-
-    /**
-     * An immutable Cartesian2 instance initialized to (0.0, 1.0).
-     * @memberof Cartesian2
-     */
-    Cartesian2.UNIT_Y = freezeObject(new Cartesian2(0.0, 1.0));
-
-    /**
-     * Computes the value of the maximum component for this Cartesian.
-     * @memberof Cartesian2
-     *
-     * @return {Number} The value of the maximum component.
-     */
-    Cartesian2.prototype.getMaximumComponent = function() {
-        return Cartesian2.getMaximumComponent(this);
-    };
-
-    /**
-     * Computes the value of the minimum component for this Cartesian.
-     * @memberof Cartesian2
-     *
-     * @return {Number} The value of the minimum component.
-     */
-    Cartesian2.prototype.getMinimumComponent = function() {
-        return Cartesian2.getMinimumComponent(this);
-    };
-
-    /**
-     * Duplicates this Cartesian2 instance.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     */
-    Cartesian2.prototype.clone = function(result) {
-        return Cartesian2.clone(this, result);
-    };
-
-    /**
-     * Computes this Cartesian's squared magnitude.
-     * @memberof Cartesian2
-     *
-     * @return {Number} The squared magnitude.
-     */
-    Cartesian2.prototype.magnitudeSquared = function() {
-        return Cartesian2.magnitudeSquared(this);
-    };
-
-    /**
-     * Computes this Cartesian's magnitude (length).
-     * @memberof Cartesian2
-     *
-     * @return {Number} The magnitude.
-     */
-    Cartesian2.prototype.magnitude = function() {
-        return Cartesian2.magnitude(this);
-    };
-
-    /**
-     * Computes the normalized form of this Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     */
-    Cartesian2.prototype.normalize = function(result) {
-        return Cartesian2.normalize(this, result);
-    };
-
-    /**
-     * Computes the dot (scalar) product of this Cartesian and a supplied cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} right The right hand side Cartesian.
-     * @return {Number} The dot product.
-     *
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.prototype.dot = function(right) {
-        return Cartesian2.dot(this, right);
-    };
-
-    /**
-     * Computes the componentwise product of this Cartesian and the provided Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} right The right hand side Cartesian.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.prototype.multiplyComponents = function(right, result) {
-        return Cartesian2.multiplyComponents(this, right, result);
-    };
-
-    /**
-     * Computes the componentwise sum of this Cartesian and the provided Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} right The right hand side Cartesian.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.prototype.add = function(right, result) {
-        return Cartesian2.add(this, right, result);
-    };
-
-    /**
-     * Computes the componentwise difference of this Cartesian and the provided Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} right The right hand side Cartesian.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.prototype.subtract = function(right, result) {
-        return Cartesian2.subtract(this, right, result);
-    };
-
-    /**
-     * Multiplies this Cartesian componentwise by the provided scalar.
-     * @memberof Cartesian2
-     *
-     * @param {Number} scalar The scalar to multiply with.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} scalar is required and must be a number.
-     */
-    Cartesian2.prototype.multiplyByScalar = function(scalar, result) {
-        return Cartesian2.multiplyByScalar(this, scalar, result);
-    };
-
-    /**
-     * Divides this Cartesian componentwise by the provided scalar.
-     * @memberof Cartesian2
-     *
-     * @param {Number} scalar The scalar to divide by.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} scalar is required and must be a number.
-     */
-    Cartesian2.prototype.divideByScalar = function(scalar, result) {
-        return Cartesian2.divideByScalar(this, scalar, result);
-    };
-
-    /**
-     * Negates this Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     */
-    Cartesian2.prototype.negate = function(result) {
-        return Cartesian2.negate(this, result);
-    };
-
-    /**
-     * Computes the absolute value of this Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     */
-    Cartesian2.prototype.abs = function(result) {
-        return Cartesian2.abs(this, result);
-    };
-
-    /**
-     * Computes the linear interpolation or extrapolation at t using this Cartesian
-     * and the provided cartesian.  This cartesian is assumed to be t at 0.0.
-     * @memberof Cartesian2
-     *
-     * @param end The value corresponding to t at 1.0.
-     * @param t The point along t at which to interpolate.
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
-     *
-     * @exception {DeveloperError} end is required.
-     * @exception {DeveloperError} t is required and must be a number.
-     */
-    Cartesian2.prototype.lerp = function(end, t, result) {
-        return Cartesian2.lerp(this, end, t, result);
-    };
-
-    /**
-     * Returns the angle, in radians, between this Cartesian and the provided Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} right The right hand side Cartesian.
-     * @return {Number} The angle between the Cartesians.
-     *
-     * @exception {DeveloperError} left is required.
-     * @exception {DeveloperError} right is required.
-     */
-    Cartesian2.prototype.angleBetween = function(right) {
-        return Cartesian2.angleBetween(this, right);
-    };
-
-    /**
-     * Returns the axis that is most orthogonal to the this Cartesian.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [result] The object onto which to store the result.
-     * @return {Cartesian2} The most orthogonal axis.
-     */
-    Cartesian2.prototype.mostOrthogonalAxis = function(result) {
-        return Cartesian2.mostOrthogonalAxis(this, result);
-    };
-
-    /**
-     * Compares this Cartesian against the provided Cartesian componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [right] The right hand side Cartesian.
-     * @return {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
-     */
-    Cartesian2.prototype.equals = function(right) {
-        return Cartesian2.equals(this, right);
-    };
-
-    /**
-     * Compares this Cartesian against the provided Cartesian componentwise and returns
-     * <code>true</code> if they are within the provided epsilon,
-     * <code>false</code> otherwise.
-     * @memberof Cartesian2
-     *
-     * @param {Cartesian2} [right] The right hand side Cartesian.
-     * @param {Number} epsilon The epsilon to use for equality testing.
-     * @return {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
-     *
-     * @exception {DeveloperError} epsilon is required and must be a number.
-     */
-    Cartesian2.prototype.equalsEpsilon = function(right, epsilon) {
-        return Cartesian2.equalsEpsilon(this, right, epsilon);
-    };
-
-    /**
-     * Creates a string representing this Cartesian in the format '(x, y)'.
-     * @memberof Cartesian2
-     *
-     * @return {String} A string representing the provided Cartesian in the format '(x, y)'.
-     */
-    Cartesian2.prototype.toString = function() {
-        return '(' + this.x + ', ' + this.y + ')';
-    };
-
-    return Cartesian2;
 });
 
 /*global define*/
@@ -954,6 +202,70 @@ define('Core/Cartesian3',[
         result.x = radial * Math.cos(clock);
         result.y = radial * Math.sin(clock);
         result.z = magnitude * Math.cos(cone);
+        return result;
+    };
+
+    /**
+     * Creates a Cartesian3 from three consecutive elements in an array.
+     * @memberof Cartesian3
+     *
+     * @param {Array} values The array whose three consecutive elements correspond to the x, y, and z components, respectively.
+     * @param {Number} [offset=0] The offset into the array of the first element, which corresponds to the x component.
+     * @param {Cartesian3} [result] The object onto which to store the result.
+     *
+     * @return {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
+     *
+     * @exception {DeveloperError} values is required.
+     * @exception {DeveloperError} offset + 3 is greater than the length of the array.
+     *
+     * @example
+     * // Create a Cartesian3 with (1.0, 2.0, 3.0)
+     * var v = [1.0, 2.0, 3.0];
+     * var p = Cartesian3.fromArray(v);
+     *
+     * // Create a Cartesian3 with (1.0, 2.0, 3.0) using an offset into an array
+     * var v2 = [0.0, 0.0, 1.0, 2.0, 3.0];
+     * var p2 = Cartesian3.fromArray(v2, 2);
+     */
+    Cartesian3.fromArray = function(values, offset, result) {
+        if (typeof values === 'undefined') {
+            throw new DeveloperError('values is required.');
+        }
+
+        if (offset + 3 > values.length) {
+            throw new DeveloperError('offset + 3 is greater than the length of the array.');
+        }
+
+        offset = defaultValue(offset, 0);
+
+        if (typeof result === 'undefined') {
+            result = new Cartesian3();
+        }
+
+        result.x = values[offset + 0];
+        result.y = values[offset + 1];
+        result.z = values[offset + 2];
+        return result;
+    };
+
+    /**
+     * Creates a Cartesian3 instance from x, y and z coordinates.
+     * @memberof Cartesian3
+     *
+     * @param {Number} x The x coordinate.
+     * @param {Number} y The y coordinate.
+     * @param {Number} z The z coordinate.
+     * @param {Cartesian3} [result] The object onto which to store the result.
+     * @return {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
+     */
+    Cartesian3.fromElements = function(x, y, z, result) {
+        if (typeof result === 'undefined') {
+            return new Cartesian3(x, y, z);
+        }
+
+        result.x = x;
+        result.y = y;
+        result.z = z;
         return result;
     };
 
@@ -1054,6 +366,32 @@ define('Core/Cartesian3',[
      */
     Cartesian3.magnitude = function(cartesian) {
         return Math.sqrt(Cartesian3.magnitudeSquared(cartesian));
+    };
+
+    var distanceScratch = new Cartesian3();
+
+    /**
+     * Computes the distance between two points
+     * @memberof Cartesian3
+     *
+     * @param {Cartesian3} left The first point to compute the distance from.
+     * @param {Cartesian3} right The second point to compute the distance to.
+     *
+     * @return {Number} The distance between two points.
+     *
+     * @exception {DeveloperError} left and right are required.
+     *
+     * @example
+     * // Returns 1.0
+     * var d = Cartesian3.distance(new Cartesian3(1.0, 0.0, 0.0), new Cartesian3(2.0, 0.0, 0.0));
+     */
+    Cartesian3.distance = function(left, right) {
+        if ((typeof left === 'undefined') || (typeof right === 'undefined')) {
+            throw new DeveloperError('left and right are required.');
+        }
+
+        Cartesian3.subtract(left, right, distanceScratch);
+        return Cartesian3.magnitude(distanceScratch);
     };
 
     /**
@@ -1429,7 +767,8 @@ define('Core/Cartesian3',[
      *
      * @param {Cartesian3} left The first Cartesian.
      * @param {Cartesian3} right The second Cartesian.
-     * @return {Number} The cross product.
+     * @param {Cartesian3} [result] The object onto which to store the result.
+     * @return {Cartesian3} The cross product.
      *
      * @exception {DeveloperError} left is required.
      * @exception {DeveloperError} right is required.
@@ -1738,7 +1077,8 @@ define('Core/Cartesian3',[
      * @memberof Cartesian3
      *
      * @param {Cartesian3} right The right hand side Cartesian.
-     * @return {Number} The cross product.
+     * @param {Cartesian3} [result] The object onto which to store the result.
+     * @return {Cartesian3} The cross product.
      *
      * @exception {DeveloperError} right is required.
      */
@@ -1797,6 +1137,73 @@ define('Core/Cartesian4',[
          * @type Number
          */
         this.w = defaultValue(w, 0.0);
+    };
+
+    /**
+     * Creates a Cartesian4 from four consecutive elements in an array.
+     * @memberof Cartesian4
+     *
+     * @param {Array} values The array whose four consecutive elements correspond to the x, y, z, and w components, respectively.
+     * @param {Number} [offset=0] The offset into the array of the first element, which corresponds to the x component.
+     * @param {Cartesian4} [result] The object onto which to store the result.
+     *
+     * @return {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
+     *
+     * @exception {DeveloperError} values is required.
+     * @exception {DeveloperError} offset + 4 is greater than the length of the array.
+     *
+     * @example
+     * // Create a Cartesian4 with (1.0, 2.0, 3.0, 4.0)
+     * var v = [1.0, 2.0, 3.0, 4.0];
+     * var p = Cartesian4.fromArray(v);
+     *
+     * // Create a Cartesian4 with (1.0, 2.0, 3.0, 4.0) using an offset into an array
+     * var v2 = [0.0, 0.0, 1.0, 2.0, 3.0, 4.0];
+     * var p2 = Cartesian4.fromArray(v2, 2);
+     */
+    Cartesian4.fromArray = function(values, offset, result) {
+        if (typeof values === 'undefined') {
+            throw new DeveloperError('values is required.');
+        }
+
+        if (offset + 4 > values.length) {
+            throw new DeveloperError('offset + 4 is greater than the length of the array.');
+        }
+
+        offset = defaultValue(offset, 0);
+
+        if (typeof result === 'undefined') {
+            result = new Cartesian4();
+        }
+
+        result.x = values[offset + 0];
+        result.y = values[offset + 1];
+        result.z = values[offset + 2];
+        result.w = values[offset + 3];
+        return result;
+    };
+
+    /**
+     * Creates a Cartesian4 instance from x, y, z and w coordinates.
+     * @memberof Cartesian4
+     *
+     * @param {Number} x The x coordinate.
+     * @param {Number} y The y coordinate.
+     * @param {Number} z The z coordinate.
+     * @param {Number} w The w coordinate.
+     * @param {Cartesian4} [result] The object onto which to store the result.
+     * @return {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
+     */
+    Cartesian4.fromElements = function(x, y, z, w, result) {
+        if (typeof result === 'undefined') {
+            return new Cartesian4(x, y, z, w);
+        }
+
+        result.x = x;
+        result.y = y;
+        result.z = z;
+        result.w = w;
+        return result;
     };
 
     /**
@@ -1884,6 +1291,32 @@ define('Core/Cartesian4',[
      */
     Cartesian4.magnitude = function(cartesian) {
         return Math.sqrt(Cartesian4.magnitudeSquared(cartesian));
+    };
+
+    var distanceScratch = new Cartesian4();
+
+    /**
+     * Computes the 4-space distance between two points
+     * @memberof Cartesian4
+     *
+     * @param {Cartesian4} left The first point to compute the distance from.
+     * @param {Cartesian4} right The second point to compute the distance to.
+     *
+     * @return {Number} The distance between two points.
+     *
+     * @exception {DeveloperError} left and right are required.
+     *
+     * @example
+     * // Returns 1.0
+     * var d = Cartesian4.distance(new Cartesian4(1.0, 0.0, 0.0, 0.0), new Cartesian4(2.0, 0.0, 0.0, 0.0));
+     */
+    Cartesian4.distance = function(left, right) {
+        if ((typeof left === 'undefined') || (typeof right === 'undefined')) {
+            throw new DeveloperError('left and right are required.');
+        }
+
+        Cartesian4.subtract(left, right, distanceScratch);
+        return Cartesian4.magnitude(distanceScratch);
     };
 
     /**
@@ -2675,6 +2108,13 @@ define('Core/Math',[
     CesiumMath.GRAVITATIONALPARAMETER = 3.986004418e14;
 
     /**
+     * Radius of the sun in meters: 6.995e8
+     * @constant
+     * @type Number
+     */
+    CesiumMath.SOLAR_RADIUS = 6.995e8;
+
+    /**
      * Returns the sign of the value; 1 if the value is positive, -1 if the value is
      * negative, or 0 if the value is 0.
      *
@@ -2911,7 +2351,7 @@ define('Core/Math',[
     };
 
     /**
-     * Alters the value of input x such that <code>-CesiumMath.PI</code> <= x <= <code>CesiumMath.PI</code>
+     * Produces an angle in the range 0 <= angle <= 2Pi which is equivalent to the provided angle.
      * @param {Number} angle in radians
      * @return {Number} The angle in the range ()<code>-CesiumMath.PI</code>, <code>CesiumMath.PI</code>).
      */
@@ -2932,10 +2372,22 @@ define('Core/Math',[
     };
 
     /**
+     * Produces an angle in the range -Pi <= angle <= Pi which is equivalent to the provided angle.
+     * @param {Number} angle in radians
+     * @return {Number} The angle in the range (0 , <code>CesiumMath.TWO_PI</code>).
+     */
+    CesiumMath.zeroToTwoPi = function(x) {
+        var value = x % CesiumMath.TWO_PI;
+        // We do a second modules here if we add 2Pi to ensure that we don't have any numerical issues with very
+        // small negative values.
+        return (value < 0.0) ? (value + CesiumMath.TWO_PI) % CesiumMath.TWO_PI : value;
+    };
+
+    /**
      * DOC_TBA
      */
     CesiumMath.equalsEpsilon = function(left, right, epsilon) {
-        epsilon = epsilon || 0.0;
+        epsilon = defaultValue(epsilon, 0.0);
         return Math.abs(left - right) <= epsilon;
     };
 
@@ -3024,7 +2476,7 @@ define('Core/Math',[
             throw new DeveloperError('A number greater than or equal to 0 is required.');
         }
 
-        var m = n | 0;
+        var m = defaultValue(n, 0);
         return (m !== 0) && ((m & (m - 1)) === 0);
     };
 
@@ -3932,405 +3384,6 @@ define('Core/GeographicProjection',[
     };
 
     return GeographicProjection;
-});
-
-/*global define*/
-define('Core/Extent',[
-        './freezeObject',
-        './defaultValue',
-        './Ellipsoid',
-        './Cartographic',
-        './DeveloperError',
-        './Math'
-    ], function(
-        freezeObject,
-        defaultValue,
-        Ellipsoid,
-        Cartographic,
-        DeveloperError,
-        CesiumMath) {
-    
-
-    /**
-     * A two dimensional region specified as longitude and latitude coordinates.
-     * @alias Extent
-     * @constructor
-     *
-     * @param {Number} [west=0.0] The westernmost longitude in the range [-Pi, Pi].
-     * @param {Number} [south=0.0] The southernmost latitude in the range [-Pi/2, Pi/2].
-     * @param {Number} [east=0.0] The easternmost longitude in the range [-Pi, Pi].
-     * @param {Number} [north=0.0] The northernmost latitude in the range [-Pi/2, Pi/2].
-     */
-    var Extent = function(west, south, east, north) {
-        /**
-         * The westernmost longitude in the range [-Pi, Pi].
-         * @type Number
-         */
-        this.west = defaultValue(west, 0.0);
-
-        /**
-         * The southernmost latitude in the range [-Pi/2, Pi/2].
-         * @type Number
-         */
-        this.south = defaultValue(south, 0.0);
-
-        /**
-         * The easternmost longitude in the range [-Pi, Pi].
-         * @type Number
-         */
-        this.east = defaultValue(east, 0.0);
-
-        /**
-         * The northernmost latitude in the range [-Pi/2, Pi/2].
-         * @type Number
-         */
-        this.north = defaultValue(north, 0.0);
-    };
-
-    /**
-     * Duplicates an Extent.
-     *
-     * @memberof Extent
-     *
-     * @param {Extent} extent The extent to clone.
-     * @param {Extent} [result] The object onto which to store the result, or undefined if a new instance should be created.
-     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
-     */
-    Extent.clone = function(extent, result) {
-        if (typeof result === 'undefined') {
-            return new Extent(extent.west, extent.south, extent.east, extent.north);
-        }
-        result.west = extent.west;
-        result.south = extent.south;
-        result.east = extent.east;
-        result.north = extent.north;
-        return result;
-    };
-
-    /**
-     * Duplicates this Extent.
-     *
-     * @memberof Extent
-     *
-     * @param {Extent} [result] The object onto which to store the result.
-     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
-     */
-    Extent.prototype.clone = function(result) {
-        return Extent.clone(this, result);
-    };
-
-    /**
-     * Compares the provided Extent with this Extent componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     * @memberof Extent
-     *
-     * @param {Extent} [other] The Extent to compare.
-     * @return {Boolean} <code>true</code> if the Extents are equal, <code>false</code> otherwise.
-     */
-    Extent.prototype.equals = function(other) {
-        return typeof other !== 'undefined' &&
-               this.west === other.west &&
-               this.south === other.south &&
-               this.east === other.east &&
-               this.north === other.north;
-    };
-
-    /**
-     * Compares the provided Extent with this Extent componentwise and returns
-     * <code>true</code> if they are within the provided epsilon,
-     * <code>false</code> otherwise.
-     * @memberof Extent
-     *
-     * @param {Extent} [other] The Extent to compare.
-     * @param {Number} epsilon The epsilon to use for equality testing.
-     * @return {Boolean} <code>true</code> if the Extents are within the provided epsilon, <code>false</code> otherwise.
-     *
-     * @exception {DeveloperError} epsilon is required and must be a number.
-     */
-    Extent.prototype.equalsEpsilon = function(other, epsilon) {
-        if (typeof epsilon !== 'number') {
-            throw new DeveloperError('epsilon is required and must be a number.');
-        }
-
-        return typeof other !== 'undefined' &&
-               (Math.abs(this.west - other.west) <= epsilon) &&
-               (Math.abs(this.south - other.south) <= epsilon) &&
-               (Math.abs(this.east - other.east) <= epsilon) &&
-               (Math.abs(this.north - other.north) <= epsilon);
-    };
-
-    /**
-     * Checks this Extent's properties and throws if they are not in valid ranges.
-     *
-     * @exception {DeveloperError} <code>north</code> is required to be a number.
-     * @exception {DeveloperError} <code>south</code> is required to be a number.
-     * @exception {DeveloperError} <code>east</code> is required to be a number.
-     * @exception {DeveloperError} <code>west</code> is required to be a number.
-     * @exception {DeveloperError} <code>north</code> must be in the interval [<code>-Pi/2</code>, <code>Pi/2</code>].
-     * @exception {DeveloperError} <code>south</code> must be in the interval [<code>-Pi/2</code>, <code>Pi/2</code>].
-     * @exception {DeveloperError} <code>east</code> must be in the interval [<code>-Pi</code>, <code>Pi</code>].
-     * @exception {DeveloperError} <code>west</code> must be in the interval [<code>-Pi</code>, <code>Pi</code>].
-     */
-    Extent.prototype.validate = function() {
-        var north = this.north;
-        if (typeof north !== 'number') {
-            throw new DeveloperError('north is required to be a number.');
-        }
-
-        if (north < -CesiumMath.PI_OVER_TWO || north > CesiumMath.PI_OVER_TWO) {
-            throw new DeveloperError('north must be in the interval [-Pi/2, Pi/2].');
-        }
-
-        var south = this.south;
-        if (typeof south !== 'number') {
-            throw new DeveloperError('south is required to be a number.');
-        }
-
-        if (south < -CesiumMath.PI_OVER_TWO || south > CesiumMath.PI_OVER_TWO) {
-            throw new DeveloperError('south must be in the interval [-Pi/2, Pi/2].');
-        }
-
-        var west = this.west;
-        if (typeof west !== 'number') {
-            throw new DeveloperError('west is required to be a number.');
-        }
-
-        if (west < -Math.PI || west > Math.PI) {
-            throw new DeveloperError('west must be in the interval [-Pi, Pi].');
-        }
-
-        var east = this.east;
-        if (typeof east !== 'number') {
-            throw new DeveloperError('east is required to be a number.');
-        }
-
-        if (east < -Math.PI || east > Math.PI) {
-            throw new DeveloperError('east must be in the interval [-Pi, Pi].');
-        }
-    };
-
-    /**
-     * Computes the southwest corner of this extent.
-     * @memberof Extent
-     *
-     * @param {Cartographic} [result] The object onto which to store the result.
-     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
-     */
-    Extent.prototype.getSouthwest = function(result) {
-        if (typeof result === 'undefined') {
-            return new Cartographic(this.west, this.south);
-        }
-        result.longitude = this.west;
-        result.latitude = this.south;
-        result.height = 0.0;
-        return result;
-    };
-
-    /**
-     * Computes the northwest corner of this extent.
-     * @memberof Extent
-     *
-     * @param {Cartographic} [result] The object onto which to store the result.
-     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
-     */
-    Extent.prototype.getNorthwest = function(result) {
-        if (typeof result === 'undefined') {
-            return new Cartographic(this.west, this.north);
-        }
-        result.longitude = this.west;
-        result.latitude = this.north;
-        result.height = 0.0;
-        return result;
-    };
-
-    /**
-     * Computes the northeast corner of this extent.
-     * @memberof Extent
-     *
-     * @param {Cartographic} [result] The object onto which to store the result.
-     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
-     */
-    Extent.prototype.getNortheast = function(result) {
-        if (typeof result === 'undefined') {
-            return new Cartographic(this.east, this.north);
-        }
-        result.longitude = this.east;
-        result.latitude = this.north;
-        result.height = 0.0;
-        return result;
-    };
-
-    /**
-     * Computes the southeast corner of this extent.
-     * @memberof Extent
-     *
-     * @param {Cartographic} [result] The object onto which to store the result.
-     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
-     */
-    Extent.prototype.getSoutheast = function(result) {
-        if (typeof result === 'undefined') {
-            return new Cartographic(this.east, this.south);
-        }
-        result.longitude = this.east;
-        result.latitude = this.south;
-        result.height = 0.0;
-        return result;
-    };
-
-    /**
-     * Computes the center of this extent.
-     * @memberof Extent
-     *
-     * @param {Cartographic} [result] The object onto which to store the result.
-     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
-     */
-    Extent.prototype.getCenter = function(result) {
-        if (typeof result === 'undefined') {
-            return new Cartographic((this.west + this.east) * 0.5, (this.south + this.north) * 0.5);
-        }
-        result.longitude = (this.west + this.east) * 0.5;
-        result.latitude = (this.south + this.north) * 0.5;
-        result.height = 0.0;
-        return result;
-    };
-
-    /**
-     * Computes the intersection of this extent with the provided extent.
-     * @memberof Extent
-     *
-     * @param otherExtent The extent to intersect with this extent.
-     * @param {Extent} [result] The object onto which to store the result.
-     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
-     *
-     * @exception {DeveloperError} otherExtent is required.
-     */
-    Extent.prototype.intersectWith = function(otherExtent, result) {
-        if (typeof otherExtent === 'undefined') {
-            throw new DeveloperError('otherExtent is required.');
-        }
-        var west = Math.max(this.west, otherExtent.west);
-        var south = Math.max(this.south, otherExtent.south);
-        var east = Math.min(this.east, otherExtent.east);
-        var north = Math.min(this.north, otherExtent.north);
-        if (typeof result === 'undefined') {
-            return new Extent(west, south, east, north);
-        }
-        result.west = west;
-        result.south = south;
-        result.east = east;
-        result.north = north;
-        return result;
-    };
-
-    /**
-     * Returns true if the provided cartographic is on or inside the extent, false otherwise.
-     * @memberof Extent
-     *
-     * @param {Cartographic} cartographic The cartographic to test.
-     * @returns {Boolean} true if the provided cartographic is inside the extent, false otherwise.
-     *
-     * @exception {DeveloperError} cartographic is required.
-     */
-    Extent.prototype.contains = function(cartographic) {
-        if (typeof cartographic === 'undefined') {
-            throw new DeveloperError('cartographic is required.');
-        }
-        return cartographic.longitude >= this.west &&
-               cartographic.longitude <= this.east &&
-               cartographic.latitude >= this.south &&
-               cartographic.latitude <= this.north;
-    };
-
-    /**
-     * Determines if the extent is empty, i.e., if <code>west >= east</code>
-     * or <code>south >= north</code>.
-     *
-     * @memberof Extent
-     *
-     * @return {Boolean} True if the extent is empty; otherwise, false.
-     */
-    Extent.prototype.isEmpty = function() {
-        return this.west >= this.east || this.south >= this.north;
-    };
-
-    var subsampleLlaScratch = new Cartographic();
-    /**
-     * Samples this Extent so that it includes a list of Cartesian points suitable for passing to
-     * {@link BoundingSphere#fromPoints}.  Sampling is necessary to account
-     * for extents that cover the poles or cross the equator.
-     *
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid to use.
-     * @param {Array} [result] The array of Cartesians onto which to store the result.
-     * @return {Array} The modified result parameter or a new Array of Cartesians instances if none was provided.
-     */
-    Extent.prototype.subsample = function(ellipsoid, result) {
-        ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-
-        if (typeof result === 'undefined') {
-            result = [];
-        }
-        var length = 0;
-
-        var north = this.north;
-        var south = this.south;
-        var east = this.east;
-        var west = this.west;
-
-        var lla = subsampleLlaScratch;
-        lla.longitude = west;
-        lla.latitude = north;
-        result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
-        length++;
-
-        lla.longitude = east;
-        result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
-        length++;
-
-        lla.latitude = south;
-        result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
-        length++;
-
-        lla.longitude = west;
-        result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
-        length++;
-
-        if (north < 0.0) {
-            lla.latitude = north;
-        } else if (south > 0.0) {
-            lla.latitude = south;
-        } else {
-            lla.latitude = 0.0;
-        }
-
-        for ( var i = 1; i < 8; ++i) {
-            var temp = -Math.PI + i * CesiumMath.PI_OVER_TWO;
-            if (west < temp && temp < east) {
-                lla.longitude = temp;
-                result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
-                length++;
-            }
-        }
-
-        if (lla.latitude === 0.0) {
-            lla.longitude = west;
-            result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
-            length++;
-            lla.longitude = east;
-            result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
-            length++;
-        }
-        result.length = length;
-        return result;
-    };
-
-    /**
-     * The largest possible extent.
-     * @memberof Extent
-     * @type Extent
-    */
-    Extent.MAX_VALUE = freezeObject(new Extent(-Math.PI, -CesiumMath.PI_OVER_TWO, Math.PI, CesiumMath.PI_OVER_TWO));
-
-    return Extent;
 });
 
 /*global define*/
@@ -6344,7 +5397,6 @@ define('Core/Matrix4',[
         return result;
     };
 
-    var EMPTY_OBJECT = {};
     /**
      * Computes a Matrix4 instance that transforms from normalized device coordinates to window coordinates.
      * @memberof Matrix4
@@ -6371,7 +5423,7 @@ define('Core/Matrix4',[
      * var m = Matrix4.computeViewportTransformation(context.getViewport());
      */
     Matrix4.computeViewportTransformation = function(viewport, nearDepthRange, farDepthRange, result) {
-        viewport = defaultValue(viewport, EMPTY_OBJECT);
+        viewport = defaultValue(viewport, defaultValue.EMPTY_OBJECT);
         var x = defaultValue(viewport.x, 0.0);
         var y = defaultValue(viewport.y, 0.0);
         var width = defaultValue(viewport.width, 0.0);
@@ -6426,6 +5478,18 @@ define('Core/Matrix4',[
      * @return {Array} The modified Array parameter or a new Array instance if one was not provided.
      *
      * @exception {DeveloperError} matrix is required.
+     *
+     * @example
+     * //create an array from an instance of Matrix4
+     * // m = [10.0, 14.0, 18.0, 22.0]
+     * //     [11.0, 15.0, 19.0, 23.0]
+     * //     [12.0, 16.0, 20.0, 24.0]
+     * //     [13.0, 17.0, 21.0, 25.0]
+     * var a = Matrix4.toArray(m);
+     *
+     * // m remains the same
+     * //creates a = [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0]
+     *
      */
     Matrix4.toArray = function(matrix, result) {
         if (typeof matrix === 'undefined') {
@@ -6496,6 +5560,23 @@ define('Core/Matrix4',[
      * @exception {DeveloperError} index is required and must be 0, 1, 2, or 3.
      *
      * @see Cartesian4
+     *
+     * @example
+     * //returns a Cartesian4 instance with values from the specified column
+     * // m = [10.0, 11.0, 12.0, 13.0]
+     * //     [14.0, 15.0, 16.0, 17.0]
+     * //     [18.0, 19.0, 20.0, 21.0]
+     * //     [22.0, 23.0, 24.0, 25.0]
+     *
+     * //Example 1: Creates an instance of Cartesian
+     * var a = Matrix4.getColumn(m, 2);
+     *
+     * //Example 2: Sets values for Cartesian instance
+     * var a = new Cartesian4();
+     * Matrix4.getColumn(m, 2, a);
+     *
+     * // a.x = 12.0; a.y = 16.0; a.z = 20.0; a.w = 24.0;
+     *
      */
     Matrix4.getColumn = function(matrix, index, result) {
         if (typeof matrix === 'undefined') {
@@ -6537,6 +5618,22 @@ define('Core/Matrix4',[
      * @exception {DeveloperError} index is required and must be 0, 1, 2, or 3.
      *
      * @see Cartesian4
+     *
+     * @example
+     * //creates a new Matrix4 instance with new column values from the Cartesian4 instance
+     * // m = [10.0, 11.0, 12.0, 13.0]
+     * //     [14.0, 15.0, 16.0, 17.0]
+     * //     [18.0, 19.0, 20.0, 21.0]
+     * //     [22.0, 23.0, 24.0, 25.0]
+     *
+     * var a = Matrix4.setColumn(m, 2, new Cartesian4(99.0, 98.0, 97.0, 96.0));
+     *
+     * // m remains the same
+     * // a = [10.0, 11.0, 99.0, 13.0]
+     * //     [14.0, 15.0, 98.0, 17.0]
+     * //     [18.0, 19.0, 97.0, 21.0]
+     * //     [22.0, 23.0, 96.0, 25.0]
+     *
      */
     Matrix4.setColumn = function(matrix, index, cartesian, result) {
         if (typeof matrix === 'undefined') {
@@ -6570,6 +5667,22 @@ define('Core/Matrix4',[
      * @exception {DeveloperError} index is required and must be 0, 1, 2, or 3.
      *
      * @see Cartesian4
+     *
+     * @example
+     * //returns a Cartesian4 instance with values from the specified column
+     * // m = [10.0, 11.0, 12.0, 13.0]
+     * //     [14.0, 15.0, 16.0, 17.0]
+     * //     [18.0, 19.0, 20.0, 21.0]
+     * //     [22.0, 23.0, 24.0, 25.0]
+     *
+     * //Example 1: Returns an instance of Cartesian
+     * var a = Matrix4.getRow(m, 2);
+     *
+     * //Example 1: Sets values for a Cartesian instance
+     * var a = new Cartesian4();
+     * Matrix4.getRow(m, 2, a);
+     *
+     * // a.x = 18.0; a.y = 19.0; a.z = 20.0; a.w = 21.0;
      */
     Matrix4.getRow = function(matrix, index, result) {
         if (typeof matrix === 'undefined') {
@@ -6610,6 +5723,22 @@ define('Core/Matrix4',[
      * @exception {DeveloperError} index is required and must be 0, 1, 2, or 3.
      *
      * @see Cartesian4
+     *
+     * @example
+     * //create a new Matrix4 instance with new row values from the Cartesian4 instance
+     * // m = [10.0, 11.0, 12.0, 13.0]
+     * //     [14.0, 15.0, 16.0, 17.0]
+     * //     [18.0, 19.0, 20.0, 21.0]
+     * //     [22.0, 23.0, 24.0, 25.0]
+     *
+     * var a = Matrix4.setRow(m, 2, new Cartesian4(99.0, 98.0, 97.0, 96.0));
+     *
+     * // m remains the same
+     * // a = [10.0, 11.0, 12.0, 13.0]
+     * //     [14.0, 15.0, 16.0, 17.0]
+     * //     [99.0, 98.0, 97.0, 96.0]
+     * //     [22.0, 23.0, 24.0, 25.0]
+     *
      */
     Matrix4.setRow = function(matrix, index, cartesian, result) {
         if (typeof matrix === 'undefined') {
@@ -6940,6 +6069,22 @@ define('Core/Matrix4',[
      *
      * @exception {DeveloperError} matrix is required.
      * @exception {DeveloperError} scalar is required and must be a number.
+     *
+     * @example
+     * //create a Matrix4 instance which is a scaled version of the supplied Matrix4
+     * // m = [10.0, 11.0, 12.0, 13.0]
+     * //     [14.0, 15.0, 16.0, 17.0]
+     * //     [18.0, 19.0, 20.0, 21.0]
+     * //     [22.0, 23.0, 24.0, 25.0]
+     *
+     * var a = Matrix4.multiplyByScalar(m, -2);
+     *
+     * // m remains the same
+     * // a = [-20.0, -22.0, -24.0, -26.0]
+     * //     [-28.0, -30.0, -32.0, -34.0]
+     * //     [-36.0, -38.0, -40.0, -42.0]
+     * //     [-44.0, -46.0, -48.0, -50.0]
+     *
      */
     Matrix4.multiplyByScalar = function(matrix, scalar, result) {
         if (typeof matrix === 'undefined') {
@@ -6983,6 +6128,22 @@ define('Core/Matrix4',[
      * @return {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
      *
      * @exception {DeveloperError} matrix is required.
+     *
+     * @example
+     * //create a new Matrix4 instance which is a negation of a Matrix4
+     * // m = [10.0, 11.0, 12.0, 13.0]
+     * //     [14.0, 15.0, 16.0, 17.0]
+     * //     [18.0, 19.0, 20.0, 21.0]
+     * //     [22.0, 23.0, 24.0, 25.0]
+     *
+     * var a = Matrix4.negate(m);
+     *
+     * // m remains the same
+     * // a = [-10.0, -11.0, -12.0, -13.0]
+     * //     [-14.0, -15.0, -16.0, -17.0]
+     * //     [-18.0, -19.0, -20.0, -21.0]
+     * //     [-22.0, -23.0, -24.0, -25.0]
+     *
      */
     Matrix4.negate = function(matrix, result) {
         if (typeof matrix === 'undefined') {
@@ -7023,6 +6184,22 @@ define('Core/Matrix4',[
      * @return {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
      *
      * @exception {DeveloperError} matrix is required.
+     *
+     * @example
+     * //returns transpose of a Matrix4
+     * // m = [10.0, 11.0, 12.0, 13.0]
+     * //     [14.0, 15.0, 16.0, 17.0]
+     * //     [18.0, 19.0, 20.0, 21.0]
+     * //     [22.0, 23.0, 24.0, 25.0]
+     *
+     * var a = Matrix4.negate(m);
+     *
+     * // m remains the same
+     * // a = [10.0, 14.0, 18.0, 22.0]
+     * //     [11.0, 15.0, 19.0, 23.0]
+     * //     [12.0, 16.0, 20.0, 24.0]
+     * //     [13.0, 17.0, 21.0, 25.0]
+     *
      */
     Matrix4.transpose = function(matrix, result) {
         if (typeof matrix === 'undefined') {
@@ -7069,6 +6246,28 @@ define('Core/Matrix4',[
      * @param {Matrix4} [left] The first matrix.
      * @param {Matrix4} [right] The second matrix.
      * @return {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
+     *
+     * @example
+     * //compares two Matrix4 instances
+     *
+     * // a = [10.0, 14.0, 18.0, 22.0]
+     * //     [11.0, 15.0, 19.0, 23.0]
+     * //     [12.0, 16.0, 20.0, 24.0]
+     * //     [13.0, 17.0, 21.0, 25.0]
+     *
+     * // b = [10.0, 14.0, 18.0, 22.0]
+     * //     [11.0, 15.0, 19.0, 23.0]
+     * //     [12.0, 16.0, 20.0, 24.0]
+     * //     [13.0, 17.0, 21.0, 25.0]
+     *
+     * if(Matrix4.equals(a,b)) {
+     *      console.log("Both matrices are equal");
+     * } else {
+     *      console.log("They are not equal");
+     * }
+     *
+     * //Prints "Both matrices are equal" on the console
+     *
      */
     Matrix4.equals = function(left, right) {
         return (left === right) ||
@@ -7104,6 +6303,28 @@ define('Core/Matrix4',[
      * @return {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      *
      * @exception {DeveloperError} epsilon is required and must be a number.
+     *
+     * @example
+     * //compares two Matrix4 instances
+     *
+     * // a = [10.5, 14.5, 18.5, 22.5]
+     * //     [11.5, 15.5, 19.5, 23.5]
+     * //     [12.5, 16.5, 20.5, 24.5]
+     * //     [13.5, 17.5, 21.5, 25.5]
+     *
+     * // b = [10.0, 14.0, 18.0, 22.0]
+     * //     [11.0, 15.0, 19.0, 23.0]
+     * //     [12.0, 16.0, 20.0, 24.0]
+     * //     [13.0, 17.0, 21.0, 25.0]
+     *
+     * if(Matrix4.equalsEpsilon(a,b,0.1)){
+     *      console.log("Difference between both the matrices is less than 0.1");
+     * } else {
+     *      console.log("Difference between both the matrices is not less than 0.1");
+     * }
+     *
+     * //Prints "Difference between both the matrices is not less than 0.1" on the console
+     *
      */
     Matrix4.equalsEpsilon = function(left, right, epsilon) {
         if (typeof epsilon !== 'number') {
@@ -7167,6 +6388,22 @@ define('Core/Matrix4',[
      * @exception {DeveloperError} matrix is required.
      *
      * @see Matrix3
+     *
+     * @example
+     * // returns a Matrix3 instance from a Matrix4 instance
+     *
+     * // m = [10.0, 14.0, 18.0, 22.0]
+     * //     [11.0, 15.0, 19.0, 23.0]
+     * //     [12.0, 16.0, 20.0, 24.0]
+     * //     [13.0, 17.0, 21.0, 25.0]
+     *
+     * var b = new Matrix3();
+     * Matrix4.getRotation(m,b);
+     *
+     * // b = [10.0, 14.0, 18.0]
+     * //     [11.0, 15.0, 19.0]
+     * //     [12.0, 16.0, 20.0]
+     *
      */
     Matrix4.getRotation = function(matrix, result) {
         if (typeof matrix === 'undefined') {
@@ -7796,26 +7033,22 @@ define('Core/Matrix4',[
 define('Core/BoundingSphere',[
         './defaultValue',
         './DeveloperError',
-        './Cartesian2',
         './Cartesian3',
         './Cartesian4',
         './Cartographic',
         './Ellipsoid',
         './GeographicProjection',
-        './Extent',
         './Intersect',
         './Interval',
         './Matrix4'
     ], function(
         defaultValue,
         DeveloperError,
-        Cartesian2,
         Cartesian3,
         Cartesian4,
         Cartographic,
         Ellipsoid,
         GeographicProjection,
-        Extent,
         Intersect,
         Interval,
         Matrix4) {
@@ -7837,7 +7070,8 @@ define('Core/BoundingSphere',[
          * The center point of the sphere.
          * @type {Cartesian3}
          */
-        this.center = (typeof center !== 'undefined') ? Cartesian3.clone(center) : Cartesian3.ZERO.clone();
+        this.center = Cartesian3.clone(defaultValue(center, Cartesian3.ZERO));
+
         /**
          * The radius of the sphere.
          * @type {Number}
@@ -7856,6 +7090,7 @@ define('Core/BoundingSphere',[
     var fromPointsRitterCenter = new Cartesian3();
     var fromPointsMinBoxPt = new Cartesian3();
     var fromPointsMaxBoxPt = new Cartesian3();
+    var fromPointsNaiveCenterScratch = new Cartesian3();
 
     /**
      * Computes a tight-fitting bounding sphere enclosing a list of 3D Cartesian points.
@@ -7965,7 +7200,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5);
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -8048,7 +7283,7 @@ define('Core/BoundingSphere',[
             return result;
         }
 
-        projection = (typeof projection !== 'undefined') ? projection : defaultProjection;
+        projection = defaultValue(projection, defaultProjection);
 
         extent.getSouthwest(fromExtent2DSouthwest);
         fromExtent2DSouthwest.height = minimumHeight;
@@ -8084,7 +7319,12 @@ define('Core/BoundingSphere',[
      */
     BoundingSphere.fromExtent3D = function(extent, ellipsoid, result) {
         ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-        var positions = typeof extent !== 'undefined' ? extent.subsample(ellipsoid, fromExtent3DScratch) : undefined;
+
+        var positions;
+        if (typeof extent !== 'undefined') {
+            positions = extent.subsample(ellipsoid, fromExtent3DScratch);
+        }
+
         return BoundingSphere.fromPoints(positions, result);
     };
 
@@ -8235,7 +7475,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5);
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -8273,6 +7513,40 @@ define('Core/BoundingSphere',[
             result.radius = naiveRadius;
         }
 
+        return result;
+    };
+
+    /**
+     * Computes a bounding sphere from the corner points of an axis-aligned bounding box.  The sphere
+     * tighly and fully encompases the box.
+     *
+     * @memberof BoundingSphere
+     *
+     * @param {Number} [corner] The minimum height over the extent.
+     * @param {Number} [oppositeCorner] The maximum height over the extent.
+     * @param {BoundingSphere} [result] The object onto which to store the result.
+     *
+     * @return {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
+     *
+     * @exception {DeveloperError} corner and oppositeCorner are required.
+     *
+     * @example
+     * // Create a bounding sphere around the unit cube
+     * var sphere = BoundingSphere.fromCornerPoints(new Cartesian3(-0.5, -0.5, -0.5), new Cartesian3(0.5, 0.5, 0.5));
+     */
+    BoundingSphere.fromCornerPoints = function(corner, oppositeCorner, result) {
+        if ((typeof corner === 'undefined') || (typeof oppositeCorner === 'undefined')) {
+            throw new DeveloperError('corner and oppositeCorner are required.');
+        }
+
+        if (typeof result === 'undefined') {
+            result = new BoundingSphere();
+        }
+
+        var center = result.center;
+        Cartesian3.add(corner, oppositeCorner, center);
+        Cartesian3.multiplyByScalar(center, 0.5, center);
+        result.radius = Cartesian3.distance(center, oppositeCorner);
         return result;
     };
 
@@ -8613,275 +7887,762 @@ define('Core/BoundingSphere',[
 });
 
 /*global define*/
-define('Core/getImagePixels',[],function() {
+define('Core/EllipsoidalOccluder',[
+        './defaultValue',
+        './DeveloperError',
+        './Cartesian3',
+        './BoundingSphere'
+    ], function(
+        defaultValue,
+        DeveloperError,
+        Cartesian3,
+        BoundingSphere) {
     
-
-    var context2DsByWidthAndHeight = {};
 
     /**
-     * Extract a pixel array from a loaded image.  Draws the image
-     * into a canvas so it can read the pixels back.
+     * Determine whether or not other objects are visible or hidden behind the visible horizon defined by
+     * an {@link Ellipsoid} and a camera position.  The ellipsoid is assumed to be located at the
+     * origin of the coordinate system.  This class uses the algorithm described in the
+     * <a href="http://cesium.agi.com/2013/04/25/Horizon-culling/">Horizon Culling</a> blog post.
      *
-     * @exports getImagePixels
+     * @alias EllipsoidalOccluder
      *
-     * @param {Image} image The image to extract pixels from.
+     * @param {Ellipsoid} ellipsoid The ellipsoid to use as an occluder.
+     * @param {Cartesian3} [cameraPosition] The coordinate of the viewer/camera.  If this parameter is not
+     *        specified, {@link EllipsoidalOccluder#setCameraPosition} must be called before
+     *        testing visibility.
      *
-     * @returns {CanvasPixelArray} The pixels of the image.
+     * @exception {DeveloperError} <code>ellipsoid</code> is required.
+     *
+     * @constructor
+     *
+     * @example
+     * // Construct an ellipsoidal occluder with radii 1.0, 1.1, and 0.9.
+     * var cameraPosition = new Cartesian3(5.0, 6.0, 7.0);
+     * var occluderEllipsoid = new Ellipsoid(1.0, 1.1, 0.9);
+     * var occluder = new EllipsoidalOccluder(occluderEllipsoid, cameraPosition);
      */
-    var getImagePixels = function(image, width, height) {
-        if (typeof width === 'undefined') {
-            width = image.width;
-        }
-        if (typeof height === 'undefined') {
-            height = image.height;
+    var EllipsoidalOccluder = function(ellipsoid, cameraPosition) {
+        if (typeof ellipsoid === 'undefined') {
+            throw new DeveloperError('ellipsoid is required.');
         }
 
-        var context2DsByHeight = context2DsByWidthAndHeight[width];
-        if (typeof context2DsByHeight === 'undefined') {
-            context2DsByHeight = {};
-            context2DsByWidthAndHeight[width] = context2DsByHeight;
-        }
+        this._ellipsoid = ellipsoid;
+        this._cameraPosition = new Cartesian3();
+        this._cameraPositionInScaledSpace = new Cartesian3();
+        this._distanceToLimbInScaledSpaceSquared = 0.0;
 
-        var context2d = context2DsByHeight[height];
-        if (typeof context2d === 'undefined') {
-            var canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            context2d = canvas.getContext('2d');
-            context2d.globalCompositeOperation = 'copy';
-            context2DsByHeight[height] = context2d;
+        // setCameraPosition fills in the above values
+        if (typeof cameraPosition !== 'undefined') {
+            this.setCameraPosition(cameraPosition);
         }
-
-        context2d.drawImage(image, 0, 0, width, height);
-        return context2d.getImageData(0, 0, width, height).data;
     };
 
-    return getImagePixels;
-});
-/*global define*/
-define('Core/ComponentDatatype',['./Enumeration'], function(Enumeration) {
-    
+    /**
+     * Returns the occluding ellipsoid.
+     *
+     * @memberof EllipsoidalOccluder
+     *
+     * @return {Ellipsoid} The ellipsoid.
+     */
+    EllipsoidalOccluder.prototype.getEllipsoid = function() {
+        return this._ellipsoid;
+    };
 
-    // Earlier versions of IE do not support typed arrays, and as a result,
-    // using them below will cause the setup function itself to fail, causing
-    // the page to abort load, and preventing us from prompting to install
-    // Chrome Frame.  To avoid this, bail out early and return a dummy object,
-    // since we won't be able to create a WebGL context anyway.
-    if (typeof Int8Array === 'undefined') {
-        return {};
+    /**
+     * Sets the position of the camera.
+     *
+     * @memberof EllipsoidalOccluder
+     *
+     * @param {Cartesian3} cameraPosition The new position of the camera.
+     */
+    EllipsoidalOccluder.prototype.setCameraPosition = function(cameraPosition) {
+        // See http://cesium.agi.com/2013/04/25/Horizon-culling/
+        var ellipsoid = this._ellipsoid;
+        var cv = ellipsoid.transformPositionToScaledSpace(cameraPosition, this._cameraPositionInScaledSpace);
+        var vhMagnitudeSquared = Cartesian3.magnitudeSquared(cv) - 1.0;
+
+        Cartesian3.clone(cameraPosition, this._cameraPosition);
+        this._cameraPositionInScaledSpace = cv;
+        this._distanceToLimbInScaledSpaceSquared = vhMagnitudeSquared;
+    };
+
+    /**
+     * Gets the position of the camera.
+     *
+     * @memberof EllipsoidalOccluder
+     *
+     * @returns {Cartesian3} The position of the camera.
+     */
+    EllipsoidalOccluder.prototype.getCameraPosition = function() {
+        return this._cameraPosition;
+    };
+
+    var scratchCartesian = new Cartesian3();
+
+    /**
+     * Determines whether or not a point, the <code>occludee</code>, is hidden from view by the occluder.
+     *
+     * @memberof EllipsoidalOccluder
+     *
+     * @param {Cartesian3} occludee The point to test for visibility.
+     *
+     * @return {boolean} <code>true</code> if the occludee is visible; otherwise <code>false</code>.
+     *
+     * @example
+     * var cameraPosition = new Cartesian3(0, 0, 2.5);
+     * var ellipsoid = new Ellipsoid(1.0, 1.1, 0.9);
+     * var occluder = new EllipsoidalOccluder(ellipsoid, cameraPosition);
+     * var point = new Cartesian3(0, -3, -3);
+     * occluder.isPointVisible(point); //returns true
+     */
+    EllipsoidalOccluder.prototype.isPointVisible = function(occludee) {
+        var ellipsoid = this._ellipsoid;
+        var occludeeScaledSpacePosition = ellipsoid.transformPositionToScaledSpace(occludee, scratchCartesian);
+        return this.isScaledSpacePointVisible(occludeeScaledSpacePosition);
+    };
+
+    /**
+     * Determines whether or not a point expressed in the ellipsoid scaled space, is hidden from view by the
+     * occluder.  To transform a Cartesian X, Y, Z position in the coordinate system aligned with the ellipsoid
+     * into the scaled space, call {@link Ellipsoid#transformPositionToScaledSpace}.
+     *
+     * @memberof EllipsoidalOccluder
+     *
+     * @param {Cartesian3} occludeeScaledSpacePosition The point to test for visibility, represented in the scaled space.
+     *
+     * @return {boolean} <code>true</code> if the occludee is visible; otherwise <code>false</code>.
+     *
+     * @example
+     * var cameraPosition = new Cartesian3(0, 0, 2.5);
+     * var ellipsoid = new Ellipsoid(1.0, 1.1, 0.9);
+     * var occluder = new EllipsoidalOccluder(ellipsoid, cameraPosition);
+     * var point = new Cartesian3(0, -3, -3);
+     * var scaledSpacePoint = ellipsoid.transformPositionToScaledSpace(point);
+     * occluder.isScaledSpacePointVisible(scaledSpacePoint); //returns true
+     */
+    EllipsoidalOccluder.prototype.isScaledSpacePointVisible = function(occludeeScaledSpacePosition) {
+        // See http://cesium.agi.com/2013/04/25/Horizon-culling/
+        var cv = this._cameraPositionInScaledSpace;
+        var vhMagnitudeSquared = this._distanceToLimbInScaledSpaceSquared;
+        var vt = Cartesian3.subtract(occludeeScaledSpacePosition, cv, scratchCartesian);
+        var vtDotVc = -vt.dot(cv);
+        var isOccluded = vtDotVc > vhMagnitudeSquared &&
+                         vtDotVc * vtDotVc / vt.magnitudeSquared() > vhMagnitudeSquared;
+        return !isOccluded;
+    };
+
+    /**
+     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
+     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
+     * is expressed in the ellipsoid-scaled space and is suitable for use with
+     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
+     *
+     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
+     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
+     *                     the center of the bounding sphere computed from the positions.  The direction need not
+     *                     be normalized.
+     * @param {Cartesian3[]} positions The positions from which to compute the horizon culling point.  The positions
+     *                       must be expressed in a reference frame centered at the ellipsoid and aligned with the
+     *                       ellipsoid's axes.
+     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
+     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
+     */
+    EllipsoidalOccluder.prototype.computeHorizonCullingPoint = function(directionToPoint, positions, result) {
+        if (typeof directionToPoint === 'undefined') {
+            throw new DeveloperError('directionToPoint is required');
+        }
+        if (typeof positions === 'undefined') {
+            throw new DeveloperError('positions is required');
+        }
+
+        var ellipsoid = this._ellipsoid;
+
+        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
+
+        var resultMagnitude = 0.0;
+
+        for (var i = 0, len = positions.length; i < len; ++i) {
+            var position = positions[i];
+            var candidateMagnitude = computeMagnitude(ellipsoid, position, scaledSpaceDirectionToPoint);
+            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
+        }
+
+        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
+    };
+
+    var positionScratch = new Cartesian3();
+
+    /**
+     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
+     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
+     * is expressed in the ellipsoid-scaled space and is suitable for use with
+     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
+     *
+     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
+     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
+     *                     the center of the bounding sphere computed from the positions.  The direction need not
+     *                     be normalized.
+     * @param {Number[]} vertices  The vertices from which to compute the horizon culling point.  The positions
+     *                   must be expressed in a reference frame centered at the ellipsoid and aligned with the
+     *                   ellipsoid's axes.
+     * @param {Number} [stride=3]
+     * @param {Cartesian3} [center=Cartesian3.ZERO]
+     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
+     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
+     */
+    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromVertices = function(directionToPoint, vertices, stride, center, result) {
+        if (typeof directionToPoint === 'undefined') {
+            throw new DeveloperError('directionToPoint is required');
+        }
+        if (typeof vertices === 'undefined') {
+            throw new DeveloperError('vertices is required');
+        }
+        if (typeof stride === 'undefined') {
+            throw new DeveloperError('stride is required');
+        }
+
+        center = defaultValue(center, Cartesian3.ZERO);
+
+        var ellipsoid = this._ellipsoid;
+
+        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
+
+        var resultMagnitude = 0.0;
+
+        for (var i = 0, len = vertices.length; i < len; i += stride) {
+            positionScratch.x = vertices[i] + center.x;
+            positionScratch.y = vertices[i + 1] + center.y;
+            positionScratch.z = vertices[i + 2] + center.z;
+
+            var candidateMagnitude = computeMagnitude(ellipsoid, positionScratch, scaledSpaceDirectionToPoint);
+            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
+        }
+
+        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
+    };
+
+    var subsampleScratch = [];
+
+    /**
+     * Computes a point that can be used for horizon culling of an extent.  If the point is below
+     * the horizon, the ellipsoid-conforming extent is guaranteed to be below the horizon as well.
+     * The returned point is expressed in the ellipsoid-scaled space and is suitable for use with
+     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
+     *
+     * @param {Extent} extent The extent for which to compute the horizon culling point.
+     * @param {Ellipsoid} ellipsoid The ellipsoid on which the extent is defined.  This may be different from
+     *                    the ellipsoid used by this instance for occlusion testing.
+     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
+     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
+     */
+    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromExtent = function(extent, ellipsoid, result) {
+        if (typeof extent === 'undefined') {
+            throw new DeveloperError('extent is required.');
+        }
+
+        var positions = extent.subsample(ellipsoid, subsampleScratch);
+        var bs = BoundingSphere.fromPoints(positions);
+
+        // If the bounding sphere center is too close to the center of the occluder, it doesn't make
+        // sense to try to horizon cull it.
+        if (bs.center.magnitude() < 0.1 * ellipsoid.getMinimumRadius()) {
+            return undefined;
+        }
+
+        return this.computeHorizonCullingPoint(bs.center, positions, result);
+    };
+
+    var scaledSpaceScratch = new Cartesian3();
+    var directionScratch = new Cartesian3();
+
+    function computeMagnitude(ellipsoid, position, scaledSpaceDirectionToPoint) {
+        var scaledSpacePosition = ellipsoid.transformPositionToScaledSpace(position, scaledSpaceScratch);
+        var magnitudeSquared = scaledSpacePosition.magnitudeSquared();
+        var magnitude = Math.sqrt(magnitudeSquared);
+        var direction = scaledSpacePosition.divideByScalar(magnitude, directionScratch);
+
+        // For the purpose of this computation, points below the ellipsoid are consider to be on it instead.
+        magnitudeSquared = Math.max(1.0, magnitudeSquared);
+        magnitude = Math.max(1.0, magnitude);
+
+        var cosAlpha = direction.dot(scaledSpaceDirectionToPoint);
+        var sinAlpha = direction.cross(scaledSpaceDirectionToPoint).magnitude();
+        var cosBeta = 1.0 / magnitude;
+        var sinBeta = Math.sqrt(magnitudeSquared - 1.0) * cosBeta;
+
+        return 1.0 / (cosAlpha * cosBeta - sinAlpha * sinBeta);
     }
 
-    /**
-     * DOC_TBA
-     *
-     * @alias ComponentDatatype
-     * @enumeration
-     */
-    var ComponentDatatype = {};
+    function magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result) {
+        // The horizon culling point is undefined if there were no positions from which to compute it,
+        // the directionToPoint is pointing opposite all of the positions,  or if we computed NaN or infinity.
+        if (resultMagnitude <= 0.0 || resultMagnitude === 1.0 / 0.0 || resultMagnitude !== resultMagnitude) {
+            return undefined;
+        }
 
-    /**
-     * DOC_TBA
-     *
-     * @constant
-     * @type {Enumeration}
-     * @memberOf ComponentDatatype
-     */
-    ComponentDatatype.BYTE = new Enumeration(0x1400, 'BYTE');
-    ComponentDatatype.BYTE.sizeInBytes = Int8Array.BYTES_PER_ELEMENT;
-    ComponentDatatype.BYTE.toTypedArray = function(values) {
-        return new Int8Array(values);
-    };
+        return scaledSpaceDirectionToPoint.multiplyByScalar(resultMagnitude, result);
+    }
 
-    ComponentDatatype.BYTE.createArrayBufferView = function(buffer, byteOffset) {
-        return new Int8Array(buffer, byteOffset);
-    };
+    var directionToPointScratch = new Cartesian3();
 
-    /**
-     * DOC_TBA
-     *
-     * @constant
-     * @type {Enumeration}
-     * @memberOf ComponentDatatype
-     */
-    ComponentDatatype.UNSIGNED_BYTE = new Enumeration(0x1401, 'UNSIGNED_BYTE');
-    ComponentDatatype.UNSIGNED_BYTE.sizeInBytes = Uint8Array.BYTES_PER_ELEMENT;
-    ComponentDatatype.UNSIGNED_BYTE.toTypedArray = function(values) {
-        return new Uint8Array(values);
-    };
+    function computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint) {
+        ellipsoid.transformPositionToScaledSpace(directionToPoint, directionToPointScratch);
+        return directionToPointScratch.normalize(directionToPointScratch);
+    }
 
-    ComponentDatatype.UNSIGNED_BYTE.createArrayBufferView = function(buffer, byteOffset) {
-        return new Uint8Array(buffer, byteOffset);
-    };
-
-    /**
-     * DOC_TBA
-     *
-     * @constant
-     * @type {Enumeration}
-     * @memberOf ComponentDatatype
-     */
-    ComponentDatatype.SHORT = new Enumeration(0x1402, 'SHORT');
-    ComponentDatatype.SHORT.sizeInBytes = Int16Array.BYTES_PER_ELEMENT;
-    ComponentDatatype.SHORT.toTypedArray = function(values) {
-        return new Int16Array(values);
-    };
-
-    ComponentDatatype.SHORT.createArrayBufferView = function(buffer, byteOffset) {
-        return new Int16Array(buffer, byteOffset);
-    };
-
-    /**
-     * DOC_TBA
-     *
-     * @constant
-     * @type {Enumeration}
-     * @memberOf ComponentDatatype
-     */
-    ComponentDatatype.UNSIGNED_SHORT = new Enumeration(0x1403, 'UNSIGNED_SHORT');
-    ComponentDatatype.UNSIGNED_SHORT.sizeInBytes = Uint16Array.BYTES_PER_ELEMENT;
-    ComponentDatatype.UNSIGNED_SHORT.toTypedArray = function(values) {
-        return new Uint16Array(values);
-    };
-
-    ComponentDatatype.UNSIGNED_SHORT.createArrayBufferView = function(buffer, byteOffset) {
-        return new Uint16Array(buffer, byteOffset);
-    };
-
-    /**
-     * DOC_TBA
-     *
-     * @constant
-     * @type {Enumeration}
-     * @memberOf ComponentDatatype
-     */
-    ComponentDatatype.FLOAT = new Enumeration(0x1406, 'FLOAT');
-    ComponentDatatype.FLOAT.sizeInBytes = Float32Array.BYTES_PER_ELEMENT;
-    ComponentDatatype.FLOAT.toTypedArray = function(values) {
-        return new Float32Array(values);
-    };
-
-    ComponentDatatype.FLOAT.createArrayBufferView = function(buffer, byteOffset) {
-        return new Float32Array(buffer, byteOffset);
-    };
-
-    /**
-     * DOC_TBA
-     */
-    ComponentDatatype.validate = function(componentDatatype) {
-        return ((componentDatatype === ComponentDatatype.BYTE) ||
-                (componentDatatype === ComponentDatatype.UNSIGNED_BYTE) ||
-                (componentDatatype === ComponentDatatype.SHORT) ||
-                (componentDatatype === ComponentDatatype.UNSIGNED_SHORT) ||
-                (componentDatatype === ComponentDatatype.FLOAT));
-    };
-
-    return ComponentDatatype;
+    return EllipsoidalOccluder;
 });
-
 /*global define*/
-define('Core/PrimitiveType',['./Enumeration'], function(Enumeration) {
+define('Core/Extent',[
+        './freezeObject',
+        './defaultValue',
+        './Ellipsoid',
+        './Cartographic',
+        './DeveloperError',
+        './Math'
+    ], function(
+        freezeObject,
+        defaultValue,
+        Ellipsoid,
+        Cartographic,
+        DeveloperError,
+        CesiumMath) {
     
 
     /**
-     * DOC_TBA
+     * A two dimensional region specified as longitude and latitude coordinates.
+     * @alias Extent
+     * @constructor
      *
-     * @exports PrimitiveType
+     * @param {Number} [west=0.0] The westernmost longitude in the range [-Pi, Pi].
+     * @param {Number} [south=0.0] The southernmost latitude in the range [-Pi/2, Pi/2].
+     * @param {Number} [east=0.0] The easternmost longitude in the range [-Pi, Pi].
+     * @param {Number} [north=0.0] The northernmost latitude in the range [-Pi/2, Pi/2].
      */
-    var PrimitiveType = {
+    var Extent = function(west, south, east, north) {
         /**
-         * DOC_TBA
-         *
-         * @constant
-         * @type {Enumeration}
+         * The westernmost longitude in the range [-Pi, Pi].
+         * @type Number
          */
-        POINTS : new Enumeration(0x0000, 'POINTS'),
-        /**
-         * DOC_TBA
-         *
-         * @constant
-         * @type {Enumeration}
-         */
-        LINES : new Enumeration(0x0001, 'LINES'),
-        /**
-         * DOC_TBA
-         *
-         * @constant
-         * @type {Enumeration}
-         */
-        LINE_LOOP : new Enumeration(0x0002, 'LINE_LOOP'),
-        /**
-         * DOC_TBA
-         *
-         * @constant
-         * @type {Enumeration}
-         */
-        LINE_STRIP : new Enumeration(0x0003, 'LINE_STRIP'),
-        /**
-         * DOC_TBA
-         *
-         * @constant
-         * @type {Enumeration}
-         */
-        TRIANGLES : new Enumeration(0x0004, 'TRIANGLES'),
-        /**
-         * DOC_TBA
-         *
-         * @constant
-         * @type {Enumeration}
-         */
-        TRIANGLE_STRIP : new Enumeration(0x0005, 'TRIANGLE_STRIP'),
-        /**
-         * DOC_TBA
-         *
-         * @constant
-         * @type {Enumeration}
-         */
-        TRIANGLE_FAN : new Enumeration(0x0006, 'TRIANGLE_FAN'),
+        this.west = defaultValue(west, 0.0);
 
         /**
-         * DOC_TBA
-         *
-         * @param primitiveType
-         *
-         * @returns {Boolean}
+         * The southernmost latitude in the range [-Pi/2, Pi/2].
+         * @type Number
          */
-        validate : function(primitiveType) {
-            return ((primitiveType === PrimitiveType.POINTS) ||
-                    (primitiveType === PrimitiveType.LINES) ||
-                    (primitiveType === PrimitiveType.LINE_LOOP) ||
-                    (primitiveType === PrimitiveType.LINE_STRIP) ||
-                    (primitiveType === PrimitiveType.TRIANGLES) ||
-                    (primitiveType === PrimitiveType.TRIANGLE_STRIP) ||
-                    (primitiveType === PrimitiveType.TRIANGLE_FAN));
+        this.south = defaultValue(south, 0.0);
+
+        /**
+         * The easternmost longitude in the range [-Pi, Pi].
+         * @type Number
+         */
+        this.east = defaultValue(east, 0.0);
+
+        /**
+         * The northernmost latitude in the range [-Pi/2, Pi/2].
+         * @type Number
+         */
+        this.north = defaultValue(north, 0.0);
+    };
+
+    /**
+     * Creates the smallest possible Extent that encloses all positions in the provided array.
+     * @memberof Extent
+     *
+     * @param {Array} cartographics The list of Cartographic instances.
+     * @param {Extent} [result] The object onto which to store the result, or undefined if a new instance should be created.
+     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
+     */
+    Extent.fromCartographicArray = function(cartographics, result) {
+        if (typeof cartographics === 'undefined') {
+            throw new DeveloperError('cartographics is required.');
+        }
+
+        var minLon = Number.MAX_VALUE;
+        var maxLon = -Number.MAX_VALUE;
+        var minLat = Number.MAX_VALUE;
+        var maxLat = -Number.MAX_VALUE;
+
+        for ( var i = 0, len = cartographics.length; i < len; i++) {
+            var position = cartographics[i];
+            minLon = Math.min(minLon, position.longitude);
+            maxLon = Math.max(maxLon, position.longitude);
+            minLat = Math.min(minLat, position.latitude);
+            maxLat = Math.max(maxLat, position.latitude);
+        }
+
+        if (typeof result === 'undefined') {
+            return new Extent(minLon, minLat, maxLon, maxLat);
+        }
+
+        result.west = minLon;
+        result.south = minLat;
+        result.east = maxLon;
+        result.north = maxLat;
+        return result;
+    };
+
+    /**
+     * Duplicates an Extent.
+     *
+     * @memberof Extent
+     *
+     * @param {Extent} extent The extent to clone.
+     * @param {Extent} [result] The object onto which to store the result, or undefined if a new instance should be created.
+     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
+     */
+    Extent.clone = function(extent, result) {
+        if (typeof result === 'undefined') {
+            return new Extent(extent.west, extent.south, extent.east, extent.north);
+        }
+        result.west = extent.west;
+        result.south = extent.south;
+        result.east = extent.east;
+        result.north = extent.north;
+        return result;
+    };
+
+    /**
+     * Duplicates this Extent.
+     *
+     * @memberof Extent
+     *
+     * @param {Extent} [result] The object onto which to store the result.
+     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
+     */
+    Extent.prototype.clone = function(result) {
+        return Extent.clone(this, result);
+    };
+
+    /**
+     * Compares the provided Extent with this Extent componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     * @memberof Extent
+     *
+     * @param {Extent} [other] The Extent to compare.
+     * @return {Boolean} <code>true</code> if the Extents are equal, <code>false</code> otherwise.
+     */
+    Extent.prototype.equals = function(other) {
+        return typeof other !== 'undefined' &&
+               this.west === other.west &&
+               this.south === other.south &&
+               this.east === other.east &&
+               this.north === other.north;
+    };
+
+    /**
+     * Compares the provided Extent with this Extent componentwise and returns
+     * <code>true</code> if they are within the provided epsilon,
+     * <code>false</code> otherwise.
+     * @memberof Extent
+     *
+     * @param {Extent} [other] The Extent to compare.
+     * @param {Number} epsilon The epsilon to use for equality testing.
+     * @return {Boolean} <code>true</code> if the Extents are within the provided epsilon, <code>false</code> otherwise.
+     *
+     * @exception {DeveloperError} epsilon is required and must be a number.
+     */
+    Extent.prototype.equalsEpsilon = function(other, epsilon) {
+        if (typeof epsilon !== 'number') {
+            throw new DeveloperError('epsilon is required and must be a number.');
+        }
+
+        return typeof other !== 'undefined' &&
+               (Math.abs(this.west - other.west) <= epsilon) &&
+               (Math.abs(this.south - other.south) <= epsilon) &&
+               (Math.abs(this.east - other.east) <= epsilon) &&
+               (Math.abs(this.north - other.north) <= epsilon);
+    };
+
+    /**
+     * Checks this Extent's properties and throws if they are not in valid ranges.
+     *
+     * @exception {DeveloperError} <code>north</code> is required to be a number.
+     * @exception {DeveloperError} <code>south</code> is required to be a number.
+     * @exception {DeveloperError} <code>east</code> is required to be a number.
+     * @exception {DeveloperError} <code>west</code> is required to be a number.
+     * @exception {DeveloperError} <code>north</code> must be in the interval [<code>-Pi/2</code>, <code>Pi/2</code>].
+     * @exception {DeveloperError} <code>south</code> must be in the interval [<code>-Pi/2</code>, <code>Pi/2</code>].
+     * @exception {DeveloperError} <code>east</code> must be in the interval [<code>-Pi</code>, <code>Pi</code>].
+     * @exception {DeveloperError} <code>west</code> must be in the interval [<code>-Pi</code>, <code>Pi</code>].
+     */
+    Extent.prototype.validate = function() {
+        var north = this.north;
+        if (typeof north !== 'number') {
+            throw new DeveloperError('north is required to be a number.');
+        }
+
+        if (north < -CesiumMath.PI_OVER_TWO || north > CesiumMath.PI_OVER_TWO) {
+            throw new DeveloperError('north must be in the interval [-Pi/2, Pi/2].');
+        }
+
+        var south = this.south;
+        if (typeof south !== 'number') {
+            throw new DeveloperError('south is required to be a number.');
+        }
+
+        if (south < -CesiumMath.PI_OVER_TWO || south > CesiumMath.PI_OVER_TWO) {
+            throw new DeveloperError('south must be in the interval [-Pi/2, Pi/2].');
+        }
+
+        var west = this.west;
+        if (typeof west !== 'number') {
+            throw new DeveloperError('west is required to be a number.');
+        }
+
+        if (west < -Math.PI || west > Math.PI) {
+            throw new DeveloperError('west must be in the interval [-Pi, Pi].');
+        }
+
+        var east = this.east;
+        if (typeof east !== 'number') {
+            throw new DeveloperError('east is required to be a number.');
+        }
+
+        if (east < -Math.PI || east > Math.PI) {
+            throw new DeveloperError('east must be in the interval [-Pi, Pi].');
         }
     };
 
-    return PrimitiveType;
-});
+    /**
+     * Computes the southwest corner of this extent.
+     * @memberof Extent
+     *
+     * @param {Cartographic} [result] The object onto which to store the result.
+     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
+     */
+    Extent.prototype.getSouthwest = function(result) {
+        if (typeof result === 'undefined') {
+            return new Cartographic(this.west, this.south);
+        }
+        result.longitude = this.west;
+        result.latitude = this.south;
+        result.height = 0.0;
+        return result;
+    };
 
+    /**
+     * Computes the northwest corner of this extent.
+     * @memberof Extent
+     *
+     * @param {Cartographic} [result] The object onto which to store the result.
+     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
+     */
+    Extent.prototype.getNorthwest = function(result) {
+        if (typeof result === 'undefined') {
+            return new Cartographic(this.west, this.north);
+        }
+        result.longitude = this.west;
+        result.latitude = this.north;
+        result.height = 0.0;
+        return result;
+    };
+
+    /**
+     * Computes the northeast corner of this extent.
+     * @memberof Extent
+     *
+     * @param {Cartographic} [result] The object onto which to store the result.
+     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
+     */
+    Extent.prototype.getNortheast = function(result) {
+        if (typeof result === 'undefined') {
+            return new Cartographic(this.east, this.north);
+        }
+        result.longitude = this.east;
+        result.latitude = this.north;
+        result.height = 0.0;
+        return result;
+    };
+
+    /**
+     * Computes the southeast corner of this extent.
+     * @memberof Extent
+     *
+     * @param {Cartographic} [result] The object onto which to store the result.
+     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
+     */
+    Extent.prototype.getSoutheast = function(result) {
+        if (typeof result === 'undefined') {
+            return new Cartographic(this.east, this.south);
+        }
+        result.longitude = this.east;
+        result.latitude = this.south;
+        result.height = 0.0;
+        return result;
+    };
+
+    /**
+     * Computes the center of this extent.
+     * @memberof Extent
+     *
+     * @param {Cartographic} [result] The object onto which to store the result.
+     * @return {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
+     */
+    Extent.prototype.getCenter = function(result) {
+        if (typeof result === 'undefined') {
+            return new Cartographic((this.west + this.east) * 0.5, (this.south + this.north) * 0.5);
+        }
+        result.longitude = (this.west + this.east) * 0.5;
+        result.latitude = (this.south + this.north) * 0.5;
+        result.height = 0.0;
+        return result;
+    };
+
+    /**
+     * Computes the intersection of this extent with the provided extent.
+     * @memberof Extent
+     *
+     * @param otherExtent The extent to intersect with this extent.
+     * @param {Extent} [result] The object onto which to store the result.
+     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
+     *
+     * @exception {DeveloperError} otherExtent is required.
+     */
+    Extent.prototype.intersectWith = function(otherExtent, result) {
+        if (typeof otherExtent === 'undefined') {
+            throw new DeveloperError('otherExtent is required.');
+        }
+        var west = Math.max(this.west, otherExtent.west);
+        var south = Math.max(this.south, otherExtent.south);
+        var east = Math.min(this.east, otherExtent.east);
+        var north = Math.min(this.north, otherExtent.north);
+        if (typeof result === 'undefined') {
+            return new Extent(west, south, east, north);
+        }
+        result.west = west;
+        result.south = south;
+        result.east = east;
+        result.north = north;
+        return result;
+    };
+
+    /**
+     * Returns true if the provided cartographic is on or inside the extent, false otherwise.
+     * @memberof Extent
+     *
+     * @param {Cartographic} cartographic The cartographic to test.
+     * @returns {Boolean} true if the provided cartographic is inside the extent, false otherwise.
+     *
+     * @exception {DeveloperError} cartographic is required.
+     */
+    Extent.prototype.contains = function(cartographic) {
+        if (typeof cartographic === 'undefined') {
+            throw new DeveloperError('cartographic is required.');
+        }
+        return cartographic.longitude >= this.west &&
+               cartographic.longitude <= this.east &&
+               cartographic.latitude >= this.south &&
+               cartographic.latitude <= this.north;
+    };
+
+    /**
+     * Determines if the extent is empty, i.e., if <code>west >= east</code>
+     * or <code>south >= north</code>.
+     *
+     * @memberof Extent
+     *
+     * @return {Boolean} True if the extent is empty; otherwise, false.
+     */
+    Extent.prototype.isEmpty = function() {
+        return this.west >= this.east || this.south >= this.north;
+    };
+
+    var subsampleLlaScratch = new Cartographic();
+    /**
+     * Samples this Extent so that it includes a list of Cartesian points suitable for passing to
+     * {@link BoundingSphere#fromPoints}.  Sampling is necessary to account
+     * for extents that cover the poles or cross the equator.
+     *
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid to use.
+     * @param {Array} [result] The array of Cartesians onto which to store the result.
+     * @return {Array} The modified result parameter or a new Array of Cartesians instances if none was provided.
+     */
+    Extent.prototype.subsample = function(ellipsoid, result) {
+        ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+
+        if (typeof result === 'undefined') {
+            result = [];
+        }
+        var length = 0;
+
+        var north = this.north;
+        var south = this.south;
+        var east = this.east;
+        var west = this.west;
+
+        var lla = subsampleLlaScratch;
+        lla.longitude = west;
+        lla.latitude = north;
+        result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
+        length++;
+
+        lla.longitude = east;
+        result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
+        length++;
+
+        lla.latitude = south;
+        result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
+        length++;
+
+        lla.longitude = west;
+        result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
+        length++;
+
+        if (north < 0.0) {
+            lla.latitude = north;
+        } else if (south > 0.0) {
+            lla.latitude = south;
+        } else {
+            lla.latitude = 0.0;
+        }
+
+        for ( var i = 1; i < 8; ++i) {
+            var temp = -Math.PI + i * CesiumMath.PI_OVER_TWO;
+            if (west < temp && temp < east) {
+                lla.longitude = temp;
+                result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
+                length++;
+            }
+        }
+
+        if (lla.latitude === 0.0) {
+            lla.longitude = west;
+            result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
+            length++;
+            lla.longitude = east;
+            result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
+            length++;
+        }
+        result.length = length;
+        return result;
+    };
+
+    /**
+     * The largest possible extent.
+     * @memberof Extent
+     * @type Extent
+    */
+    Extent.MAX_VALUE = freezeObject(new Extent(-Math.PI, -CesiumMath.PI_OVER_TWO, Math.PI, CesiumMath.PI_OVER_TWO));
+
+    return Extent;
+});
 /*global define*/
 define('Core/HeightmapTessellator',[
         './defaultValue',
         './freezeObject',
-        './getImagePixels',
         './DeveloperError',
         './Cartesian3',
-        './ComponentDatatype',
         './Ellipsoid',
-        './Extent',
-        './Math',
-        './PrimitiveType'
+        './Math'
     ], function(
         defaultValue,
         freezeObject,
-        getImagePixels,
         DeveloperError,
         Cartesian3,
-        ComponentDatatype,
         Ellipsoid,
-        Extent,
-        CesiumMath,
-        PrimitiveType) {
+        CesiumMath) {
     
 
     /**
@@ -9191,518 +8952,6 @@ define('Core/HeightmapTessellator',[
 });
 
 /*global define*/
-define('Core/Visibility',['./Enumeration'], function(Enumeration) {
-    
-
-    /**
-     * This enumerated type is used in determining to what extent an object, the occludee,
-     * is visible during horizon culling. An occluder may fully block an occludee, in which case
-     * it has no visibility, may partially block an occludee from view, or may not block it at all,
-     * leading to full visibility.
-     *
-     * @exports Visibility
-     */
-    var Visibility = {
-        /**
-         * Represents that no part of an object is visible.
-         *
-         * @constant
-         * @type {Enumeration}
-         */
-        NONE : new Enumeration(-1, 'NONE'),
-        /**
-        * Represents that part, but not all, of an object is visible
-        *
-        * @constant
-        * @type {Enumeration}
-        */
-        PARTIAL : new Enumeration(0, 'PARTIAL'),
-        /**
-        * Represents that an object is visible in its entirety.
-        *
-        * @constant
-        * @type {Enumeration}
-        */
-        FULL : new Enumeration(1, 'FULL')
-    };
-
-    return Visibility;
-});
-/*global define*/
-define('Core/Occluder',[
-        './defaultValue',
-        './DeveloperError',
-        './Math',
-        './Cartesian3',
-        './Visibility',
-        './Ellipsoid',
-        './BoundingSphere'
-    ], function(
-        defaultValue,
-        DeveloperError,
-        CesiumMath,
-        Cartesian3,
-        Visibility,
-        Ellipsoid,
-        BoundingSphere) {
-    
-
-    /**
-     * Creates an Occluder derived from an object's position and radius, as well as the camera position.
-     * The occluder can be used to determine whether or not other objects are visible or hidden behind the
-     * visible horizon defined by the occluder and camera position.
-     *
-     * @alias Occluder
-     *
-     * @param {BoundingSphere} occluderBoundingSphere The bounding sphere surrounding the occluder.
-     * @param {Cartesian3} cameraPosition The coordinate of the viewer/camera.
-     *
-     * @exception {DeveloperError} <code>occluderBoundingSphere</code> is required.
-     * @exception {DeveloperError} <code>cameraPosition</code> is required.
-     *
-     * @constructor
-     *
-     * @example
-     * // Construct an occluder one unit away from the origin with a radius of one.
-     * var cameraPosition = new Cartesian3.ZERO;
-     * var occluderBoundingSphere = new BoundingSphere(new Cartesian3(0, 0, -1), 1);
-     * var occluder = new Occluder(occluderBoundingSphere, cameraPosition);
-     */
-    var Occluder = function(occluderBoundingSphere, cameraPosition) {
-        if (!occluderBoundingSphere) {
-            throw new DeveloperError('occluderBoundingSphere is required.');
-        }
-
-        if (!cameraPosition) {
-            throw new DeveloperError('camera position is required.');
-        }
-
-        this._occluderPosition = occluderBoundingSphere.center.clone();
-        this._occluderRadius = occluderBoundingSphere.radius;
-
-        this._horizonDistance = 0.0;
-        this._horizonPlaneNormal = undefined;
-        this._horizonPlanePosition = undefined;
-        this._cameraPosition = undefined;
-
-        // setCameraPosition fills in the above values
-        this.setCameraPosition(cameraPosition);
-    };
-
-    /**
-     * Returns the position of the occluder.
-     *
-     * @memberof Occluder
-     *
-     * @return {Cartesian3} The position of the occluder.
-     */
-    Occluder.prototype.getPosition = function() {
-        return this._occluderPosition;
-    };
-
-    /**
-     * Returns the radius of the occluder.
-     *
-     * @return {Number} The radius of the occluder.
-     */
-    Occluder.prototype.getRadius = function() {
-        return this._occluderRadius;
-    };
-
-    /**
-     * Sets the position of the camera.
-     *
-     * @param {Cartesian3} cameraPosition The new position of the camera.
-     */
-    Occluder.prototype.setCameraPosition = function(cameraPosition) {
-        cameraPosition = Cartesian3.clone(cameraPosition);
-
-        var cameraToOccluderVec = this._occluderPosition.subtract(cameraPosition);
-        var invCameraToOccluderDistance = cameraToOccluderVec.magnitudeSquared();
-        var occluderRadiusSqrd = this._occluderRadius * this._occluderRadius;
-
-        var horizonDistance;
-        var horizonPlaneNormal;
-        var horizonPlanePosition;
-        if (invCameraToOccluderDistance > occluderRadiusSqrd) {
-            horizonDistance = Math.sqrt(invCameraToOccluderDistance - occluderRadiusSqrd);
-            invCameraToOccluderDistance = 1.0 / Math.sqrt(invCameraToOccluderDistance);
-            horizonPlaneNormal = cameraToOccluderVec.multiplyByScalar(invCameraToOccluderDistance);
-            var nearPlaneDistance = horizonDistance * horizonDistance * invCameraToOccluderDistance;
-            horizonPlanePosition = cameraPosition.add(horizonPlaneNormal.multiplyByScalar(nearPlaneDistance));
-        } else {
-            horizonDistance = Number.MAX_VALUE;
-        }
-
-        this._horizonDistance = horizonDistance;
-        this._horizonPlaneNormal = horizonPlaneNormal;
-        this._horizonPlanePosition = horizonPlanePosition;
-        this._cameraPosition = cameraPosition;
-    };
-
-    var tempVecScratch = new Cartesian3();
-
-    /**
-     * Determines whether or not a point, the <code>occludee</code>, is hidden from view by the occluder.
-     *
-     * @memberof Occluder
-     *
-     * @param {Cartesian3} occludee The point surrounding the occludee object.
-     *
-     * @return {boolean} <code>true</code> if the occludee is visible; otherwise <code>false</code>.
-     *
-     * @example
-     * var cameraPosition = new Cartesian3(0, 0, 0);
-     * var littleSphere = new BoundingSphere(new Cartesian3(0, 0, -1), 0.25);
-     * var occluder = new Occluder(littleSphere, cameraPosition);
-     * var point = new Cartesian3(0, 0, -3);
-     * occluder.isPointVisible(point); //returns true
-     *
-     * @see Occluder#getVisibility
-     */
-    Occluder.prototype.isPointVisible = function(occludee) {
-        if (this._horizonDistance !== Number.MAX_VALUE) {
-            var tempVec = Cartesian3.subtract(occludee, this._occluderPosition, tempVecScratch);
-            var temp = this._occluderRadius;
-            temp = tempVec.magnitudeSquared() - (temp * temp);
-            if (temp > 0.0) {
-                temp = Math.sqrt(temp) + this._horizonDistance;
-                tempVec = Cartesian3.subtract(occludee, this._cameraPosition, tempVec);
-                return temp * temp > tempVec.magnitudeSquared();
-            }
-        }
-        return false;
-    };
-
-    /**
-    * Determines whether or not a sphere, the <code>occludee</code>, is hidden from view by the occluder.
-    *
-    * @memberof Occluder
-    *
-    * @param {BoundingSphere} occludee The bounding sphere surrounding the occludee object.
-    *
-    * @return {boolean} <code>true</code> if the occludee is visible; otherwise <code>false</code>.
-    *
-    * @example
-    * var cameraPosition = new Cartesian3(0, 0, 0);
-    * var littleSphere = new BoundingSphere(new Cartesian3(0, 0, -1), 0.25);
-    * var occluder = new Occluder(littleSphere, cameraPosition);
-    * var bigSphere = new BoundingSphere(new Cartesian3(0, 0, -3), 1);
-    * occluder.isBoundingSphereVisible(bigSphere); //returns true
-    *
-    * @see Occluder#getVisibility
-    */
-    Occluder.prototype.isBoundingSphereVisible = function(occludee) {
-        var occludeePosition = occludee.center.clone();
-        var occludeeRadius = occludee.radius;
-
-        if (this._horizonDistance !== Number.MAX_VALUE) {
-            var tempVec = Cartesian3.subtract(occludeePosition, this._occluderPosition, tempVecScratch);
-            var temp = this._occluderRadius - occludeeRadius;
-            temp = tempVec.magnitudeSquared() - (temp * temp);
-            if (occludeeRadius < this._occluderRadius) {
-                if (temp > 0.0) {
-                    temp = Math.sqrt(temp) + this._horizonDistance;
-                    tempVec = Cartesian3.subtract(occludeePosition, this._cameraPosition, tempVec);
-                    return ((temp * temp) + (occludeeRadius * occludeeRadius)) > tempVec.magnitudeSquared();
-                }
-                return false;
-            }
-
-            // Prevent against the case where the occludee radius is larger than the occluder's; since this is
-            // an uncommon case, the following code should rarely execute.
-            if (temp > 0.0) {
-                tempVec = occludeePosition.subtract(this._cameraPosition);
-                var tempVecMagnitudeSquared = tempVec.magnitudeSquared();
-                var occluderRadiusSquared = this._occluderRadius * this._occluderRadius;
-                var occludeeRadiusSquared = occludeeRadius * occludeeRadius;
-                if ((((this._horizonDistance * this._horizonDistance) + occluderRadiusSquared) * occludeeRadiusSquared) >
-                    (tempVecMagnitudeSquared * occluderRadiusSquared)) {
-                    // The occludee is close enough that the occluder cannot possible occlude the occludee
-                    return true;
-                }
-                temp = Math.sqrt(temp) + this._horizonDistance;
-                return ((temp * temp) + occludeeRadiusSquared) > tempVecMagnitudeSquared;
-            }
-
-            // The occludee completely encompasses the occluder
-            return true;
-        }
-
-        return false;
-    };
-
-    /**
-     * Determine to what extent an occludee is visible (not visible, partially visible,  or fully visible).
-     *
-     * @memberof Occluder
-     *
-     * @param {BoundingSphere} occludeeBS
-     *
-     * @return {Enumeration} Visibility.NONE if the occludee is not visible,
-     *                       Visibility.PARTIAL if the occludee is partially visible, or
-     *                       Visibility.FULL if the occludee is fully visible.
-     * @example
-     * var sphere1 = new BoundingSphere(new Cartesian3(0, 0, -1.5), 0.5);
-     * var sphere2 = new BoundingSphere(new Cartesian3(0, 0, -2.5), 0.5);
-     * var cameraPosition = new Cartesian3(0, 0, 0);
-     * var occluder = new Occluder(sphere1, cameraPosition);
-     * occluder.getVisibility(sphere2); //returns Visibility.NONE
-     *
-     * @see Occluder#isVisible
-     */
-    Occluder.prototype.getVisibility = function(occludeeBS) {
-        // If the occludee radius is larger than the occluders, this will return that
-        // the entire ocludee is visible, even though that may not be the case, though this should
-        // not occur too often.
-        var occludeePosition = occludeeBS.center.clone();
-        var occludeeRadius = occludeeBS.radius;
-
-        if (occludeeRadius > this._occluderRadius) {
-            return Visibility.FULL;
-        }
-
-        if (this._horizonDistance !== Number.MAX_VALUE) {
-            // The camera is outside the occluder
-            var tempVec = occludeePosition.subtract(this._occluderPosition);
-            var temp = this._occluderRadius - occludeeRadius;
-            var occluderToOccludeeDistSqrd = tempVec.magnitudeSquared();
-            temp = occluderToOccludeeDistSqrd - (temp * temp);
-            if (temp > 0.0) {
-                // The occludee is not completely inside the occluder
-                // Check to see if the occluder completely hides the occludee
-                temp = Math.sqrt(temp) + this._horizonDistance;
-                tempVec = occludeePosition.subtract(this._cameraPosition);
-                var cameraToOccludeeDistSqrd = tempVec.magnitudeSquared();
-                if (((temp * temp) + (occludeeRadius * occludeeRadius)) < cameraToOccludeeDistSqrd) {
-                    return Visibility.NONE;
-                }
-
-                // Check to see whether the occluder is fully or partially visible
-                // when the occludee does not intersect the occluder
-                temp = this._occluderRadius + occludeeRadius;
-                temp = occluderToOccludeeDistSqrd - (temp * temp);
-                if (temp > 0.0) {
-                    // The occludee does not intersect the occluder.
-                    temp = Math.sqrt(temp) + this._horizonDistance;
-                    return (cameraToOccludeeDistSqrd < ((temp * temp)) + (occludeeRadius * occludeeRadius)) ? Visibility.FULL : Visibility.PARTIAL;
-                }
-
-                //Check to see if the occluder is fully or partially visible when the occludee DOES
-                //intersect the occluder
-                tempVec = occludeePosition.subtract(this._horizonPlanePosition);
-                return (tempVec.dot(this._horizonPlaneNormal) > -occludeeRadius) ? Visibility.PARTIAL : Visibility.FULL;
-            }
-        }
-        return Visibility.NONE;
-    };
-
-    /**
-     * Computes a point that can be used as the occludee position to the visibility functions.
-     * Use a radius of zero for the occludee radius.  Typically, a user computes a bounding sphere around
-     * an object that is used for visibility; however it is also possible to compute a point that if
-     * seen/not seen would also indicate if an object is visible/not visible.  This function is better
-     * called for objects that do not move relative to the occluder and is large, such as a chunk of
-     * terrain.  You are better off not calling this and using the object's bounding sphere for objects
-     * such as a satellite or ground vehicle.
-     *
-     * @memberof Occluder
-     *
-     * @param {BoundingSphere} occluderBoundingSphere The bounding sphere surrounding the occluder.
-     * @param {Cartesian3} occludeePosition The point where the occludee (bounding sphere of radius 0) is located.
-     * @param {Array} positions List of altitude points on the horizon near the surface of the occluder.
-     *
-     * @exception {DeveloperError} <code>positions</code> is a required, non-empty array.
-     * @exception {DeveloperError} <code>occluderBoundingSphere</code> is required.
-     * @exception {DeveloperError} <code>occludeePosition</code> must have a value other than <code>occluderBoundingSphere.center</code>.
-     *
-     * @return {Object} An object containing two attributes: <code>occludeePoint</code> and <code>valid</code>
-     * which is a boolean value.
-     *
-     * @example
-     * var cameraPosition = new Cartesian3(0, 0, 0);
-     * var occluderBoundingSphere = new BoundingSphere(new Cartesian3(0, 0, -8), 2);
-     * var occluder = new Occluder(occluderBoundingSphere, cameraPosition);
-     * var positions = [new Cartesian3(-0.25, 0, -5.3), new Cartesian3(0.25, 0, -5.3)];
-     * var tileOccluderSphere = BoundingSphere.fromPoints(positions);
-     * var occludeePosition = tileOccluderSphere.center;
-     * var occludeePt = occluder.getOccludeePoint(occluderBoundingSphere, occludeePosition, positions);
-     *
-     */
-    Occluder.getOccludeePoint = function(occluderBoundingSphere, occludeePosition, positions) {
-        // Validate input data
-        if (!occluderBoundingSphere) {
-            throw new DeveloperError('occluderBoundingSphere is required.');
-        }
-
-        if (!positions) {
-            throw new DeveloperError('positions is required.');
-        }
-
-        if (positions.length === 0) {
-            throw new DeveloperError('positions must contain at least one element');
-        }
-
-        var occludeePos = Cartesian3.clone(occludeePosition);
-        var occluderPosition = occluderBoundingSphere.center.clone();
-        var occluderRadius = occluderBoundingSphere.radius;
-        var numPositions = positions.length;
-
-        if (occluderPosition.equals(occludeePosition)) {
-            throw new DeveloperError('occludeePosition must be different than occluderBoundingSphere.center');
-        }
-
-        // Compute a plane with a normal from the occluder to the occludee position.
-        var occluderPlaneNormal = occludeePos.subtract(occluderPosition).normalize();
-        var occluderPlaneD = -(occluderPlaneNormal.dot(occluderPosition));
-
-        //For each position, determine the horizon intersection. Choose the position and intersection
-        //that results in the greatest angle with the occcluder plane.
-        var aRotationVector = Occluder._anyRotationVector(occluderPosition, occluderPlaneNormal, occluderPlaneD);
-        var dot = Occluder._horizonToPlaneNormalDotProduct(occluderBoundingSphere, occluderPlaneNormal, occluderPlaneD, aRotationVector, positions[0]);
-        if (!dot) {
-            //The position is inside the mimimum radius, which is invalid
-            return undefined;
-        }
-        var tempDot;
-        for ( var i = 1; i < numPositions; ++i) {
-            tempDot = Occluder._horizonToPlaneNormalDotProduct(occluderBoundingSphere, occluderPlaneNormal, occluderPlaneD, aRotationVector, positions[i]);
-            if (!tempDot) {
-                //The position is inside the minimum radius, which is invalid
-                return undefined;
-            }
-            if (tempDot < dot) {
-                dot = tempDot;
-            }
-        }
-        //Verify that the dot is not near 90 degress
-        if (dot < 0.00174532836589830883577820272085) {
-            return undefined;
-        }
-
-        var distance = occluderRadius / dot;
-        return occluderPosition.add(occluderPlaneNormal.multiplyByScalar(distance));
-    };
-
-    var computeOccludeePointFromExtentScratch = [];
-    /**
-     * Computes a point that can be used as the occludee position to the visibility functions from an extent.
-     *
-     * @memberof Occluder
-     *
-     * @param {Extent} extent The extent used to create a bounding sphere.
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid used to determine positions of the extent.
-     *
-     * @exception {DeveloperError} extent is required.
-     *
-     * @return {Object} An object containing two attributes: <code>occludeePoint</code> and <code>valid</code>
-     * which is a boolean value.
-     */
-    Occluder.computeOccludeePointFromExtent = function(extent, ellipsoid) {
-        if (typeof extent === 'undefined') {
-            throw new DeveloperError('extent is required.');
-        }
-
-        ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-        var positions = extent.subsample(ellipsoid, computeOccludeePointFromExtentScratch);
-        var bs = BoundingSphere.fromPoints(positions);
-
-        // TODO: get correct ellipsoid center
-        var ellipsoidCenter = Cartesian3.ZERO;
-        if (!ellipsoidCenter.equals(bs.center)) {
-            return Occluder.getOccludeePoint(new BoundingSphere(ellipsoidCenter, ellipsoid.getMinimumRadius()), bs.center, positions);
-        }
-
-        return undefined;
-    };
-
-    Occluder._anyRotationVector = function(occluderPosition, occluderPlaneNormal, occluderPlaneD) {
-        var tempVec0 = occluderPlaneNormal.clone().abs();
-        var majorAxis = tempVec0.x > tempVec0.y ? 0 : 1;
-        if (((majorAxis === 0) && (tempVec0.z > tempVec0.x)) || ((majorAxis === 1) && (tempVec0.z > tempVec0.y))) {
-            majorAxis = 2;
-        }
-        var tempVec1 = new Cartesian3();
-        if (majorAxis === 0) {
-            tempVec0.x = occluderPosition.x;
-            tempVec0.y = occluderPosition.y + 1.0;
-            tempVec0.z = occluderPosition.z + 1.0;
-            tempVec1 = Cartesian3.UNIT_X;
-        } else if (majorAxis === 1) {
-            tempVec0.x = occluderPosition.x + 1.0;
-            tempVec0.y = occluderPosition.y;
-            tempVec0.z = occluderPosition.z + 1.0;
-            tempVec1 = Cartesian3.UNIT_Y;
-        } else {
-            tempVec0.x = occluderPosition.x + 1.0;
-            tempVec0.y = occluderPosition.y + 1.0;
-            tempVec0.z = occluderPosition.z;
-            tempVec1 = Cartesian3.UNIT_Z;
-        }
-        var u = ((occluderPlaneNormal.dot(tempVec0)) + occluderPlaneD) / -(occluderPlaneNormal.dot(tempVec1));
-        return ((tempVec0.add(tempVec1.multiplyByScalar(u))).subtract(occluderPosition)).normalize();
-    };
-
-    Occluder._rotationVector = function(occluderPosition, occluderPlaneNormal, occluderPlaneD, position, anyRotationVector) {
-        //Determine the angle between the occluder plane normal and the position direction
-        var positionDirection = position.subtract(occluderPosition);
-        positionDirection = positionDirection.normalize();
-        if (occluderPlaneNormal.dot(positionDirection) < 0.99999998476912904932780850903444) {
-            var crossProduct = occluderPlaneNormal.cross(positionDirection);
-            var length = crossProduct.magnitude();
-            if (length > CesiumMath.EPSILON13) {
-                return crossProduct.normalize();
-            }
-        }
-        //The occluder plane normal and the position direction are colinear. Use any
-        //vector in the occluder plane as the rotation vector
-        return anyRotationVector;
-    };
-
-    Occluder._horizonToPlaneNormalDotProduct = function(occluderBS, occluderPlaneNormal, occluderPlaneD, anyRotationVector, position) {
-        var pos = Cartesian3.clone(position);
-        var occluderPosition = occluderBS.center.clone();
-        var occluderRadius = occluderBS.radius;
-
-        //Verify that the position is outside the occluder
-        var positionToOccluder = occluderPosition.subtract(pos);
-        var occluderToPositionDistanceSquared = positionToOccluder.magnitudeSquared();
-        var occluderRadiusSquared = occluderRadius * occluderRadius;
-        if (occluderToPositionDistanceSquared < occluderRadiusSquared) {
-            return false;
-        }
-
-        //Horizon parameters
-        var horizonDistanceSquared = occluderToPositionDistanceSquared - occluderRadiusSquared;
-        var horizonDistance = Math.sqrt(horizonDistanceSquared);
-        var occluderToPositionDistance = Math.sqrt(occluderToPositionDistanceSquared);
-        var invOccluderToPositionDistance = 1.0 / occluderToPositionDistance;
-        var cosTheta = horizonDistance * invOccluderToPositionDistance;
-        var horizonPlaneDistance = cosTheta * horizonDistance;
-        positionToOccluder = positionToOccluder.normalize();
-        var horizonPlanePosition = pos.add(positionToOccluder.multiplyByScalar(horizonPlaneDistance));
-        var horizonCrossDistance = Math.sqrt(horizonDistanceSquared - (horizonPlaneDistance * horizonPlaneDistance));
-
-        //Rotate the position to occluder vector 90 degrees
-        var tempVec = this._rotationVector(occluderPosition, occluderPlaneNormal, occluderPlaneD, pos, anyRotationVector);
-        var horizonCrossDirection = new Cartesian3(
-                (tempVec.x * tempVec.x * positionToOccluder.x) + ((tempVec.x * tempVec.y - tempVec.z) * positionToOccluder.y) + ((tempVec.x * tempVec.z + tempVec.y) * positionToOccluder.z),
-                ((tempVec.x * tempVec.y + tempVec.z) * positionToOccluder.x) + (tempVec.y * tempVec.y * positionToOccluder.y) + ((tempVec.y * tempVec.z - tempVec.x) * positionToOccluder.z),
-                ((tempVec.x * tempVec.z - tempVec.y) * positionToOccluder.x) + ((tempVec.y * tempVec.z + tempVec.x) * positionToOccluder.y) + (tempVec.z * tempVec.z * positionToOccluder.z));
-        horizonCrossDirection = horizonCrossDirection.normalize();
-
-        //Horizon positions
-        var offset = horizonCrossDirection.multiplyByScalar(horizonCrossDistance);
-        tempVec = ((horizonPlanePosition.add(offset)).subtract(occluderPosition)).normalize();
-        var dot0 = occluderPlaneNormal.dot(tempVec);
-        tempVec = ((horizonPlanePosition.subtract(offset)).subtract(occluderPosition)).normalize();
-        var dot1 = occluderPlaneNormal.dot(tempVec);
-        return (dot0 < dot1) ? dot0 : dot1;
-    };
-
-    return Occluder;
-});
-/*global define*/
 define('Workers/createTaskProcessorWorker',[],function() {
     
 
@@ -9760,19 +9009,17 @@ define('Workers/createTaskProcessorWorker',[],function() {
 /*global define*/
 define('Workers/createVerticesFromHeightmap',[
         '../Core/BoundingSphere',
-        '../Core/Cartesian3',
         '../Core/Ellipsoid',
+        '../Core/EllipsoidalOccluder',
         '../Core/Extent',
         '../Core/HeightmapTessellator',
-        '../Core/Occluder',
         './createTaskProcessorWorker'
     ], function(
         BoundingSphere,
-        Cartesian3,
         Ellipsoid,
+        EllipsoidalOccluder,
         Extent,
         HeightmapTessellator,
-        Occluder,
         createTaskProcessorWorker) {
     
 
@@ -9798,18 +9045,9 @@ define('Workers/createVerticesFromHeightmap',[
         var statistics = HeightmapTessellator.computeVertices(parameters);
         var boundingSphere3D = BoundingSphere.fromVertices(vertices, parameters.relativeToCenter, numberOfAttributes);
 
-        var extent = parameters.extent;
         var ellipsoid = parameters.ellipsoid;
-
-        // We should really take the heights into account when computing the occludee point.
-        // And we should compute the occludee point using something less over-conservative than
-        // the ellipsoid-min-radius bounding sphere.  But these two wrongs cancel each other out
-        // enough that I've never seen artifacts from it.  Fixing this up (and perhaps culling
-        // more tiles as a result) is on the roadmap.
-        var occludeePointInScaledSpace = Occluder.computeOccludeePointFromExtent(extent, ellipsoid);
-        if (typeof occludeePointInScaledSpace !== 'undefined') {
-            Cartesian3.multiplyComponents(occludeePointInScaledSpace, ellipsoid.getOneOverRadii(), occludeePointInScaledSpace);
-        }
+        var occluder = new EllipsoidalOccluder(ellipsoid);
+        var occludeePointInScaledSpace = occluder.computeHorizonCullingPointFromVertices(parameters.relativeToCenter, vertices, numberOfAttributes, parameters.relativeToCenter);
 
         return {
             vertices : vertices.buffer,

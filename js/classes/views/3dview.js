@@ -287,7 +287,7 @@ var AG3DVIEW = function(element) {
     /**
      * Listen for requests to change the view.
      */
-    jQuery(document).bind('agsattrack.change3dview', function(event, view) {
+    jQuery(document).bind('agsattrack.change3dview', function(event, view) {      
         if (AGSETTINGS.getHaveWebGL()) {
             setView(view);
         }
@@ -329,7 +329,7 @@ var AG3DVIEW = function(element) {
         */     
     }
     
-    function setView(view) {
+    function setView(view) {   
         if (scene.mode !== Cesium.SceneMode.MORPHING) {
             switch (view) {
             case 'twod':
@@ -752,6 +752,7 @@ var AG3DVIEW = function(element) {
                       alpha : 0.4
                     };
                 }
+//rcle.material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.CheckerboardType);
                                 
                 circle.setPositions(
                         Cesium.Shapes.computeCircleBoundary(
@@ -765,9 +766,17 @@ var AG3DVIEW = function(element) {
                 footPrint = footprintCircle.add();
                 
                 if (selected[i].get('elevation') >= AGSETTINGS.getAosEl()) {
-                    footPrint.setColor(new Cesium.Color(0.0, 1.0, 0.0, 1.0));
+                    var _greenMaterial = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
+                    _greenMaterial.uniforms.color = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
+                    _greenMaterial.uniforms.outlineColor = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
+                    _greenMaterial.uniforms.outlinewidth = 1.0;
+                    footPrint.setMaterial(_greenMaterial);
                 } else {
-                    footPrint.setColor(new Cesium.Color(1.0, 0.0, 0.0, 1.0));
+                    var _redMaterial = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
+                    _redMaterial.uniforms.color = new Cesium.Color(1.0, 1.0, 0.0, 1.0);
+                    _redMaterial.uniforms.outlineColor = new Cesium.Color(1.0, 1.0, 0.0, 1.0);
+                    _redMaterial.uniforms.outlinewidth = 1.0;                    
+                    footPrint.setMaterial(_redMaterial); 
                 }
                 footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
                         .cartographicToCartesian(new Cesium.Cartographic.fromDegrees(
@@ -834,11 +843,13 @@ var AG3DVIEW = function(element) {
         var now = new Cesium.JulianDate();
         var cartographic;
         var target;
+        var _material = null;
         
         polylineCollection.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                 Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                 Cesium.Cartesian3.ZERO);
       
+
         lastPos = cartPoints[0];
         for ( var i = 0; i < cartPoints.length; i++) {    
             if (checkOkToPlot(lastPos, cartPoints[i])) {
@@ -846,6 +857,22 @@ var AG3DVIEW = function(element) {
                 pos = pos.multiplyByScalar(1000);
                 points.push(pos);
                 
+                switch (colour) {
+                    case 'red':
+                        _material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
+                        _material.uniforms.color = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
+                        _material.uniforms.outlineColor = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
+                        _material.uniforms.outlinewidth = 1.0;
+                        break;
+                    
+                    case 'green':
+                        _material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
+                        _material.uniforms.color = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
+                        _material.uniforms.outlineColor = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
+                        _material.uniforms.outlinewidth = 1.0;            
+                        break;
+                }
+                        
                 /**
                 * Add the lines from satelite point to ssp
                 */
@@ -857,7 +884,7 @@ var AG3DVIEW = function(element) {
                     polylineCollection.add({
                         positions : selectedPoints,
                         width : 1,
-                        color : colour
+                        material : _material
                     });
                 }
                 
@@ -865,10 +892,26 @@ var AG3DVIEW = function(element) {
             lastPos = cartPoints[i];
         } 
         
+        switch (colour) {
+            case 'red':
+                _material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
+                _material.uniforms.color = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
+                _material.uniforms.outlineColor = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
+                _material.uniforms.outlinewidth = 1.0;
+                break;
+            
+            case 'green':
+                _material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
+                _material.uniforms.color = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
+                _material.uniforms.outlineColor = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
+                _material.uniforms.outlinewidth = 1.0;         
+                break;
+        }
+                        
         polylineCollection.add({
             positions : points,
             width : width,
-            color : colour
+            material : _material
         });
                                           
     }
@@ -892,12 +935,12 @@ var AG3DVIEW = function(element) {
         
         if (typeof orbit !== 'undefined' && typeof orbit.points[0] !== 'undefined') {
             if (sat.isGeostationary() && sat.get('elevation') > 0) {
-                plotLine(orbit.points, Cesium.Color.GREEN, passLines, 1, false);
+                plotLine(orbit.points, 'green', passLines, 1, false);
             } else {
                 var pass = sat.getNextPass();
-                plotLine(orbit.points, Cesium.Color.RED, passLines, 1, false);
+                plotLine(orbit.points, 'red', passLines, 1, false);
                 if (parseInt(sat.get('orbitnumber'),10) === parseInt(pass.orbitNumber,10)) {
-                    plotLine(pass.pass, Cesium.Color.GREEN, passLines, 2, true);
+                    plotLine(pass.pass, 'green', passLines, 2, true);
                 }
             }
         }
@@ -998,7 +1041,7 @@ var AG3DVIEW = function(element) {
         centralBody.terrainProvider = terrainProvider;
         jQuery('#3d-show-terrain').setButtonState(useTerrainProvider);
     }
-        
+               
     function init3DView() {
         
         ellipsoid = Cesium.Ellipsoid.WGS84;
@@ -1100,6 +1143,8 @@ var AG3DVIEW = function(element) {
         });
         scene.getPrimitives().add(_satNameLabels);
 
+        scene.sun = new Cesium.Sun();
+        
         satelliteClickDetails(scene);
         mouseMoveDetails(scene, ellipsoid);
         scene.getPrimitives().add(orbitLines);
@@ -1137,6 +1182,7 @@ var AG3DVIEW = function(element) {
  
             }
         });
+        
     }
     
     /**
