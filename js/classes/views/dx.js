@@ -157,7 +157,7 @@ var AGDXVIEW = function(element) {
                     check = true;
                 }
                 if (check) {
-                    var distance = AGUTIL.getDistance(lat, lon, _locationDatabase[i].lat, -_locationDatabase[i].lon);
+                    var distance = AGUTIL.getDistance(lat, lon, _locationDatabase[i].lat, _locationDatabase[i].lon);
                     if (distance < (footprint/2)) {
                         data.push({
                             name: _locationDatabase[i].name,
