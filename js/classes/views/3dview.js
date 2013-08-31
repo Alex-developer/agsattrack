@@ -745,7 +745,7 @@ var AG3DVIEW = function(element) {
     function drawFootprint() {
         var footPrint;
         var i;
-        
+
         var primitives = scene.getPrimitives();
         for (i=0;i<_footprintPolygons.length;i++) {
             primitives.remove(_footprintPolygons[i]);  
@@ -829,7 +829,9 @@ var AG3DVIEW = function(element) {
                     _mousePosLabel.setShow(true);
                     var lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
                     var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
-                    
+
+//var alt = ellipsoid.cartesianToCartographic(scene.getCamera().position).height;                
+//                    _mousePosLabel.setText((alt / 1000).toFixed(0));
                     _mousePosLabel.setText('(' + AGUTIL.convertDecDegLon(lon, false) + ', ' + AGUTIL.convertDecDegLat(lat, false) + ')');
                     _mousePosLabel.setPosition(cartesian);
                 } else {

@@ -20,10 +20,10 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-
+(function () {
 /*global define*/
 define('Core/freezeObject',[],function() {
-    
+    "use strict";
 
     /**
      * Freezes an object, using Object.freeze if available, otherwise returns
@@ -48,7 +48,7 @@ define('Core/defaultValue',[
         './freezeObject'
     ], function(
         freezeObject) {
-    
+    "use strict";
 
     /**
      * Returns the first parameter if not undefined, otherwise the second parameter.
@@ -60,7 +60,7 @@ define('Core/defaultValue',[
      * param = defaultValue(param, 'default');
      */
     var defaultValue = function(a, b) {
-        if (typeof a !== 'undefined') {
+        if (a !== undefined) {
             return a;
         }
         return b;
@@ -76,7 +76,7 @@ define('Core/defaultValue',[
 });
 /*global define*/
 define('Core/DeveloperError',[],function() {
-    
+    "use strict";
 
     /**
      * Constructs an exception object that is thrown due to a developer error, e.g., invalid argument,
@@ -98,37 +98,44 @@ define('Core/DeveloperError',[],function() {
     var DeveloperError = function(message) {
         /**
          * 'DeveloperError' indicating that this exception was thrown due to a developer error.
-         * @type String
+         * @type {String}
          * @constant
          */
         this.name = 'DeveloperError';
 
         /**
          * The explanation for why this exception was thrown.
-         * @type String
+         * @type {String}
          * @constant
          */
         this.message = message;
 
         /**
          * The Error object containing the stack trace.
-         * @type Error
+         * @type {Error}
          * @constant
          *
          * @see <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error object on Mozilla Developer Network</a>.
          */
         this.error = new Error();
+
+        /**
+         * The stack trace of this exception.
+         * @type {String}
+         * @constant
+         */
+        this.stack = this.error.stack;
     };
 
-    DeveloperError.prototype.toString = function () {
+    DeveloperError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
-        if (typeof this.error !== 'undefined') {
-            if (typeof this.error.stack !== 'undefined') {
-                str += '\n' + this.error.stack.toString();
-            } else {
-                str += '\n' + this.error.toString();
-            }
+
+        if (typeof this.stack !== 'undefined') {
+            str += '\n' + this.stack.toString();
+        } else {
+            str += '\n' + this.error.toString();
         }
+
         return str;
     };
 
@@ -144,7 +151,7 @@ define('Core/Cartesian3',[
         defaultValue,
         DeveloperError,
         freezeObject) {
-    
+    "use strict";
 
     /**
      * A 3D Cartesian point.
@@ -161,19 +168,22 @@ define('Core/Cartesian3',[
     var Cartesian3 = function(x, y, z) {
         /**
          * The X component.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.x = defaultValue(x, 0.0);
 
         /**
          * The Y component.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.y = defaultValue(y, 0.0);
 
         /**
          * The Z component.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.z = defaultValue(z, 0.0);
     };
@@ -275,13 +285,11 @@ define('Core/Cartesian3',[
      *
      * @param {Cartesian3} cartesian The Cartesian to duplicate.
      * @param {Cartesian3} [result] The object onto which to store the result.
-     * @return {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
+     * @return {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided. (Returns undefined if cartesian is undefined)
      */
     Cartesian3.clone = function(cartesian, result) {
         if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
+            return undefined;
         }
 
         if (typeof result === 'undefined') {
@@ -1098,7 +1106,7 @@ define('Core/Cartesian4',[
         defaultValue,
         DeveloperError,
         freezeObject) {
-    
+    "use strict";
 
     /**
      * A 4D Cartesian point.
@@ -1116,25 +1124,29 @@ define('Core/Cartesian4',[
     var Cartesian4 = function(x, y, z, w) {
         /**
          * The X component.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.x = defaultValue(x, 0.0);
 
         /**
          * The Y component.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.y = defaultValue(y, 0.0);
 
         /**
          * The Z component.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.z = defaultValue(z, 0.0);
 
         /**
          * The W component.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.w = defaultValue(w, 0.0);
     };
@@ -1212,13 +1224,11 @@ define('Core/Cartesian4',[
      *
      * @param {Cartesian4} cartesian The Cartesian to duplicate.
      * @param {Cartesian4} [result] The object onto which to store the result.
-     * @return {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
+     * @return {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided. (Returns undefined if cartesian is undefined)
      */
     Cartesian4.clone = function(cartesian, result) {
         if (typeof cartesian === 'undefined') {
-            throw new DeveloperError('cartesian is required');
+            return undefined;
         }
 
         if (typeof result === 'undefined') {
@@ -1952,7 +1962,7 @@ define('Core/Math',[
        ], function(
          defaultValue,
          DeveloperError) {
-    
+    "use strict";
 
     /**
      * Math functions.
@@ -1962,157 +1972,164 @@ define('Core/Math',[
 
     /**
      * 0.1
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON1 = 0.1;
 
     /**
      * 0.01
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON2 = 0.01;
 
     /**
      * 0.001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON3 = 0.001;
 
     /**
      * 0.0001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON4 = 0.0001;
 
     /**
      * 0.00001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON5 = 0.00001;
 
     /**
      * 0.000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON6 = 0.000001;
 
     /**
      * 0.0000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON7 = 0.0000001;
 
     /**
      * 0.00000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON8 = 0.00000001;
 
     /**
      * 0.000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON9 = 0.000000001;
 
     /**
      * 0.0000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON10 = 0.0000000001;
 
     /**
      * 0.00000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON11 = 0.00000000001;
 
     /**
      * 0.000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON12 = 0.000000000001;
 
     /**
      * 0.0000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON13 = 0.0000000000001;
 
     /**
      * 0.00000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON14 = 0.00000000000001;
 
     /**
      * 0.000000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON15 = 0.000000000000001;
 
     /**
      * 0.0000000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON16 = 0.0000000000000001;
 
     /**
      * 0.00000000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON17 = 0.00000000000000001;
 
     /**
      * 0.000000000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON18 = 0.000000000000000001;
 
     /**
      * 0.0000000000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON19 = 0.0000000000000000001;
 
     /**
      * 0.00000000000000000001
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.EPSILON20 = 0.00000000000000000001;
 
     /**
      * 3.986004418e14
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.GRAVITATIONALPARAMETER = 3.986004418e14;
 
     /**
      * Radius of the sun in meters: 6.995e8
+     * @type {Number}
      * @constant
-     * @type Number
      */
     CesiumMath.SOLAR_RADIUS = 6.995e8;
+
+    /**
+     * 64 * 1024
+     * @type {Number}
+     * @constant
+     */
+    CesiumMath.SIXTY_FOUR_KILOBYTES = 64 * 1024;
 
     /**
      * Returns the sign of the value; 1 if the value is positive, -1 if the value is
@@ -2198,10 +2215,10 @@ define('Core/Math',[
     };
 
     /**
-     * 1/pi
+     * pi
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_pi
      */
     CesiumMath.PI = Math.PI;
@@ -2209,8 +2226,8 @@ define('Core/Math',[
     /**
      * 1/pi
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_oneOverPi
      */
     CesiumMath.ONE_OVER_PI = 1.0 / Math.PI;
@@ -2218,18 +2235,17 @@ define('Core/Math',[
     /**
      * pi/2
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_piOverTwo
      */
     CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
 
     /**
      * pi/3
-     * <br /><br />
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_piOverThree
      */
     CesiumMath.PI_OVER_THREE = Math.PI / 3.0;
@@ -2237,8 +2253,8 @@ define('Core/Math',[
     /**
      * pi/4
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_piOverFour
      */
     CesiumMath.PI_OVER_FOUR = Math.PI / 4.0;
@@ -2246,8 +2262,8 @@ define('Core/Math',[
     /**
      * pi/6
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_piOverSix
      */
     CesiumMath.PI_OVER_SIX = Math.PI / 6.0;
@@ -2255,8 +2271,8 @@ define('Core/Math',[
     /**
      * 3pi/2
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_threePiOver2
      */
     CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
@@ -2264,8 +2280,8 @@ define('Core/Math',[
     /**
      * 2pi
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_twoPi
      */
     CesiumMath.TWO_PI = 2.0 * Math.PI;
@@ -2273,8 +2289,8 @@ define('Core/Math',[
     /**
      * 1/2pi
      *
-     * @constant
      * @type {Number}
+     * @constant
      * @see czm_oneOverTwoPi
      */
     CesiumMath.ONE_OVER_TWO_PI = 1.0 / (2.0 * Math.PI);
@@ -2282,8 +2298,9 @@ define('Core/Math',[
     /**
      * The number of radians in a degree.
      *
-     * @constant
      * @type {Number}
+     * @constant
+     * @default Math.PI / 180.0
      * @see czm_radiansPerDegree
      */
     CesiumMath.RADIANS_PER_DEGREE = Math.PI / 180.0;
@@ -2291,8 +2308,9 @@ define('Core/Math',[
     /**
      * The number of degrees in a radian.
      *
-     * @constant
      * @type {Number}
+     * @constant
+     * @default 180.0 / Math.PI
      * @see czm_degreesPerRadian
      */
     CesiumMath.DEGREES_PER_RADIAN = 180.0 / Math.PI;
@@ -2300,8 +2318,9 @@ define('Core/Math',[
     /**
      * The number of radians in an arc second.
      *
-     * @constant
      * @type {Number}
+     * @constant
+     * @default {@link CesiumMath.RADIANS_PER_DEGREE} / 3600.0
      * @see czm_radiansPerArcSecond
      */
     CesiumMath.RADIANS_PER_ARCSECOND = CesiumMath.RADIANS_PER_DEGREE / 3600.0;
@@ -2508,7 +2527,7 @@ define('Core/Cartographic',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    
+    "use strict";
 
     /**
      * A position defined by longitude, latitude, and height.
@@ -2524,19 +2543,22 @@ define('Core/Cartographic',[
     var Cartographic = function(longitude, latitude, height) {
         /**
          * The longitude, in radians.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.longitude = defaultValue(longitude, 0.0);
 
         /**
          * The latitude, in radians.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.latitude = defaultValue(latitude, 0.0);
 
         /**
          * The height, in meters, above the ellipsoid.
-         * @type Number
+         * @type {Number}
+         * @default 0.0
          */
         this.height = defaultValue(height, 0.0);
     };
@@ -2574,13 +2596,11 @@ define('Core/Cartographic',[
      *
      * @param {Cartographic} cartographic The cartographic to duplicate.
      * @param {Cartographic} [result] The object onto which to store the result.
-     * @return {Cartographic} The modified result parameter or a new Cartographic instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartographic is required.
+     * @return {Cartographic} The modified result parameter or a new Cartographic instance if one was not provided. (Returns undefined if cartographic is undefined)
      */
     Cartographic.clone = function(cartographic, result) {
         if (typeof cartographic === 'undefined') {
-            throw new DeveloperError('cartographic is required');
+            return undefined;
         }
         if (typeof result === 'undefined') {
             return new Cartographic(cartographic.longitude, cartographic.latitude, cartographic.height);
@@ -2724,7 +2744,7 @@ define('Core/Ellipsoid',[
          CesiumMath,
          Cartesian3,
          Cartographic) {
-    
+    "use strict";
 
     /**
      * A quadratic surface defined in Cartesian coordinates by the equation
@@ -2789,9 +2809,12 @@ define('Core/Ellipsoid',[
      * @param {Ellipsoid} ellipsoid The ellipsoid to duplicate.
      * @param {Ellipsoid} [result] The object onto which to store the result, or undefined if a new
      *                    instance should be created.
-     * @returns {Ellipsoid} The cloned Ellipsoid.
+     * @returns {Ellipsoid} The cloned Ellipsoid. (Returns undefined if ellipsoid is undefined)
      */
     Ellipsoid.clone = function(ellipsoid, result) {
+        if (typeof ellipsoid === 'undefined') {
+            return undefined;
+        }
         var radii = ellipsoid._radii;
 
         if (typeof result === 'undefined') {
@@ -2896,6 +2919,19 @@ define('Core/Ellipsoid',[
      */
     Ellipsoid.prototype.getMaximumRadius = function() {
         return this._maximumRadius;
+    };
+
+    /**
+     * Duplicates an Ellipsoid instance.
+     *
+     * @memberof Ellipsoid
+     *
+     * @param {Ellipsoid} [result] The object onto which to store the result, or undefined if a new
+     *                    instance should be created.
+     * @returns {Ellipsoid} The cloned Ellipsoid.
+     */
+    Ellipsoid.prototype.clone = function(result) {
+        return Ellipsoid.clone(this, result);
     };
 
     /**
@@ -3289,7 +3325,7 @@ define('Core/GeographicProjection',[
         Cartesian3,
         Cartographic,
         Ellipsoid) {
-    
+    "use strict";
 
     /**
      * A simple map projection where longitude and latitude are linearly mapped to X and Y by multiplying
@@ -3388,7 +3424,7 @@ define('Core/GeographicProjection',[
 
 /*global define*/
 define('Core/Enumeration',[],function() {
-    
+    "use strict";
 
     /**
      * Constructs an enumeration that contains both a numeric value and a name.
@@ -3410,13 +3446,15 @@ define('Core/Enumeration',[],function() {
     var Enumeration = function(value, name, properties) {
         /**
          * The numeric value of the enumeration.
-         * @type Number
+         * @type {Number}
+         * @default undefined
          */
         this.value = value;
 
         /**
          * The name of the enumeration for debugging purposes.
-         * @type String
+         * @type {String}
+         * @default undefined
          */
         this.name = name;
 
@@ -3453,9 +3491,10 @@ define('Core/Enumeration',[],function() {
 
     return Enumeration;
 });
+
 /*global define*/
 define('Core/Intersect',['./Enumeration'], function(Enumeration) {
-    
+    "use strict";
 
     /**
      * This enumerated type is used in determining where, relative to the frustum, an
@@ -3469,24 +3508,27 @@ define('Core/Intersect',['./Enumeration'], function(Enumeration) {
         /**
          * Represents that an object is not contained within the frustum.
          *
-         * @constant
          * @type {Enumeration}
+         * @constant
+         * @default -1
          */
         OUTSIDE : new Enumeration(-1, 'OUTSIDE'),
 
         /**
          * Represents that an object intersects one of the frustum's planes.
          *
-         * @constant
          * @type {Enumeration}
+         * @constant
+         * @default 0
          */
         INTERSECTING : new Enumeration(0, 'INTERSECTING'),
 
         /**
          * Represents that an object is fully within the frustum.
          *
-         * @constant
          * @type {Enumeration}
+         * @constant
+         * @default 1
          */
         INSIDE : new Enumeration(1, 'INSIDE')
     };
@@ -3496,7 +3538,7 @@ define('Core/Intersect',['./Enumeration'], function(Enumeration) {
 
 /*global define*/
 define('Core/Interval',['./defaultValue'], function(defaultValue) {
-    
+    "use strict";
 
     /**
      * Represents the closed interval [start, stop].
@@ -3510,17 +3552,20 @@ define('Core/Interval',['./defaultValue'], function(defaultValue) {
         /**
          * The beginning of the interval.
          * @type {Number}
+         * @default 0.0
          */
         this.start = defaultValue(start, 0.0);
         /**
          * The end of the interval.
          * @type {Number}
+         * @default 0.0
          */
         this.stop = defaultValue(stop, 0.0);
     };
 
     return Interval;
 });
+
 /*global define*/
 define('Core/Matrix3',[
         './Cartesian3',
@@ -3532,7 +3577,7 @@ define('Core/Matrix3',[
         defaultValue,
         DeveloperError,
         freezeObject) {
-    
+    "use strict";
 
     /**
      * A 3x3 matrix, indexable as a column-major order array.
@@ -3578,13 +3623,11 @@ define('Core/Matrix3',[
      *
      * @param {Matrix3} matrix The matrix to duplicate.
      * @param {Matrix3} [result] The object onto which to store the result.
-     * @return {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided.
-     *
-     * @exception {DeveloperError} matrix is required.
+     * @return {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided. (Returns undefined if matrix is undefined)
      */
     Matrix3.clone = function(values, result) {
         if (typeof values === 'undefined') {
-            throw new DeveloperError('values is required');
+            return undefined;
         }
         if (typeof result === 'undefined') {
             return new Matrix3(values[0], values[3], values[6],
@@ -3614,7 +3657,12 @@ define('Core/Matrix3',[
      *
      * @exception {DeveloperError} values is required.
      */
-    Matrix3.fromColumnMajorArray = Matrix3.clone;
+    Matrix3.fromColumnMajorArray = function(values, result) {
+        if (typeof values === 'undefined') {
+            throw new DeveloperError('values parameter is required');
+        }
+        return Matrix3.clone(values, result);
+    };
 
     /**
      * Creates a Matrix3 instance from a row-major order array.
@@ -4622,7 +4670,7 @@ define('Core/Matrix3',[
 });
 /*global define*/
 define('Core/RuntimeError',[],function() {
-    
+    "use strict";
 
     /**
      * Constructs an exception object that is thrown due to an error that can occur at runtime, e.g.,
@@ -4643,37 +4691,46 @@ define('Core/RuntimeError',[],function() {
     var RuntimeError = function(message) {
         /**
          * 'RuntimeError' indicating that this exception was thrown due to a runtime error.
-         * @type String
+         * @type {String}
          * @constant
+         * @default
          */
         this.name = 'RuntimeError';
 
         /**
          * The explanation for why this exception was thrown.
-         * @type String
+         * @type {String}
          * @constant
          */
         this.message = message;
 
         /**
          * The Error object containing the stack trace.
-         * @type Error
+         * @type {Error}
          * @constant
+         * @default Error()
          *
          * @see <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error'>Error object on Mozilla Developer Network</a>.
          */
         this.error = new Error();
+
+        /**
+         * The stack trace of this exception.
+         * @type {String}
+         * @constant
+         */
+        this.stack = this.error.stack;
     };
 
-    RuntimeError.prototype.toString = function () {
+    RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
-        if (typeof this.error !== 'undefined') {
-            if (typeof this.error.stack !== 'undefined') {
-                str += '\n' + this.error.stack.toString();
-            } else {
-                str += '\n' + this.error.toString();
-            }
+
+        if (typeof this.stack !== 'undefined') {
+            str += '\n' + this.stack.toString();
+        } else {
+            str += '\n' + this.error.toString();
         }
+
         return str;
     };
 
@@ -4699,7 +4756,7 @@ define('Core/Matrix4',[
         CesiumMath,
         Matrix3,
         RuntimeError) {
-    
+    "use strict";
 
     /**
      * A 4x4 matrix, indexable as a column-major order array.
@@ -4767,36 +4824,34 @@ define('Core/Matrix4',[
      *
      * @param {Matrix4} matrix The matrix to duplicate.
      * @param {Matrix4} [result] The object onto which to store the result.
-     * @return {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} matrix is required.
+     * @return {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided. (Returns undefined if matrix is undefined)
      */
-    Matrix4.clone = function(values, result) {
-        if (typeof values === 'undefined') {
-            throw new DeveloperError('values is required');
+    Matrix4.clone = function(matrix, result) {
+        if (typeof matrix === 'undefined') {
+            return undefined;
         }
         if (typeof result === 'undefined') {
-            return new Matrix4(values[0], values[4], values[8], values[12],
-                               values[1], values[5], values[9], values[13],
-                               values[2], values[6], values[10], values[14],
-                               values[3], values[7], values[11], values[15]);
+            return new Matrix4(matrix[0], matrix[4], matrix[8], matrix[12],
+                               matrix[1], matrix[5], matrix[9], matrix[13],
+                               matrix[2], matrix[6], matrix[10], matrix[14],
+                               matrix[3], matrix[7], matrix[11], matrix[15]);
         }
-        result[0] = values[0];
-        result[1] = values[1];
-        result[2] = values[2];
-        result[3] = values[3];
-        result[4] = values[4];
-        result[5] = values[5];
-        result[6] = values[6];
-        result[7] = values[7];
-        result[8] = values[8];
-        result[9] = values[9];
-        result[10] = values[10];
-        result[11] = values[11];
-        result[12] = values[12];
-        result[13] = values[13];
-        result[14] = values[14];
-        result[15] = values[15];
+        result[0] = matrix[0];
+        result[1] = matrix[1];
+        result[2] = matrix[2];
+        result[3] = matrix[3];
+        result[4] = matrix[4];
+        result[5] = matrix[5];
+        result[6] = matrix[6];
+        result[7] = matrix[7];
+        result[8] = matrix[8];
+        result[9] = matrix[9];
+        result[10] = matrix[10];
+        result[11] = matrix[11];
+        result[12] = matrix[12];
+        result[13] = matrix[13];
+        result[14] = matrix[14];
+        result[15] = matrix[15];
         return result;
     };
 
@@ -4811,7 +4866,12 @@ define('Core/Matrix4',[
      *
      * @exception {DeveloperError} values is required.
      */
-    Matrix4.fromColumnMajorArray = Matrix4.clone;
+    Matrix4.fromColumnMajorArray = function(values, result) {
+        if (typeof values === 'undefined') {
+            throw new DeveloperError('values parameter is required');
+        }
+        return Matrix4.clone(values, result);
+    };
 
     /**
      * Computes a Matrix4 instance from a row-major order array.
@@ -7052,7 +7112,7 @@ define('Core/BoundingSphere',[
         Intersect,
         Interval,
         Matrix4) {
-    
+    "use strict";
 
     /**
      * A bounding sphere with a center and a radius.
@@ -7069,12 +7129,14 @@ define('Core/BoundingSphere',[
         /**
          * The center point of the sphere.
          * @type {Cartesian3}
+         * @default {@link Cartesian3.ZERO}
          */
         this.center = Cartesian3.clone(defaultValue(center, Cartesian3.ZERO));
 
         /**
          * The radius of the sphere.
          * @type {Number}
+         * @default 0.0
          */
         this.radius = defaultValue(radius, 0.0);
     };
@@ -7314,15 +7376,17 @@ define('Core/BoundingSphere',[
      *
      * @param {Extent} extent The valid extent used to create a bounding sphere.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid used to determine positions of the extent.
+     * @param {Number} [surfaceHeight=0.0] The height above the surface of the ellipsoid.
      * @param {BoundingSphere} [result] The object onto which to store the result.
      * @return {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
-    BoundingSphere.fromExtent3D = function(extent, ellipsoid, result) {
+    BoundingSphere.fromExtent3D = function(extent, ellipsoid, surfaceHeight, result) {
         ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+        surfaceHeight = defaultValue(surfaceHeight, 0.0);
 
         var positions;
         if (typeof extent !== 'undefined') {
-            positions = extent.subsample(ellipsoid, fromExtent3DScratch);
+            positions = extent.subsample(ellipsoid, surfaceHeight, fromExtent3DScratch);
         }
 
         return BoundingSphere.fromPoints(positions, result);
@@ -7551,18 +7615,45 @@ define('Core/BoundingSphere',[
     };
 
     /**
+     * Creates a bounding sphere encompassing an ellipsoid.
+     *
+     * @memberof BoundingSphere
+     *
+     * @param {Ellipsoid} ellipsoid The ellipsoid around which to create a bounding sphere.
+     * @param {BoundingSphere} [result] The object onto which to store the result.
+     *
+     * @return {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
+     *
+     * @exception {DeveloperError} ellipsoid is required.
+     *
+     * @example
+     * var boundingSphere = BoundingSphere.fromEllipsoid(ellipsoid);
+     */
+    BoundingSphere.fromEllipsoid = function(ellipsoid, result) {
+        if (typeof ellipsoid === 'undefined') {
+            throw new DeveloperError('ellipsoid is required.');
+        }
+
+        if (typeof result === 'undefined') {
+            result = new BoundingSphere();
+        }
+
+        Cartesian3.clone(Cartesian3.ZERO, result.center);
+        result.radius = ellipsoid.getMaximumRadius();
+        return result;
+    };
+
+    /**
      * Duplicates a BoundingSphere instance.
      * @memberof BoundingSphere
      *
      * @param {BoundingSphere} sphere The bounding sphere to duplicate.
      * @param {BoundingSphere} [result] The object onto which to store the result.
-     * @return {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
-     *
-     * @exception {DeveloperError} sphere is required.
+     * @return {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided. (Returns undefined if sphere is undefined)
      */
     BoundingSphere.clone = function(sphere, result) {
         if (typeof sphere === 'undefined') {
-            throw new DeveloperError('sphere is required');
+            return undefined;
         }
 
         if (typeof result === 'undefined') {
@@ -7764,6 +7855,118 @@ define('Core/BoundingSphere',[
         return result;
     };
 
+    var projectTo2DNormalScratch = new Cartesian3();
+    var projectTo2DEastScratch = new Cartesian3();
+    var projectTo2DNorthScratch = new Cartesian3();
+    var projectTo2DWestScratch = new Cartesian3();
+    var projectTo2DSouthScratch = new Cartesian3();
+    var projectTo2DCartographicScratch = new Cartographic();
+    var projectTo2DPositionsScratch = new Array(8);
+    for (var n = 0; n < 8; ++n) {
+        projectTo2DPositionsScratch[n] = new Cartesian3();
+    }
+    var projectTo2DProjection = new GeographicProjection();
+    /**
+     * Creates a bounding sphere in 2D from a bounding sphere in 3D world coordinates.
+     * @memberof BoundingSphere
+     *
+     * @param {BoundingSphere} sphere The bounding sphere to transform to 2D.
+     * @param {Object} [projection=GeographicProjection] The projection to 2D.
+     * @param {BoundingSphere} [result] The object onto which to store the result.
+     * @return {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
+     *
+     * @exception {DeveloperError} sphere is required.
+     */
+    BoundingSphere.projectTo2D = function(sphere, projection, result) {
+        if (typeof sphere === 'undefined') {
+            throw new DeveloperError('sphere is required.');
+        }
+
+        projection = defaultValue(projection, projectTo2DProjection);
+
+        var ellipsoid = projection.getEllipsoid();
+        var center = sphere.center;
+        var radius = sphere.radius;
+
+        var normal = ellipsoid.geodeticSurfaceNormal(center, projectTo2DNormalScratch);
+        var east = Cartesian3.cross(Cartesian3.UNIT_Z, normal, projectTo2DEastScratch);
+        Cartesian3.normalize(east, east);
+        var north = Cartesian3.cross(normal, east, projectTo2DNorthScratch);
+        Cartesian3.normalize(north, north);
+
+        Cartesian3.multiplyByScalar(normal, radius, normal);
+        Cartesian3.multiplyByScalar(north, radius, north);
+        Cartesian3.multiplyByScalar(east, radius, east);
+
+        var south = Cartesian3.negate(north, projectTo2DSouthScratch);
+        var west = Cartesian3.negate(east, projectTo2DWestScratch);
+
+        var positions = projectTo2DPositionsScratch;
+
+        // top NE corner
+        var corner = positions[0];
+        Cartesian3.add(normal, north, corner);
+        Cartesian3.add(corner, east, corner);
+
+        // top NW corner
+        corner = positions[1];
+        Cartesian3.add(normal, north, corner);
+        Cartesian3.add(corner, west, corner);
+
+        // top SW corner
+        corner = positions[2];
+        Cartesian3.add(normal, south, corner);
+        Cartesian3.add(corner, west, corner);
+
+        // top SE corner
+        corner = positions[3];
+        Cartesian3.add(normal, south, corner);
+        Cartesian3.add(corner, east, corner);
+
+        Cartesian3.negate(normal, normal);
+
+        // bottom NE corner
+        corner = positions[4];
+        Cartesian3.add(normal, north, corner);
+        Cartesian3.add(corner, east, corner);
+
+        // bottom NW corner
+        corner = positions[5];
+        Cartesian3.add(normal, north, corner);
+        Cartesian3.add(corner, west, corner);
+
+        // bottom SW corner
+        corner = positions[6];
+        Cartesian3.add(normal, south, corner);
+        Cartesian3.add(corner, west, corner);
+
+        // bottom SE corner
+        corner = positions[7];
+        Cartesian3.add(normal, south, corner);
+        Cartesian3.add(corner, east, corner);
+
+        var length = positions.length;
+        for (var i = 0; i < length; ++i) {
+            var position = positions[i];
+            Cartesian3.add(center, position, position);
+            var cartographic = ellipsoid.cartesianToCartographic(position, projectTo2DCartographicScratch);
+            projection.project(cartographic, position);
+        }
+
+        result = BoundingSphere.fromPoints(positions, result);
+
+        // swizzle center components
+        center = result.center;
+        var x = center.x;
+        var y = center.y;
+        var z = center.z;
+        center.x = z;
+        center.y = x;
+        center.z = y;
+
+        return result;
+    };
+
     /**
      * Compares the provided BoundingSphere componentwise and returns
      * <code>true</code> if they are equal, <code>false</code> otherwise.
@@ -7872,6 +8075,18 @@ define('Core/BoundingSphere',[
     };
 
     /**
+     * Creates a bounding sphere in 2D from this bounding sphere. This bounding sphere must be in 3D world coordinates.
+     * @memberof BoundingSphere
+     *
+     * @param {Object} [projection=GeographicProjection] The projection to 2D.
+     * @param {BoundingSphere} [result] The object onto which to store the result.
+     * @return {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
+     */
+    BoundingSphere.prototype.projectTo2D = function(projection, result) {
+        return BoundingSphere.projectTo2D(this, projection, result);
+    };
+
+    /**
      * Compares this BoundingSphere against the provided BoundingSphere componentwise and returns
      * <code>true</code> if they are equal, <code>false</code> otherwise.
      * @memberof BoundingSphere
@@ -7897,7 +8112,7 @@ define('Core/EllipsoidalOccluder',[
         DeveloperError,
         Cartesian3,
         BoundingSphere) {
-    
+    "use strict";
 
     /**
      * Determine whether or not other objects are visible or hidden behind the visible horizon defined by
@@ -8141,7 +8356,7 @@ define('Core/EllipsoidalOccluder',[
             throw new DeveloperError('extent is required.');
         }
 
-        var positions = extent.subsample(ellipsoid, subsampleScratch);
+        var positions = extent.subsample(ellipsoid, 0.0, subsampleScratch);
         var bs = BoundingSphere.fromPoints(positions);
 
         // If the bounding sphere center is too close to the center of the occluder, it doesn't make
@@ -8208,42 +8423,85 @@ define('Core/Extent',[
         Cartographic,
         DeveloperError,
         CesiumMath) {
-    
+    "use strict";
 
     /**
      * A two dimensional region specified as longitude and latitude coordinates.
+     *
      * @alias Extent
      * @constructor
      *
-     * @param {Number} [west=0.0] The westernmost longitude in the range [-Pi, Pi].
-     * @param {Number} [south=0.0] The southernmost latitude in the range [-Pi/2, Pi/2].
-     * @param {Number} [east=0.0] The easternmost longitude in the range [-Pi, Pi].
-     * @param {Number} [north=0.0] The northernmost latitude in the range [-Pi/2, Pi/2].
+     * @param {Number} [west=0.0] The westernmost longitude, in radians, in the range [-Pi, Pi].
+     * @param {Number} [south=0.0] The southernmost latitude, in radians, in the range [-Pi/2, Pi/2].
+     * @param {Number} [east=0.0] The easternmost longitude, in radians, in the range [-Pi, Pi].
+     * @param {Number} [north=0.0] The northernmost latitude, in radians, in the range [-Pi/2, Pi/2].
      */
     var Extent = function(west, south, east, north) {
         /**
-         * The westernmost longitude in the range [-Pi, Pi].
-         * @type Number
+         * The westernmost longitude in radians in the range [-Pi, Pi].
+         *
+         * @type {Number}
+         * @default 0.0
          */
         this.west = defaultValue(west, 0.0);
 
         /**
-         * The southernmost latitude in the range [-Pi/2, Pi/2].
-         * @type Number
+         * The southernmost latitude in radians in the range [-Pi/2, Pi/2].
+         *
+         * @type {Number}
+         * @default 0.0
          */
         this.south = defaultValue(south, 0.0);
 
         /**
-         * The easternmost longitude in the range [-Pi, Pi].
-         * @type Number
+         * The easternmost longitude in radians in the range [-Pi, Pi].
+         *
+         * @type {Number}
+         * @default 0.0
          */
         this.east = defaultValue(east, 0.0);
 
         /**
-         * The northernmost latitude in the range [-Pi/2, Pi/2].
-         * @type Number
+         * The northernmost latitude in radians in the range [-Pi/2, Pi/2].
+         *
+         * @type {Number}
+         * @default 0.0
          */
         this.north = defaultValue(north, 0.0);
+    };
+
+    /**
+     * Creates an extent given the boundary longitude and latitude in degrees.
+     *
+     * @memberof Extent
+     *
+     * @param {Number} [west=0.0] The westernmost longitude in degrees in the range [-180.0, 180.0].
+     * @param {Number} [south=0.0] The southernmost latitude in degrees in the range [-90.0, 90.0].
+     * @param {Number} [east=0.0] The easternmost longitude in degrees in the range [-180.0, 180.0].
+     * @param {Number} [north=0.0] The northernmost latitude in degrees in the range [-90.0, 90.0].
+     * @param {Extent} [result] The object onto which to store the result, or undefined if a new instance should be created.
+     *
+     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
+     *
+     * @example
+     * var extent = Extent.fromDegrees(0.0, 20.0, 10.0, 30.0);
+     */
+    Extent.fromDegrees = function(west, south, east, north, result) {
+        west = CesiumMath.toRadians(defaultValue(west, 0.0));
+        south = CesiumMath.toRadians(defaultValue(south, 0.0));
+        east = CesiumMath.toRadians(defaultValue(east, 0.0));
+        north = CesiumMath.toRadians(defaultValue(north, 0.0));
+
+        if (typeof result === 'undefined') {
+            return new Extent(west, south, east, north);
+        }
+
+        result.west = west;
+        result.south = south;
+        result.east = east;
+        result.north = north;
+
+        return result;
     };
 
     /**
@@ -8290,12 +8548,17 @@ define('Core/Extent',[
      *
      * @param {Extent} extent The extent to clone.
      * @param {Extent} [result] The object onto which to store the result, or undefined if a new instance should be created.
-     * @return {Extent} The modified result parameter or a new Extent instance if none was provided.
+     * @return {Extent} The modified result parameter or a new Extent instance if none was provided. (Returns undefined if extent is undefined)
      */
     Extent.clone = function(extent, result) {
+        if (typeof extent === 'undefined') {
+            return undefined;
+        }
+
         if (typeof result === 'undefined') {
             return new Extent(extent.west, extent.south, extent.east, extent.north);
         }
+
         result.west = extent.west;
         result.south = extent.south;
         result.east = extent.east;
@@ -8324,11 +8587,28 @@ define('Core/Extent',[
      * @return {Boolean} <code>true</code> if the Extents are equal, <code>false</code> otherwise.
      */
     Extent.prototype.equals = function(other) {
-        return typeof other !== 'undefined' &&
-               this.west === other.west &&
-               this.south === other.south &&
-               this.east === other.east &&
-               this.north === other.north;
+        return Extent.equals(this, other);
+    };
+
+    /**
+     * Compares the provided extents and returns <code>true</code> if they are equal,
+     * <code>false</code> otherwise.
+     *
+     * @memberof Extent
+     *
+     * @param {Extent} [left] The first Extent.
+     * @param {Extent} [right] The second Extent.
+     *
+     * @return {Boolean} <code>true</code> if left and right are equal; otherwise <code>false</code>.
+     */
+    Extent.equals = function(left, right) {
+        return (left === right) ||
+               ((typeof left !== 'undefined') &&
+                (typeof right !== 'undefined') &&
+                (left.west === right.west) &&
+                (left.south === right.south) &&
+                (left.east === right.east) &&
+                (left.north === right.north));
     };
 
     /**
@@ -8551,16 +8831,18 @@ define('Core/Extent',[
 
     var subsampleLlaScratch = new Cartographic();
     /**
-     * Samples this Extent so that it includes a list of Cartesian points suitable for passing to
+     * Samples this extent so that it includes a list of Cartesian points suitable for passing to
      * {@link BoundingSphere#fromPoints}.  Sampling is necessary to account
      * for extents that cover the poles or cross the equator.
      *
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid to use.
+     * @param {Number} [surfaceHeight=0.0] The height of the extent above the ellipsoid.
      * @param {Array} [result] The array of Cartesians onto which to store the result.
      * @return {Array} The modified result parameter or a new Array of Cartesians instances if none was provided.
      */
-    Extent.prototype.subsample = function(ellipsoid, result) {
+    Extent.prototype.subsample = function(ellipsoid, surfaceHeight, result) {
         ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+        surfaceHeight = defaultValue(surfaceHeight, 0.0);
 
         if (typeof result === 'undefined') {
             result = [];
@@ -8573,6 +8855,8 @@ define('Core/Extent',[
         var west = this.west;
 
         var lla = subsampleLlaScratch;
+        lla.height = surfaceHeight;
+
         lla.longitude = west;
         lla.latitude = north;
         result[length] = ellipsoid.cartographicToCartesian(lla, result[length]);
@@ -8628,6 +8912,7 @@ define('Core/Extent',[
 
     return Extent;
 });
+
 /*global define*/
 define('Core/HeightmapTessellator',[
         './defaultValue',
@@ -8643,17 +8928,12 @@ define('Core/HeightmapTessellator',[
         Cartesian3,
         Ellipsoid,
         CesiumMath) {
-    
+    "use strict";
 
     /**
      * Contains functions to create a mesh from a heightmap image.
      *
      * @exports HeightmapTessellator
-     *
-     * @see ExtentTessellator
-     * @see CubeMapEllipsoidTessellator
-     * @see BoxTessellator
-     * @see PlaneTessellator
      */
     var HeightmapTessellator = {};
 
@@ -8953,7 +9233,7 @@ define('Core/HeightmapTessellator',[
 
 /*global define*/
 define('Workers/createTaskProcessorWorker',[],function() {
-    
+    "use strict";
 
     /**
      * Creates an adapter function to allow a calculation function to operate as a Web Worker,
@@ -9021,7 +9301,7 @@ define('Workers/createVerticesFromHeightmap',[
         Extent,
         HeightmapTessellator,
         createTaskProcessorWorker) {
-    
+    "use strict";
 
     function createVerticesFromHeightmap(parameters, transferableObjects) {
         var numberOfAttributes = 6;
@@ -9063,3 +9343,4 @@ define('Workers/createVerticesFromHeightmap',[
 
     return createTaskProcessorWorker(createVerticesFromHeightmap);
 });
+}());
