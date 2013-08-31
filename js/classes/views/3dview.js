@@ -13,14 +13,14 @@ Copyright 2013 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */
- 
+
 /* Options for JSHint http://www.jshint.com/
 * 
 * Last Checked: 19/01/2013
 * 
 */
-/*global AGSatTrack, AGSETTINGS, AGIMAGES, AGUTIL, AGVIEWS, AGWINDOWMANAGER, AGOBSERVER, Cesium, console */ 
- 
+/*global AGSatTrack, AGSETTINGS, AGIMAGES, AGUTIL, AGVIEWS, AGWINDOWMANAGER, AGOBSERVER, Cesium, console */
+
 var AG3DVIEW = function(element) {
     'use strict';
 
@@ -822,6 +822,9 @@ var AG3DVIEW = function(element) {
     function mouseMoveDetails(scene, ellipsoid) {
         var handler = new Cesium.ScreenSpaceEventHandler(scene.getCanvas());
         handler.setInputAction(function(movement) {
+
+            ShowCameraPosition();
+            
             if (_showMousePos) {
                 var cartesian = scene.getCamera().controller.pickEllipsoid(movement.endPosition, ellipsoid);
                 if (cartesian && !isNaN(cartesian.x)) {
@@ -830,8 +833,6 @@ var AG3DVIEW = function(element) {
                     var lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
                     var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
 
-//var alt = ellipsoid.cartesianToCartographic(scene.getCamera().position).height;                
-//                    _mousePosLabel.setText((alt / 1000).toFixed(0));
                     _mousePosLabel.setText('(' + AGUTIL.convertDecDegLon(lon, false) + ', ' + AGUTIL.convertDecDegLat(lat, false) + ')');
                     _mousePosLabel.setPosition(cartesian);
                 } else {
@@ -839,6 +840,19 @@ var AG3DVIEW = function(element) {
                 }
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        
+        handler.setInputAction(function(movement) {
+            ShowCameraPosition();
+        }, Cesium.ScreenSpaceEventType.WHEEL);        
+    }
+    
+    function ShowCameraPosition() {
+        var cameraCartographic = ellipsoid.cartesianToCartographic(scene.getCamera().position);            
+        var cameraAlt = cameraCartographic.height;                
+        cameraAlt = (cameraAlt / 1000).toFixed(0);
+        var cameraLon = Cesium.Math.toDegrees(cameraCartographic.longitude).toFixed(2);
+        var cameraLat = Cesium.Math.toDegrees(cameraCartographic.latitude).toFixed(2);
+        jQuery('#camera-pos').html('<strong>Lat:</strong>&nbsp;' + AGUTIL.convertDecDegLat(cameraLat, false) + '&nbsp;&nbsp;<strong>Lon:</strong>&nbsp;' + AGUTIL.convertDecDegLon(cameraLon, false) + '&nbsp;&nbsp;<strong>Alt:</strong>&nbsp;' + cameraAlt + 'Km');
     }
         
     function resetOrbit() {
