@@ -30,6 +30,7 @@
 <script type="text/javascript" src="/js/cookies/jquery.cookies.js"></script>
 <script type="text/javascript" src="/js/classes/querystring.js"></script>
 <script type="text/javascript" src="/js/classes/settings.js"></script>
+<script type="text/javascript" src="/js/classes/datamanager.js"></script>
 <script type="text/javascript" src="/js/agchecklist/jquery.ui.agcheckList.js"></script>
 
 <script type="text/javascript" src="/js/classes/views/passesview.js"></script>
@@ -417,8 +418,16 @@
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/terrain.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/terrain.png" />
                             <span class="button-title" unselectable="on"></span>
-                            <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying terrain data<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
-                        </div>                        
+                            <span class="button-help"><strong>Show Terrain.</strong><br /><br />Toggle displaying terrain data<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        </div>
+                        
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showcities" id="3d-show-cities">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/citybutton.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/citybutton.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/citybutton.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Cities.</strong><br /><br />Toggle displaying Cities<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        </div>                                                 
                     </div>                                        
                 </div>
 
@@ -1313,15 +1322,43 @@
                                             <input id="options-3d-view-followobs-height" class="easyui-numberspinner" style="width: 60px;" required="required" data-options="min:0,max:1000,editable:false" value="1">                                        
                                             <p class="description">Select the height above the observer location, this is in meters.</p>
                                         </td>
-                                    </tr>
-                                    <tr valign="top">
                                         <th>Height Above Satellite</th>
                                         <td>
                                             <input id="options-3d-view-followsat-height" class="easyui-numberspinner" style="width: 60px;" required="required" data-options="min:0,max:10000,editable:false">                                        
                                             <p class="description">Select the height above the satellite location, this is in meters.</p>
+                                        </td>                                        
+                                    </tr>
+                                </table>
+                                
+                                <h3>Cities</h3>
+                                <table class="form-table">
+                                    <tr valign="top">
+                                        <th>Show Cities</th>
+                                        <td>
+                                            <input id="options-3d-view-show-cities" type="checkbox" class="options-cb" value="on">                                      
+                                            <p class="description">Enable this option to show cities on the 3d view.</p>
                                         </td>
+                                        <th>Font Size</th>
+                                        <td>
+                                            <input id="options-3d-view-city-font-size" type="text" size="3" class="options-spinner"> px                                      
+                                            <p class="description">The font size for the city labels in pixels</p>
+                                        </td>                                        
+                                    </tr>
+                                    <tr valign="top">
+                                        <th>Population Limit</th>
+                                        <td>
+                                            <input id="options-3d-view-city-pop-limit" class="easyui-numberspinner" style="width: 30px;" required="required" data-options="min:0,max:10,increment:0.1,editable:true"> Million                                      
+                                            <p class="description">Cities will only be displayed if their population is above or equal to this limit.</p>
+                                        </td>
+                                        <th>Label Colour</th>
+                                        <td>
+                                            <input id="options-3d-view-city-font-colour" type="text" class="color">                                      
+                                            <p class="description">The label colour</p>
+                                        </td>                                         
                                     </tr>                                                                                         
-                                </table>                                                         
+                                </table>
+                                
+                                                                                                                         
                             </div>                            
                         </div>
                     </div>                    

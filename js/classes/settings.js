@@ -39,7 +39,7 @@ var AGSETTINGS = (function() {
     var _requireEUCookieLaw = true;
     var _defaultView = 'home';
     var _defaultSats = '';
-    var _cookieVersion = 2.4;
+    var _cookieVersion = 3.0;
     
     var _defaultSettings = {
         version: _cookieVersion,
@@ -104,7 +104,11 @@ var AGSETTINGS = (function() {
                 useTerrainProvider: true,
                 fillFootprints: false,
                 showGroundSSP: true,
-                fillMutual: false
+                fillMutual: false,
+                showCities: false,
+                cityPopulation: 2,
+                cityFontSize: 12,
+                cityLabelColour: 'ffffff' 
             }
         }
     };

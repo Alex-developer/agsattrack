@@ -30,6 +30,8 @@ var AG3DVIEW = function(element) {
     var transitioner = null;
     var cb = null;
     var observerBillboards = null;
+    var _cityBillboards = null;
+    var _cityLabels = null;
     var _observerLabels = null;
     var _observerCircles = null;
     var _render = false;
@@ -122,6 +124,13 @@ var AG3DVIEW = function(element) {
                     createSatellites();
                     plotObservers();
                     setTerrainProvider(_settings.useTerrainProvider);
+                    if (AGSETTINGS.getViewSettings('threed').showCities) {
+                        jQuery('#3d-show-cities').setState(true);
+                        plotCities();
+                    } else {
+                        jQuery('#3d-show-cities').setState(false);
+                        clearCities();
+                    }                    
                 }
             }); 
        
@@ -310,6 +319,16 @@ var AG3DVIEW = function(element) {
         }
     });    
 
+    jQuery(document).bind('agsattrack.showcities', function(event, state) {
+        if (AGSETTINGS.getHaveWebGL()) {
+            if (state) {
+                plotCities();    
+            } else {
+                clearCities();
+            }
+        }
+    });  
+        
     function showLocationWindow() {
         AGWINDOWMANAGER.showWindow('dx');     
     }
@@ -360,6 +379,38 @@ var AG3DVIEW = function(element) {
             _currentProvider = provider;        
         }
     } 
+    
+    function clearCities() {
+        _cityBillboards.removeAll();    
+        _cityLabels.removeAll();    
+    }
+    
+    function plotCities() {
+        AGDATAMANAGER.getData('locations', function(data){
+            clearCities();
+            var textureAtlas = scene.getContext().createTextureAtlas({
+                image : AGIMAGES.getImage('citybullet')
+            });
+            _cityBillboards.setTextureAtlas(textureAtlas);
+            var populationLimit = AGSETTINGS.getViewSettings('threed').cityPopulation;             
+            for ( var i = 0; i < data.length; i++) {
+                if (data[i].pop >= populationLimit) {
+                    _cityBillboards.add({
+                        position : ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(data[i].lon, data[i].lat)),
+                        imageIndex : 0                                          
+                    });
+                    
+                    _cityLabels.add({
+                        position  : ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(data[i].lon, data[i].lat)),
+                        text      : '   ' + data[i].shortname + ' (' + data[i].prefix + ')',
+                        font      : AGSETTINGS.getViewSettings('threed').cityFontSize + 'px Arial',
+                        fillColor : Cesium.Color.fromCssColorString('#'+AGSETTINGS.getViewSettings('threed').cityLabelColour)
+                    }); 
+                                                        
+                }
+            }              
+        }, false);        
+    }
      
     /**
      * Plot the observers.
@@ -1054,7 +1105,9 @@ var AG3DVIEW = function(element) {
         clock = new Cesium.Clock();
         _satNameLabels = new Cesium.LabelCollection();
         _observerLabels = new Cesium.LabelCollection();
-        
+        _cityBillboards = new Cesium.BillboardCollection();
+        _cityLabels = new Cesium.LabelCollection();
+                
         TILE_PROVIDERS = {
             'bing' : {
                 provider : new Cesium.BingMapsImageryProvider({
@@ -1153,10 +1206,19 @@ var AG3DVIEW = function(element) {
         scene.getPrimitives().add(observerBillboards);
         scene.getPrimitives().add(_observerLabels);
         scene.getPrimitives().add(_observerCircles);
+        scene.getPrimitives().add(_cityBillboards);
+        scene.getPrimitives().add(_cityLabels);
         
         jQuery(window).trigger('resize');
         
         plotObservers();
+        
+        if (AGSETTINGS.getViewSettings('threed').showCities) {
+            jQuery('#3d-show-cities').setState(true);
+            plotCities();
+        } else {
+            jQuery('#3d-show-cities').setState(false);
+        }
         
         jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[_currentProvider].toolbarTitle ); 
         jQuery('#3d-projection').setTitle('Views', '<br /> 3d view' ); 

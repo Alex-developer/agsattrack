@@ -129,6 +129,16 @@ var AGOPTIONS = function() {
             jQuery('#options-3d-terrainprovider').prop('checked', false);
         }
         
+        if (AGSETTINGS.getViewSettings('threed').showCities) {
+            jQuery('#options-3d-view-show-cities').prop('checked', true);
+        } else {
+            jQuery('#options-3d-view-show-cities').prop('checked', false);
+        }
+        jQuery('#options-3d-view-city-pop-limit').val(AGSETTINGS.getViewSettings('threed').cityPopulation);
+        jQuery('#options-3d-view-city-font-size').val(AGSETTINGS.getViewSettings('threed').cityFontSize);
+        jQuery('#options-3d-view-city-font-colour')[0].color.fromString(AGSETTINGS.getViewSettings('threed').cityLabelColour);
+
+                       
         /**
         * Disable the save button - Just in case any of the above enabled it.
         */
@@ -243,6 +253,14 @@ var AGOPTIONS = function() {
         enableSave();        
     });
     
+    jQuery('.color').on('change', function(e){
+        enableSave();        
+    });
+
+    jQuery('.easyui-numberspinner').on('change', function(e){
+        enableSave();        
+    });
+   
 	jQuery('#window-preferences-calc-timer').numberspinner({
 		onSpinUp : function() {
 			enableSave();
@@ -347,6 +365,10 @@ var AGOPTIONS = function() {
         settings.provider = jQuery('#options-3d-provider').find(":selected").val();
         
         settings.useTerrainProvider = jQuery('#options-3d-terrainprovider').prop('checked');                
+        settings.showCities = jQuery('#options-3d-view-show-cities').prop('checked');
+        settings.cityLabelColour = jQuery('#options-3d-view-city-font-colour')[0].color.toString();     
+        settings.cityFontSize = jQuery('#options-3d-view-city-font-size').val();
+        settings.cityPopulation = jQuery('#options-3d-view-city-pop-limit').val();
         AGSETTINGS.setViewSettings('threed', settings);
              
              

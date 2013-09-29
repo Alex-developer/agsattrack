@@ -88,15 +88,15 @@ var AGDXVIEW = function(element) {
     * Load the DX database from the server if it has not already been loaded.
     */
     function checkAndLoadDXdatabase() {
+        
         if (!_databaseLoading && !_databaseAvailable) {
             _databaseLoading = true;
-            var url = '/index.php?controller=satellite&method=getLocationDatabase';
-            jQuery.getJSON(url, function(data) {
-                _locationDatabase = data;
+            AGDATAMANAGER.getData('locations', function(data){
+                _locationDatabase = data; 
                 _databaseAvailable = true;
                 _databaseLoading = false;
-                updateInfogrid();
-            });
+                updateInfogrid();                
+            }, false);
         }
     }
     

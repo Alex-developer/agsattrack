@@ -29,6 +29,7 @@ var AGIMAGES = (function() {
     AGUTIL.loadImages({
         city: '/images/city.png',
         home: '/images/home.png',
+        citybullet: '/images/citybullet.png',
         satellite016: '/images/satellites/satellite0-16.png',
         satellite024: '/images/satellites/satellite0-24.png',
         satellite032: '/images/satellites/satellite0-32.png',
