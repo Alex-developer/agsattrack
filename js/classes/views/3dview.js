@@ -311,33 +311,7 @@ var AG3DVIEW = function(element) {
     });    
 
     function showLocationWindow() {
-        
-        AGWINDOWMANAGER.showWindow('dx');
-        /*
-        var windowElement;
-        var gridElement;
-        var view = null;
-                
-        jQuery('#3dlocationwindow').remove();
-        windowElement = jQuery('<div/>', {
-            'id' : '3dlocationwindow'
-        }).appendTo(document.body);
-        
-        gridElement = jQuery('<div/>', {
-            'id' : '3dlocationwindowgrid'
-        }).appendTo(windowElement);
-                
-        jQuery('#3dlocationwindow').window({  
-            width:600,  
-            height:350,
-            title: 'Raw Orbit Data For ',  
-            modal:false  
-        });
-        
-        view = new AGDXVIEW('3dlocationwindowgrid');
-        view.init();
-        view.startRender();  
-        */     
+        AGWINDOWMANAGER.showWindow('dx');     
     }
     
     function setView(view) {   
@@ -556,8 +530,8 @@ var AG3DVIEW = function(element) {
                         }
                     }
                     cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
-                    cpos = cpos.multiplyByScalar(1000);               
-                    cpos = cpos.multiplyByScalar(30/1000+1); 
+                    cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 1000);               
+                    cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 30/1000+1); 
                                 
                     var satLabel = _satNameLabels.add({
                       show : labelVisible,
@@ -619,8 +593,8 @@ var AG3DVIEW = function(element) {
 
             for (i = 0; i < satellites.length; i++) {
                 if (satellites[i].isDisplaying()) {
-                    cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
-                    cpos = cpos.multiplyByScalar(1000);               
+                    cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));              
+                    cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 1000);               
                     billboard = satBillboards.add({
                         imageIndex : (satellites[i].getCatalogNumber() === '25544'?2:0),
                         position : cpos                   
@@ -702,10 +676,10 @@ var AG3DVIEW = function(element) {
                 }   
             }
             newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
-            newpos = newpos.multiplyByScalar(1000);
+            newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 1000);
             bb.setPosition(newpos);
            
-            newpos = newpos.multiplyByScalar(30/1000+1);            
+            newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 30/1000+1);            
             var satLabel = _satNameLabels.get(i);
             if (satellites[bb.satelliteindex].getSelected()) {
                 satLabel.setFont(_settings.selectedLabelSize + 'px sans-serif');
@@ -724,16 +698,16 @@ var AG3DVIEW = function(element) {
             if (_showview) {
                 target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), 0));   
                 eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)));
-                up = eye.normalize();              
+                up = Cesium.Cartesian3.normalize(eye);              
             } else {
                 if (_followFromObserver) {
                     eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
                     target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), following.get('altitude')*1000));   
-                    up = eye.normalize();                                
+                    up = Cesium.Cartesian3.normalize(eye);                                
                 } else {
                     target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));   
                     eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)+50));
-                    up = eye.normalize();
+                    up = Cesium.Cartesian3.normalize(eye);
                 }
             }
             scene.getCamera().controller.lookAt(eye, target, up);                                      
@@ -785,16 +759,12 @@ var AG3DVIEW = function(element) {
                 footPrint = footprintCircle.add();
                 
                 if (selected[i].get('elevation') >= AGSETTINGS.getAosEl()) {
-                    var _greenMaterial = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
-                    _greenMaterial.uniforms.color = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
-                    _greenMaterial.uniforms.outlineColor = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
-                    _greenMaterial.uniforms.outlinewidth = 1.0;
+                    var _greenMaterial = Cesium.Material.fromType('Color');
+                    _greenMaterial.uniforms.color = {red : 0.0, green : 1.0, blue : 0.0, alpha : 1.0};                
                     footPrint.setMaterial(_greenMaterial);
                 } else {
-                    var _redMaterial = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
-                    _redMaterial.uniforms.color = new Cesium.Color(1.0, 1.0, 0.0, 1.0);
-                    _redMaterial.uniforms.outlineColor = new Cesium.Color(1.0, 1.0, 0.0, 1.0);
-                    _redMaterial.uniforms.outlinewidth = 1.0;                    
+                    var _redMaterial = Cesium.Material.fromType('Color');
+                    _redMaterial.uniforms.color = {red : 1.0, green : 0.0, blue : 0.0, alpha : 1.0};                
                     footPrint.setMaterial(_redMaterial); 
                 }
                 footPrint.setPositions(Cesium.Shapes.computeCircleBoundary(ellipsoid, ellipsoid
@@ -813,7 +783,7 @@ var AG3DVIEW = function(element) {
         handler.setInputAction(function(click) {
             var pickedObject = scene.pick(click.position);
             if (pickedObject) {
-                var selected = pickedObject.satelliteCatalogId;
+                var selected = pickedObject.primitive.satelliteCatalogId;
                 jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: selected});
             }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -889,22 +859,18 @@ var AG3DVIEW = function(element) {
         for ( var i = 0; i < cartPoints.length; i++) {    
             if (checkOkToPlot(lastPos, cartPoints[i])) {
                 pos = new Cesium.Cartesian3(cartPoints[i].x, cartPoints[i].y, cartPoints[i].z);
-                pos = pos.multiplyByScalar(1000);
+                pos = Cesium.Cartesian3.multiplyByScalar(pos, 1000);
                 points.push(pos);
                 
                 switch (colour) {
                     case 'red':
-                        _material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
-                        _material.uniforms.color = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
-                        _material.uniforms.outlineColor = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
-                        _material.uniforms.outlinewidth = 1.0;
+                        _material = Cesium.Material.fromType('Color');
+                        _material.uniforms.color = {red : 1.0, green : 0.0, blue : 0.0, alpha : 1.0};                
                         break;
                     
                     case 'green':
-                        _material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
-                        _material.uniforms.color = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
-                        _material.uniforms.outlineColor = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
-                        _material.uniforms.outlinewidth = 1.0;            
+                        _material = Cesium.Material.fromType('Color');
+                        _material.uniforms.color = {red : 0.0, green : 1.0, blue : 0.0, alpha : 1.0};                          
                         break;
                 }
                         
@@ -929,17 +895,13 @@ var AG3DVIEW = function(element) {
         
         switch (colour) {
             case 'red':
-                _material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
-                _material.uniforms.color = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
-                _material.uniforms.outlineColor = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
-                _material.uniforms.outlinewidth = 1.0;
+                _material = Cesium.Material.fromType('Color');
+                _material.uniforms.color = {red : 1.0, green : 0.0, blue : 0.0, alpha : 1.0};                
                 break;
             
             case 'green':
-                _material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.PolylineOutlineType);
-                _material.uniforms.color = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
-                _material.uniforms.outlineColor = new Cesium.Color(0.0, 1.0, 0.0, 1.0);
-                _material.uniforms.outlinewidth = 1.0;         
+                _material = Cesium.Material.fromType('Color');
+                _material.uniforms.color = {red : 0.0, green : 1.0, blue : 0.0, alpha : 1.0};                
                 break;
         }
                         
@@ -995,12 +957,12 @@ var AG3DVIEW = function(element) {
             var pointsAOS = [];
             for ( var i = 0; i < orbit.length; i++) {
                 pos = new Cesium.Cartesian3(orbit[i].x, orbit[i].y, orbit[i].z)
-                pos = pos.multiplyByScalar(1000);
+                pos = Cesium.Cartesian3.multiplyByScalar(pos, 1000);
                 points.push(pos);
                 
                 if (orbit[i].el >= AGSETTINGS.getAosEl()) {
                     pos = new Cesium.Cartesian3(orbit[i].x, orbit[i].y, orbit[i].z)
-                    pos = pos.multiplyByScalar(1000);
+                    pos = Cesium.Cartesian3.multiplyByScalar(pos, 1000);
                     pointsAOS.push(pos);
                     plottingAos = true;
                 }

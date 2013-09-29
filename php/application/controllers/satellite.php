@@ -37,7 +37,8 @@ class AGSATTRACK_SATELLITE extends APPCONTROLLER {
                 'prefix' => $location->prefix,
                 'name' => $location->name . ', ' . $location->country,
                 'lat' => $location->lat,
-                'lon' => $location->lon
+                'lon' => $location->lon,
+                'pop' => $location->population
             );
         }
         $this->output = $data;
