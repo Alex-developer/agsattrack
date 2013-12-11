@@ -392,7 +392,8 @@ var AG3DVIEW = function(element) {
                 image : AGIMAGES.getImage('citybullet')
             });
             _cityBillboards.setTextureAtlas(textureAtlas);
-            var populationLimit = AGSETTINGS.getViewSettings('threed').cityPopulation;             
+            var populationLimit = AGSETTINGS.getViewSettings('threed').cityPopulation;
+            var label;            
             for ( var i = 0; i < data.length; i++) {
                 if (data[i].pop >= populationLimit) {
                     _cityBillboards.add({
@@ -400,13 +401,13 @@ var AG3DVIEW = function(element) {
                         imageIndex : 0                                          
                     });
                     
-                    _cityLabels.add({
+                    label = _cityLabels.add({
                         position  : ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(data[i].lon, data[i].lat)),
                         text      : '   ' + data[i].shortname + ' (' + data[i].prefix + ')',
                         font      : AGSETTINGS.getViewSettings('threed').cityFontSize + 'px Arial',
                         fillColor : Cesium.Color.fromCssColorString('#'+AGSETTINGS.getViewSettings('threed').cityLabelColour)
                     }); 
-                                                        
+                    label.setTranslucencyByDistance(new Cesium.NearFarScalar(20.5e2, 1.0, 30.0e6, 0.0));                                  
                 }
             }              
         }, false);        
@@ -594,6 +595,7 @@ var AG3DVIEW = function(element) {
                       style : Cesium.LabelStyle.FILL,
                       scale : 1.0
                     });
+                    satLabel.setTranslucencyByDistance(new Cesium.NearFarScalar(15.5e2, 1.0, 40.0e6, 0.0));  
 
                     if (satellites[i].getSelected()) {
                         satLabel.setFont(_settings.selectedLabelSize + 'px sans-serif');
