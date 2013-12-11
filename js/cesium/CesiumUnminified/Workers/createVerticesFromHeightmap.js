@@ -404,6 +404,66 @@ define('Core/Cartesian3',[
     };
 
     /**
+     * Compares two Cartesians and computes a Cartesian which contains the minimum components of the supplied Cartesians.
+     * @memberof Cartesian3
+     *
+     * @param {Cartesian3} first A cartesian to compare.
+     * @param {Cartesian3} second A cartesian to compare.
+     * @param {Cartesian3} [result] The object into which to store the result.
+     * @returns {Cartesian3} A cartesian with the minimum components.
+     *
+     * @exception {DeveloperError} first cartesian is missing.
+     * @exception {DeveloperError} second cartesian is missing.
+     */
+    Cartesian3.getMinimumByComponent = function(first, second, result) {
+        if (!defined(first)) {
+            throw new DeveloperError('first cartesian is missing');
+        }
+        if (!defined(second)) {
+            throw new DeveloperError('second cartesian is missing');
+        }
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        result.x = Math.min(first.x, second.x);
+        result.y = Math.min(first.y, second.y);
+        result.z = Math.min(first.z, second.z);
+
+        return result;
+    };
+
+    /**
+     * Compares two Cartesians and computes a Cartesian which contains the maximum components of the supplied Cartesians.
+     * @memberof Cartesian3
+     *
+     * @param {Cartesian3} first A cartesian to compare.
+     * @param {Cartesian3} second A cartesian to compare.
+     * @param {Cartesian3} [result] The object into which to store the result.
+     * @returns {Cartesian3} A cartesian with the maximum components.
+     *
+     * @exception {DeveloperError} first cartesian is missing.
+     * @exception {DeveloperError} second cartesian is missing.
+     */
+    Cartesian3.getMaximumByComponent = function(first, second, result) {
+        if (!defined(first)) {
+            throw new DeveloperError('first cartesian is missing');
+        }
+        if (!defined(second)) {
+            throw new DeveloperError('second cartesian is missing');
+        }
+
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        result.x = Math.max(first.x, second.x);
+        result.y = Math.max(first.y, second.y);
+        result.z = Math.max(first.z, second.z);
+        return result;
+    };
+
+    /**
      * Computes the provided Cartesian's squared magnitude.
      * @memberof Cartesian3
      *
@@ -607,7 +667,7 @@ define('Core/Cartesian3',[
             throw new DeveloperError('scalar is required and must be a number.');
         }
         if (!defined(result)) {
-            return new Cartesian3(cartesian.x * scalar,  cartesian.y * scalar,  cartesian.z * scalar);
+            return new Cartesian3(cartesian.x * scalar, cartesian.y * scalar, cartesian.z * scalar);
         }
         result.x = cartesian.x * scalar;
         result.y = cartesian.y * scalar;
@@ -792,12 +852,12 @@ define('Core/Cartesian3',[
      * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
      */
     Cartesian3.equals = function(left, right) {
-        return (left === right) ||
-               ((defined(left)) &&
-                (defined(right)) &&
-                (left.x === right.x) &&
-                (left.y === right.y) &&
-                (left.z === right.z));
+            return (left === right) ||
+              ((defined(left)) &&
+               (defined(right)) &&
+               (left.x === right.x) &&
+               (left.y === right.y) &&
+               (left.z === right.z));
     };
 
     /**
@@ -898,6 +958,34 @@ define('Core/Cartesian3',[
      */
     Cartesian3.prototype.clone = function(result) {
         return Cartesian3.clone(this, result);
+    };
+
+    /**
+     * Compares this Cartesian against the provided Cartesian componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     * @memberof Cartesian3
+     *
+     * @param {Cartesian3} [right] The right hand side Cartesian.
+     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
+     */
+    Cartesian3.prototype.equals = function(right) {
+        return Cartesian3.equals(this, right);
+    };
+
+    /**
+     * Compares this Cartesian against the provided Cartesian componentwise and returns
+     * <code>true</code> if they are within the provided epsilon,
+     * <code>false</code> otherwise.
+     * @memberof Cartesian3
+     *
+     * @param {Cartesian3} [right] The right hand side Cartesian.
+     * @param {Number} epsilon The epsilon to use for equality testing.
+     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
+     *
+     * @exception {DeveloperError} epsilon is required and must be a number.
+     */
+    Cartesian3.prototype.equalsEpsilon = function(right, epsilon) {
+        return Cartesian3.equalsEpsilon(this, right, epsilon);
     };
 
     /**
@@ -1134,6 +1222,69 @@ define('Core/Cartesian4',[
             throw new DeveloperError('cartesian is required');
         }
         return Math.min(cartesian.x, cartesian.y, cartesian.z, cartesian.w);
+    };
+
+    /**
+     * Compares two Cartesians and computes a Cartesian which contains the minimum components of the supplied Cartesians.
+     * @memberof Cartesian4
+     *
+     * @param {Cartesian4} first A cartesian to compare.
+     * @param {Cartesian4} second A cartesian to compare.
+     * @param {Cartesian4} [result] The object into which to store the result.
+     * @returns {Cartesian4} A cartesian with the minimum components.
+     *
+     * @exception {DeveloperError} first cartesian is missing.
+     * @exception {DeveloperError} second cartesian is missing.
+     */
+    Cartesian4.getMinimumByComponent = function(first, second, result) {
+        if (!defined(first)) {
+            throw new DeveloperError('first cartesian is missing');
+        }
+        if (!defined(second)) {
+            throw new DeveloperError('second cartesian is missing');
+        }
+        if (!defined(result)) {
+            result = new Cartesian4();
+        }
+
+        result.x = Math.min(first.x, second.x);
+        result.y = Math.min(first.y, second.y);
+        result.z = Math.min(first.z, second.z);
+        result.w = Math.min(first.w, second.w);
+
+        return result;
+    };
+
+    /**
+     * Compares two Cartesians and computes a Cartesian which contains the maximum components of the supplied Cartesians.
+     * @memberof Cartesian4
+     *
+     * @param {Cartesian4} first A cartesian to compare.
+     * @param {Cartesian4} second A cartesian to compare.
+     * @param {Cartesian4} [result] The object into which to store the result.
+     * @returns {Cartesian4} A cartesian with the maximum components.
+     *
+     * @exception {DeveloperError} first cartesian is missing.
+     * @exception {DeveloperError} second cartesian is missing.
+     */
+    Cartesian4.getMaximumByComponent = function(first, second, result) {
+        if (!defined(first)) {
+            throw new DeveloperError('first cartesian is missing');
+        }
+        if (!defined(second)) {
+            throw new DeveloperError('second cartesian is missing');
+        }
+
+        if (!defined(result)) {
+            result = new Cartesian4();
+        }
+
+        result.x = Math.max(first.x, second.x);
+        result.y = Math.max(first.y, second.y);
+        result.z = Math.max(first.z, second.z);
+        result.w = Math.max(first.w, second.w);
+
+        return result;
     };
 
     /**
@@ -1593,6 +1744,34 @@ define('Core/Cartesian4',[
     };
 
     /**
+     * Compares this Cartesian against the provided Cartesian componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     * @memberof Cartesian4
+     *
+     * @param {Cartesian4} [right] The right hand side Cartesian.
+     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
+     */
+    Cartesian4.prototype.equals = function(right) {
+        return Cartesian4.equals(this, right);
+    };
+
+    /**
+     * Compares this Cartesian against the provided Cartesian componentwise and returns
+     * <code>true</code> if they are within the provided epsilon,
+     * <code>false</code> otherwise.
+     * @memberof Cartesian4
+     *
+     * @param {Cartesian4} [right] The right hand side Cartesian.
+     * @param {Number} epsilon The epsilon to use for equality testing.
+     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
+     *
+     * @exception {DeveloperError} epsilon is required and must be a number.
+     */
+    Cartesian4.prototype.equalsEpsilon = function(right, epsilon) {
+        return Cartesian4.equalsEpsilon(this, right, epsilon);
+    };
+
+    /**
      * Creates a string representing this Cartesian in the format '(x, y)'.
      * @memberof Cartesian4
      *
@@ -1982,6 +2161,15 @@ define('Core/Math',[
     CesiumMath.SOLAR_RADIUS = 6.955e8;
 
     /**
+     * The mean radius of the moon, according to the "Report of the IAU/IAG Working Group on
+     * Cartographic Coordinates and Rotational Elements of the Planets and satellites: 2000",
+     * Celestial Mechanics 82: 83-110, 2002.
+     * @type {Number}
+     * @constant
+     */
+    CesiumMath.LUNAR_RADIUS = 1737400.0;
+
+    /**
      * 64 * 1024
      * @type {Number}
      * @constant
@@ -2341,19 +2529,50 @@ define('Core/Math',[
      *
      * @returns {Boolean} <code>true</code> if the number if a power of two; otherwise, <code>false</code>.
      *
+     * @exception {DeveloperError} A number greater than or equal to 0 is required.
+     *
      * @example
      * var t = CesiumMath.isPowerOfTwo(16); // true
      * var f = CesiumMath.isPowerOfTwo(20); // false
-     *
-     * @exception {DeveloperError} A number greater than or equal to 0 is required.
      */
     CesiumMath.isPowerOfTwo = function(n) {
         if (typeof n !== 'number' || n < 0) {
             throw new DeveloperError('A number greater than or equal to 0 is required.');
         }
 
-        var m = defaultValue(n, 0);
-        return (m !== 0) && ((m & (m - 1)) === 0);
+        return (n !== 0) && ((n & (n - 1)) === 0);
+    };
+
+    /**
+     * Computes the next power-of-two integer greater than or equal to the provided positive integer.
+     *
+     * @memberof CesiumMath
+     *
+     * @param {Number} n The positive integer to test.
+     *
+     * @returns {Number} The next power-of-two integer.
+     *
+     * @exception {DeveloperError} A number greater than or equal to 0 is required.
+     *
+     * @example
+     * var n = CesiumMath.nextPowerOfTwo(29); // 32
+     * var m = CesiumMath.nextPowerOfTwo(32); // 32
+     */
+    CesiumMath.nextPowerOfTwo = function(n) {
+        if (typeof n !== 'number' || n < 0) {
+            throw new DeveloperError('A number greater than or equal to 0 is required.');
+        }
+
+        // From http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+        --n;
+        n |= n >> 1;
+        n |= n >> 2;
+        n |= n >> 4;
+        n |= n >> 8;
+        n |= n >> 16;
+        ++n;
+
+        return n;
     };
 
     /**
@@ -2759,6 +2978,12 @@ define('Core/Ellipsoid',[
      * @memberof Ellipsoid
      */
     Ellipsoid.UNIT_SPHERE = freezeObject(new Ellipsoid(1.0, 1.0, 1.0));
+
+    /**
+     * An Ellipsoid instance initialized to a sphere with the lunar radius.
+     * @memberof Ellipsoid
+     */
+    Ellipsoid.MOON = freezeObject(new Ellipsoid(CesiumMath.LUNAR_RADIUS, CesiumMath.LUNAR_RADIUS, CesiumMath.LUNAR_RADIUS));
 
     /**
      * @memberof Ellipsoid
@@ -3183,6 +3408,22 @@ define('Core/Ellipsoid',[
     };
 
     /**
+     * Transforms a Cartesian X, Y, Z position from the ellipsoid-scaled space by multiplying
+     * its components by the result of {@link Ellipsoid#getRadii}.
+     *
+     * @memberof Ellipsoid
+     *
+     * @param {Cartesian3} position The position to transform.
+     * @param {Cartesian3} [result] The position to which to copy the result, or undefined to create and
+     *        return a new instance.
+     * @returns {Cartesian3} The position expressed in the unscaled space.  The returned instance is the
+     *          one passed as the result parameter if it is not undefined, or a new instance of it is.
+     */
+    Ellipsoid.prototype.transformPositionFromScaledSpace = function(position, result) {
+        return Cartesian3.multiplyComponents(position, this._radii, result);
+    };
+
+    /**
      * Compares this Ellipsoid against the provided Ellipsoid componentwise and returns
      * <code>true</code> if they are equal, <code>false</code> otherwise.
      * @memberof Ellipsoid
@@ -3469,13 +3710,15 @@ define('Core/Matrix3',[
         './defaultValue',
         './defined',
         './DeveloperError',
-        './freezeObject'
+        './freezeObject',
+        './Math'
     ], function(
         Cartesian3,
         defaultValue,
         defined,
         DeveloperError,
-        freezeObject) {
+        freezeObject,
+        CesiumMath) {
     "use strict";
 
     /**
@@ -3619,15 +3862,15 @@ define('Core/Matrix3',[
         var w2 = quaternion.w * quaternion.w;
 
         var m00 = x2 - y2 - z2 + w2;
-        var m01 = 2.0 * (xy + zw);
-        var m02 = 2.0 * (xz - yw);
+        var m01 = 2.0 * (xy - zw);
+        var m02 = 2.0 * (xz + yw);
 
-        var m10 = 2.0 * (xy - zw);
+        var m10 = 2.0 * (xy + zw);
         var m11 = -x2 + y2 - z2 + w2;
-        var m12 = 2.0 * (yz + xw);
+        var m12 = 2.0 * (yz - xw);
 
-        var m20 = 2.0 * (xz + yw);
-        var m21 = 2.0 * (yz - xw);
+        var m20 = 2.0 * (xz - yw);
+        var m21 = 2.0 * (yz + xw);
         var m22 = -x2 - y2 + z2 + w2;
 
         if (!defined(result)) {
@@ -3741,7 +3984,7 @@ define('Core/Matrix3',[
      * // Rotate a point 45 degrees counterclockwise around the x-axis.
      * var p = new Cartesian3(5, 6, 7);
      * var m = Matrix3.fromRotationX(CesiumMath.toRadians(45.0));
-     * var rotated = m.multiplyByVector(p);
+     * var rotated = Matrix3.multiplyByVector(m, p);
      */
     Matrix3.fromRotationX = function(angle, result) {
         if (!defined(angle)) {
@@ -3785,7 +4028,7 @@ define('Core/Matrix3',[
      * // Rotate a point 45 degrees counterclockwise around the y-axis.
      * var p = new Cartesian3(5, 6, 7);
      * var m = Matrix3.fromRotationY(CesiumMath.toRadians(45.0));
-     * var rotated = m.multiplyByVector(p);
+     * var rotated = Matrix3.multiplyByVector(m, p);
      */
     Matrix3.fromRotationY = function(angle, result) {
         if (!defined(angle)) {
@@ -3829,7 +4072,7 @@ define('Core/Matrix3',[
      * // Rotate a point 45 degrees counterclockwise around the z-axis.
      * var p = new Cartesian3(5, 6, 7);
      * var m = Matrix3.fromRotationZ(CesiumMath.toRadians(45.0));
-     * var rotated = m.multiplyByVector(p);
+     * var rotated = Matrix3.multiplyByVector(m, p);
      */
     Matrix3.fromRotationZ = function(angle, result) {
         if (!defined(angle)) {
@@ -4254,6 +4497,259 @@ define('Core/Matrix3',[
         return result;
     };
 
+    function computeFrobeniusNorm(matrix) {
+        var norm = 0.0;
+        for (var i = 0; i < 9; ++i) {
+            var temp = matrix[i];
+            norm += temp * temp;
+        }
+
+        return Math.sqrt(norm);
+    }
+
+    var rowVal = [1, 0, 0];
+    var colVal = [2, 2, 1];
+
+    function offDiagonalFrobeniusNorm(matrix) {
+        // Computes the "off-diagonal" Frobenius norm.
+        // Assumes matrix is symmetric.
+
+        var norm = 0.0;
+        for (var i = 0; i < 3; ++i) {
+            var temp = matrix[Matrix3.getElementIndex(colVal[i], rowVal[i])];
+            norm += 2.0 * temp * temp;
+        }
+
+        return Math.sqrt(norm);
+    }
+
+    function shurDecomposition(matrix, result) {
+        // This routine was created based upon Matrix Computations, 3rd ed., by Golub and Van Loan,
+        // section 8.4.2 The 2by2 Symmetric Schur Decomposition.
+        //
+        // The routine takes a matrix, which is assumed to be symmetric, and
+        // finds the largest off-diagonal term, and then creates
+        // a matrix (result) which can be used to help reduce it
+
+        var tolerance = CesiumMath.EPSILON15;
+
+        var maxDiagonal = 0.0;
+        var rotAxis = 1;
+
+        // find pivot (rotAxis) based on max diagonal of matrix
+        for (var i = 0; i < 3; ++i) {
+            var temp = Math.abs(matrix[Matrix3.getElementIndex(colVal[i], rowVal[i])]);
+            if (temp > maxDiagonal) {
+                rotAxis = i;
+                maxDiagonal = temp;
+            }
+        }
+
+        var c = 1.0;
+        var s = 0.0;
+
+        var p = rowVal[rotAxis];
+        var q = colVal[rotAxis];
+
+        if (Math.abs(matrix[Matrix3.getElementIndex(q, p)]) > tolerance) {
+            var qq = matrix[Matrix3.getElementIndex(q, q)];
+            var pp = matrix[Matrix3.getElementIndex(p, p)];
+            var qp = matrix[Matrix3.getElementIndex(q, p)];
+
+            var tau = (qq - pp) / 2.0 / qp;
+            var t;
+
+            if (tau < 0.0) {
+                t = -1.0 / (-tau + Math.sqrt(1.0 + tau * tau));
+            } else {
+                t = 1.0 / (tau + Math.sqrt(1.0 + tau * tau));
+            }
+
+            c = 1.0 / Math.sqrt(1.0 + t * t);
+            s = t * c;
+        }
+
+        result = Matrix3.clone(Matrix3.IDENTITY, result);
+
+        result[Matrix3.getElementIndex(p, p)] = result[Matrix3.getElementIndex(q, q)] = c;
+        result[Matrix3.getElementIndex(q, p)] = s;
+        result[Matrix3.getElementIndex(p, q)] = -s;
+
+        return result;
+    }
+
+    var jMatrix = new Matrix3();
+    var jMatrixTranspose = new Matrix3();
+
+    /**
+     * Computes the eigenvectors and eigenvalues of a symmetric matrix.
+     * <p>
+     * Returns a diagonal matrix and unitary matrix such that:
+     * <code>matrix = unitary matrix * diagonal matrix * transpose(unitary matrix)</code>
+     * </p>
+     * <p>
+     * The values along the diagonal of the diagonal matrix are the eigenvalues. The columns
+     * of the unitary matrix are the corresponding eigenvectors.
+     * </p>
+     * @memberof Matrix3
+     *
+     * @param {Matrix3} matrix The matrix to decompose into diagonal and unitary matrix. Expected to be symmetric.
+     * @param {Object} [result] An object with unitary and diagonal properties which are matrices onto which to store the result.
+     * @returns {Object} An object with unitary and diagonal properties which are the unitary and diagonal matrices, respectively.
+     *
+     * @example
+     * var a = //... symetric matrix
+     * var result = {
+     *     unitary : new Matrix3(),
+     *     diagonal : new Matrix3()
+     * };
+     * Matrix3.getEigenDecomposition(a, result);
+     *
+     * var unitaryTranspose = Matrix3.transpose(result.unitary);
+     * var b = Matrix.multiply(result.unitary, result.diagonal);
+     * Matrix3.multiply(b, unitaryTranspose, b); // b is now equal to a
+     *
+     * var lambda = Matrix3.getColumn(result.diagonal, 0).x;  // first eigenvalue
+     * var v = Matrix3.getColumn(result.unitary, 0);          // first eigenvector
+     * var c = Cartesian3.multiplyByScalar(v, lambda);        // equal to Matrix3.multiplyByVector(a, v)
+     */
+    Matrix3.getEigenDecomposition = function(matrix, result) {
+        if (!defined(matrix)) {
+            throw new DeveloperError('matrix is required.');
+        }
+
+        // This routine was created based upon Matrix Computations, 3rd ed., by Golub and Van Loan,
+        // section 8.4.3 The Classical Jacobi Algorithm
+
+        var tolerance = CesiumMath.EPSILON20;
+        var maxSweeps = 10;
+
+        var count = 0;
+        var sweep = 0;
+
+        if (!defined(result)) {
+            result = {};
+        }
+
+        var unitaryMatrix = result.unitary = Matrix3.clone(Matrix3.IDENTITY, result.unitary);
+        var diagMatrix = result.diagonal = Matrix3.clone(matrix, result.diagonal);
+
+        var epsilon = tolerance * computeFrobeniusNorm(diagMatrix);
+
+        while (sweep < maxSweeps && offDiagonalFrobeniusNorm(diagMatrix) > epsilon) {
+            shurDecomposition(diagMatrix, jMatrix);
+            Matrix3.transpose(jMatrix, jMatrixTranspose);
+            Matrix3.multiply(diagMatrix, jMatrix, diagMatrix);
+            Matrix3.multiply(jMatrixTranspose, diagMatrix, diagMatrix);
+            Matrix3.multiply(unitaryMatrix, jMatrix, unitaryMatrix);
+
+            if (++count > 2) {
+                ++sweep;
+                count = 0;
+            }
+        }
+
+        return result;
+    };
+
+    /**
+     * Computes a matrix, which contains the absolute (unsigned) values of the provided matrix's elements.
+     * @memberof Matrix3
+     *
+     * @param {Matrix3} matrix The matrix with signed elements.
+     * @param {Matrix3} [result] The object onto which to store the result.
+     * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided.
+     *
+     * @exception {DeveloperError} matrix is required.
+     */
+    Matrix3.abs = function(matrix, result) {
+        if (!defined(matrix)) {
+            throw new DeveloperError('matrix is required');
+        }
+        if (!defined(result)) {
+            return new Matrix3(Math.abs(matrix[0]), Math.abs(matrix[3]), Math.abs(matrix[6]),
+                               Math.abs(matrix[1]), Math.abs(matrix[4]), Math.abs(matrix[7]),
+                               Math.abs(matrix[2]), Math.abs(matrix[5]), Math.abs(matrix[8]));
+        }
+        result[0] = Math.abs(matrix[0]);
+        result[1] = Math.abs(matrix[1]);
+        result[2] = Math.abs(matrix[2]);
+        result[3] = Math.abs(matrix[3]);
+        result[4] = Math.abs(matrix[4]);
+        result[5] = Math.abs(matrix[5]);
+        result[6] = Math.abs(matrix[6]);
+        result[7] = Math.abs(matrix[7]);
+        result[8] = Math.abs(matrix[8]);
+
+        return result;
+    };
+
+    /**
+     * Computes the determinant of the provided matrix.
+     * @memberof Matrix3
+     *
+     * @param {Matrix3} matrix The matrix to use.
+     * @returns {Number} The value of the determinant of the matrix.
+     *
+     * @exception {DeveloperError} matrix is required.
+     */
+    Matrix3.determinant = function(matrix) {
+        if (!defined(matrix)) {
+            throw new DeveloperError('matrix is required');
+        }
+
+        var m11 = matrix[0];
+        var m21 = matrix[3];
+        var m31 = matrix[6];
+        var m12 = matrix[1];
+        var m22 = matrix[4];
+        var m32 = matrix[7];
+        var m13 = matrix[2];
+        var m23 = matrix[5];
+        var m33 = matrix[8];
+
+        return m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) + m13 * (m21 * m32 - m22 * m31);
+    };
+
+    /**
+     * Computes the inverse of the provided matrix.
+     * @memberof Matrix3
+     *
+     * @param {Matrix3} matrix The matrix to invert.
+     * @param {Matrix3} [result] The object onto which to store the result.
+     * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided.
+     *
+     * @exception {DeveloperError} matrix is required.
+     * @exception {DeveloperError} matrix is not invertible.
+     */
+    Matrix3.inverse = function(matrix, result) {
+        if (!defined(matrix)) {
+            throw new DeveloperError('matrix is required');
+        }
+
+        var m11 = matrix[0];
+        var m21 = matrix[1];
+        var m31 = matrix[2];
+        var m12 = matrix[3];
+        var m22 = matrix[4];
+        var m32 = matrix[5];
+        var m13 = matrix[6];
+        var m23 = matrix[7];
+        var m33 = matrix[8];
+
+        var determinant = Matrix3.determinant(matrix);
+
+        if (Math.abs(determinant) <= CesiumMath.EPSILON15) {
+            throw new DeveloperError('matrix is not invertible');
+        }
+
+        var m = new Matrix3(m22 * m33 - m23 * m32, m13 * m32 - m12 * m33, m12 * m23 - m13 * m22,
+                            m23 * m31 - m21 * m33, m11 * m33 - m13 * m31, m13 * m21 - m11 * m23,
+                            m21 * m32 - m22 * m31, m12 * m31 - m11 * m32, m11 * m22 - m12 * m21);
+       var scale = 1.0 / determinant;
+       return Matrix3.multiplyByScalar(m, scale, result);
+    };
+
     /**
      * Compares the provided matrices componentwise and returns
      * <code>true</code> if they are equal, <code>false</code> otherwise.
@@ -4384,147 +4880,6 @@ define('Core/Matrix3',[
     };
 
     /**
-     * Creates an Array from this Matrix3 instance.
-     * @memberof Matrix3
-     *
-     * @param {Array} [result] The Array onto which to store the result.
-     * @returns {Array} The modified Array parameter or a new Array instance if one was not provided.
-     */
-    Matrix3.prototype.toArray = function(result) {
-        return Matrix3.toArray(this, result);
-    };
-
-    /**
-     * Retrieves a copy of the matrix column at the provided index as a Cartesian3 instance.
-     * @memberof Matrix3
-     *
-     * @param {Number} index The zero-based index of the column to retrieve.
-     * @param {Cartesian3} [result] The object onto which to store the result.
-     * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     *
-     * @exception {DeveloperError} index is required and must be 0, 1, or 2.
-     *
-     * @see Cartesian3
-     */
-    Matrix3.prototype.getColumn = function(index, result) {
-        return Matrix3.getColumn(this, index, result);
-    };
-
-    /**
-     * Computes a new matrix that replaces the specified column in this matrix with the provided Cartesian3 instance.
-     * @memberof Matrix3
-     *
-     * @param {Number} index The zero-based index of the column to set.
-     * @param {Cartesian3} cartesian The Cartesian whose values will be assigned to the specified column.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     * @exception {DeveloperError} index is required and must be 0, 1, or 2.
-     *
-     * @see Cartesian3
-     */
-    Matrix3.prototype.setColumn = function(index, cartesian, result) {
-        return Matrix3.setColumn(this, index, cartesian, result);
-    };
-
-    /**
-     * Retrieves a copy of the matrix row at the provided index as a Cartesian3 instance.
-     * @memberof Matrix3
-     *
-     * @param {Number} index The zero-based index of the row to retrieve.
-     * @param {Cartesian3} [result] The object onto which to store the result.
-     * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     *
-     * @exception {DeveloperError} index is required and must be 0, 1, or 2.
-     *
-     * @see Cartesian3
-     */
-    Matrix3.prototype.getRow = function(index, result) {
-        return Matrix3.getRow(this, index, result);
-    };
-
-    /**
-     * Computes a new matrix that replaces the specified row in this matrix with the provided Cartesian3 instance.
-     * @memberof Matrix3
-     *
-     * @param {Number} index The zero-based index of the row to set.
-     * @param {Cartesian3} cartesian The Cartesian whose values will be assigned to the specified row.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     * @exception {DeveloperError} index is required and must be 0, 1, or 2.
-     *
-     * @see Cartesian3
-     */
-    Matrix3.prototype.setRow = function(index, cartesian, result) {
-        return Matrix3.setRow(this, index, cartesian, result);
-    };
-
-    /**
-     * Computes the product of this matrix and the provided matrix.
-     * @memberof Matrix3
-     *
-     * @param {Matrix3} right The right hand side matrix.
-     * @param {Matrix3} [result] The object onto which to store the result.
-     * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided.
-     *
-     * @exception {DeveloperError} right is required.
-     */
-    Matrix3.prototype.multiply = function(right, result) {
-        return Matrix3.multiply(this, right, result);
-    };
-
-    /**
-     * Computes the product of this matrix and a column vector.
-     * @memberof Matrix3
-     *
-     * @param {Cartesian3} cartesian The column.
-     * @param {Cartesian3} [result] The object onto which to store the result.
-     * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Matrix3.prototype.multiplyByVector = function(cartesian, result) {
-        return Matrix3.multiplyByVector(this, cartesian, result);
-    };
-
-    /**
-     * Computes the product of this matrix and a scalar.
-     * @memberof Matrix3
-     *
-     * @param {Number} scalar The number to multiply by.
-     * @param {Matrix3} [result] The object onto which to store the result.
-     * @returns {Matrix3} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     *
-     * @exception {DeveloperError} scalar is required and must be a number.
-     */
-    Matrix3.prototype.multiplyByScalar = function(scalar, result) {
-        return Matrix3.multiplyByScalar(this, scalar, result);
-    };
-    /**
-     * Creates a negated copy of this matrix.
-     * @memberof Matrix3
-     *
-     * @param {Matrix3} matrix The matrix to negate.
-     * @param {Matrix3} [result] The object onto which to store the result.
-     * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided.
-     *
-     * @exception {DeveloperError} matrix is required.
-     */
-    Matrix3.prototype.negate = function(result) {
-        return Matrix3.negate(this, result);
-    };
-
-    /**
-     * Computes the transpose of this matrix.
-     * @memberof Matrix3
-     *
-     * @param {Matrix3} [result] The object onto which to store the result.
-     * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided.
-     */
-    Matrix3.prototype.transpose = function(result) {
-        return Matrix3.transpose(this, result);
-    };
-
-    /**
      * Compares this matrix to the provided matrix componentwise and returns
      * <code>true</code> if they are equal, <code>false</code> otherwise.
      * @memberof Matrix3
@@ -4567,6 +4922,7 @@ define('Core/Matrix3',[
 
     return Matrix3;
 });
+
 /*global define*/
 define('Core/RuntimeError',['./defined'], function(defined) {
     "use strict";
@@ -4675,6 +5031,7 @@ define('Core/Matrix4',[
      * @see Matrix4.fromColumnMajorArray
      * @see Matrix4.fromRowMajorArray
      * @see Matrix4.fromRotationTranslation
+     * @see Matrix4.fromTranslationQuaternionRotationScale
      * @see Matrix4.fromTranslation
      * @see Matrix4.fromScale
      * @see Matrix4.fromUniformScale
@@ -4847,6 +5204,93 @@ define('Core/Matrix4',[
         result[13] = translation.y;
         result[14] = translation.z;
         result[15] = 1.0;
+        return result;
+    };
+
+    var scratchTrsRotation = new Matrix3();
+
+    /**
+     * Computes a Matrix4 instance from a translation, rotation, and scale (TRS)
+     * representation with the rotation represented as a quaternion.
+     *
+     * @memberof Matrix4
+     *
+     * @param {Cartesian3} translation The translation transformation.
+     * @param {Quaternion} rotation The rotation transformation.
+     * @param {Cartesian3} scale The non-uniform scale transformation.
+     * @param {Matrix4} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns The modified result parameter, or a new Matrix4 instance if one was not provided.
+     *
+     * @exception {DeveloperError} translation is required.
+     * @exception {DeveloperError} rotation is required.
+     * @exception {DeveloperError} scale is required.
+     *
+     * @example
+     * result = Matrix4.fromTranslationQuaternionRotationScale(
+     *   new Cartesian3(1.0, 2.0, 3.0), // translation
+     *   Quaternion.IDENTITY,           // rotation
+     *   new Cartesian3(7.0, 8.0, 9.0), // scale
+     *   result);
+     */
+    Matrix4.fromTranslationQuaternionRotationScale = function(translation, rotation, scale, result) {
+        if (!defined(translation)) {
+            throw new DeveloperError('translation is required.');
+        }
+        if (!defined(rotation)) {
+            throw new DeveloperError('rotation is required.');
+        }
+        if (!defined(scale)) {
+            throw new DeveloperError('scale is required.');
+        }
+
+        if (!defined(result)) {
+            result = new Matrix4();
+        }
+
+        var scaleX = scale.x;
+        var scaleY = scale.y;
+        var scaleZ = scale.z;
+
+        var x2 = rotation.x * rotation.x;
+        var xy = rotation.x * rotation.y;
+        var xz = rotation.x * rotation.z;
+        var xw = rotation.x * rotation.w;
+        var y2 = rotation.y * rotation.y;
+        var yz = rotation.y * rotation.z;
+        var yw = rotation.y * rotation.w;
+        var z2 = rotation.z * rotation.z;
+        var zw = rotation.z * rotation.w;
+        var w2 = rotation.w * rotation.w;
+
+        var m00 = x2 - y2 - z2 + w2;
+        var m01 = 2.0 * (xy - zw);
+        var m02 = 2.0 * (xz + yw);
+
+        var m10 = 2.0 * (xy + zw);
+        var m11 = -x2 + y2 - z2 + w2;
+        var m12 = 2.0 * (yz - xw);
+
+        var m20 = 2.0 * (xz - yw);
+        var m21 = 2.0 * (yz + xw);
+        var m22 = -x2 - y2 + z2 + w2;
+
+        result[0]  = m00 * scaleX;
+        result[1]  = m10 * scaleX;
+        result[2]  = m20 * scaleX;
+        result[3]  = 0.0;
+        result[4]  = m01 * scaleY;
+        result[5]  = m11 * scaleY;
+        result[6]  = m21 * scaleY;
+        result[7]  = 0.0;
+        result[8]  = m02 * scaleZ;
+        result[9]  = m12 * scaleZ;
+        result[10] = m22 * scaleZ;
+        result[11] = 0.0;
+        result[12] = translation.x;
+        result[13] = translation.y;
+        result[14] = translation.z;
+        result[15] = 1.0;
+
         return result;
     };
 
@@ -5873,10 +6317,12 @@ define('Core/Matrix4',[
         return result;
     };
 
+    var uniformScaleScratch = new Cartesian3();
+
     /**
      * Multiplies a transformation matrix (with a bottom row of <code>[0.0, 0.0, 0.0, 1.0]</code>)
      * by an implicit uniform scale matrix.  This is an optimization
-     * for <code>Matrix4.multiply(m, Matrix4.fromScale(scale), m);</code> with less allocations and arithmetic operations.
+     * for <code>Matrix4.multiply(m, Matrix4.fromUniformScale(scale), m);</code> with less allocations and arithmetic operations.
      *
      * @memberof Matrix4
      *
@@ -5890,42 +6336,82 @@ define('Core/Matrix4',[
      * @exception {DeveloperError} scale is required.
      *
      * @see Matrix4#fromUniformScale
+     * @see Matrix4#multiplyByScale
      *
      * @example
      * // Instead of Matrix4.multiply(m, Matrix4.fromUniformScale(scale), m);
      * Matrix4.multiplyByUniformScale(m, scale, m);
      */
     Matrix4.multiplyByUniformScale = function(matrix, scale, result) {
-        if (!defined(matrix)) {
-            throw new DeveloperError('matrix is required');
-        }
         if (typeof scale !== 'number') {
             throw new DeveloperError('scale is required');
         }
 
-        if (scale === 1.0) {
+        uniformScaleScratch.x = scale;
+        uniformScaleScratch.y = scale;
+        uniformScaleScratch.z = scale;
+        return Matrix4.multiplyByScale(matrix, uniformScaleScratch, result);
+    };
+
+    /**
+     * Multiplies a transformation matrix (with a bottom row of <code>[0.0, 0.0, 0.0, 1.0]</code>)
+     * by an implicit non-uniform scale matrix.  This is an optimization
+     * for <code>Matrix4.multiply(m, Matrix4.fromScale(scale), m);</code> with less allocations and arithmetic operations.
+     *
+     * @memberof Matrix4
+     *
+     * @param {Matrix4} matrix The matrix on the left-hand side.
+     * @param {Cartesian3} scale The non-uniform scale on the right-hand side.
+     * @param {Matrix4} [result] The object onto which to store the result.
+     *
+     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
+     *
+     * @exception {DeveloperError} matrix is required.
+     * @exception {DeveloperError} scale is required.
+     *
+     * @see Matrix4#fromScale
+     * @see Matrix4#multiplyByUniformScale
+     *
+     * @example
+     * // Instead of Matrix4.multiply(m, Matrix4.fromScale(scale), m);
+     * Matrix4.multiplyByUniformScale(m, scale, m);
+     */
+    Matrix4.multiplyByScale = function(matrix, scale, result) {
+        if (!defined(matrix)) {
+            throw new DeveloperError('matrix is required');
+        }
+        if (!defined(scale)) {
+            throw new DeveloperError('scale is required');
+        }
+
+        var scaleX = scale.x;
+        var scaleY = scale.y;
+        var scaleZ = scale.z;
+
+        // Faster than Cartesian3.equals
+        if ((scaleX === 1.0) && (scaleY === 1.0) && (scaleZ === 1.0)) {
             return Matrix4.clone(matrix, result);
         }
 
         if (!defined(result)) {
             return new Matrix4(
-                scale * matrix[0], scale * matrix[4], scale * matrix[8],  matrix[12],
-                scale * matrix[1], scale * matrix[5], scale * matrix[9],  matrix[13],
-                scale * matrix[2], scale * matrix[6], scale * matrix[10], matrix[14],
+                scaleX * matrix[0], scaleY * matrix[4], scaleZ * matrix[8],  matrix[12],
+                scaleX * matrix[1], scaleY * matrix[5], scaleZ * matrix[9],  matrix[13],
+                scaleX * matrix[2], scaleY * matrix[6], scaleZ * matrix[10], matrix[14],
                 0.0,               0.0,               0.0,                1.0);
         }
 
-        result[0] = scale * matrix[0];
-        result[1] = scale * matrix[1];
-        result[2] = scale * matrix[2];
+        result[0] = scaleX * matrix[0];
+        result[1] = scaleX * matrix[1];
+        result[2] = scaleX * matrix[2];
         result[3] = 0.0;
-        result[4] = scale * matrix[4];
-        result[5] = scale * matrix[5];
-        result[6] = scale * matrix[6];
+        result[4] = scaleY * matrix[4];
+        result[5] = scaleY * matrix[5];
+        result[6] = scaleY * matrix[6];
         result[7] = 0.0;
-        result[8] = scale * matrix[8];
-        result[9] = scale * matrix[9];
-        result[10] = scale * matrix[10];
+        result[8] = scaleZ * matrix[8];
+        result[9] = scaleZ * matrix[9];
+        result[10] = scaleZ * matrix[10];
         result[11] = 0.0;
         result[12] = matrix[12];
         result[13] = matrix[13];
@@ -6186,6 +6672,48 @@ define('Core/Matrix4',[
         result[13] = matrix7;
         result[14] = matrix11;
         result[15] = matrix[15];
+        return result;
+    };
+
+    /**
+     * Computes a matrix, which contains the absolute (unsigned) values of the provided matrix's elements.
+     * @memberof Matrix4
+     *
+     * @param {Matrix4} matrix The matrix with signed elements.
+     * @param {Matrix4} [result] The object onto which to store the result.
+     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
+     *
+     * @exception {DeveloperError} matrix is required.
+     */
+    Matrix4.abs = function(matrix, result) {
+        if (!defined(matrix)) {
+            throw new DeveloperError('matrix is required');
+        }
+        if (!defined(result)) {
+            return new Matrix4(Math.abs(matrix[0]), Math.abs(matrix[4]), Math.abs(matrix[8]), Math.abs(matrix[12]),
+                               Math.abs(matrix[1]), Math.abs(matrix[5]), Math.abs(matrix[9]), Math.abs(matrix[13]),
+                               Math.abs(matrix[2]), Math.abs(matrix[6]), Math.abs(matrix[10]), Math.abs(matrix[14]),
+                               Math.abs(matrix[3]), Math.abs(matrix[7]), Math.abs(matrix[11]), Math.abs(matrix[15]));
+
+        }
+
+        result[0] = Math.abs(matrix[0]);
+        result[1] = Math.abs(matrix[1]);
+        result[2] = Math.abs(matrix[2]);
+        result[3] = Math.abs(matrix[3]);
+        result[4] = Math.abs(matrix[4]);
+        result[5] = Math.abs(matrix[5]);
+        result[6] = Math.abs(matrix[6]);
+        result[7] = Math.abs(matrix[7]);
+        result[8] = Math.abs(matrix[8]);
+        result[9] = Math.abs(matrix[9]);
+        result[10] = Math.abs(matrix[10]);
+        result[11] = Math.abs(matrix[11]);
+        result[12] = Math.abs(matrix[12]);
+        result[13] = Math.abs(matrix[13]);
+        result[14] = Math.abs(matrix[14]);
+        result[15] = Math.abs(matrix[15]);
+
         return result;
     };
 
@@ -6687,196 +7215,6 @@ define('Core/Matrix4',[
     };
 
     /**
-     * Computes an Array from this Matrix4 instance.
-     * @memberof Matrix4
-     *
-     * @param {Array} [result] The Array onto which to store the result.
-     * @returns {Array} The modified Array parameter or a new Array instance if one was not provided.
-     */
-    Matrix4.prototype.toArray = function(result) {
-        return Matrix4.toArray(this, result);
-    };
-
-    /**
-     * Retrieves a copy of the matrix column at the provided index as a Cartesian4 instance.
-     * @memberof Matrix4
-     *
-     * @param {Number} index The zero-based index of the column to retrieve.
-     * @param {Cartesian4} [result] The object onto which to store the result.
-     * @returns {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} index is required and must be 0, 1, 2, or 3.
-     *
-     * @see Cartesian4
-     */
-    Matrix4.prototype.getColumn = function(index, result) {
-        return Matrix4.getColumn(this, index, result);
-    };
-
-    /**
-     * Computes a new matrix that replaces the specified column in this matrix with the provided Cartesian4 instance.
-     * @memberof Matrix4
-     *
-     * @param {Number} index The zero-based index of the column to set.
-     * @param {Cartesian4} cartesian The Cartesian whose values will be assigned to the specified column.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     * @exception {DeveloperError} index is required and must be 0, 1, 2, or 3.
-     *
-     * @see Cartesian4
-     */
-    Matrix4.prototype.setColumn = function(index, cartesian, result) {
-        return Matrix4.setColumn(this, index, cartesian, result);
-    };
-
-    /**
-     * Retrieves a copy of the matrix row at the provided index as a Cartesian4 instance.
-     * @memberof Matrix4
-     *
-     * @param {Number} index The zero-based index of the row to retrieve.
-     * @param {Cartesian4} [result] The object onto which to store the result.
-     * @returns {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} index is required and must be 0, 1, 2, or 3.
-     *
-     * @see Cartesian4
-     */
-    Matrix4.prototype.getRow = function(index, result) {
-        return Matrix4.getRow(this, index, result);
-    };
-
-    /**
-     * Computes a new matrix that replaces the specified row in this matrix with the provided Cartesian4 instance.
-     * @memberof Matrix4
-     *
-     * @param {Number} index The zero-based index of the row to set.
-     * @param {Cartesian4} cartesian The Cartesian whose values will be assigned to the specified row.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     * @exception {DeveloperError} index is required and must be 0, 1, 2, or 3.
-     *
-     * @see Cartesian4
-     */
-    Matrix4.prototype.setRow = function(index, cartesian, result) {
-        return Matrix4.setRow(this, index, cartesian, result);
-    };
-
-    /**
-     * Computes the product of this matrix and the provided matrix.
-     * @memberof Matrix4
-     *
-     * @param {Matrix4} right The right hand side matrix.
-     * @param {Matrix4} [result] The object onto which to store the result.
-     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} right is required.
-     */
-    Matrix4.prototype.multiply = function(right, result) {
-        return Matrix4.multiply(this, right, result);
-    };
-
-    /**
-     * Multiplies this matrix, assuming it is a transformation matrix (with a bottom row of
-     * <code>[0.0, 0.0, 0.0, 1.0]</code>), by an implicit translation matrix defined by a {@link Cartesian3}.
-     *
-     * @memberof Matrix4
-     *
-     * @param {Cartesian3} translation The translation on the right-hand side of the multiplication.
-     * @param {Matrix4} [result] The object onto which to store the result.
-     *
-     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} translation is required.
-     */
-    Matrix4.prototype.multiplyByTranslation = function(translation, result) {
-        return Matrix4.multiplyByTranslation(this, translation, result);
-    };
-
-    /**
-     * Multiplies this matrix, assuming it is a transformation matrix (with a bottom row of
-     * <code>[0.0, 0.0, 0.0, 1.0]</code>), by an implicit uniform scale matrix.
-     *
-     * @memberof Matrix4
-     *
-     * @param {Number} scale The scale on the right-hand side of the multiplication.
-     * @param {Matrix4} [result] The object onto which to store the result.
-     *
-     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} scale is required.
-     */
-    Matrix4.prototype.multiplyByUniformScale = function(scale, result) {
-        return Matrix4.multiplyByUniformScale(this, scale, result);
-    };
-
-    /**
-     * Computes the product of this matrix and a column vector.
-     * @memberof Matrix4
-     *
-     * @param {Cartesian4} cartesian The vector.
-     * @param {Cartesian4} [result] The object onto which to store the result.
-     * @returns {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Matrix4.prototype.multiplyByVector = function(cartesian, result) {
-        return Matrix4.multiplyByVector(this, cartesian, result);
-    };
-
-    /**
-     * Computes the product of a matrix and a {@link Cartesian3}.  This is equivalent to calling {@link Matrix4#multiplyByVector}
-     * with a {@link Cartesian4} with a <code>w</code> component of one.
-     * @memberof Matrix4
-     *
-     * @param {Cartesian3} cartesian The point.
-     * @param {Cartesian4} [result] The object onto which to store the result.
-     * @returns {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} cartesian is required.
-     */
-    Matrix4.prototype.multiplyByPoint = function(cartesian, result) {
-        return Matrix4.multiplyByPoint(this, cartesian, result);
-    };
-
-    /**
-     * Computes the product of this matrix and a scalar.
-     * @memberof Matrix4
-     *
-     * @param {Number} scalar The number to multiply by.
-     * @param {Matrix4} [result] The object onto which to store the result.
-     * @returns {Matrix4} The modified result parameter or a new Cartesian4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} scalar is required and must be a number.
-     */
-    Matrix4.prototype.multiplyByScalar = function(scalar, result) {
-        return Matrix4.multiplyByScalar(this, scalar, result);
-    };
-    /**
-     * Computes a negated copy of this matrix.
-     * @memberof Matrix4
-     *
-     * @param {Matrix4} matrix The matrix to negate.
-     * @param {Matrix4} [result] The object onto which to store the result.
-     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
-     *
-     * @exception {DeveloperError} matrix is required.
-     */
-    Matrix4.prototype.negate = function(result) {
-        return Matrix4.negate(this, result);
-    };
-
-    /**
-     * Computes the transpose of this matrix.
-     * @memberof Matrix4
-     *
-     * @param {Matrix4} [result] The object onto which to store the result.
-     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
-     */
-    Matrix4.prototype.transpose = function(result) {
-        return Matrix4.transpose(this, result);
-    };
-
-    /**
      * Compares this matrix to the provided matrix componentwise and returns
      * <code>true</code> if they are equal, <code>false</code> otherwise.
      * @memberof Matrix4
@@ -6916,65 +7254,6 @@ define('Core/Matrix4',[
                '(' + this[1] + ', ' + this[5] + ', ' + this[9] + ', ' + this[13] +')\n' +
                '(' + this[2] + ', ' + this[6] + ', ' + this[10] + ', ' + this[14] +')\n' +
                '(' + this[3] + ', ' + this[7] + ', ' + this[11] + ', ' + this[15] +')';
-    };
-
-    /**
-     * Gets the translation portion of this matrix, assuming the matrix is a affine transformation matrix.
-     * @memberof Matrix4
-     *
-     * @param {Cartesian3} [result] The object onto which to store the result.
-     * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     *
-     * @see Cartesian3
-     */
-    Matrix4.prototype.getTranslation = function(result) {
-        return Matrix4.getTranslation(this, result);
-    };
-
-    /**
-     * Gets the upper left 3x3 rotation matrix of this matrix, assuming the matrix is a affine transformation matrix.
-     * @memberof Matrix4
-     *
-     * @param {Matrix3} [result] The object onto which to store the result.
-     * @returns {Matrix3} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     *
-     * @see Matrix3
-     */
-    Matrix4.prototype.getRotation = function(result) {
-        return Matrix4.getRotation(this, result);
-    };
-
-    /**
-     * Computes the inverse of this matrix using Cramers Rule.
-     * If the determinant is zero, the matrix can not be inverted, and an exception is thrown.
-     * If the matrix is an affine transformation matrix, it is more efficient
-     * to invert it with {@link #inverseTransformation}.
-     * @memberof Matrix4
-     *
-     * @param {Matrix4} [result] The object onto which to store the result.
-     * @returns {Matrix4} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     *
-     * @exception {RuntimeError} matrix is not invertible because its determinate is zero.
-     */
-    Matrix4.prototype.inverse = function(result) {
-        return Matrix4.inverse(this, result);
-    };
-
-    /**
-     * Computes the inverse of this matrix assuming it is
-     * an affine transformation matrix, where the upper left 3x3 elements
-     * are a rotation matrix, and the upper three elements in the fourth
-     * column are the translation.  The bottom row is assumed to be [0, 0, 0, 1].
-     * The matrix is not verified to be in the proper form.
-     * This method is faster than computing the inverse for a general 4x4
-     * matrix using {@link #inverse}.
-     * @memberof Matrix4
-     *
-     * @param {Matrix4} [result] The object onto which to store the result.
-     * @returns {Matrix4} The modified result parameter or a new Cartesian3 instance if one was not provided.
-     */
-    Matrix4.prototype.inverseTransformation = function(result) {
-        return Matrix4.inverseTransformation(this, result);
     };
 
     return Matrix4;
@@ -8013,7 +8292,7 @@ define('Core/EllipsoidalOccluder',[
      * Determine whether or not other objects are visible or hidden behind the visible horizon defined by
      * an {@link Ellipsoid} and a camera position.  The ellipsoid is assumed to be located at the
      * origin of the coordinate system.  This class uses the algorithm described in the
-     * <a href="http://cesium.agi.com/2013/04/25/Horizon-culling/">Horizon Culling</a> blog post.
+     * <a href="http://cesiumjs.org/2013/04/25/Horizon-culling/">Horizon Culling</a> blog post.
      *
      * @alias EllipsoidalOccluder
      *
@@ -8067,7 +8346,7 @@ define('Core/EllipsoidalOccluder',[
      * @param {Cartesian3} cameraPosition The new position of the camera.
      */
     EllipsoidalOccluder.prototype.setCameraPosition = function(cameraPosition) {
-        // See http://cesium.agi.com/2013/04/25/Horizon-culling/
+        // See http://cesiumjs.org/2013/04/25/Horizon-culling/
         var ellipsoid = this._ellipsoid;
         var cv = ellipsoid.transformPositionToScaledSpace(cameraPosition, this._cameraPositionInScaledSpace);
         var vhMagnitudeSquared = Cartesian3.magnitudeSquared(cv) - 1.0;
@@ -8132,7 +8411,7 @@ define('Core/EllipsoidalOccluder',[
      * occluder.isScaledSpacePointVisible(scaledSpacePoint); //returns true
      */
     EllipsoidalOccluder.prototype.isScaledSpacePointVisible = function(occludeeScaledSpacePosition) {
-        // See http://cesium.agi.com/2013/04/25/Horizon-culling/
+        // See http://cesiumjs.org/2013/04/25/Horizon-culling/
         var cv = this._cameraPositionInScaledSpace;
         var vhMagnitudeSquared = this._distanceToLimbInScaledSpaceSquared;
         var vt = Cartesian3.subtract(occludeeScaledSpacePosition, cv, scratchCartesian);

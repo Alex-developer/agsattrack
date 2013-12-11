@@ -1166,6 +1166,8 @@ var AG3DVIEW = function(element) {
         cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[_settings.provider].provider);
         cb.showSkyAtmosphere = true;
         
+        cb.enableLighting  = true;
+        
         scene.getPrimitives().setCentralBody(cb);
 
         setTerrainProvider(_settings.useTerrainProvider);
@@ -1175,12 +1177,14 @@ var AG3DVIEW = function(element) {
         
         var imageryUrl = 'images/';
         _skybox = new Cesium.SkyBox({
-            positiveX : imageryUrl + 'skybox/tycho2t3_80_px.jpg',
-            negativeX : imageryUrl + 'skybox/tycho2t3_80_mx.jpg',
-            positiveY : imageryUrl + 'skybox/tycho2t3_80_py.jpg',
-            negativeY : imageryUrl + 'skybox/tycho2t3_80_my.jpg',
-            positiveZ : imageryUrl + 'skybox/tycho2t3_80_pz.jpg',
-            negativeZ : imageryUrl + 'skybox/tycho2t3_80_mz.jpg'
+            sources : {
+                positiveX : imageryUrl + 'skybox/tycho2t3_80_px.jpg',
+                negativeX : imageryUrl + 'skybox/tycho2t3_80_mx.jpg',
+                positiveY : imageryUrl + 'skybox/tycho2t3_80_py.jpg',
+                negativeY : imageryUrl + 'skybox/tycho2t3_80_my.jpg',
+                positiveZ : imageryUrl + 'skybox/tycho2t3_80_pz.jpg',
+                negativeZ : imageryUrl + 'skybox/tycho2t3_80_mz.jpg'
+            }
         });
         scene.skyBox = _skybox;
         
@@ -1194,7 +1198,8 @@ var AG3DVIEW = function(element) {
         scene.getPrimitives().add(_satNameLabels);
 
         scene.sun = new Cesium.Sun();
-        
+        scene.moon = new Cesium.Moon();
+                
         satelliteClickDetails(scene);
         mouseMoveDetails(scene, ellipsoid);
         scene.getPrimitives().add(orbitLines);
