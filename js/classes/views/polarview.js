@@ -58,6 +58,7 @@ var AGPOLARVIEW = function(element) {
     var _satLayer;
     var _planetLayer;
     var _orbitLayer;
+    var _arrowLayer;
     var _infoLayer;
     var _mutualLayer;
     var _mousePosTextAz;
@@ -493,12 +494,14 @@ var AGPOLARVIEW = function(element) {
         drawInfoLayer();
         
         _orbitLayer.removeChildren();
+        _arrowLayer.removeChildren();        
         _satLayer.removeChildren();
         if (_singleSat !== null) {            
             plotSatellite(_singleSat);
         }
         _orbitLayer.draw();
-        _satLayer.draw();               
+        _satLayer.draw();
+        _arrowLayer.draw();              
     }
     
     
@@ -509,6 +512,7 @@ var AGPOLARVIEW = function(element) {
         drawInfoLayer();
         
         _orbitLayer.removeChildren();
+        _arrowLayer.removeChildren();
         _satLayer.removeChildren();
 		var satellites = AGSatTrack.getSatellites();
 		jQuery.each(satellites, function(index, satellite) {        
@@ -516,6 +520,7 @@ var AGPOLARVIEW = function(element) {
 		});
         _orbitLayer.draw();
 		_satLayer.draw();
+        _arrowLayer.draw();         
 	}
     
     function plotSatellite(satellite) {
@@ -536,12 +541,16 @@ var AGPOLARVIEW = function(element) {
                 var points = [];                        
                 var postPoints = [];                        
                 var max = {az:0, el:0};
+                var maxPrev = {az:0, el:0};
                 var aostime = null;
                 var okToDraw = true;
                 var aosPos = {x:0, y:0};
                 var passData = null;
                 var pass = null;
                 var haveAos = false;
+                var drawStartArrow = false;
+                var drawMaxArrow = false;
+                var drawEndArrow = false;
                 
                 if (_passToShow !== null) {
                     var observer = AGSatTrack.getObserver(AGOBSERVER.types.HOME);
@@ -560,9 +569,8 @@ var AGPOLARVIEW = function(element) {
                 if (okToDraw) {             
                     points = []; 
                     for ( var i = 0; i < pass.length; i++) {
-                        pos = convertAzEltoXY(pass[i].az, pass[i].el);
+                        pos = convertAzEltoXY(pass[i].az, pass[i].el); 
                         if (pass[i].el >= AGSETTINGS.getAosEl()) {
-                            
                             if (points.length ===0) {
                                 prePoints.push(pos.x | 0);
                                 prePoints.push(pos.y | 0);
@@ -576,20 +584,12 @@ var AGPOLARVIEW = function(element) {
                                 aostime = pass[i].date;
                             }
                             
-                            /**
-                            * For Debugging  ONLY
-                            */
-                            /*
-                            _orbitLayer.add(new Kinetic.Circle({
-                                x : pos.x,
-                                y : pos.y,
-                                radius : 2,
-                                stroke : '#ccc',
-                                strokeWidth : 1
-                            }));
-                            */                             
-                            
                             haveAos = true;
+                            
+                            if (!drawStartArrow) {
+                                drawArrow(prePoints, 'red');
+                                drawStartArrow = true;
+                            }
                         } else {
                             if (!haveAos) {
                                 if (pass[i].el >= 0) {
@@ -603,12 +603,22 @@ var AGPOLARVIEW = function(element) {
                                         postPoints.push(points[points.length-1]);
                                     }
                                     postPoints.push(pos.x | 0);
-                                    postPoints.push(pos.y | 0);                                    
+                                    postPoints.push(pos.y | 0);
+                                    
+                                    if (!drawEndArrow) {
+                                        if (drawStartArrow) {
+                                            drawArrow(postPoints, 'green');
+                                            drawEndArrow = true; 
+                                        }                                       
+                                    }                                   
                                 }
                             }
                         }
                         if (pass[i].el > max.el) {
                             max = pass[i];
+                            if (i > 0) {
+                                maxPrev = pass[i - 1];
+                            }
                         }
                         
                         if (haveAos && pass[i].el < 0) {
@@ -650,6 +660,15 @@ var AGPOLARVIEW = function(element) {
                     }                        
                                             
                 }
+                
+                var maxArray = [];
+                pos = convertAzEltoXY(maxPrev.az, maxPrev.el); 
+                maxArray.push(pos.x | 0);
+                maxArray.push(pos.y | 0);                
+                pos = convertAzEltoXY(max.az, max.el); 
+                maxArray.push(pos.x | 0);
+                maxArray.push(pos.y | 0);
+                drawArrow(maxArray, 'green');
                 
                 /**
                 * If satellite is selected but NOT visible then add a text label
@@ -742,6 +761,23 @@ var AGPOLARVIEW = function(element) {
             }
 
         }
+    }
+    
+    function drawArrow(points, colour) {
+        var fromx = points[points.length-4];
+        var fromy = points[points.length-3];
+
+        var tox = points[points.length-2];
+        var toy = points[points.length-1];
+        
+        var headlen = 10;
+        var angle = Math.atan2(toy-fromy,tox-fromx);
+
+        var line = new Kinetic.Line({
+            points: [fromx, fromy, tox, toy, tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6),tox, toy, tox-headlen*Math.cos(angle+Math.PI/6),toy-headlen*Math.sin(angle+Math.PI/6)],
+            stroke: colour
+        });
+        _arrowLayer.add(line);         
     }
     
     function drawInfoLayer() {
@@ -906,7 +942,10 @@ var AGPOLARVIEW = function(element) {
 
             _planetLayer = new Kinetic.Layer();
             _stage.add(_planetLayer);
-            
+
+            _arrowLayer = new Kinetic.Layer();
+            _stage.add(_arrowLayer); 
+                        
             _orbitLayer = new Kinetic.Layer();
             _stage.add(_orbitLayer);
 
