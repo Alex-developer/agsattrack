@@ -14,12 +14,13 @@ Copyright 2013 Alex Greenland
    limitations under the License.
  */
 
-/* Options for JSHint http://www.jshint.com/
+/* Options for JS Lint http://www.jslint.com/
 * 
-* Last Checked: 19/01/2013
+* Last Checked: 09/03/2014
 * 
 */
-/*global AGSatTrack, AGSETTINGS, AGIMAGES, AGUTIL, AGVIEWS, AGWINDOWMANAGER, AGOBSERVER, Cesium, console */
+/*jslint white: true, nomen: true */
+/*global document, jQuery, AGSatTrack, AGSETTINGS, AGIMAGES, AGUTIL, AGVIEWS, AGWINDOWMANAGER, AGOBSERVER, Cesium, console */
 
 var AG3DVIEW = function(element) {
     'use strict';
@@ -86,7 +87,7 @@ var AG3DVIEW = function(element) {
         canvas.width = width;
         canvas.height = height;
 
-        scene.getCamera().frustum.aspectRatio = width / height;
+        scene.camera.frustum.aspectRatio = width / height;
     });
       */
     function resize(width, height) {
@@ -100,7 +101,7 @@ var AG3DVIEW = function(element) {
             canvas.width = width;
             canvas.height = height;
 
-            scene.getCamera().frustum.aspectRatio = width / height;
+            scene.camera.frustum.aspectRatio = width / height;
         }          
     }
 
@@ -258,10 +259,12 @@ var AG3DVIEW = function(element) {
             function(e, state) {
                 if (AGSETTINGS.getHaveWebGL()) {
                     if (state) {
-                        _fps = new Cesium.PerformanceDisplay();                         
-                        scene.getPrimitives().add(_fps);    
+                    //    _fps = new Cesium.PerformanceDisplay();                         
+                   //     scene.primitives.add(_fps);    
+                        scene.debugShowFramesPerSecond = true;
                     } else {
-                        scene.getPrimitives().remove(_fps);                               
+//                        scene.primitives.remove(_fps);                               
+                        scene.debugShowFramesPerSecond = false;
                     }
                 }
             });            
@@ -373,8 +376,8 @@ var AG3DVIEW = function(element) {
     
     function setProvider(provider) {
         if (typeof TILE_PROVIDERS[provider] !== 'undefined') {
-            cb.getImageryLayers().removeAll();
-            cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[provider].provider);
+            cb.imageryLayers.removeAll();
+            cb.imageryLayers.addImageryProvider(TILE_PROVIDERS[provider].provider);
             jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[provider].toolbarTitle );
             _currentProvider = provider;        
         }
@@ -388,10 +391,10 @@ var AG3DVIEW = function(element) {
     function plotCities() {
         AGDATAMANAGER.getData('locations', function(data){
             clearCities();
-            var textureAtlas = scene.getContext().createTextureAtlas({
+            var textureAtlas = scene.context.createTextureAtlas({
                 image : AGIMAGES.getImage('citybullet')
             });
-            _cityBillboards.setTextureAtlas(textureAtlas);
+            _cityBillboards.textureAtlas = textureAtlas;
             var populationLimit = AGSETTINGS.getViewSettings('threed').cityPopulation;
             var label;            
             for ( var i = 0; i < data.length; i++) {
@@ -421,10 +424,10 @@ var AG3DVIEW = function(element) {
         var observer = null;
         observerBillboards.removeAll();
         _observerLabels.removeAll();
-        var textureAtlas = scene.getContext().createTextureAtlas({
+        var textureAtlas = scene.context.createTextureAtlas({
             image : AGIMAGES.getImage('home')
         });
-        observerBillboards.setTextureAtlas(textureAtlas);        
+        observerBillboards.textureAtlas = textureAtlas;        
         observers = AGSatTrack.getObservers();
         for ( var i = 0; i < observers.length; i++) {
             observer = observers[i];
@@ -455,7 +458,7 @@ var AG3DVIEW = function(element) {
                                 .fromDegrees(observer.getLon(), observer
                                         .getLat(), 1e7));
                 var up = new Cesium.Cartesian3(0, 0, 1);
-                scene.getCamera().controller.lookAt(eye, target, up);
+                scene.camera.lookAt(eye, target, up);
             }
         }
 
@@ -464,7 +467,7 @@ var AG3DVIEW = function(element) {
     function plotMutualCircles() {
         var observer;
         _settings.fillMutual = true;
-        var primitives = scene.getPrimitives();        
+        var primitives = scene.primitives;        
         _observerCircles.removeAll();
         primitives.remove(_homeLocationCircle);
         primitives.remove(_mutualLocationCircle);
@@ -657,7 +660,7 @@ var AG3DVIEW = function(element) {
                     billboard.satelliteindex = i;
                 }
             }
-            scene.getPrimitives().add(satBillboards);
+            scene.primitives.add(satBillboards);
 
             var satUnselected = 'satellite' + _settings.unselectedIcon + _settings.unselectedIconSize;
             var satSelected = 'satellite' + _settings.selectedIcon + _settings.selectedIconSize;
@@ -665,7 +668,7 @@ var AG3DVIEW = function(element) {
             var satUnselectedGrey = 'satellitegrey' + _settings.unselectedIcon + _settings.unselectedIconSize;
             var satSelectedGrey = 'satellitegrey' + _settings.selectedIcon + _settings.selectedIconSize;
 
-            var textureAtlas = scene.getContext().createTextureAtlas({
+            var textureAtlas = scene.context.createTextureAtlas({
                 images : [
                     AGIMAGES.getImage(satUnselected), 
                     AGIMAGES.getImage(satSelected),
@@ -675,7 +678,7 @@ var AG3DVIEW = function(element) {
                     AGIMAGES.getImage(satSelectedGrey)
                     ] 
             });
-            satBillboards.setTextureAtlas(textureAtlas);
+            satBillboards.textureAtlas = textureAtlas;
         }
         createSatelliteLabels();
     }
@@ -706,7 +709,7 @@ var AG3DVIEW = function(element) {
         _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
                 Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
                 Cesium.Cartesian3.ZERO);
-        for ( var i = 0; i < satBillboards.getLength(); i++) {
+        for ( var i = 0; i < satBillboards.length; i++) {
             bb = satBillboards.get(i);
      
             var offset = 4;
@@ -763,7 +766,7 @@ var AG3DVIEW = function(element) {
                     up = Cesium.Cartesian3.normalize(eye);
                 }
             }
-            scene.getCamera().controller.lookAt(eye, target, up);                                      
+            scene.camera.lookAt(eye, target, up);                                      
         }
                 
         setupOrbit();
@@ -773,7 +776,7 @@ var AG3DVIEW = function(element) {
         var footPrint;
         var i;
 
-        var primitives = scene.getPrimitives();
+        var primitives = scene.primitives;
         for (i=0;i<_footprintPolygons.length;i++) {
             primitives.remove(_footprintPolygons[i]);  
         }
@@ -798,7 +801,7 @@ var AG3DVIEW = function(element) {
                       alpha : 0.4
                     };
                 }
-//rcle.material = Cesium.Material.fromType(scene.getContext(), Cesium.Material.CheckerboardType);
+//rcle.material = Cesium.Material.fromType(scene.context, Cesium.Material.CheckerboardType);
                                 
                 circle.setPositions(
                         Cesium.Shapes.computeCircleBoundary(
@@ -831,7 +834,7 @@ var AG3DVIEW = function(element) {
     }
 
     function satelliteClickDetails(scene) {
-        var handler = new Cesium.ScreenSpaceEventHandler(scene.getCanvas());
+        var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
 
         handler.setInputAction(function(click) {
             var pickedObject = scene.pick(click.position);
@@ -843,13 +846,13 @@ var AG3DVIEW = function(element) {
     }
 
     function mouseMoveDetails(scene, ellipsoid) {
-        var handler = new Cesium.ScreenSpaceEventHandler(scene.getCanvas());
+        var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
         handler.setInputAction(function(movement) {
 
             ShowCameraPosition();
             
             if (_showMousePos) {
-                var cartesian = scene.getCamera().controller.pickEllipsoid(movement.endPosition, ellipsoid);
+                var cartesian = scene.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                 if (cartesian && !isNaN(cartesian.x)) {
                     var cartographic = ellipsoid.cartesianToCartographic(cartesian);
                     _mousePosLabel.setShow(true);
@@ -870,7 +873,7 @@ var AG3DVIEW = function(element) {
     }
     
     function ShowCameraPosition() {
-        var cameraCartographic = ellipsoid.cartesianToCartographic(scene.getCamera().position);            
+        var cameraCartographic = ellipsoid.cartesianToCartographic(scene.camera.position);            
         var cameraAlt = cameraCartographic.height;                
         cameraAlt = (cameraAlt / 1000).toFixed(0);
         var cameraLon = Cesium.Math.toDegrees(cameraCartographic.longitude).toFixed(2);
@@ -1058,7 +1061,7 @@ var AG3DVIEW = function(element) {
     }
 
     function disableInput(scene) {
-        var controller = scene.getScreenSpaceCameraController();
+        var controller = scene.screenSpaceCameraController;
         controller.enableTranslate = false;
         controller.enableZoom = false;
         controller.enableRotate = false;
@@ -1067,7 +1070,7 @@ var AG3DVIEW = function(element) {
     }
 
     function enableInput(scene) {
-        var controller = scene.getScreenSpaceCameraController();
+        var controller = scene.screenSpaceCameraController;
         controller.enableTranslate = true;
         controller.enableZoom = true;
         controller.enableRotate = true;
@@ -1087,7 +1090,7 @@ var AG3DVIEW = function(element) {
                 ellipsoid : Cesium.Ellipsoid.WGS84
             });    
         }
-        var centralBody = scene.getPrimitives().getCentralBody();
+        var centralBody = scene.primitives.centralBody;
         centralBody.terrainProvider = terrainProvider;
         jQuery('#3d-show-terrain').setButtonState(useTerrainProvider);
     }
@@ -1109,13 +1112,23 @@ var AG3DVIEW = function(element) {
         _observerLabels = new Cesium.LabelCollection();
         _cityBillboards = new Cesium.BillboardCollection();
         _cityLabels = new Cesium.LabelCollection();
-                
+        
+        var url = jQuery(location).attr('href');
+        var bingAPIKey = '';
+        if (url.indexOf('ag.local') === -1 && url.indexOf('agsattrack.com') === -1) {
+        } else {
+            if (url.indexOf('agsattrack.com') === -1) {
+                bingAPIKey = 'Ak1cHw0o6SGIUYUR2khejaEc1ttaB9tsrSaq7rPxOUOkE4oVTuQchtZFEciJHRH_';    
+            } else {
+                bingAPIKey = 'AkU8YjZ3dvP_fyNkibv_UYfvvlfjuXYzVsWe9ccbYiSy8xXMrroZsq0YQJnGbrFG';    
+            }            
+        }                
         TILE_PROVIDERS = {
             'bing' : {
                 provider : new Cesium.BingMapsImageryProvider({
                     url : 'http://dev.virtualearth.net',
-                    mapStyle : Cesium.BingMapsStyle.AERIAL,
-                    proxy : Cesium.FeatureDetection.supportsCrossOriginImagery() ? undefined : new Cesium.DefaultProxy('/proxy/')
+                    key : bingAPIKey,
+                    mapStyle : Cesium.BingMapsStyle.AERIAL
                 }),
                 toolbarTitle : 'Bing Maps'                       
             },
@@ -1165,12 +1178,12 @@ var AG3DVIEW = function(element) {
         */
         transitioner = new Cesium.SceneTransitioner(scene, ellipsoid);
 
-        cb.getImageryLayers().addImageryProvider(TILE_PROVIDERS[_settings.provider].provider);
+        cb.imageryLayers.addImageryProvider(TILE_PROVIDERS[_settings.provider].provider);
         cb.showSkyAtmosphere = true;
         
         cb.enableLighting  = true;
         
-        scene.getPrimitives().setCentralBody(cb);
+        scene.primitives.centralBody = cb;
 
         setTerrainProvider(_settings.useTerrainProvider);
                 
@@ -1197,24 +1210,24 @@ var AG3DVIEW = function(element) {
             outlineColor : 'black',
             style : Cesium.LabelStyle.FILL
         });
-        scene.getPrimitives().add(_satNameLabels);
+        scene.primitives.add(_satNameLabels);
 
         scene.sun = new Cesium.Sun();
         scene.moon = new Cesium.Moon();
                 
         satelliteClickDetails(scene);
         mouseMoveDetails(scene, ellipsoid);
-        scene.getPrimitives().add(orbitLines);
-        scene.getPrimitives().add(selectedLines);
-        scene.getPrimitives().add(passLines);
-        scene.getPrimitives().add(footprintCircle);
-        scene.getPrimitives().add(_labels);
-        scene.getPrimitives().add(planetsBillboards);
-        scene.getPrimitives().add(observerBillboards);
-        scene.getPrimitives().add(_observerLabels);
-        scene.getPrimitives().add(_observerCircles);
-        scene.getPrimitives().add(_cityBillboards);
-        scene.getPrimitives().add(_cityLabels);
+        scene.primitives.add(orbitLines);
+        scene.primitives.add(selectedLines);
+        scene.primitives.add(passLines);
+        scene.primitives.add(footprintCircle);
+        scene.primitives.add(_labels);
+        scene.primitives.add(planetsBillboards);
+        scene.primitives.add(observerBillboards);
+        scene.primitives.add(_observerLabels);
+        scene.primitives.add(_observerCircles);
+        scene.primitives.add(_cityBillboards);
+        scene.primitives.add(_cityLabels);
         
         jQuery(window).trigger('resize');
         
@@ -1238,13 +1251,13 @@ var AG3DVIEW = function(element) {
                 var pos = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(sat.get('longitude'), sat.get('latitude'), (sat.get('altitude')*1000)+1000000));
                  
                 disableInput(scene);
-                var flight = Cesium.CameraFlightPath.createAnimation(scene.getFrameState(), {
+                var flight = Cesium.CameraFlightPath.createAnimation(scene, {
                     destination : pos,
                     onComplete : function() {
                         enableInput(scene);
                     }
                 });
-                scene.getAnimations().add(flight);
+                scene.animations.add(flight);
  
             }
         });

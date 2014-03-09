@@ -13,14 +13,15 @@ Copyright 2013 Alex Greenland
    See the License for the specific language governing permissions and
    limitations under the License.
  */
- 
+
 /* Options for JSHint http://www.jshint.com/
 * 
-* Last Checked: 19/01/2013
+* Last Checked: 09/03/2014
 * 
 */
-/*global AGTLES, AGPLANETS, AGVIEWS, AGSETTINGS, Cesium, AGUI, AGOBSERVER */ 
-  
+/*jslint white: true, nomen: true */
+/*global document, jQuery, AGTLES, AGPLANETS, AGVIEWS, AGSETTINGS, Cesium, AGUI, AGOBSERVER */
+
 var Agsattrack = function() {
 	'use strict';
 
@@ -36,10 +37,10 @@ var Agsattrack = function() {
     
 	function bindEvents() {	
 
-        jQuery(document).bind('agsattrack.tlesloaded', function(event, params) {
+        jQuery(document).bind('agsattrack.tlesloaded', function() {
             _ui.updateInfoPane();
         });
-        jQuery(document).bind('agsattrack.satsselected', function(event, params) {
+        jQuery(document).bind('agsattrack.satsselected', function() {
             _ui.updateInfoPane();
         });        
         
@@ -58,35 +59,41 @@ var Agsattrack = function() {
 		 * available. This is event is fired when the UI tabs are created.
 		 *  
 		 */
-		jQuery(document).bind('agsattrack.locationAvailable', function(event, params) {
+		jQuery(document).bind('agsattrack.locationAvailable', function() {
 			_initComplete = true;
 			calculationLoop();		
 		});
 
-		jQuery(document).bind('agsattrack.locationUpdated', function(event, params) {
+		jQuery(document).bind('agsattrack.locationUpdated', function() {
 			_initComplete = true;
 			calculationLoop();		
 		});
 		
 		jQuery(document).bind('agsattrack.satclicked', function(event, params) {
             var index = _tles.getSatelliteIndex(params.catalogNumber);
-            if (typeof params.state !== 'undefined') {
-                _tles.getSatellite(index).setSelected(params.state);                    
-            } else {
-                _tles.getSatellite(index).toggleSelected();
+            if (index !== -1) {
+                if (typeof params.state !== 'undefined') {
+                    _tles.getSatellite(index).setSelected(params.state);                    
+                } else {
+                    var toggleSat = _tles.getSatellite(index);
+                    if (typeof toggleSat !== 'undefined') {
+                        toggleSat.toggleSelected();    
+                    } else {
+                    }
+                }
+                
+                var sat = _tles.getSatellite(index);
+                if (sat.getSelected()) {
+                    sat.requestOrbit();
+                    var name = sat.getName();
+                    _ui.updateInfo('Orbit Requested For ' + name);
+                }
+                
+                var _selected = _tles.getSelected();
+			    calculate(true);
+			    jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
+                _ui.updateInfoPane();
             }
-            
-            var sat = _tles.getSatellite(index);
-            if (sat.getSelected()) {
-                sat.requestOrbit();
-                var name = sat.getName();
-                _ui.updateInfo('Orbit Requested For ' + name);
-            }
-            
-            var _selected = _tles.getSelected();
-			calculate(true);
-			jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
-            _ui.updateInfoPane();
 		});
 
 		jQuery(document).bind('agsattrack.forceupdate', function(event) {
