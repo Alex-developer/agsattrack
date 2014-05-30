@@ -107,7 +107,13 @@ var Agsattrack = function() {
 	 * 
 	 */
 	function calculationLoop() {
-		
+
+        function updateTime() {
+            updateTimeInToolbar();
+            setTimeout(updateTime, 1000);
+        }
+        setTimeout(updateTime, 1000);
+        		
 		function calc() {
 			calculate(false);
 			setTimeout(calc, AGSETTINGS.getRefreshTimerInterval());
@@ -115,6 +121,16 @@ var Agsattrack = function() {
 		setTimeout(calc, AGSETTINGS.getRefreshTimerInterval());
 	}
 
+    function updateTimeInToolbar() {
+        var julianDate;
+        
+        if (AGSETTINGS.getHaveWebGL()) {
+            var cDate = new Cesium.JulianDate().toDate();
+            jQuery('#currenttime').html(cDate.toUTCString());      
+        }
+ 
+    }
+    
 	function calculate(forceRefresh) {
 		var julianDate;
 
