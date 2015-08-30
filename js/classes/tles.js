@@ -131,6 +131,7 @@ var AGTLES = function() {
                         }
                     });                        
                 }
+                //jQuery('#home-update-elements').enable();
             }
         });            
     }

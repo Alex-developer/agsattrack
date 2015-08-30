@@ -15,6 +15,26 @@
     height: 100%;
 }
 
+.cesium-viewer-bottom {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-right: 5px;
+}
+
+.cesium-viewer .cesium-widget-credits {
+    display: inline;
+    position: static;
+    bottom: auto;
+    left: auto;
+    padding-right: 0;
+    color: #ffffff;
+    font-size: 10px;
+    text-shadow: 0 0 2px #000000;
+}
+
 .cesium-viewer-timelineContainer {
     position: absolute;
     bottom: 0;
@@ -56,8 +76,8 @@
 .cesium-viewer-cesiumInspectorContainer {
     display: block;
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: 50px;
+    right: 10px;
 }
 
 .cesium-viewer-geocoderContainer {

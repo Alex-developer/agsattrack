@@ -1,103 +1,128 @@
-﻿/**
- * jQuery EasyUI 1.3.2
+/**
+ * jQuery EasyUI 1.4.3
  * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: jeasyui@gmail.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
+ * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
+ * To use it on other terms please contact us at info@jeasyui.com
  *
  */
 (function($){
 function _1(_2){
 var _3=$.data(_2,"menubutton").options;
 var _4=$(_2);
-_4.removeClass("m-btn-active m-btn-plain-active").addClass("m-btn");
-_4.linkbutton($.extend({},_3,{text:_3.text+"<span class=\"m-btn-downarrow\">&nbsp;</span>"}));
+_4.linkbutton(_3);
+if(_3.hasDownArrow){
+_4.removeClass(_3.cls.btn1+" "+_3.cls.btn2).addClass("m-btn");
+_4.removeClass("m-btn-small m-btn-medium m-btn-large").addClass("m-btn-"+_3.size);
+var _5=_4.find(".l-btn-left");
+$("<span></span>").addClass(_3.cls.arrow).appendTo(_5);
+$("<span></span>").addClass("m-btn-line").appendTo(_5);
+}
+$(_2).menubutton("resize");
 if(_3.menu){
-$(_3.menu).menu({onShow:function(){
-_4.addClass((_3.plain==true)?"m-btn-plain-active":"m-btn-active");
+$(_3.menu).menu({duration:_3.duration});
+var _6=$(_3.menu).menu("options");
+var _7=_6.onShow;
+var _8=_6.onHide;
+$.extend(_6,{onShow:function(){
+var _9=$(this).menu("options");
+var _a=$(_9.alignTo);
+var _b=_a.menubutton("options");
+_a.addClass((_b.plain==true)?_b.cls.btn2:_b.cls.btn1);
+_7.call(this);
 },onHide:function(){
-_4.removeClass((_3.plain==true)?"m-btn-plain-active":"m-btn-active");
+var _c=$(this).menu("options");
+var _d=$(_c.alignTo);
+var _e=_d.menubutton("options");
+_d.removeClass((_e.plain==true)?_e.cls.btn2:_e.cls.btn1);
+_8.call(this);
 }});
 }
-_5(_2,_3.disabled);
 };
-function _5(_6,_7){
-var _8=$.data(_6,"menubutton").options;
-_8.disabled=_7;
-var _9=$(_6);
-if(_7){
-_9.linkbutton("disable");
-_9.unbind(".menubutton");
-}else{
-_9.linkbutton("enable");
-_9.unbind(".menubutton");
-_9.bind("click.menubutton",function(){
-_a();
+function _f(_10){
+var _11=$.data(_10,"menubutton").options;
+var btn=$(_10);
+var t=btn.find("."+_11.cls.trigger);
+if(!t.length){
+t=btn;
+}
+t.unbind(".menubutton");
+var _12=null;
+t.bind("click.menubutton",function(){
+if(!_13()){
+_14(_10);
 return false;
-});
-var _b=null;
-_9.bind("mouseenter.menubutton",function(){
-_b=setTimeout(function(){
-_a();
-},_8.duration);
+}
+}).bind("mouseenter.menubutton",function(){
+if(!_13()){
+_12=setTimeout(function(){
+_14(_10);
+},_11.duration);
 return false;
+}
 }).bind("mouseleave.menubutton",function(){
-if(_b){
-clearTimeout(_b);
+if(_12){
+clearTimeout(_12);
 }
+$(_11.menu).triggerHandler("mouseleave");
 });
-}
-function _a(){
-if(!_8.menu){
+function _13(){
+return $(_10).linkbutton("options").disabled;
+};
+};
+function _14(_15){
+var _16=$(_15).menubutton("options");
+if(_16.disabled||!_16.menu){
 return;
 }
 $("body>div.menu-top").menu("hide");
-$(_8.menu).menu("show",{alignTo:_9});
-_9.blur();
-};
-};
-$.fn.menubutton=function(_c,_d){
-if(typeof _c=="string"){
-return $.fn.menubutton.methods[_c](this,_d);
+var btn=$(_15);
+var mm=$(_16.menu);
+if(mm.length){
+mm.menu("options").alignTo=btn;
+mm.menu("show",{alignTo:btn,align:_16.menuAlign});
 }
-_c=_c||{};
-return this.each(function(){
-var _e=$.data(this,"menubutton");
-if(_e){
-$.extend(_e.options,_c);
+btn.blur();
+};
+$.fn.menubutton=function(_17,_18){
+if(typeof _17=="string"){
+var _19=$.fn.menubutton.methods[_17];
+if(_19){
+return _19(this,_18);
 }else{
-$.data(this,"menubutton",{options:$.extend({},$.fn.menubutton.defaults,$.fn.menubutton.parseOptions(this),_c)});
+return this.linkbutton(_17,_18);
+}
+}
+_17=_17||{};
+return this.each(function(){
+var _1a=$.data(this,"menubutton");
+if(_1a){
+$.extend(_1a.options,_17);
+}else{
+$.data(this,"menubutton",{options:$.extend({},$.fn.menubutton.defaults,$.fn.menubutton.parseOptions(this),_17)});
 $(this).removeAttr("disabled");
 }
 _1(this);
+_f(this);
 });
 };
 $.fn.menubutton.methods={options:function(jq){
-return $.data(jq[0],"menubutton").options;
-},enable:function(jq){
-return jq.each(function(){
-_5(this,false);
-});
-},disable:function(jq){
-return jq.each(function(){
-_5(this,true);
-});
+var _1b=jq.linkbutton("options");
+return $.extend($.data(jq[0],"menubutton").options,{toggle:_1b.toggle,selected:_1b.selected,disabled:_1b.disabled});
 },destroy:function(jq){
 return jq.each(function(){
-var _f=$(this).menubutton("options");
-if(_f.menu){
-$(_f.menu).menu("destroy");
+var _1c=$(this).menubutton("options");
+if(_1c.menu){
+$(_1c.menu).menu("destroy");
 }
 $(this).remove();
 });
 }};
-$.fn.menubutton.parseOptions=function(_10){
-var t=$(_10);
-return $.extend({},$.fn.linkbutton.parseOptions(_10),$.parser.parseOptions(_10,["menu",{plain:"boolean",duration:"number"}]));
+$.fn.menubutton.parseOptions=function(_1d){
+var t=$(_1d);
+return $.extend({},$.fn.linkbutton.parseOptions(_1d),$.parser.parseOptions(_1d,["menu",{plain:"boolean",hasDownArrow:"boolean",duration:"number"}]));
 };
-$.fn.menubutton.defaults=$.extend({},$.fn.linkbutton.defaults,{plain:true,menu:null,duration:100});
+$.fn.menubutton.defaults=$.extend({},$.fn.linkbutton.defaults,{plain:true,hasDownArrow:true,menu:null,menuAlign:"left",duration:100,cls:{btn1:"m-btn-active",btn2:"m-btn-plain-active",arrow:"m-btn-downarrow",trigger:"m-btn"}});
 })(jQuery);
 

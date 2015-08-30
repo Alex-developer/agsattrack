@@ -21,10 +21,12 @@
 .dialog-toolbar,
 .dialog-button {
   background: #fafafa;
+  border-width: 1px;
+  border-style: solid;
 }
 .dialog-toolbar {
-  border-bottom: 1px solid #ddd;
+  border-color: #D3D3D3 #D3D3D3 #ddd #D3D3D3;
 }
 .dialog-button {
-  border-top: 1px solid #ddd;
+  border-color: #ddd #D3D3D3 #D3D3D3 #D3D3D3;
 }

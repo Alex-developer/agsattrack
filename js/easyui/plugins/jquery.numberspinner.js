@@ -1,24 +1,23 @@
-﻿/**
- * jQuery EasyUI 1.3.2
+/**
+ * jQuery EasyUI 1.4.3
  * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: jeasyui@gmail.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
+ * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
+ * To use it on other terms please contact us at info@jeasyui.com
  *
  */
 (function($){
 function _1(_2){
 $(_2).addClass("numberspinner-f");
 var _3=$.data(_2,"numberspinner").options;
-$(_2).spinner(_3).numberbox(_3);
+$(_2).numberbox(_3).spinner(_3);
+$(_2).numberbox("setValue",_3.value);
 };
 function _4(_5,_6){
 var _7=$.data(_5,"numberspinner").options;
 var v=parseFloat($(_5).numberbox("getValue")||_7.value)||0;
-if(_6==true){
+if(_6){
 v-=_7.increment;
 }else{
 v+=_7.increment;
@@ -31,7 +30,7 @@ var _a=$.fn.numberspinner.methods[_8];
 if(_a){
 return _a(this,_9);
 }else{
-return this.spinner(_8,_9);
+return this.numberbox(_8,_9);
 }
 }
 _8=_8||{};
@@ -46,30 +45,14 @@ _1(this);
 });
 };
 $.fn.numberspinner.methods={options:function(jq){
-var _c=$.data(jq[0],"numberspinner").options;
-return $.extend(_c,{value:jq.numberbox("getValue"),originalValue:jq.numberbox("options").originalValue});
-},setValue:function(jq,_d){
-return jq.each(function(){
-$(this).numberbox("setValue",_d);
-});
-},getValue:function(jq){
-return jq.numberbox("getValue");
-},clear:function(jq){
-return jq.each(function(){
-$(this).spinner("clear");
-$(this).numberbox("clear");
-});
-},reset:function(jq){
-return jq.each(function(){
-var _e=$(this).numberspinner("options");
-$(this).numberspinner("setValue",_e.originalValue);
-});
+var _c=jq.numberbox("options");
+return $.extend($.data(jq[0],"numberspinner").options,{width:_c.width,value:_c.value,originalValue:_c.originalValue,disabled:_c.disabled,readonly:_c.readonly});
 }};
-$.fn.numberspinner.parseOptions=function(_f){
-return $.extend({},$.fn.spinner.parseOptions(_f),$.fn.numberbox.parseOptions(_f),{});
+$.fn.numberspinner.parseOptions=function(_d){
+return $.extend({},$.fn.spinner.parseOptions(_d),$.fn.numberbox.parseOptions(_d),{});
 };
-$.fn.numberspinner.defaults=$.extend({},$.fn.spinner.defaults,$.fn.numberbox.defaults,{spin:function(_10){
-_4(this,_10);
+$.fn.numberspinner.defaults=$.extend({},$.fn.spinner.defaults,$.fn.numberbox.defaults,{spin:function(_e){
+_4(this,_e);
 }});
 })(jQuery);
 

@@ -1,351 +1,456 @@
-﻿/**
- * jQuery EasyUI 1.3.2
+/**
+ * jQuery EasyUI 1.4.3
  * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: jeasyui@gmail.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
+ * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
+ * To use it on other terms please contact us at info@jeasyui.com
  *
  */
 (function($){
-function _1(_2,_3){
-var _4=$(_2).combo("panel");
-var _5=_4.find("div.combobox-item[value=\""+_3+"\"]");
-if(_5.length){
-if(_5.position().top<=0){
-var h=_4.scrollTop()+_5.position().top;
-_4.scrollTop(h);
+var _1=0;
+function _2(_3,_4){
+var _5=$.data(_3,"combobox");
+var _6=_5.options;
+var _7=_5.data;
+for(var i=0;i<_7.length;i++){
+if(_7[i][_6.valueField]==_4){
+return i;
+}
+}
+return -1;
+};
+function _8(_9,_a){
+var _b=$.data(_9,"combobox").options;
+var _c=$(_9).combo("panel");
+var _d=_b.finder.getEl(_9,_a);
+if(_d.length){
+if(_d.position().top<=0){
+var h=_c.scrollTop()+_d.position().top;
+_c.scrollTop(h);
 }else{
-if(_5.position().top+_5.outerHeight()>_4.height()){
-var h=_4.scrollTop()+_5.position().top+_5.outerHeight()-_4.height();
-_4.scrollTop(h);
+if(_d.position().top+_d.outerHeight()>_c.height()){
+var h=_c.scrollTop()+_d.position().top+_d.outerHeight()-_c.height();
+_c.scrollTop(h);
 }
 }
 }
 };
-function _6(_7){
-var _8=$(_7).combo("panel");
-var _9=$(_7).combo("getValues");
-var _a=_8.find("div.combobox-item[value=\""+_9.pop()+"\"]");
-if(_a.length){
-var _b=_a.prev(":visible");
-if(_b.length){
-_a=_b;
+function _e(_f,dir){
+var _10=$.data(_f,"combobox").options;
+var _11=$(_f).combobox("panel");
+var _12=_11.children("div.combobox-item-hover");
+if(!_12.length){
+_12=_11.children("div.combobox-item-selected");
+}
+_12.removeClass("combobox-item-hover");
+var _13="div.combobox-item:visible:not(.combobox-item-disabled):first";
+var _14="div.combobox-item:visible:not(.combobox-item-disabled):last";
+if(!_12.length){
+_12=_11.children(dir=="next"?_13:_14);
+}else{
+if(dir=="next"){
+_12=_12.nextAll(_13);
+if(!_12.length){
+_12=_11.children(_13);
 }
 }else{
-_a=_8.find("div.combobox-item:visible:last");
+_12=_12.prevAll(_13);
+if(!_12.length){
+_12=_11.children(_14);
 }
-var _c=_a.attr("value");
-_d(_7,_c);
-_1(_7,_c);
-};
-function _e(_f){
-var _10=$(_f).combo("panel");
-var _11=$(_f).combo("getValues");
-var _12=_10.find("div.combobox-item[value=\""+_11.pop()+"\"]");
+}
+}
 if(_12.length){
-var _13=_12.next(":visible");
-if(_13.length){
-_12=_13;
+_12.addClass("combobox-item-hover");
+var row=_10.finder.getRow(_f,_12);
+if(row){
+_8(_f,row[_10.valueField]);
+if(_10.selectOnNavigation){
+_15(_f,row[_10.valueField]);
 }
-}else{
-_12=_10.find("div.combobox-item:visible:first");
 }
-var _14=_12.attr("value");
-_d(_f,_14);
-_1(_f,_14);
+}
 };
-function _d(_15,_16){
-var _17=$.data(_15,"combobox").options;
-var _18=$.data(_15,"combobox").data;
-if(_17.multiple){
-var _19=$(_15).combo("getValues");
-for(var i=0;i<_19.length;i++){
-if(_19[i]==_16){
-return;
-}
-}
-_19.push(_16);
-_1a(_15,_19);
+function _15(_16,_17){
+var _18=$.data(_16,"combobox").options;
+var _19=$(_16).combo("getValues");
+if($.inArray(_17+"",_19)==-1){
+if(_18.multiple){
+_19.push(_17);
 }else{
-_1a(_15,[_16]);
+_19=[_17];
 }
-for(var i=0;i<_18.length;i++){
-if(_18[i][_17.valueField]==_16){
-_17.onSelect.call(_15,_18[i]);
-return;
-}
+_1a(_16,_19);
+_18.onSelect.call(_16,_18.finder.getRow(_16,_17));
 }
 };
 function _1b(_1c,_1d){
 var _1e=$.data(_1c,"combobox").options;
-var _1f=$.data(_1c,"combobox").data;
-var _20=$(_1c).combo("getValues");
-for(var i=0;i<_20.length;i++){
-if(_20[i]==_1d){
-_20.splice(i,1);
-_1a(_1c,_20);
-break;
-}
-}
-for(var i=0;i<_1f.length;i++){
-if(_1f[i][_1e.valueField]==_1d){
-_1e.onUnselect.call(_1c,_1f[i]);
-return;
-}
+var _1f=$(_1c).combo("getValues");
+var _20=$.inArray(_1d+"",_1f);
+if(_20>=0){
+_1f.splice(_20,1);
+_1a(_1c,_1f);
+_1e.onUnselect.call(_1c,_1e.finder.getRow(_1c,_1d));
 }
 };
 function _1a(_21,_22,_23){
 var _24=$.data(_21,"combobox").options;
-var _25=$.data(_21,"combobox").data;
-var _26=$(_21).combo("panel");
-_26.find("div.combobox-item-selected").removeClass("combobox-item-selected");
+var _25=$(_21).combo("panel");
+if(!$.isArray(_22)){
+_22=_22.split(_24.separator);
+}
+_25.find("div.combobox-item-selected").removeClass("combobox-item-selected");
 var vv=[],ss=[];
 for(var i=0;i<_22.length;i++){
 var v=_22[i];
 var s=v;
-for(var j=0;j<_25.length;j++){
-if(_25[j][_24.valueField]==v){
-s=_25[j][_24.textField];
-break;
-}
+_24.finder.getEl(_21,v).addClass("combobox-item-selected");
+var row=_24.finder.getRow(_21,v);
+if(row){
+s=row[_24.textField];
 }
 vv.push(v);
 ss.push(s);
-_26.find("div.combobox-item[value=\""+v+"\"]").addClass("combobox-item-selected");
 }
-$(_21).combo("setValues",vv);
 if(!_23){
 $(_21).combo("setText",ss.join(_24.separator));
 }
+$(_21).combo("setValues",vv);
 };
-function _27(_28){
-var _29=$.data(_28,"combobox").options;
-var _2a=[];
-$(">option",_28).each(function(){
-var _2b={};
-_2b[_29.valueField]=$(this).attr("value")!=undefined?$(this).attr("value"):$(this).html();
-_2b[_29.textField]=$(this).html();
-_2b["selected"]=$(this).attr("selected");
-_2a.push(_2b);
-});
-return _2a;
+function _26(_27,_28,_29){
+var _2a=$.data(_27,"combobox");
+var _2b=_2a.options;
+_2a.data=_2b.loadFilter.call(_27,_28);
+_2a.groups=[];
+_28=_2a.data;
+var _2c=$(_27).combobox("getValues");
+var dd=[];
+var _2d=undefined;
+for(var i=0;i<_28.length;i++){
+var row=_28[i];
+var v=row[_2b.valueField]+"";
+var s=row[_2b.textField];
+var g=row[_2b.groupField];
+if(g){
+if(_2d!=g){
+_2d=g;
+_2a.groups.push(g);
+dd.push("<div id=\""+(_2a.groupIdPrefix+"_"+(_2a.groups.length-1))+"\" class=\"combobox-group\">");
+dd.push(_2b.groupFormatter?_2b.groupFormatter.call(_27,g):g);
+dd.push("</div>");
+}
+}else{
+_2d=undefined;
+}
+var cls="combobox-item"+(row.disabled?" combobox-item-disabled":"")+(g?" combobox-gitem":"");
+dd.push("<div id=\""+(_2a.itemIdPrefix+"_"+i)+"\" class=\""+cls+"\">");
+dd.push(_2b.formatter?_2b.formatter.call(_27,row):s);
+dd.push("</div>");
+if(row["selected"]&&$.inArray(v,_2c)==-1){
+_2c.push(v);
+}
+}
+$(_27).combo("panel").html(dd.join(""));
+if(_2b.multiple){
+_1a(_27,_2c,_29);
+}else{
+_1a(_27,_2c.length?[_2c[_2c.length-1]]:[],_29);
+}
+_2b.onLoadSuccess.call(_27,_28);
 };
-function _2c(_2d,_2e,_2f){
-var _30=$.data(_2d,"combobox").options;
-var _31=$(_2d).combo("panel");
-$.data(_2d,"combobox").data=_2e;
-var _32=$(_2d).combobox("getValues");
-_31.empty();
-for(var i=0;i<_2e.length;i++){
-var v=_2e[i][_30.valueField];
-var s=_2e[i][_30.textField];
-var _33=$("<div class=\"combobox-item\"></div>").appendTo(_31);
-_33.attr("value",v);
-if(_30.formatter){
-_33.html(_30.formatter.call(_2d,_2e[i]));
-}else{
-_33.html(s);
-}
-if(_2e[i]["selected"]){
-(function(){
-for(var i=0;i<_32.length;i++){
-if(v==_32[i]){
-return;
-}
-}
-_32.push(v);
-})();
-}
-}
-if(_30.multiple){
-_1a(_2d,_32,_2f);
-}else{
-if(_32.length){
-_1a(_2d,[_32[_32.length-1]],_2f);
-}else{
-_1a(_2d,[],_2f);
-}
-}
-_30.onLoadSuccess.call(_2d,_2e);
-$(".combobox-item",_31).hover(function(){
-$(this).addClass("combobox-item-hover");
-},function(){
-$(this).removeClass("combobox-item-hover");
-}).click(function(){
-var _34=$(this);
-if(_30.multiple){
-if(_34.hasClass("combobox-item-selected")){
-_1b(_2d,_34.attr("value"));
-}else{
-_d(_2d,_34.attr("value"));
-}
-}else{
-_d(_2d,_34.attr("value"));
-$(_2d).combo("hidePanel");
-}
-});
-};
-function _35(_36,url,_37,_38){
-var _39=$.data(_36,"combobox").options;
+function _2e(_2f,url,_30,_31){
+var _32=$.data(_2f,"combobox").options;
 if(url){
-_39.url=url;
+_32.url=url;
 }
-_37=_37||{};
-if(_39.onBeforeLoad.call(_36,_37)==false){
+_30=$.extend({},_32.queryParams,_30||{});
+if(_32.onBeforeLoad.call(_2f,_30)==false){
 return;
 }
-_39.loader.call(_36,_37,function(_3a){
-_2c(_36,_3a,_38);
+_32.loader.call(_2f,_30,function(_33){
+_26(_2f,_33,_31);
 },function(){
-_39.onLoadError.apply(this,arguments);
+_32.onLoadError.apply(this,arguments);
 });
 };
-function _3b(_3c,q){
-var _3d=$.data(_3c,"combobox").options;
-if(_3d.multiple&&!q){
-_1a(_3c,[],true);
+function _34(_35,q){
+var _36=$.data(_35,"combobox");
+var _37=_36.options;
+var qq=_37.multiple?q.split(_37.separator):[q];
+if(_37.mode=="remote"){
+_38(qq);
+_2e(_35,null,{q:q},true);
 }else{
-_1a(_3c,[q],true);
+var _39=$(_35).combo("panel");
+_39.find("div.combobox-item-selected,div.combobox-item-hover").removeClass("combobox-item-selected combobox-item-hover");
+_39.find("div.combobox-item,div.combobox-group").hide();
+var _3a=_36.data;
+var vv=[];
+$.map(qq,function(q){
+q=$.trim(q);
+var _3b=q;
+var _3c=undefined;
+for(var i=0;i<_3a.length;i++){
+var row=_3a[i];
+if(_37.filter.call(_35,q,row)){
+var v=row[_37.valueField];
+var s=row[_37.textField];
+var g=row[_37.groupField];
+var _3d=_37.finder.getEl(_35,v).show();
+if(s.toLowerCase()==q.toLowerCase()){
+_3b=v;
+_3d.addClass("combobox-item-selected");
+_37.onSelect.call(_35,row);
 }
-if(_3d.mode=="remote"){
-_35(_3c,null,{q:q},true);
+if(_37.groupField&&_3c!=g){
+$("#"+_36.groupIdPrefix+"_"+$.inArray(g,_36.groups)).show();
+_3c=g;
+}
+}
+}
+vv.push(_3b);
+});
+_38(vv);
+}
+function _38(vv){
+_1a(_35,_37.multiple?(q?vv:[]):vv,true);
+};
+};
+function _3e(_3f){
+var t=$(_3f);
+var _40=t.combobox("options");
+var _41=t.combobox("panel");
+var _42=_41.children("div.combobox-item-hover");
+if(_42.length){
+var row=_40.finder.getRow(_3f,_42);
+var _43=row[_40.valueField];
+if(_40.multiple){
+if(_42.hasClass("combobox-item-selected")){
+t.combobox("unselect",_43);
 }else{
-var _3e=$(_3c).combo("panel");
-_3e.find("div.combobox-item").hide();
-var _3f=$.data(_3c,"combobox").data;
-for(var i=0;i<_3f.length;i++){
-if(_3d.filter.call(_3c,q,_3f[i])){
-var v=_3f[i][_3d.valueField];
-var s=_3f[i][_3d.textField];
-var _40=_3e.find("div.combobox-item[value=\""+v+"\"]");
-_40.show();
-if(s==q){
-_1a(_3c,[v],true);
-_40.addClass("combobox-item-selected");
+t.combobox("select",_43);
+}
+}else{
+t.combobox("select",_43);
 }
 }
+var vv=[];
+$.map(t.combobox("getValues"),function(v){
+if(_2(_3f,v)>=0){
+vv.push(v);
 }
+});
+t.combobox("setValues",vv);
+if(!_40.multiple){
+t.combobox("hidePanel");
 }
 };
-function _41(_42){
-var _43=$.data(_42,"combobox").options;
-$(_42).addClass("combobox-f");
-$(_42).combo($.extend({},_43,{onShowPanel:function(){
-$(_42).combo("panel").find("div.combobox-item").show();
-_1(_42,$(_42).combobox("getValue"));
-_43.onShowPanel.call(_42);
+function _44(_45){
+var _46=$.data(_45,"combobox");
+var _47=_46.options;
+_1++;
+_46.itemIdPrefix="_easyui_combobox_i"+_1;
+_46.groupIdPrefix="_easyui_combobox_g"+_1;
+$(_45).addClass("combobox-f");
+$(_45).combo($.extend({},_47,{onShowPanel:function(){
+$(_45).combo("panel").find("div.combobox-item:hidden,div.combobox-group:hidden").show();
+_8(_45,$(_45).combobox("getValue"));
+_47.onShowPanel.call(_45);
 }}));
+$(_45).combo("panel").unbind().bind("mouseover",function(e){
+$(this).children("div.combobox-item-hover").removeClass("combobox-item-hover");
+var _48=$(e.target).closest("div.combobox-item");
+if(!_48.hasClass("combobox-item-disabled")){
+_48.addClass("combobox-item-hover");
+}
+e.stopPropagation();
+}).bind("mouseout",function(e){
+$(e.target).closest("div.combobox-item").removeClass("combobox-item-hover");
+e.stopPropagation();
+}).bind("click",function(e){
+var _49=$(e.target).closest("div.combobox-item");
+if(!_49.length||_49.hasClass("combobox-item-disabled")){
+return;
+}
+var row=_47.finder.getRow(_45,_49);
+if(!row){
+return;
+}
+var _4a=row[_47.valueField];
+if(_47.multiple){
+if(_49.hasClass("combobox-item-selected")){
+_1b(_45,_4a);
+}else{
+_15(_45,_4a);
+}
+}else{
+_15(_45,_4a);
+$(_45).combo("hidePanel");
+}
+e.stopPropagation();
+});
 };
-$.fn.combobox=function(_44,_45){
-if(typeof _44=="string"){
-var _46=$.fn.combobox.methods[_44];
-if(_46){
-return _46(this,_45);
+$.fn.combobox=function(_4b,_4c){
+if(typeof _4b=="string"){
+var _4d=$.fn.combobox.methods[_4b];
+if(_4d){
+return _4d(this,_4c);
 }else{
-return this.combo(_44,_45);
+return this.combo(_4b,_4c);
 }
 }
-_44=_44||{};
+_4b=_4b||{};
 return this.each(function(){
-var _47=$.data(this,"combobox");
-if(_47){
-$.extend(_47.options,_44);
-_41(this);
+var _4e=$.data(this,"combobox");
+if(_4e){
+$.extend(_4e.options,_4b);
 }else{
-_47=$.data(this,"combobox",{options:$.extend({},$.fn.combobox.defaults,$.fn.combobox.parseOptions(this),_44)});
-_41(this);
-_2c(this,_27(this));
+_4e=$.data(this,"combobox",{options:$.extend({},$.fn.combobox.defaults,$.fn.combobox.parseOptions(this),_4b),data:[]});
 }
-if(_47.options.data){
-_2c(this,_47.options.data);
+_44(this);
+if(_4e.options.data){
+_26(this,_4e.options.data);
+}else{
+var _4f=$.fn.combobox.parseData(this);
+if(_4f.length){
+_26(this,_4f);
 }
-_35(this);
+}
+_2e(this);
 });
 };
 $.fn.combobox.methods={options:function(jq){
-var _48=$.data(jq[0],"combobox").options;
-_48.originalValue=jq.combo("options").originalValue;
-return _48;
+var _50=jq.combo("options");
+return $.extend($.data(jq[0],"combobox").options,{width:_50.width,height:_50.height,originalValue:_50.originalValue,disabled:_50.disabled,readonly:_50.readonly});
 },getData:function(jq){
 return $.data(jq[0],"combobox").data;
-},setValues:function(jq,_49){
+},setValues:function(jq,_51){
 return jq.each(function(){
-_1a(this,_49);
+_1a(this,_51);
 });
-},setValue:function(jq,_4a){
+},setValue:function(jq,_52){
 return jq.each(function(){
-_1a(this,[_4a]);
+_1a(this,[_52]);
 });
 },clear:function(jq){
 return jq.each(function(){
 $(this).combo("clear");
-var _4b=$(this).combo("panel");
-_4b.find("div.combobox-item-selected").removeClass("combobox-item-selected");
+var _53=$(this).combo("panel");
+_53.find("div.combobox-item-selected").removeClass("combobox-item-selected");
 });
 },reset:function(jq){
 return jq.each(function(){
-var _4c=$(this).combobox("options");
-if(_4c.multiple){
-$(this).combobox("setValues",_4c.originalValue);
+var _54=$(this).combobox("options");
+if(_54.multiple){
+$(this).combobox("setValues",_54.originalValue);
 }else{
-$(this).combobox("setValue",_4c.originalValue);
+$(this).combobox("setValue",_54.originalValue);
 }
 });
-},loadData:function(jq,_4d){
+},loadData:function(jq,_55){
 return jq.each(function(){
-_2c(this,_4d);
+_26(this,_55);
 });
 },reload:function(jq,url){
 return jq.each(function(){
-_35(this,url);
+if(typeof url=="string"){
+_2e(this,url);
+}else{
+if(url){
+var _56=$(this).combobox("options");
+_56.queryParams=url;
+}
+_2e(this);
+}
 });
-},select:function(jq,_4e){
+},select:function(jq,_57){
 return jq.each(function(){
-_d(this,_4e);
+_15(this,_57);
 });
-},unselect:function(jq,_4f){
+},unselect:function(jq,_58){
 return jq.each(function(){
-_1b(this,_4f);
+_1b(this,_58);
 });
 }};
-$.fn.combobox.parseOptions=function(_50){
-var t=$(_50);
-return $.extend({},$.fn.combo.parseOptions(_50),$.parser.parseOptions(_50,["valueField","textField","mode","method","url"]));
+$.fn.combobox.parseOptions=function(_59){
+var t=$(_59);
+return $.extend({},$.fn.combo.parseOptions(_59),$.parser.parseOptions(_59,["valueField","textField","groupField","mode","method","url"]));
 };
-$.fn.combobox.defaults=$.extend({},$.fn.combo.defaults,{valueField:"value",textField:"text",mode:"local",method:"post",url:null,data:null,keyHandler:{up:function(){
-_6(this);
-},down:function(){
-_e(this);
-},enter:function(){
-var _51=$(this).combobox("getValues");
-$(this).combobox("setValues",_51);
-$(this).combobox("hidePanel");
-},query:function(q){
-_3b(this,q);
+$.fn.combobox.parseData=function(_5a){
+var _5b=[];
+var _5c=$(_5a).combobox("options");
+$(_5a).children().each(function(){
+if(this.tagName.toLowerCase()=="optgroup"){
+var _5d=$(this).attr("label");
+$(this).children().each(function(){
+_5e(this,_5d);
+});
+}else{
+_5e(this);
+}
+});
+return _5b;
+function _5e(el,_5f){
+var t=$(el);
+var row={};
+row[_5c.valueField]=t.attr("value")!=undefined?t.attr("value"):t.text();
+row[_5c.textField]=t.text();
+row["selected"]=t.is(":selected");
+row["disabled"]=t.is(":disabled");
+if(_5f){
+_5c.groupField=_5c.groupField||"group";
+row[_5c.groupField]=_5f;
+}
+_5b.push(row);
+};
+};
+$.fn.combobox.defaults=$.extend({},$.fn.combo.defaults,{valueField:"value",textField:"text",groupField:null,groupFormatter:function(_60){
+return _60;
+},mode:"local",method:"post",url:null,data:null,queryParams:{},keyHandler:{up:function(e){
+_e(this,"prev");
+e.preventDefault();
+},down:function(e){
+_e(this,"next");
+e.preventDefault();
+},left:function(e){
+},right:function(e){
+},enter:function(e){
+_3e(this);
+},query:function(q,e){
+_34(this,q);
 }},filter:function(q,row){
-var _52=$(this).combobox("options");
-return row[_52.textField].indexOf(q)==0;
+var _61=$(this).combobox("options");
+return row[_61.textField].toLowerCase().indexOf(q.toLowerCase())==0;
 },formatter:function(row){
-var _53=$(this).combobox("options");
-return row[_53.textField];
-},loader:function(_54,_55,_56){
-var _57=$(this).combobox("options");
-if(!_57.url){
+var _62=$(this).combobox("options");
+return row[_62.textField];
+},loader:function(_63,_64,_65){
+var _66=$(this).combobox("options");
+if(!_66.url){
 return false;
 }
-$.ajax({type:_57.method,url:_57.url,data:_54,dataType:"json",success:function(_58){
-_55(_58);
+$.ajax({type:_66.method,url:_66.url,data:_63,dataType:"json",success:function(_67){
+_64(_67);
 },error:function(){
-_56.apply(this,arguments);
+_65.apply(this,arguments);
 }});
-},onBeforeLoad:function(_59){
+},loadFilter:function(_68){
+return _68;
+},finder:{getEl:function(_69,_6a){
+var _6b=_2(_69,_6a);
+var id=$.data(_69,"combobox").itemIdPrefix+"_"+_6b;
+return $("#"+id);
+},getRow:function(_6c,p){
+var _6d=$.data(_6c,"combobox");
+var _6e=(p instanceof jQuery)?p.attr("id").substr(_6d.itemIdPrefix.length+1):_2(_6c,p);
+return _6d.data[parseInt(_6e)];
+}},onBeforeLoad:function(_6f){
 },onLoadSuccess:function(){
 },onLoadError:function(){
-},onSelect:function(_5a){
-},onUnselect:function(_5b){
+},onSelect:function(_70){
+},onUnselect:function(_71){
 }});
 })(jQuery);
 

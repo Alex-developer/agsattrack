@@ -1,7 +1,11 @@
 .panel {
   overflow: hidden;
-  font-size: 12px;
   text-align: left;
+  margin: 0;
+  border: 0;
+  -moz-border-radius: 0 0 0 0;
+  -webkit-border-radius: 0 0 0 0;
+  border-radius: 0 0 0 0;
 }
 .panel-header,
 .panel-body {
@@ -20,13 +24,17 @@
 }
 .panel-body {
   overflow: auto;
-  border-top-width: 0px;
+  border-top-width: 0;
+  padding: 0;
 }
 .panel-body-noheader {
   border-top-width: 1px;
 }
 .panel-body-noborder {
   border-width: 0px;
+}
+.panel-body-nobottom {
+  border-bottom-width: 0;
 }
 .panel-with-icon {
   padding-left: 18px;
@@ -115,10 +123,20 @@
 .panel-body {
   background-color: #666;
   color: #fff;
+  font-size: 12px;
 }
 .panel-title {
+  font-size: 12px;
   font-weight: bold;
   color: #fff;
   height: 16px;
   line-height: 16px;
+}
+.panel-footer {
+  border: 1px solid #000;
+  overflow: hidden;
+  background: #555;
+}
+.panel-footer-noborder {
+  border-width: 1px 0 0 0;
 }

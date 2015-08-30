@@ -321,6 +321,8 @@ var AGUI = function() {
         try { // TODO: Fix dopploer error
             jQuery('#latitude').html(AGUTIL.convertDecDegLat(satellite.get('latitude')));
             jQuery('#longitude').html(AGUTIL.convertDecDegLon(satellite.get('longitude')));
+            jQuery('#latitudedec').html(satellite.get('latitude').toFixed(3));
+            jQuery('#longitudedec').html(satellite.get('longitude').toFixed(3));
             jQuery('#locator').html(satellite.get('locator'));
             jQuery('#altitude').html(satellite.get('altitude').toFixed(3));
             jQuery('#visible').html(satellite.get('visibility'));

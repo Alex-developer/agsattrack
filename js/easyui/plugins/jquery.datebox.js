@@ -1,128 +1,212 @@
-﻿/**
- * jQuery EasyUI 1.3.2
+/**
+ * jQuery EasyUI 1.4.3
  * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: jeasyui@gmail.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
+ * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
+ * To use it on other terms please contact us at info@jeasyui.com
  *
  */
 (function($){
 function _1(_2){
 var _3=$.data(_2,"datebox");
 var _4=_3.options;
-$(_2).addClass("datebox-f");
-$(_2).combo($.extend({},_4,{onShowPanel:function(){
-_3.calendar.calendar("resize");
-_4.onShowPanel.call(_2);
+$(_2).addClass("datebox-f").combo($.extend({},_4,{onShowPanel:function(){
+_5(this);
+_6(this);
+_7(this);
+_18(this,$(this).datebox("getText"),true);
+_4.onShowPanel.call(this);
 }}));
-$(_2).combo("textbox").parent().addClass("datebox");
 if(!_3.calendar){
-_5();
+var _8=$(_2).combo("panel").css("overflow","hidden");
+_8.panel("options").onBeforeDestroy=function(){
+var c=$(this).find(".calendar-shared");
+if(c.length){
+c.insertBefore(c[0].pholder);
 }
-function _5(){
-var _6=$(_2).combo("panel");
-_3.calendar=$("<div></div>").appendTo(_6).wrap("<div class=\"datebox-calendar-inner\"></div>");
-_3.calendar.calendar({fit:true,border:false,onSelect:function(_7){
-var _8=_4.formatter(_7);
-_c(_2,_8);
-$(_2).combo("hidePanel");
-_4.onSelect.call(_2,_7);
+};
+var cc=$("<div class=\"datebox-calendar-inner\"></div>").prependTo(_8);
+if(_4.sharedCalendar){
+var c=$(_4.sharedCalendar);
+if(!c[0].pholder){
+c[0].pholder=$("<div class=\"calendar-pholder\" style=\"display:none\"></div>").insertAfter(c);
+}
+c.addClass("calendar-shared").appendTo(cc);
+if(!c.hasClass("calendar")){
+c.calendar();
+}
+_3.calendar=c;
+}else{
+_3.calendar=$("<div></div>").appendTo(cc).calendar();
+}
+$.extend(_3.calendar.calendar("options"),{fit:true,border:false,onSelect:function(_9){
+var _a=this.target;
+var _b=$(_a).datebox("options");
+_18(_a,_b.formatter.call(_a,_9));
+$(_a).combo("hidePanel");
+_b.onSelect.call(_a,_9);
 }});
-_c(_2,_4.value);
-var _9=$("<div class=\"datebox-button\"></div>").appendTo(_6);
-$("<a href=\"javascript:void(0)\" class=\"datebox-current\"></a>").html(_4.currentText).appendTo(_9);
-$("<a href=\"javascript:void(0)\" class=\"datebox-close\"></a>").html(_4.closeText).appendTo(_9);
-_9.find(".datebox-current,.datebox-close").hover(function(){
-$(this).addClass("datebox-button-hover");
-},function(){
-$(this).removeClass("datebox-button-hover");
-});
-_9.find(".datebox-current").click(function(){
-_3.calendar.calendar({year:new Date().getFullYear(),month:new Date().getMonth()+1,current:new Date()});
-});
-_9.find(".datebox-close").click(function(){
-$(_2).combo("hidePanel");
+}
+$(_2).combo("textbox").parent().addClass("datebox");
+$(_2).datebox("initValue",_4.value);
+function _5(_c){
+var _d=$(_c).datebox("options");
+var _e=$(_c).combo("panel");
+_e.unbind(".datebox").bind("click.datebox",function(e){
+if($(e.target).hasClass("datebox-button-a")){
+var _f=parseInt($(e.target).attr("datebox-button-index"));
+_d.buttons[_f].handler.call(e.target,_c);
+}
 });
 };
+function _6(_10){
+var _11=$(_10).combo("panel");
+if(_11.children("div.datebox-button").length){
+return;
+}
+var _12=$("<div class=\"datebox-button\"><table cellspacing=\"0\" cellpadding=\"0\" style=\"width:100%\"><tr></tr></table></div>").appendTo(_11);
+var tr=_12.find("tr");
+for(var i=0;i<_4.buttons.length;i++){
+var td=$("<td></td>").appendTo(tr);
+var btn=_4.buttons[i];
+var t=$("<a class=\"datebox-button-a\" href=\"javascript:void(0)\"></a>").html($.isFunction(btn.text)?btn.text(_10):btn.text).appendTo(td);
+t.attr("datebox-button-index",i);
+}
+tr.find("td").css("width",(100/_4.buttons.length)+"%");
 };
-function _a(_b,q){
-_c(_b,q);
+function _7(_13){
+var _14=$(_13).combo("panel");
+var cc=_14.children("div.datebox-calendar-inner");
+_14.children()._outerWidth(_14.width());
+_3.calendar.appendTo(cc);
+_3.calendar[0].target=_13;
+if(_4.panelHeight!="auto"){
+var _15=_14.height();
+_14.children().not(cc).each(function(){
+_15-=$(this).outerHeight();
+});
+cc._outerHeight(_15);
+}
+_3.calendar.calendar("resize");
 };
-function _d(_e){
-var _f=$.data(_e,"datebox").options;
-var c=$.data(_e,"datebox").calendar;
-var _10=_f.formatter(c.calendar("options").current);
-_c(_e,_10);
-$(_e).combo("hidePanel");
 };
-function _c(_11,_12){
-var _13=$.data(_11,"datebox");
-var _14=_13.options;
-$(_11).combo("setValue",_12).combo("setText",_12);
-_13.calendar.calendar("moveTo",_14.parser(_12));
+function _16(_17,q){
+_18(_17,q,true);
 };
-$.fn.datebox=function(_15,_16){
-if(typeof _15=="string"){
-var _17=$.fn.datebox.methods[_15];
-if(_17){
-return _17(this,_16);
+function _19(_1a){
+var _1b=$.data(_1a,"datebox");
+var _1c=_1b.options;
+var _1d=_1b.calendar.calendar("options").current;
+if(_1d){
+_18(_1a,_1c.formatter.call(_1a,_1d));
+$(_1a).combo("hidePanel");
+}
+};
+function _18(_1e,_1f,_20){
+var _21=$.data(_1e,"datebox");
+var _22=_21.options;
+var _23=_21.calendar;
+_23.calendar("moveTo",_22.parser.call(_1e,_1f));
+if(_20){
+$(_1e).combo("setValue",_1f);
 }else{
-return this.combo(_15,_16);
+if(_1f){
+_1f=_22.formatter.call(_1e,_23.calendar("options").current);
+}
+$(_1e).combo("setText",_1f).combo("setValue",_1f);
+}
+};
+$.fn.datebox=function(_24,_25){
+if(typeof _24=="string"){
+var _26=$.fn.datebox.methods[_24];
+if(_26){
+return _26(this,_25);
+}else{
+return this.combo(_24,_25);
 }
 }
-_15=_15||{};
+_24=_24||{};
 return this.each(function(){
-var _18=$.data(this,"datebox");
-if(_18){
-$.extend(_18.options,_15);
+var _27=$.data(this,"datebox");
+if(_27){
+$.extend(_27.options,_24);
 }else{
-$.data(this,"datebox",{options:$.extend({},$.fn.datebox.defaults,$.fn.datebox.parseOptions(this),_15)});
+$.data(this,"datebox",{options:$.extend({},$.fn.datebox.defaults,$.fn.datebox.parseOptions(this),_24)});
 }
 _1(this);
 });
 };
 $.fn.datebox.methods={options:function(jq){
-var _19=$.data(jq[0],"datebox").options;
-_19.originalValue=jq.combo("options").originalValue;
-return _19;
+var _28=jq.combo("options");
+return $.extend($.data(jq[0],"datebox").options,{width:_28.width,height:_28.height,originalValue:_28.originalValue,disabled:_28.disabled,readonly:_28.readonly});
+},cloneFrom:function(jq,_29){
+return jq.each(function(){
+$(this).combo("cloneFrom",_29);
+$.data(this,"datebox",{options:$.extend(true,{},$(_29).datebox("options")),calendar:$(_29).datebox("calendar")});
+$(this).addClass("datebox-f");
+});
 },calendar:function(jq){
 return $.data(jq[0],"datebox").calendar;
-},setValue:function(jq,_1a){
+},initValue:function(jq,_2a){
 return jq.each(function(){
-_c(this,_1a);
+var _2b=$(this).datebox("options");
+var _2c=_2b.value;
+if(_2c){
+_2c=_2b.formatter.call(this,_2b.parser.call(this,_2c));
+}
+$(this).combo("initValue",_2c).combo("setText",_2c);
+});
+},setValue:function(jq,_2d){
+return jq.each(function(){
+_18(this,_2d);
 });
 },reset:function(jq){
 return jq.each(function(){
-var _1b=$(this).datebox("options");
-$(this).datebox("setValue",_1b.originalValue);
+var _2e=$(this).datebox("options");
+$(this).datebox("setValue",_2e.originalValue);
 });
 }};
-$.fn.datebox.parseOptions=function(_1c){
-var t=$(_1c);
-return $.extend({},$.fn.combo.parseOptions(_1c),{});
+$.fn.datebox.parseOptions=function(_2f){
+return $.extend({},$.fn.combo.parseOptions(_2f),$.parser.parseOptions(_2f,["sharedCalendar"]));
 };
-$.fn.datebox.defaults=$.extend({},$.fn.combo.defaults,{panelWidth:180,panelHeight:"auto",keyHandler:{up:function(){
-},down:function(){
-},enter:function(){
-_d(this);
-},query:function(q){
-_a(this,q);
-}},currentText:"Today",closeText:"Close",okText:"Ok",formatter:function(_1d){
-var y=_1d.getFullYear();
-var m=_1d.getMonth()+1;
-var d=_1d.getDate();
-return m+"/"+d+"/"+y;
+$.fn.datebox.defaults=$.extend({},$.fn.combo.defaults,{panelWidth:180,panelHeight:"auto",sharedCalendar:null,keyHandler:{up:function(e){
+},down:function(e){
+},left:function(e){
+},right:function(e){
+},enter:function(e){
+_19(this);
+},query:function(q,e){
+_16(this,q);
+}},currentText:"Today",closeText:"Close",okText:"Ok",buttons:[{text:function(_30){
+return $(_30).datebox("options").currentText;
+},handler:function(_31){
+var now=new Date();
+$(_31).datebox("calendar").calendar({year:now.getFullYear(),month:now.getMonth()+1,current:new Date(now.getFullYear(),now.getMonth(),now.getDate())});
+_19(_31);
+}},{text:function(_32){
+return $(_32).datebox("options").closeText;
+},handler:function(_33){
+$(this).closest("div.combo-panel").panel("close");
+}}],formatter:function(_34){
+var y=_34.getFullYear();
+var m=_34.getMonth()+1;
+var d=_34.getDate();
+return (m<10?("0"+m):m)+"/"+(d<10?("0"+d):d)+"/"+y;
 },parser:function(s){
-var t=Date.parse(s);
-if(!isNaN(t)){
-return new Date(t);
+if(!s){
+return new Date();
+}
+var ss=s.split("/");
+var m=parseInt(ss[0],10);
+var d=parseInt(ss[1],10);
+var y=parseInt(ss[2],10);
+if(!isNaN(y)&&!isNaN(m)&&!isNaN(d)){
+return new Date(y,m-1,d);
 }else{
 return new Date();
 }
-},onSelect:function(_1e){
+},onSelect:function(_35){
 }});
 })(jQuery);
 

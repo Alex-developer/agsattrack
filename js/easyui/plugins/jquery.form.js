@@ -1,155 +1,197 @@
-﻿/**
- * jQuery EasyUI 1.3.2
+/**
+ * jQuery EasyUI 1.4.3
  * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: jeasyui@gmail.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
+ * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
+ * To use it on other terms please contact us at info@jeasyui.com
  *
  */
 (function($){
 function _1(_2,_3){
-_3=_3||{};
-var _4={};
-if(_3.onSubmit){
-if(_3.onSubmit.call(_2,_4)==false){
+var _4=$.data(_2,"form").options;
+$.extend(_4,_3||{});
+var _5=$.extend({},_4.queryParams);
+if(_4.onSubmit.call(_2,_5)==false){
 return;
 }
-}
-var _5=$(_2);
-if(_3.url){
-_5.attr("action",_3.url);
-}
+$(_2).find(".textbox-text:focus").blur();
 var _6="easyui_frame_"+(new Date().getTime());
-var _7=$("<iframe id="+_6+" name="+_6+"></iframe>").attr("src",window.ActiveXObject?"javascript:false":"about:blank").css({position:"absolute",top:-1000,left:-1000});
-var t=_5.attr("target"),a=_5.attr("action");
-_5.attr("target",_6);
-var _8=$();
-try{
-_7.appendTo("body");
+var _7=$("<iframe id="+_6+" name="+_6+"></iframe>").appendTo("body");
+_7.attr("src",window.ActiveXObject?"javascript:false":"about:blank");
+_7.css({position:"absolute",top:-1000,left:-1000});
 _7.bind("load",cb);
-for(var n in _4){
-var f=$("<input type=\"hidden\" name=\""+n+"\">").val(_4[n]).appendTo(_5);
-_8=_8.add(f);
+_8(_5);
+function _8(_9){
+var _a=$(_2);
+if(_4.url){
+_a.attr("action",_4.url);
 }
-_5[0].submit();
+var t=_a.attr("target"),a=_a.attr("action");
+_a.attr("target",_6);
+var _b=$();
+try{
+for(var n in _9){
+var _c=$("<input type=\"hidden\" name=\""+n+"\">").val(_9[n]).appendTo(_a);
+_b=_b.add(_c);
+}
+_d();
+_a[0].submit();
 }
 finally{
-_5.attr("action",a);
-t?_5.attr("target",t):_5.removeAttr("target");
-_8.remove();
+_a.attr("action",a);
+t?_a.attr("target",t):_a.removeAttr("target");
+_b.remove();
 }
-var _9=10;
+};
+function _d(){
+var f=$("#"+_6);
+if(!f.length){
+return;
+}
+try{
+var s=f.contents()[0].readyState;
+if(s&&s.toLowerCase()=="uninitialized"){
+setTimeout(_d,100);
+}
+}
+catch(e){
+cb();
+}
+};
+var _e=10;
 function cb(){
-_7.unbind();
-var _a=$("#"+_6).contents().find("body");
-var _b=_a.html();
-if(_b==""){
-if(--_9){
+var f=$("#"+_6);
+if(!f.length){
+return;
+}
+f.unbind();
+var _f="";
+try{
+var _10=f.contents().find("body");
+_f=_10.html();
+if(_f==""){
+if(--_e){
 setTimeout(cb,100);
 return;
 }
-return;
 }
-var ta=_a.find(">textarea");
+var ta=_10.find(">textarea");
 if(ta.length){
-_b=ta.val();
+_f=ta.val();
 }else{
-var _c=_a.find(">pre");
-if(_c.length){
-_b=_c.html();
+var pre=_10.find(">pre");
+if(pre.length){
+_f=pre.html();
 }
 }
-if(_3.success){
-_3.success(_b);
 }
+catch(e){
+}
+_4.success(_f);
 setTimeout(function(){
-_7.unbind();
-_7.remove();
+f.unbind();
+f.remove();
 },100);
 };
 };
-function _d(_e,_f){
-if(!$.data(_e,"form")){
-$.data(_e,"form",{options:$.extend({},$.fn.form.defaults)});
-}
-var _10=$.data(_e,"form").options;
-if(typeof _f=="string"){
-var _11={};
-if(_10.onBeforeLoad.call(_e,_11)==false){
+function _11(_12,_13){
+var _14=$.data(_12,"form").options;
+if(typeof _13=="string"){
+var _15={};
+if(_14.onBeforeLoad.call(_12,_15)==false){
 return;
 }
-$.ajax({url:_f,data:_11,dataType:"json",success:function(_12){
-_13(_12);
+$.ajax({url:_13,data:_15,dataType:"json",success:function(_16){
+_17(_16);
 },error:function(){
-_10.onLoadError.apply(_e,arguments);
+_14.onLoadError.apply(_12,arguments);
 }});
 }else{
-_13(_f);
+_17(_13);
 }
-function _13(_14){
-var _15=$(_e);
-for(var _16 in _14){
-var val=_14[_16];
-var rr=_17(_16,val);
-if(!rr.length){
-var f=_15.find("input[numberboxName=\""+_16+"\"]");
-if(f.length){
-f.numberbox("setValue",val);
-}else{
-$("input[name=\""+_16+"\"]",_15).val(val);
-$("textarea[name=\""+_16+"\"]",_15).val(val);
-$("select[name=\""+_16+"\"]",_15).val(val);
+function _17(_18){
+var _19=$(_12);
+for(var _1a in _18){
+var val=_18[_1a];
+if(!_1b(_1a,val)){
+if(!_1c(_1a,val)){
+_19.find("input[name=\""+_1a+"\"]").val(val);
+_19.find("textarea[name=\""+_1a+"\"]").val(val);
+_19.find("select[name=\""+_1a+"\"]").val(val);
 }
 }
-_18(_16,val);
 }
-_10.onLoadSuccess.call(_e,_14);
-_21(_e);
+_14.onLoadSuccess.call(_12,_18);
+_19.form("validate");
 };
-function _17(_19,val){
-var _1a=$(_e);
-var rr=$("input[name=\""+_19+"\"][type=radio], input[name=\""+_19+"\"][type=checkbox]",_1a);
-$.fn.prop?rr.prop("checked",false):rr.attr("checked",false);
-rr.each(function(){
-var f=$(this);
-if(f.val()==String(val)){
-$.fn.prop?f.prop("checked",true):f.attr("checked",true);
+function _1b(_1d,val){
+var cc=$(_12).find("[switchbuttonName=\""+_1d+"\"]");
+if(cc.length){
+cc.switchbutton("uncheck");
+cc.each(function(){
+if(_1e($(this).switchbutton("options").value,val)){
+$(this).switchbutton("check");
 }
 });
-return rr;
+return true;
+}
+cc=$(_12).find("input[name=\""+_1d+"\"][type=radio], input[name=\""+_1d+"\"][type=checkbox]");
+if(cc.length){
+cc._propAttr("checked",false);
+cc.each(function(){
+if(_1e($(this).val(),val)){
+$(this)._propAttr("checked",true);
+}
+});
+return true;
+}
+return false;
 };
-function _18(_1b,val){
-var _1c=$(_e);
-var cc=["combobox","combotree","combogrid","datetimebox","datebox","combo"];
-var c=_1c.find("[comboName=\""+_1b+"\"]");
-if(c.length){
-for(var i=0;i<cc.length;i++){
-var _1d=cc[i];
-if(c.hasClass(_1d+"-f")){
-if(c[_1d]("options").multiple){
-c[_1d]("setValues",val);
+function _1e(v,val){
+if(v==String(val)||$.inArray(v,$.isArray(val)?val:[val])>=0){
+return true;
 }else{
-c[_1d]("setValue",val);
-}
-return;
-}
-}
+return false;
 }
 };
+function _1c(_1f,val){
+var _20=$(_12).find("[textboxName=\""+_1f+"\"],[sliderName=\""+_1f+"\"]");
+if(_20.length){
+for(var i=0;i<_14.fieldTypes.length;i++){
+var _21=_14.fieldTypes[i];
+var _22=_20.data(_21);
+if(_22){
+if(_22.options.multiple||_22.options.range){
+_20[_21]("setValues",val);
+}else{
+_20[_21]("setValue",val);
+}
+return true;
+}
+}
+}
+return false;
 };
-function _1e(_1f){
-$("input,select,textarea",_1f).each(function(){
+};
+function _23(_24){
+$("input,select,textarea",_24).each(function(){
 var t=this.type,tag=this.tagName.toLowerCase();
 if(t=="text"||t=="hidden"||t=="password"||tag=="textarea"){
 this.value="";
 }else{
 if(t=="file"){
-var _20=$(this);
-_20.after(_20.clone().val(""));
-_20.remove();
+var _25=$(this);
+if(!_25.hasClass("textbox-value")){
+var _26=_25.clone().val("");
+_26.insertAfter(_25);
+if(_25.data("validatebox")){
+_25.validatebox("destroy");
+_26.validatebox();
+}else{
+_25.remove();
+}
+}
 }else{
 if(t=="checkbox"||t=="radio"){
 this.checked=false;
@@ -161,106 +203,127 @@ this.selectedIndex=-1;
 }
 }
 });
-if($.fn.combo){
-$(".combo-f",_1f).combo("clear");
+var _27=$(_24);
+var _28=$.data(_24,"form").options;
+for(var i=_28.fieldTypes.length-1;i>=0;i--){
+var _29=_28.fieldTypes[i];
+var _2a=_27.find("."+_29+"-f");
+if(_2a.length&&_2a[_29]){
+_2a[_29]("clear");
 }
-if($.fn.combobox){
-$(".combobox-f",_1f).combobox("clear");
 }
-if($.fn.combotree){
-$(".combotree-f",_1f).combotree("clear");
-}
-if($.fn.combogrid){
-$(".combogrid-f",_1f).combogrid("clear");
-}
-_21(_1f);
+_27.form("validate");
 };
-function _22(_23){
-_23.reset();
-var t=$(_23);
-if($.fn.combo){
-t.find(".combo-f").combo("reset");
+function _2b(_2c){
+_2c.reset();
+var _2d=$(_2c);
+var _2e=$.data(_2c,"form").options;
+for(var i=_2e.fieldTypes.length-1;i>=0;i--){
+var _2f=_2e.fieldTypes[i];
+var _30=_2d.find("."+_2f+"-f");
+if(_30.length&&_30[_2f]){
+_30[_2f]("reset");
 }
-if($.fn.combobox){
-t.find(".combobox-f").combobox("reset");
 }
-if($.fn.combotree){
-t.find(".combotree-f").combotree("reset");
-}
-if($.fn.combogrid){
-t.find(".combogrid-f").combogrid("reset");
-}
-if($.fn.spinner){
-t.find(".spinner-f").spinner("reset");
-}
-if($.fn.timespinner){
-t.find(".timespinner-f").timespinner("reset");
-}
-if($.fn.numberbox){
-t.find(".numberbox-f").numberbox("reset");
-}
-if($.fn.numberspinner){
-t.find(".numberspinner-f").numberspinner("reset");
-}
-_21(_23);
+_2d.form("validate");
 };
-function _24(_25){
-var _26=$.data(_25,"form").options;
-var _27=$(_25);
-_27.unbind(".form").bind("submit.form",function(){
+function _31(_32){
+var _33=$.data(_32,"form").options;
+$(_32).unbind(".form");
+if(_33.ajax){
+$(_32).bind("submit.form",function(){
 setTimeout(function(){
-_1(_25,_26);
+_1(_32,_33);
 },0);
 return false;
 });
+}
+$(_32).bind("_change.form",function(e,t){
+_33.onChange.call(this,t);
+}).bind("change.form",function(e){
+var t=e.target;
+if(!$(t).hasClass("textbox-text")){
+_33.onChange.call(this,t);
+}
+});
+_34(_32,_33.novalidate);
 };
-function _21(_28){
+function _35(_36,_37){
+_37=_37||{};
+var _38=$.data(_36,"form");
+if(_38){
+$.extend(_38.options,_37);
+}else{
+$.data(_36,"form",{options:$.extend({},$.fn.form.defaults,$.fn.form.parseOptions(_36),_37)});
+}
+};
+function _39(_3a){
 if($.fn.validatebox){
-var t=$(_28);
+var t=$(_3a);
 t.find(".validatebox-text:not(:disabled)").validatebox("validate");
-var _29=t.find(".validatebox-invalid");
-_29.filter(":not(:disabled):first").focus();
-return _29.length==0;
+var _3b=t.find(".validatebox-invalid");
+_3b.filter(":not(:disabled):first").focus();
+return _3b.length==0;
 }
 return true;
 };
-$.fn.form=function(_2a,_2b){
-if(typeof _2a=="string"){
-return $.fn.form.methods[_2a](this,_2b);
+function _34(_3c,_3d){
+var _3e=$.data(_3c,"form").options;
+_3e.novalidate=_3d;
+$(_3c).find(".validatebox-text:not(:disabled)").validatebox(_3d?"disableValidation":"enableValidation");
+};
+$.fn.form=function(_3f,_40){
+if(typeof _3f=="string"){
+this.each(function(){
+_35(this);
+});
+return $.fn.form.methods[_3f](this,_40);
 }
-_2a=_2a||{};
 return this.each(function(){
-if(!$.data(this,"form")){
-$.data(this,"form",{options:$.extend({},$.fn.form.defaults,_2a)});
-}
-_24(this);
+_35(this,_3f);
+_31(this);
 });
 };
-$.fn.form.methods={submit:function(jq,_2c){
+$.fn.form.methods={options:function(jq){
+return $.data(jq[0],"form").options;
+},submit:function(jq,_41){
 return jq.each(function(){
-_1(this,$.extend({},$.fn.form.defaults,_2c||{}));
+_1(this,_41);
 });
-},load:function(jq,_2d){
+},load:function(jq,_42){
 return jq.each(function(){
-_d(this,_2d);
+_11(this,_42);
 });
 },clear:function(jq){
 return jq.each(function(){
-_1e(this);
+_23(this);
 });
 },reset:function(jq){
 return jq.each(function(){
-_22(this);
+_2b(this);
 });
 },validate:function(jq){
-return _21(jq[0]);
+return _39(jq[0]);
+},disableValidation:function(jq){
+return jq.each(function(){
+_34(this,true);
+});
+},enableValidation:function(jq){
+return jq.each(function(){
+_34(this,false);
+});
 }};
-$.fn.form.defaults={url:null,onSubmit:function(_2e){
+$.fn.form.parseOptions=function(_43){
+var t=$(_43);
+return $.extend({},$.parser.parseOptions(_43,[{ajax:"boolean"}]),{url:(t.attr("action")?t.attr("action"):undefined)});
+};
+$.fn.form.defaults={fieldTypes:["combobox","combotree","combogrid","datetimebox","datebox","combo","datetimespinner","timespinner","numberspinner","spinner","slider","searchbox","numberbox","textbox","switchbutton"],novalidate:false,ajax:true,url:null,queryParams:{},onSubmit:function(_44){
 return $(this).form("validate");
-},success:function(_2f){
-},onBeforeLoad:function(_30){
-},onLoadSuccess:function(_31){
+},success:function(_45){
+},onBeforeLoad:function(_46){
+},onLoadSuccess:function(_47){
 },onLoadError:function(){
+},onChange:function(_48){
 }};
 })(jQuery);
 

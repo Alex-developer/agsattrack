@@ -410,6 +410,7 @@ var AGAZELVIEW = function(element) {
         },
                            
         init : function(mode) {
+            
             _stage = new Kinetic.Stage({
                 container : _element,
                 width : jQuery('#'+_element).width(),

@@ -125,8 +125,7 @@ var Agsattrack = function() {
         var julianDate;
         
         if (AGSETTINGS.getHaveWebGL()) {
-            var cDate = new Cesium.JulianDate().toDate();
-            jQuery('#currenttime').html(cDate.toUTCString());      
+            jQuery('#currenttime').html(Cesium.JulianDate.toDate(Cesium.JulianDate.now()).toString());      
         }
  
     }
@@ -137,8 +136,8 @@ var Agsattrack = function() {
         _ui.updateStatus('Calculating');
         
         if (AGSETTINGS.getHaveWebGL()) {
-            var cDate = new Cesium.JulianDate();
-            julianDate = cDate.getJulianDayNumber() + cDate.getJulianTimeFraction();            
+            var cDate = Cesium.JulianDate.now()
+            julianDate = cDate.dayNumber + cDate.secondsOfDay;            
         } else {
             julianDate = Date.Date2Julian(new Date());
         }

@@ -55,7 +55,7 @@ jQuery(document).ready(function() {
     
     Modernizr.load({
       test: AGUTIL.webGlTest(),
-      yep : 'js/cesium/Cesium/Cesium.js',
+      yep : 'js/cesium/CesiumUnminified/Cesium.js',
       complete : function() {
           AGSETTINGS.setHaveWebGL(AGUTIL.webGlTest());
           AGSETTINGS.setHaveCanvas(Modernizr.canvas);          

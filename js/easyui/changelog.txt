@@ -1,3 +1,178 @@
+Version 1.4.3
+-------------
+* Bug
+ * textbox: The 'setText' method does not accept value 0. fixed.
+ * timespinner: When running in IE11, the error occurs when clicking on the empty textbox. fixed.
+ * tabs: The 'update' method can not update only the panel body. fixed.
+* Improvement
+ * combobox: Improve the performance of displaying the drop-down panel.
+ * combogrid: Remember the displaying text when the drop-down datagrid go to other pages.
+ * combogrid: The 'setValue' and 'setValues' methods accept a key-value object.
+ * window: The inline window's mask can auto-stretch its size to fill parent container.
+ * tabs: The 'showTool' and 'hideTool' methods are available for users to show or hide the tools.
+ * layout: Allow the user to override the 'cls','headerCls' and 'bodyCls' property values.
+* New Plugins
+ * switchbutton: The switch button with two states:'on' and 'off'.
+
+Version 1.4.2
+-------------
+* Bug
+ * treegrid: The column will restore its size to original size after recreating the treegrid. fixed.
+* Improvement
+ * draggable: Add 'delay' property that allows the user to delay the drag operation.
+ * tree: Add 'filter' property and 'doFilter' method.
+ * tabs: The 'add' method allows the user to insert a tab panel at a specified index.
+ * tabs: The user can determine what tab panel can be selected.
+ * tabs: Add 'justified' and 'narrow' properties.
+ * layout: Add 'unsplit' and 'split' methods.
+ * messager: Keyboard navigation features are supported now.
+ * form: Add 'onChange' event.
+ * combobox: Add 'queryParams' property.
+ * slider: Add 'range' property.
+ * menu: Add 'itemHeight','inline','noline' properties.
+ * panel: The 'header' property allows the user to customize the panel header.
+ * menubutton: Add 'hasDownArrow' property.
+* New Plugins
+ * datalist: The plugin to render items in a list.
+ * navpanel: The root component for the mobile page.
+ * mobile: The plugin to provide the mobile page stack management and navigation.
+
+Version 1.4.1
+-------------
+* Bug
+ * combogrid: The combogrid has different height than other combo components. fixed.
+ * datagrid: The row element loses some class style value after calling 'updateRow' method. fixed.
+ * menubutton: Calling 'enable' method on a disabled button can not work well. fixed.
+ * form: The filebox components in the form do not work correctly after calling 'clear' method. fixed.
+* Improvement
+ * tabs: The 'update' method accepts 'type' option that allows the user to update the header,body,or both.
+ * panel: Add 'openAnimation','openDuration','closeAnimation' and 'closeDuration' properties to set the animation for opening or closing a panel.
+ * panel: Add 'footer' property that allows the user to add a footer bar to the bottom of panel.
+ * datagrid: Calling 'endEdit' method will accept the editing value correctly.
+ * datagrid: Add 'onBeforeSelect','onBeforeCheck','onBeforeUnselect','onBeforeUncheck' events.
+ * propertygrid: The user can edit a row by calling 'beginEdit' method.
+ * datebox: Add 'cloneFrom' method to create the datebox component quickly.
+ * datetimebox: Add 'cloneFrom' method to create the datetimebox component quickly.
+
+Version 1.4
+-------------
+* Bug
+ * menu: The menu should not has a correct height when removed a menu item. fixed.
+ * datagrid: The 'fitColumns' method does not work normally when the datarid width is too small. fixed.
+* Improvement
+ * The fluid/percentange size is supported now for all easyui components.
+ * menu: Add 'showItem', 'hideItem' and 'resize' methods.
+ * menu: Auto resize the height upon the window size.
+ * menu: Add 'duration' property that allows the user to define duration time in milliseconds to hide menu.
+ * validatebox: Add 'onBeforeValidate' and 'onValidate' events.
+ * combo: Extended from textbox now.
+ * combo: Add 'panelMinWidth','panelMaxWidth','panelMinHeight' and 'panelMaxHeight' properties.
+ * searchbox: Extended from textbox now.
+ * tree: The 'getRoot' method will return the top parent node of a specified node if pass a 'nodeEl' parameter.
+ * tree: Add 'queryParams' property.
+ * datetimebox: Add 'spinnerWidth' property.
+ * panel: Add 'doLayout' method to cause the panel to lay out its components.
+ * panel: Add 'clear' method to clear the panel's content.
+ * datagrid: The user is allowed to assign percent width to columns.
+ * form: Add 'ajax','novalidate' and 'queryParams' properties.
+ * linkbutton: Add 'resize' method.
+* New Plugins
+ * textbox: A enhanced input field that allows users build their form easily.
+ * datetimespinner: A date and time spinner that allows to pick a specific day.
+ * filebox: The filebox component represents a file field of the forms.
+
+Version 1.3.6
+-------------
+* Bug
+ * treegrid: The 'getChecked' method can not return correct checked rows. fixed.
+ * tree: The checkbox does not display properly on async tree when 'onlyLeafCheck' property is true. fixed.
+* Improvement
+ * treegrid: All the selecting and checking methods are extended from datagrid component.
+ * linkbutton: The icon alignment is fully supported, possible values are: 'top','bottom','left','right'.
+ * linkbutton: Add 'size' property, possible values are: 'small','large'.
+ * linkbutton: Add 'onClick' event.
+ * menubutton: Add 'menuAlign' property that allows the user set top level menu alignment.
+ * combo: Add 'panelAlign' property, possible values are: 'left','right'.
+ * calendar: The 'formatter','styler' and 'validator' options are available to custom the calendar dates.
+ * calendar: Add 'onChange' event.
+ * panel: Add 'method','queryParams' and 'loader' options.
+ * panel: Add 'onLoadError' event.
+ * datagrid: Add 'onBeginEdit' event that fires when a row goes into edit mode.
+ * datagrid: Add 'onEndEdit' event that fires when finishing editing but before destroying editors.
+ * datagrid: Add 'sort' method and 'onBeforeSortColumn' event.
+ * datagrid: The 'combogrid' editor has been integrated into datagrid.
+ * datagrid: Add 'ctrlSelect' property that only allows multi-selection when ctrl+click is used.
+ * slider: Add 'converter' option that allows users determine how to convert a value to the slider position or the slider position to the value.
+ * searchbox: Add 'disabled' property.
+ * searchbox: Add 'disable','enable','clear','reset' methods.
+ * spinner: Add 'readonly' property, 'readonly' method and 'onChange' event.
+
+Version 1.3.5
+-------------
+* Bug
+ * searchbox: The 'searcher' function can not offer 'name' parameter value correctly. fixed.
+ * combo: The 'isValid' method can not return boolean value. fixed.
+ * combo: Clicking combo will trigger the 'onHidePanel' event of other combo components that have hidden drop-down panels. fixed.
+ * combogrid: Some methods can not inherit from combo. fixed.
+* Improvement
+ * datagrid: Improve performance on checking rows.
+ * menu: Allows to append a menu separator.
+ * menu: Add 'hideOnUnhover' property to indicate if the menu should be hidden when mouse exits it.
+ * slider: Add 'clear' and 'reset' methods.
+ * tabs: Add 'unselect' method that will trigger 'onUnselect' event.
+ * tabs: Add 'selected' property to specify what tab panel will be opened.
+ * tabs: The 'collapsible' property of tab panel is supported to determine if the tab panel can be collapsed.
+ * tabs: Add 'showHeader' property, 'showHeader' and 'hideHeader' methods.
+ * combobox: The 'disabled' property can be used to disable some items.
+ * tree: Improve loading performance.
+ * pagination: The 'layout' property can be used to customize the pagination layout.
+ * accordion: Add 'unselect' method that will trigger 'onUnselect' event.
+ * accordion: Add 'selected' and 'multiple' properties.
+ * accordion: Add 'getSelections' method.
+ * datebox: Add 'sharedCalendar' property that allows multiple datebox components share one calendar component.
+
+Version 1.3.4
+-------------
+* Bug
+ * combobox: The onLoadSuccess event fires when parsing empty local data. fixed.
+ * form: Calling 'reset' method can not reset datebox field. fixed.
+* Improvement
+ * mobile: The context menu and double click features are supported on mobile devices.
+ * combobox: The 'groupField' and 'groupFormatter' options are available to display items in groups.
+ * tree: When append or insert nodes, the 'data' parameter accepts one or more nodes data.
+ * tree: The 'getChecked' method accepts a single 'state' or an array of 'state'.
+ * tree: Add 'scrollTo' method.
+ * datagrid: The 'multiSort' property is added to support multiple column sorting.
+ * datagrid: The 'rowStyler' and column 'styler' can return CSS class name or inline styles.
+ * treegrid: Add 'load' method to load data and navigate to the first page.
+ * tabs: Add 'tabWidth' and 'tabHeight' properties.
+ * validatebox: The 'novalidate' property is available to indicate whether to perform the validation.
+ * validatebox: Add 'enableValidation' and 'disableValidation' methods.
+ * form: Add 'enableValidation' and 'disableValidation' methods.
+ * slider: Add 'onComplete' event.
+ * pagination: The 'buttons' property accepts the existing element.
+
+Version 1.3.3
+-------------
+* Bug
+ * datagrid: Some style features are not supported by column styler function. fixed.
+ * datagrid: IE 31 stylesheet limit. fixed.
+ * treegrid: Some style features are not supported by column styler function. fixed.
+ * menu: The auto width of menu item displays incorrect in ie6. fixed.
+ * combo: The 'onHidePanel' event can not fire when clicked outside the combo area. fixed. 
+* Improvement
+ * datagrid: Add 'scrollTo' and 'highlightRow' methods.
+ * treegrid: Enable treegrid to parse data from <tbody> element.
+ * combo: Add 'selectOnNavigation' and 'readonly' options.
+ * combobox: Add 'loadFilter' option to allow users to change data format before loading into combobox.
+ * tree: Add 'onBeforeDrop' callback event.
+ * validatebox: Dependent on tooltip plugin now, add 'deltaX' property.
+ * numberbox: The 'filter' options can be used to determine if the key pressed was accepted.
+ * linkbutton: The group button is available.
+ * layout: The 'minWidth','maxWidth','minHeight','maxHeight' and 'collapsible' properties are available for region panel.
+* New Plugins
+ * tooltip: Display a popup message when moving mouse over an element.
+ 
 Version 1.3.2
 -------------
 * Bug

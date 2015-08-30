@@ -1,15 +1,18 @@
 /**
+ * jQuery EasyUI 1.4.3
+ * 
+ * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ *
+ * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
+ * To use it on other terms please contact us at info@jeasyui.com
+ *
+ */
+/**
  * resizable - jQuery EasyUI
  * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
- *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: jeasyui@gmail.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
  */
 (function($){
-	var isResizing = false;
+//	var isResizing = false;
 	$.fn.resizable = function(options, param){
 		if (typeof options == 'string'){
 			return $.fn.resizable.methods[options](this, param);
@@ -35,31 +38,50 @@
 				resizeData.height = height;
 			}
 			if (resizeData.dir.indexOf('w') != -1) {
-				resizeData.width = resizeData.startWidth - e.pageX + resizeData.startX;
-				if (resizeData.width >= options.minWidth && resizeData.width <= options.maxWidth) {
-					resizeData.left = resizeData.startLeft + e.pageX - resizeData.startX;
-				}
+				var width = resizeData.startWidth - e.pageX + resizeData.startX;
+				width = Math.min(
+							Math.max(width, options.minWidth),
+							options.maxWidth
+						);
+				resizeData.width = width;
+				resizeData.left = resizeData.startLeft + resizeData.startWidth - resizeData.width;
+				
+//				resizeData.width = resizeData.startWidth - e.pageX + resizeData.startX;
+//				if (resizeData.width >= options.minWidth && resizeData.width <= options.maxWidth) {
+//					resizeData.left = resizeData.startLeft + e.pageX - resizeData.startX;
+//				}
 			}
 			if (resizeData.dir.indexOf('n') != -1) {
-				resizeData.height = resizeData.startHeight - e.pageY + resizeData.startY;
-				if (resizeData.height >= options.minHeight && resizeData.height <= options.maxHeight) {
-					resizeData.top = resizeData.startTop + e.pageY - resizeData.startY;
-				}
+				var height = resizeData.startHeight - e.pageY + resizeData.startY;
+				height = Math.min(
+							Math.max(height, options.minHeight),
+							options.maxHeight
+						);
+				resizeData.height = height;
+				resizeData.top = resizeData.startTop + resizeData.startHeight - resizeData.height;
+				
+//				resizeData.height = resizeData.startHeight - e.pageY + resizeData.startY;
+//				if (resizeData.height >= options.minHeight && resizeData.height <= options.maxHeight) {
+//					resizeData.top = resizeData.startTop + e.pageY - resizeData.startY;
+//				}
 			}
 		}
 		
 		function applySize(e){
 			var resizeData = e.data;
-			var target = resizeData.target;
-			$(target).css({
+			var t = $(resizeData.target);
+			t.css({
 				left: resizeData.left,
 				top: resizeData.top
 			});
-			$(target)._outerWidth(resizeData.width)._outerHeight(resizeData.height);
+			if (t.outerWidth() != resizeData.width){t._outerWidth(resizeData.width)}
+			if (t.outerHeight() != resizeData.height){t._outerHeight(resizeData.height)}
+//			t._outerWidth(resizeData.width)._outerHeight(resizeData.height);
 		}
 		
 		function doDown(e){
-			isResizing = true;
+//			isResizing = true;
+			$.fn.resizable.isResizing = true;
 			$.data(e.data.target, 'resizable').options.onStartResize.call(e.data.target, e);
 			return false;
 		}
@@ -73,7 +95,8 @@
 		}
 		
 		function doUp(e){
-			isResizing = false;
+//			isResizing = false;
+			$.fn.resizable.isResizing = false;
 			resize(e, true);
 			applySize(e);
 			$.data(e.data.target, 'resizable').options.onStopResize.call(e.data.target, e);
@@ -102,7 +125,8 @@
 			
 			// bind mouse event using namespace resizable
 			$(this).bind('mousemove.resizable', {target:this}, function(e){
-				if (isResizing) return;
+//				if (isResizing) return;
+				if ($.fn.resizable.isResizing){return}
 				var dir = getDirection(e);
 				if (dir == '') {
 					$(e.data.target).css('cursor', '');
@@ -217,5 +241,7 @@
 		onResize: function(e){},
 		onStopResize: function(e){}
 	};
+	
+	$.fn.resizable.isResizing = false;
 	
 })(jQuery);

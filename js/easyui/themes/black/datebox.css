@@ -4,16 +4,18 @@
 .datebox-button {
   height: 18px;
   padding: 2px 5px;
-  font-size: 12px;
   text-align: center;
 }
-.datebox-current,
-.datebox-close,
-.datebox-ok {
-  text-decoration: none;
+.datebox-button a {
+  font-size: 12px;
   font-weight: bold;
+  text-decoration: none;
   opacity: 0.6;
   filter: alpha(opacity=60);
+}
+.datebox-button a:hover {
+  opacity: 1.0;
+  filter: alpha(opacity=100);
 }
 .datebox-current,
 .datebox-close {
@@ -22,10 +24,6 @@
 .datebox-close {
   float: right;
 }
-.datebox-button-hover {
-  opacity: 1.0;
-  filter: alpha(opacity=100);
-}
 .datebox .combo-arrow {
   background-image: url('images/datebox_arrow.png');
   background-position: center center;
@@ -33,8 +31,6 @@
 .datebox-button {
   background-color: #555;
 }
-.datebox-current,
-.datebox-close,
-.datebox-ok {
+.datebox-button a {
   color: #fff;
 }

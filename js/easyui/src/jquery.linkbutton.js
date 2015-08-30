@@ -1,70 +1,138 @@
 /**
+ * jQuery EasyUI 1.4.3
+ * 
+ * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ *
+ * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
+ * To use it on other terms please contact us at info@jeasyui.com
+ *
+ */
+/**
  * linkbutton - jQuery EasyUI
  * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
- *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: jeasyui@gmail.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
  */
 (function($){
+	function setSize(target, param){
+		var opts = $.data(target, 'linkbutton').options;
+		if (param){
+			$.extend(opts, param);
+		}
+		if (opts.width || opts.height || opts.fit){
+			var btn = $(target);
+			var parent = btn.parent();
+			var isVisible = btn.is(':visible');
+			if (!isVisible){
+				var spacer = $('<div style="display:none"></div>').insertBefore(target);
+				var style = {
+					position: btn.css('position'),
+					display: btn.css('display'),
+					left: btn.css('left')
+				};
+				btn.appendTo('body');
+				btn.css({
+					position: 'absolute',
+					display: 'inline-block',
+					left: -20000
+				});
+			}
+			btn._size(opts, parent);
+			var left = btn.find('.l-btn-left');
+			left.css('margin-top', 0);
+			left.css('margin-top', parseInt((btn.height()-left.height())/2)+'px');
+			if (!isVisible){
+				btn.insertAfter(spacer);
+				btn.css(style);
+				spacer.remove();
+			}
+		}
+	}
 	
 	function createButton(target) {
 		var opts = $.data(target, 'linkbutton').options;
+		var t = $(target).empty();
 		
-		$(target).empty();
-		$(target).addClass('l-btn');
-		if (opts.id){
-			$(target).attr('id', opts.id);
-		} else {
-//			$.fn.removeProp ? $(target).removeProp('id') : $(target).removeAttr('id'); 
-//			$(target).removeAttr('id');
-			$(target).attr('id', '');
+		t.addClass('l-btn').removeClass('l-btn-plain l-btn-selected l-btn-plain-selected l-btn-outline');
+		t.removeClass('l-btn-small l-btn-medium l-btn-large').addClass('l-btn-'+opts.size);
+		if (opts.plain){t.addClass('l-btn-plain')}
+		if (opts.outline){t.addClass('l-btn-outline')}
+		if (opts.selected){
+			t.addClass(opts.plain ? 'l-btn-selected l-btn-plain-selected' : 'l-btn-selected');
 		}
-		if (opts.plain){
-			$(target).addClass('l-btn-plain');
-		} else {
-			$(target).removeClass('l-btn-plain');
-		}
+		t.attr('group', opts.group || '');
+		t.attr('id', opts.id || '');
 		
+		var inner = $('<span class="l-btn-left"></span>').appendTo(t);
 		if (opts.text){
-			$(target).html(opts.text).wrapInner(
-					'<span class="l-btn-left">' +
-					'<span class="l-btn-text">' +
-					'</span>' +
-					'</span>'
-			);
-			if (opts.iconCls){
-				$(target).find('.l-btn-text').addClass(opts.iconCls).addClass(opts.iconAlign=='left' ? 'l-btn-icon-left' : 'l-btn-icon-right');
-			}
+			$('<span class="l-btn-text"></span>').html(opts.text).appendTo(inner);
 		} else {
-			$(target).html('&nbsp;').wrapInner(
-					'<span class="l-btn-left">' +
-					'<span class="l-btn-text">' +
-					'<span class="l-btn-empty"></span>' +
-					'</span>' +
-					'</span>'
-			);
-			if (opts.iconCls){
-				$(target).find('.l-btn-empty').addClass(opts.iconCls);
-			}
+			$('<span class="l-btn-text l-btn-empty">&nbsp;</span>').appendTo(inner);
 		}
-		$(target).unbind('.linkbutton').bind('focus.linkbutton',function(){
+		if (opts.iconCls){
+			$('<span class="l-btn-icon">&nbsp;</span>').addClass(opts.iconCls).appendTo(inner);
+			inner.addClass('l-btn-icon-'+opts.iconAlign);
+		}
+		
+		t.unbind('.linkbutton').bind('focus.linkbutton',function(){
 			if (!opts.disabled){
-				$(this).find('span.l-btn-text').addClass('l-btn-focus');
+				$(this).addClass('l-btn-focus');
 			}
 		}).bind('blur.linkbutton',function(){
-			$(this).find('span.l-btn-text').removeClass('l-btn-focus');
+			$(this).removeClass('l-btn-focus');
+		}).bind('click.linkbutton',function(){
+			if (!opts.disabled){
+				if (opts.toggle){
+					if (opts.selected){
+						$(this).linkbutton('unselect');
+					} else {
+						$(this).linkbutton('select');
+					}
+				}
+				opts.onClick.call(this);
+			}
+//			return false;
 		});
+//		if (opts.toggle && !opts.disabled){
+//			t.bind('click.linkbutton', function(){
+//				if (opts.selected){
+//					$(this).linkbutton('unselect');
+//				} else {
+//					$(this).linkbutton('select');
+//				}
+//			});
+//		}
 		
+		setSelected(target, opts.selected)
 		setDisabled(target, opts.disabled);
+	}
+	
+	function setSelected(target, selected){
+		var opts = $.data(target, 'linkbutton').options;
+		if (selected){
+			if (opts.group){
+				$('a.l-btn[group="'+opts.group+'"]').each(function(){
+					var o = $(this).linkbutton('options');
+					if (o.toggle){
+						$(this).removeClass('l-btn-selected l-btn-plain-selected');
+						o.selected = false;
+					}
+				});
+			}
+			$(target).addClass(opts.plain ? 'l-btn-selected l-btn-plain-selected' : 'l-btn-selected');
+			opts.selected = true;
+		} else {
+			if (!opts.group){
+				$(target).removeClass('l-btn-selected l-btn-plain-selected');
+				opts.selected = false;
+			}
+		}
 	}
 	
 	function setDisabled(target, disabled){
 		var state = $.data(target, 'linkbutton');
+		var opts = state.options;
+		$(target).removeClass('l-btn-disabled l-btn-plain-disabled');
 		if (disabled){
-			state.options.disabled = true;
+			opts.disabled = true;
 			var href = $(target).attr('href');
 			if (href){
 				state.href = href;
@@ -74,21 +142,15 @@
 				state.onclick = target.onclick;
 				target.onclick = null;
 			}
-//			var onclick = $(target).attr('onclick');
-//			if (onclick) {
-//				state.onclick = onclick;
-//				$(target).attr('onclick', '');
-//			}
-			$(target).addClass('l-btn-disabled');
+			opts.plain ? $(target).addClass('l-btn-disabled l-btn-plain-disabled') : $(target).addClass('l-btn-disabled');
 		} else {
-			state.options.disabled = false;
+			opts.disabled = false;
 			if (state.href) {
 				$(target).attr('href', state.href);
 			}
 			if (state.onclick) {
 				target.onclick = state.onclick;
 			}
-			$(target).removeClass('l-btn-disabled');
 		}
 	}
 	
@@ -107,15 +169,27 @@
 					options: $.extend({}, $.fn.linkbutton.defaults, $.fn.linkbutton.parseOptions(this), options)
 				});
 				$(this).removeAttr('disabled');
+				$(this).bind('_resize', function(e, force){
+					if ($(this).hasClass('easyui-fluid') || force){
+						setSize(this);
+					}
+					return false;
+				});
 			}
 			
 			createButton(this);
+			setSize(this);
 		});
 	};
 	
 	$.fn.linkbutton.methods = {
 		options: function(jq){
 			return $.data(jq[0], 'linkbutton').options;
+		},
+		resize: function(jq, param){
+			return jq.each(function(){
+				setSize(this, param);
+			});
 		},
 		enable: function(jq){
 			return jq.each(function(){
@@ -126,14 +200,26 @@
 			return jq.each(function(){
 				setDisabled(this, true);
 			});
+		},
+		select: function(jq){
+			return jq.each(function(){
+				setSelected(this, true);
+			});
+		},
+		unselect: function(jq){
+			return jq.each(function(){
+				setSelected(this, false);
+			});
 		}
 	};
 	
 	$.fn.linkbutton.parseOptions = function(target){
 		var t = $(target);
-		return $.extend({}, $.parser.parseOptions(target, ['id','iconCls','iconAlign',{plain:'boolean'}]), {
+		return $.extend({}, $.parser.parseOptions(target, 
+			['id','iconCls','iconAlign','group','size','text',{plain:'boolean',toggle:'boolean',selected:'boolean',outline:'boolean'}]
+		), {
 			disabled: (t.attr('disabled') ? true : undefined),
-			text: $.trim(t.html()),
+			text: ($.trim(t.html()) || undefined),
 			iconCls: (t.attr('icon') || t.attr('iconCls'))
 		});
 	};
@@ -141,10 +227,16 @@
 	$.fn.linkbutton.defaults = {
 		id: null,
 		disabled: false,
+		toggle: false,
+		selected: false,
+		outline: false,
+		group: null,
 		plain: false,
 		text: '',
 		iconCls: null,
-		iconAlign: 'left'
+		iconAlign: 'left',
+		size: 'small',	// small,large
+		onClick: function(){}
 	};
 	
 })(jQuery);

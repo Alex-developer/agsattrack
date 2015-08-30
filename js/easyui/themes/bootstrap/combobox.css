@@ -1,8 +1,18 @@
-.combobox-item {
-  padding: 2px;
+.combobox-item,
+.combobox-group {
   font-size: 12px;
   padding: 3px;
   padding-right: 0px;
+}
+.combobox-item-disabled {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.combobox-gitem {
+  padding-left: 10px;
+}
+.combobox-group {
+  font-weight: bold;
 }
 .combobox-item-hover {
   background-color: #e6e6e6;
