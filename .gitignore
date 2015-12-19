@@ -27,4 +27,4 @@ local.properties
 # PDT-specific
 .buildpath
 
-/vendor/**/.git
+/vendor/

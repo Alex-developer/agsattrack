@@ -16,7 +16,7 @@ The main focus at the moment is to update the 3D view to;
 - Add an option to display 3D models for satellites
 - Clean up the 3D view code
 
-![ScreenShot](https://raw.github.com/Alex-developer/agsattrack/models/screenshots/models.png)
+![ScreenShot](https://github.com/Alex-developer/agsattrack/blob/Models/screenshots/models.png)
 
 Below are some screen shots to give you some idea of what it looks like.
 
