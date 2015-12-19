@@ -20,6 +20,10 @@ The main focus at the moment is to update the 3D view to;
 
 ![ScreenShot](https://github.com/Alex-developer/agsattrack/blob/Models/screenshots/models.png)
 
+I am also working on serveral new versions for stanadlone tracking systems. The current versions in progress are
+
+A .NetMF version  (https://github.com/Alex-developer/AgSatTrack.NetMF)
+A version for the Raspberry Pi
 
 # Screenshots #
 
