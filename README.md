@@ -10,6 +10,8 @@ The Cesium engine looked like it could help form the basis of an online version 
 
 The code is still very much being developed and there are a lot of bugs that need fixing and new features that need adding.
 
+# WIP #
+
 The main focus at the moment is to update the 3D view to;
 
 - Upgrade to the latets version of Cesium
@@ -17,6 +19,9 @@ The main focus at the moment is to update the 3D view to;
 - Clean up the 3D view code
 
 ![ScreenShot](https://github.com/Alex-developer/agsattrack/blob/Models/screenshots/models.png)
+
+
+# Screenshots #
 
 Below are some screen shots to give you some idea of what it looks like.
 
