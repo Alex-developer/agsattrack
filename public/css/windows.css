@@ -1,0 +1,47 @@
+.dxwindownosatselected {
+    text-align: center;
+}
+
+.dxwindownosatselected h2 {
+    font-size: 1.5em;
+}
+
+.dxwindownosatselected p {
+    font-size: 1.3em;
+    margin: 10px;
+}
+
+
+#geocomplete {
+    width: 300px;
+    font-family: 'Myriad Pro',Calibri,Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.map_canvas {
+    height: 450px;
+    margin: 5px 0;
+    width: 770px;
+}
+
+.pac-container {
+    z-index: 99999 !important;
+}
+
+#geoerror {
+    padding: 5px;
+}
+
+#geoerror h2 {
+    text-align: center;
+    color: red;
+}
+
+#geoerror p {
+    text-align: justify;
+}
+
+#geoerror .errorcode {
+    font-weight: bold;
+}

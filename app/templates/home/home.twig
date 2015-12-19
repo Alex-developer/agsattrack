@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>AGSatTrack - Online</title>
+        {% include 'home/parts/general/scripts.twig' %}  
+    </head>
+    <body class='easyui-layout default' style="display: none" id="body">
+        <div data-options="region:'north', title:'&nbsp;'" style="height: 120px;">
+            {% include 'home/parts/north/ribbon.twig' %}
+        </div>
+        <div data-options="region:'west',split:true" title="Information" style="width: 270px;">
+            {% include 'home/parts/west/west.twig' %}
+        </div>
+        <div data-options="region:'center'" id="center-panel">
+            {% include 'home/parts/center/center.twig' %}
+        </div>
+        <div data-options="region:'south'" id="south-panel">
+            {% include 'home/parts/south/south.twig' %}
+        </div>
+        {% include 'home/parts/general/contact.twig' %}
+        {% include 'home/parts/general/help.twig' %}
+        {% include 'home/parts/general/joyride.twig' %}
+        {% include 'home/parts/general/ga.twig' %}           
+    </body>
+</html>

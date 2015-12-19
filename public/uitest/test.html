@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>AGSatTrack - Online - TEST</title>
+
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <script type="text/javascript" src="/js/cesium/CesiumUnminified/Cesium.js"></script>
+        <script type="text/javascript" src="./test.js"></script>
+
+        <style>
+html {
+    height: 100%;
+}
+
+body {
+    background: #000;
+    color: #eee;
+    font-family: sans-serif;
+    font-size: 9pt;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.fullSize {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+#loadingOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.9;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+#loadingOverlay h1 {
+    text-align: center;
+    position: relative;
+    top: 50%;
+    margin-top: -0.5em;
+}
+       
+        </style>
+        <link rel="stylesheet" href="/js/cesium/Cesium/Widgets/widgets.css">
+        <link rel="stylesheet" href="/js/cesium/Cesium/Widgets/lighter.css">
+    
+    </head>
+    <body>
+        <div id="3d" class="fullsize"></div>
+    </body>
+</html>

@@ -1,0 +1,837 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<title>AGSatTrack - Online</title>
+<link rel="stylesheet" href="css/agsattrack.css" type="text/css" />
+<link rel="stylesheet" href="css/menu.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/js/easyui/themes/gray/easyui.css" />
+<link rel="stylesheet" type="text/css" href="/js/jqueryui/smoothness/jquery-ui-1.9.2.custom.min.css" />
+<link rel="stylesheet" type="text/css" href="/js/checklist/checkList.css" />
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript"src="/js/jqueryui/jquery-ui-1.8.23.custom.min.js"></script>
+<script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+<link href="/js/ribbon/ribbon/ribbon.css" rel="stylesheet" type="text/css" ></link>
+<link href="/js/ribbon/soft_button.css" rel="stylesheet" type="text/css" ></link>
+<script type="text/javascript" src="/js/ribbon/ribbon/ribbon.js"> </script>
+<script type="text/javascript" src="/js/ribbon/ribbon/jquery.tooltip.min.js"></script>
+<script type="text/javascript" src="/js/showloading.js"></script>
+
+<script type="text/javascript" src="/js/classes/tle.js"></script>
+<script type="text/javascript" src="/js/classes/tles.js"></script>
+<script type="text/javascript" src="/js/classes/satellite.js"></script>
+<script type="text/javascript" src="/js/classes/sgp4.js"></script>
+
+<script type="text/javascript" src="/js/agsatbox/agsatbox.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/agsatbox/agsatbox.css" />
+
+    <script type="text/javascript" src="/js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="/js/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="/js/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="/js/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="/js/jqwidgets/jqxcheckbox.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxdragdrop.js"></script>    
+    <link rel="stylesheet" href="/js/jqwidgets/styles/jqx.base.css" type="text/css" />
+ 
+
+
+<script type="text/javascript" src="tbtest.js"></script>
+
+
+
+</head>
+
+<body class='easyui-layout default' id="body">
+
+	<div data-options="region:'north', title:'&nbsp;'" style="height: 180px;">
+		
+
+        <div id="ribbon">
+            <span class="ribbon-window-title"></span>
+
+            <div class="ribbon-tab file" id="info-tab">
+                <span class="ribbon-title">Info</span>
+                <div class="ribbon-backstage">
+                    <img src="//images/logo-256-noborder.png" class="logo" />
+                    <h1>AGSatTrack - Online</h1>
+                    
+                    <table with="100%">
+                        <tr>
+                            <td width="50%" valign="top">
+                                <h2>Credits</h2>
+                                <h3>Satellite Orbit tracked (SOT) <a target="_blank" href="https://github.com/koansys/sot">Visit on GitHub<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+                                Without the excellent work being done on this project <em>AgSatTrack - Online</em> would not exists. The SOT project provided the initial code to build a test version of <em>AgSatTrack - Online</em> prior to starting development on the full blown version. 
+            
+                                <h3>Cesium <a target="_blank" href="http://cesium.agi.com/">Visit Cesium Home<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+                                Cesium is a JavaScript library for creating 3D globes and 2D maps in a web browser without a plugin. It uses WebGL for hardware-accerlated graphics, and is cross-platform, cross-browser, and tuned for dynamic-data visualization.
+
+                                <h2>Other Libraries used</h2>
+                                <h3>jQuery <a target="_blank" href="http://jquery.com/">Visit jQuery Home<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+                                <h3>jQuery UI <a target="_blank" href="http://jqueryui.com/">Visit jQuery UI Home<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+                                <h3>EasyUI <a target="_blank" href="http://www.jeasyui.com/">Visit EasyUI Home<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+                                <h3>jQWidgets <a target="_blank" href="http://www.jqwidgets.com/">Visit jQWidgets Home<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+                                <h3>Joyride <a target="_blank" href="http://www.zurb.com/playground/jquery-joyride-feature-tour-plugin">Visit Joyride Home<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+                                <h3>Kinetic <a target="_blank" href="http://kineticjs.com/">Visit Kinetic Home<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+                                <h3>Modernizer <a target="_blank" href="http://modernizr.com/">Visit Modernizer Home<span class="imageanchor"><img src="//images/external_link.gif"></span></a></h3>
+
+                                <h2>Special Thanks To</h2>
+                                Steve (aka Virus) for the logo
+                            </td>
+                            <td valign="top">
+                                <h2>Licence</h2>
+                                <p>Copyright 2012-2013 Alex Greenland</p>
+                                <p>Licensed under the Apache License, Version 2.0 (the "License");<br /> you may not use this file except in compliance with the License. You may obtain a copy of the License at</p>
+                                <a target="_blank" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+                                <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>                                
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="ribbon-tab" id="format-tab">
+                <span class="ribbon-title">Home</span>
+
+                <div class="ribbon-section">
+                    <span class="section-title">View</span>
+                    
+                    
+
+                    <div class="ribbon-button ribbon-button-large" id="view-select" data-type="splitbutton">
+                        <span class="button-title">Select <br/><img src="/js/ribbon/arrow_down.png"></span> 
+                        <span class="button-help"><strong>Select view.</strong><br /><br />Selects the view you wish to display.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/view.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/view.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/view.png" />
+                    </div>
+                    
+
+                    
+                    
+                                        
+                    <div class="ribbon-button ribbon-button-large" id="view-select" data-type="dropdownmenu">
+                        <span class="button-title">Select <img src="/js/ribbon/arrow_down.png"></span> 
+                        <span class="button-help"><strong>Select view.</strong><br /><br />Selects the view you wish to display.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/view.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/view.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/view.png" />
+                        <div class="ribbon-menu ribbon-menu-closed">
+                            <div class="title">Select View</div>
+                            <ul>
+                                <li class="satview" data-options="0"><img src="/images/ribbon/list.png"><span>List View</span></li>
+                                <li class="satview" data-options="2"><img src="/images/ribbon/table.png"><span>Passes View</span></li>
+                                <li class="satview" id="satview3d" data-options="1"><img src="/images/ribbon/globe.png"><span>3D View</span></li>
+                                <li class="satview" data-options="3"><img src="/images/ribbon/polar.png"><span>Polar View</span></li>
+                                <li class="satview" data-options="4"><img src="/images/ribbon/sky.png"><span>Sky View</span></li>
+                                <li class="satview" data-options="5"><img src="/images/ribbon/timeline.png"><span>Timeline View</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset</span>
+                        <span class="button-help"><strong>Reset view.</strong><br /><br />Resets the current view to its defaults.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/reset.png" />
+                    </div>
+                </div>
+
+
+                <div class="ribbon-section">
+                    <span class="section-title">Satellites</span>
+                    
+                    <div class="ribbon-fl">
+                        <div class="ribbon-button ribbon-button-large" id="sat-group-selector"  data-type="dropdownmenu">
+                            <span class="button-title">Groups <img src="/js/ribbon/arrow_down.png"></span> 
+                            <span class="button-help"><strong>Select Satellite Group.</strong><br /><br />Selects the group of satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/group.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/group.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/group.png" />
+                            <div class="ribbon-menu ribbon-menu-closed">
+                                <div class="title">Select Group</div>
+                                <div id="sat-group-selector-listbox"></div>
+                            </div>
+                        </div>
+                        <div class="ribbon-button ribbon-button-large" id="sat-selector" data-type="dropdownmenustay">
+                            <span class="button-title">Select <img src="/js/ribbon/down.png" /></span> 
+                            <span class="button-help"><strong>Select Satellites.</strong><br /><br />Selects the satellites to display and show orbits for.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/satellite.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/satellite.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/satellite.png" />
+                            <div class="ribbon-menu ribbon-menu-closed">
+                                <div class="title">Select Satellite</div>
+                                <div id="ag-satselector"> </div>
+                            </div>                        
+                        </div>
+                    </div>
+                    <div class="ribbon-fl">
+                        <div class="ribbon-button ribbon-button-small" id="sat-display-all">
+                            <span class="button-title"></span>
+                            <span class="button-help"><strong>Display All Satellites.</strong><br /><br />Display all satellites in the current group.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/satellite_all.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/satellite_all.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/satellite_all.png" />
+                        </div>
+                        <div class="ribbon-button ribbon-button-small" id="sat-display-none">
+                            <span class="button-title"></span> 
+                            <span class="button-help"><strong>Remove All Satellites.</strong><br /><br />Remove all satellites from display.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/satellite_delete_all.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/satellite_delete_all.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/satellite_delete_all.png" />
+                        </div>                     
+                    </div>                  
+                </div>
+
+                <div class="ribbon-section">
+                    <span class="section-title">View Speed</span>
+
+                    <div class="ribbon-button ribbon-button-large" id="speed-fast-back" data-group="speed-group" data-type="buttongroup">
+                        <span class="button-title">Back<br /> Fast</span>
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/backfast.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/backfast.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/backfast.png" />
+                    </div>
+
+                    <div class="ribbon-button ribbon-button-large" id="speed-normal-back" data-group="speed-group" data-type="buttongroup">
+                        <span class="button-title">Back<br /> Normal</span> 
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/back.png" />
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/back.png" />
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/back.png" />
+                    </div>
+
+                    <div class="ribbon-button ribbon-button-large" id="speed-pause" data-group="speed-group" data-type="buttongroup">
+                        <span class="button-title">Pause</span> 
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/pause.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/pause.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/pause.png" />
+                    </div>
+
+                    <div class="ribbon-button ribbon-button-large ribbon-button-large-active" id="speed-normal-forward" data-group="speed-group" data-type="buttongroup">
+                        <span class="button-title">Normal</span> 
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/normal.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/normal.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/normal.png" />
+                    </div>
+
+                    <div class="ribbon-button ribbon-button-large" id="speed-fast-forward" data-group="speed-group" data-type="buttongroup">
+                        <span class="button-title">Forward<br /> Fast</span> 
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/forwardfast.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/forwardfast.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/forwardfast.png" />
+                    </div>
+                </div>
+
+
+                <div class="ribbon-section">
+                    <span class="section-title">Settings</span>
+                    <div style="float:left">
+                        <div class="ribbon-button ribbon-button-large" id="options">
+                            <span class="button-title">Options</span> <span
+                                class="button-help"></span> <img
+                                class="ribbon-icon ribbon-normal"
+                                src="/js/ribbon/icons/normal/settings.png" /> <img
+                                class="ribbon-icon ribbon-hot"
+                                src="/js/ribbon/icons/hot/settings.png" /> <img
+                                class="ribbon-icon ribbon-disabled"
+                                src="/js/ribbon/icons/disabled/settings.png" />
+                        </div>
+                    </div>
+                    <div style="float:left">                    
+                        <div class="ribbon-button ribbon-button-small disabled" id="options-save" unselectable="on">
+                            <span class="button-help" unselectable="on"></span>
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/save.png" />
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/save.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/save.png" />
+                            <span class="button-title" unselectable="on">Save</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ribbon-section">
+                    <span class="section-title">Help</span>
+                    <div style="float:left">
+                        <div class="ribbon-button ribbon-button-large" id="help-help">
+                            <span class="button-title">Help</span> 
+                                <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/help.png" /> 
+                                <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/help.png" /> 
+                                <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/help.png" />
+                        </div>
+                    </div>
+                    <div style="float:left">                    
+                        <div class="ribbon-button ribbon-button-small" id="help-tour" unselectable="on">
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/tour.png" />
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/tour.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/tour.png" />
+                            <span class="button-title" unselectable="on">Tour</span>
+                        </div>
+                        <div class="ribbon-button ribbon-button-small" id="help-contact" unselectable="on">
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/email.png" />
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/email.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/email.png" />
+                            <span class="button-title" unselectable="on">Contact</span>
+                        </div>
+                        <div class="ribbon-button ribbon-button-small disabled" id="help-forum" unselectable="on">
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/forum.png" />
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/forum.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/forum.png" />
+                            <span class="button-title" unselectable="on">Community</span>
+                        </div>                                                  
+                    </div>
+                </div>                
+
+            </div>
+            <div class="ribbon-tab" id="list-tab">
+                <span class="ribbon-title" data-tab="0">List View</span>
+                
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+                    
+                    <div class="ribbon-fl" unselectable="on">            
+                        <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="0">
+                            <span class="button-title">Switch to<br />This View</span> 
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/switch.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/switch.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/switch.png" />
+                        </div>
+                        
+                        <div class="ribbon-button ribbon-button-large view-reset" id="list-view-reset">
+                            <span class="button-title">Reset</span> 
+                            <span class="button-help"><strong>Reset view.</strong><br /><br />Resets the list view to its defaults.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/reset.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/reset.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/reset.png" />
+                        </div>
+                                                
+                    </div>
+
+                    <div class="ribbon-fl" style="width:30px;">
+                        <div class="ribbon-button ribbon-button-small ribbon-fl ribbon-button-small-active" id="list-view-show-aos" unselectable="on" data-type="togglebutton" data-event="agsattrack.showaos">
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/disabled/arrow_up.png" />
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/disabled/arrow_up.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/arrow_up.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show AoS.</strong><br /><br />Show Aquisition of Satellite times in the list display.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>
+                        
+                        <div class="ribbon-button ribbon-button-small ribbon-fl ribbon-button-small-active" id="list-view-show-events" unselectable="on" data-type="togglebutton" data-event="agsattrack.showevents">
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/disabled/show-events-16.png" />
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/disabled/show-events-16.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/show-events-16.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Events.</strong><br /><br />calculate events for all satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>                        
+                        
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="ribbon-tab" id="3d-tab">
+                <span class="ribbon-title" data-tab="1">3D View</span>
+                
+                <div class="ribbon-section">                
+
+                </div>
+                                                    
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-fl">
+                        <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="1">
+                            <span class="button-title">Switch to<br />This View</span> 
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/switch.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/switch.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/switch.png" />
+                        </div>
+                                            
+                        <div class="ribbon-button ribbon-button-large view-reset" id="3d-view-reset">
+                            <span class="button-title">Reset</span> 
+                            <span class="button-help"><strong>Reset view.</strong><br /><br />Resets the 3d view to its defaults.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/reset.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/reset.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/reset.png" />
+                        </div>
+                                            
+                        <div class="ribbon-button ribbon-button-large" id="3d-projection" data-type="dropdownmenu">
+                            <span class="button-title">Views <img src="/js/ribbon/arrow_down.png"></span> <span class="button-help"></span>
+                            <span class="button-help"><strong>Select view.</strong><br /><br />Choose from 3d, 2d or 2.5d views.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/new-table.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/new-table.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/new-table.png" />
+                            <div class="ribbon-menu ribbon-menu-closed">
+                                <div class="title">Select View</div>
+                                <ul>
+                                    <li class="3dview" data-options="twod"><img src="/images/ribbon/list.png"><span>2D View</span></li>
+                                    <li class="3dview" data-options="twopointfived"><img src="/images/ribbon/table.png"><span>2.5D View</span></li>
+                                    <li class="3dview" data-options="threed"><img src="/images/ribbon/globe.png"><span>3D View</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="ribbon-button ribbon-button-large" id="3d-provider" data-type="dropdownmenu">
+                            <span class="button-title">Provider <img src="/js/ribbon/arrow_down.png"></span> 
+                            <span class="button-help"><strong>Map Provider.</strong><br /><br />Select the provider for the globe rendering.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/tile.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/tile.png" />
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/tile.png" />
+                            <div class="ribbon-menu ribbon-menu-closed">
+                                <div class="title">Select Provider</div>
+                                <ul>
+                                    <li class="tile" data-options="static"><img src="/images/ribbon/list.png"><span>Static Image</span></li>
+                                    <li class="tile" data-options="bing"><img src="/images/ribbon/table.png"><span>Bing maps</span></li>
+                                    <li class="tile" data-options="osm"><img src="/images/ribbon/globe.png"><span>Open StreetMap</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ribbon-fl" style="width:30px;">
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showatmosphere">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="/js/ribbon/icons/normal/atmoshpere-16.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="/js/ribbon/icons/normal/atmoshpere-16.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="/js/ribbon/icons/normal/atmoshpere-16.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Atmoshpere.</strong><br /><br />Toggle displaying the atmoshpere.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showskybox">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="/js/ribbon/icons/normal/cube.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="/js/ribbon/icons/normal/cube.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="/js/ribbon/icons/normal/cube.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Skybox.</strong><br /><br />Toggle displaying the skybox.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>                                             
+                        <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showfps">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="/js/ribbon/icons/normal/fps.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="/js/ribbon/icons/normal/fps.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="/js/ribbon/icons/normal/fps.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show FrameRate.</strong><br /><br />Display the frame rate.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>                                             
+
+                    </div>
+                    <div class="ribbon-fl" style="width:30px;">
+                        <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showmousepos">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="/js/ribbon/icons/normal/mousepos.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="/js/ribbon/icons/normal/mousepos.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="/js/ribbon/icons/normal/mousepos.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Mouse Pos.</strong><br /><br />Toggle displaying the lat and lon of the mouse position.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>
+
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showsatlabels">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="/js/ribbon/icons/normal/label.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="/js/ribbon/icons/normal/label.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="/js/ribbon/icons/normal/label.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying the name of the satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>
+                        
+                    </div>                                        
+                </div>
+
+
+                <div class="ribbon-section">
+                    <span class="section-title">Follow</span>
+                    <div class="ribbon-button ribbon-button-large" id="3d-follow-sat" data-type="grouptogglebutton" data-event="agsattrack.followsatellite" data-group="follow">
+                        <span class="button-title">From<br />Satellite</span> 
+                        <span class="button-help"><strong>Follow Satellite.</strong><br /><br />Follows the selected satellite, looking at your location.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/orbit.png" />
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/orbit.png" />
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/orbit.png" />
+                    </div>
+                    <div class="ribbon-button ribbon-button-large" id="3d-follow-obs" data-type="grouptogglebutton" data-event="agsattrack.followsatelliteobs" data-group="follow">
+                        <span class="button-title">From<br />Home</span> 
+                        <span class="button-help"><strong>Follow Satellite.</strong><br /><br />Follows the selected satellite, looking from your location. This will ONLY work when the satellite is visible.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/follow-obs.png" />
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/follow-obs.png" />
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/follow-obs.png" />
+                    </div>                                                         
+                </div>
+                
+                <div style="float:right; margin-top:-67px;">
+                    <a href="http://cesium.agi.com/" target="_blank"><img src="/images/cesium_logo.svg" width="300" /></a>
+                </div>
+                
+            </div>
+
+            <div class="ribbon-tab" id="passes-tab">
+                <span class="ribbon-title" data-tab="2">Passes View</span>
+                
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="2">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset<br />View
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/reset.png" />
+                    </div> 
+                 </div>                
+
+                <div class="ribbon-section">
+                    <span class="section-title">View Layout</span>
+                    <div style="width: 100px; float:left;">
+                        <table width="100%">
+                            <tr>
+                                <td colspan="2" style="border:1px solid #ccc" align="center">Pass Table</td>
+                            </tr>
+                            <tr>
+                                <td width="50%" style="border:1px solid #ccc">
+                                
+                                    <div class="ribbon-button ribbon-button-small" id="passes-bl-view-select" data-type="dropdownmenu" data-event="agsattrack.passesblview">
+                                        <span class="button-title"><img src="/js/ribbon/arrow_down-16.png"></span> 
+                                        <img class="ribbon-icon ribbon-normal" src="/images/ribbon/polar.png" /> 
+                                        <img class="ribbon-icon ribbon-hot" src="/images/ribbon/polar.png" /> 
+                                        <img class="ribbon-icon ribbon-disabled" src="/images/ribbon/polar.png" />
+                                        <div class="ribbon-menu ribbon-menu-wide ribbon-menu-closed">
+                                            <div class="title">Select Bottom left View</div>
+                                            <ul>
+                                                <li class="passesbl" data-event-param="3d" data-icon="/images/ribbon/globe.png"><img src="/images/ribbon/globe.png"><span>3D View</span></li>
+                                                <li class="passesbl" data-event-param="polar" data-icon="/images/ribbon/polar.png"><img src="/images/ribbon/polar.png"><span>Polar View</span></li>
+                                                <li class="passesbl" data-event-param="sky" data-icon="/images/ribbon/sky.png"><img src="/images/ribbon/sky.png"><span>Sky View</span></li>
+                                                <li class="passesbl" data-event-param="azel" data-icon="/images/ribbon/azel-16.png"><img src="/images/ribbon/azel-16.png"><span>Az/El View</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>                                
+                                </td>
+                                <td style="border:1px solid #ccc">
+                                    <div class="ribbon-button ribbon-button-small" id="passes-br-view-select" data-type="dropdownmenu" data-event="agsattrack.passesbrview">
+                                        <span class="button-title"><img src="/js/ribbon/arrow_down-16.png"></span> 
+                                        <img class="ribbon-icon ribbon-normal" src="/images/ribbon/azel-16.png" /> 
+                                        <img class="ribbon-icon ribbon-hot" src="/images/ribbon/azel-16.png" /> 
+                                        <img class="ribbon-icon ribbon-disabled" src="/images/ribbon/azel-16.png" />
+                                        <div class="ribbon-menu ribbon-menu-wide ribbon-menu-closed">
+                                            <div class="title">Select Bottom Right View</div>
+                                            <ul>
+                                                <li class="passesbl" data-event-param="3d" data-icon="/images/ribbon/globe.png"><img src="/images/ribbon/globe.png"><span>3D View</span></li>
+                                                <li class="passesbl" data-event-param="polar" data-icon="/images/ribbon/polar.png"><img src="/images/ribbon/polar.png"><span>Polar View</span></li>
+                                                <li class="passesbl" data-event-param="sky" data-icon="/images/ribbon/sky.png"><img src="/images/ribbon/sky.png"><span>Sky View</span></li>
+                                                <li class="passesbl" data-event-param="azel" data-icon="/images/ribbon/azel-16.png"><img src="/images/ribbon/azel-16.png"><span>Az/El View</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>                                 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                                               
+                <div class="ribbon-section">
+                    <span class="section-title">Satellite</span>
+                    <select id="passes-sat"></select>
+                </div>
+                
+                <div class="ribbon-section" id="passes-available" style="display: none">
+                    <span class="section-title">Available Passes</span>
+                    <select id="passes-passes"></select>
+                </div>                
+                
+            </div>
+
+            <div class="ribbon-tab" id="polar-tab">
+                <span class="ribbon-title" data-tab="3">Polar View</span>
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+                    
+                    <div class="ribbon-fl">
+                        <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="3">
+                            <span class="button-title">Switch to<br />This View</span> 
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/switch.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/switch.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/switch.png" />
+                        </div>
+                        
+                        <div class="ribbon-button ribbon-button-large view-reset">
+                            <span class="button-title">Reset<br />View
+                            </span> <span class="button-help"></span> 
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/reset.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/reset.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/reset.png" />
+                        </div>
+                    </div>
+                    <div class="ribbon-fl" style="width:30px;">
+                        <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showplanets">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="/js/ribbon/icons/normal/show-planets-16.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="/js/ribbon/icons/normal/show-planets-16.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="/js/ribbon/icons/normal/show-planets-16.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Planets</strong><br /><br />Toggle displaying planets.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>
+                    </div>                        
+                                        
+                 </div>                
+            </div>
+
+            <div class="ribbon-tab" id="sky-tab">
+                <span class="ribbon-title" data-tab="4">Sky View</span>
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-fl">
+                        <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="4">
+                            <span class="button-title">Switch to<br />This View</span> 
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/switch.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/switch.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/switch.png" />
+                        </div>
+                        
+                        <div class="ribbon-button ribbon-button-large view-reset">
+                            <span class="button-title">Reset<br />View
+                            </span> <span class="button-help"></span> 
+                            <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/reset.png" /> 
+                            <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/reset.png" /> 
+                            <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/reset.png" />
+                        </div>  
+                    </div>
+                    <div class="ribbon-fl" style="width:30px;">
+                        <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showplanets">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="/js/ribbon/icons/normal/show-planets-16.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="/js/ribbon/icons/normal/show-planets-16.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="/js/ribbon/icons/normal/show-planets-16.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show Planets</strong><br /><br />Toggle displaying planets.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>
+                        <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showcity">
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="/js/ribbon/icons/normal/show-city-16.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="/js/ribbon/icons/normal/show-city-16.png" />
+                            <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="/js/ribbon/icons/normal/show-city-16.png" />
+                            <span class="button-title" unselectable="on"></span>
+                            <span class="button-help"><strong>Show City</strong><br /><br />Toggle displaying the city.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                        </div>                        
+                    </div>                                         
+                 </div>                
+            </div>
+
+            <div class="ribbon-tab" id="timeline-tab">
+                <span class="ribbon-title" data-tab="5">Timeline View</span>
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+
+                    <div class="ribbon-button ribbon-button-large ribbon-fl viewswitcher" data-tab="5">
+                        <span class="button-title">Switch to<br />This View</span> 
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/switch.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/switch.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/switch.png" />
+                    </div>
+                    
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset<br />View
+                        </span> <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="/js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="/js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="/js/ribbon/icons/disabled/reset.png" />
+                    </div>  
+                                        
+                 </div>                
+            </div>            
+        </div>
+		
+		
+		
+		
+		
+		
+	</div>
+
+	<div data-options="region:'west',split:true, title:'options'" style="width: 270px;">
+		<div id="tt" class="easyui-tabs" data-options="fit:true">
+			<div title="Sat Selector" style="padding: 5px;">
+				<!--  <input id="groupselector" style="width:230px;" /> -->
+
+				<div id="sats" style="margin-top: 10px;"></div>
+			</div>
+
+			<div title="Sat Info" style="overflow: auto; padding: 5px;">
+				<div id="satinfot" class="easyui-tabs" data-options="fit:true">
+					<div title="Sat Info" style="overflow: auto; padding: 5px;">
+						<table width="100%" class="satinfo">
+							<tr>
+								<th colspan="2">Element Values</th>
+							</tr>
+
+							<tr>
+								<td width="50%">Norad Id</td>
+
+								<td id="noradid"></td>
+							</tr>
+
+							<tr>
+								<td>Name</td>
+
+								<td id="name"></td>
+							</tr>
+
+							<tr>
+								<td>Owner</td>
+
+								<td id="owner"></td>
+							</tr>
+
+							<tr>
+								<td>Period</td>
+
+								<td id="period"></td>
+							</tr>
+
+							<tr>
+								<td>Inclination</td>
+
+								<td id="inclination"></td>
+							</tr>
+
+							<tr>
+								<td>Apogee</td>
+
+								<td id="apogee"></td>
+							</tr>
+
+							<tr>
+								<td>Perigee</td>
+
+								<td id="perigee"></td>
+							</tr>
+
+							<tr>
+								<th colspan="2">Calculated Values</th>
+							</tr>
+
+							<tr>
+								<td>Latitude</td>
+
+								<td id="latitude"></td>
+							</tr>
+
+							<tr>
+								<td>Longitude</td>
+
+								<td id="longitude"></td>
+							</tr>
+
+							<tr>
+								<td>Altitude</td>
+
+								<td id="altitude"></td>
+							</tr>
+
+							<tr>
+								<td>Velocity</td>
+
+								<td id="velocity"></td>
+							</tr>
+
+							<tr>
+								<td>Footprint</td>
+
+								<td id="footprint"></td>
+							</tr>
+
+							<tr>
+								<td>Range</td>
+
+								<td id="range"></td>
+							</tr>
+
+							<tr>
+								<td>Elevation</td>
+
+								<td id="elevation"></td>
+							</tr>
+
+							<tr>
+								<td>Azimuth</td>
+
+								<td id="azimuth"></td>
+							</tr>
+
+							<tr>
+								<td>AOS</td>
+
+								<td id="aos"></td>
+							</tr>
+						</table>
+					</div>
+
+					<div title="Next pass" style="padding: 5px;">
+						<div id="nextpass"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div data-options="region:'center'">
+		<div id="viewtabs" class="easyui-tabs" data-options="fit:true">
+			<div title="List" style="overflow: auto; padding: 1px;" id="list">
+				<table width="100%" id="listviewtable">
+					<thead>
+						<tr>
+							<th width="15%">Name</th>
+
+							<th width="5%">Id</th>
+
+							<th width="5%">Azimuth</th>
+
+							<th width="5%">Elevation</th>
+
+							<th width="10%">Latitude</th>
+
+							<th width="10%">Longitude</th>
+
+							<th width="5%">Altitude</th>
+
+							<th width="5%">Velocity</th>
+
+							<th width="15%">AOS</th>
+						</tr>
+					</thead>
+
+					<tbody id="listviewdata"></tbody>
+				</table>
+			</div>
+
+			<div title="3D View" style="padding: 1px;" id="3d">
+				<div id="cesiumContainer"></div>
+			</div>
+
+			<div title="Passes" style="overflow: auto; padding: 1px;" id="passes">
+				<table id="passesgrid" title="Passes"
+					style="widwth: 700px; heiwght: 300px" class="fullsize"
+					data-options=" rownumbers:true, singleSelect:true, autoRowHeight:false, pagination:true, pageSize:20">
+					<thead>
+						<tr>
+							<th field="date" width="170">Date</th>
+
+							<th field="az" width="100">Azimuth</th>
+
+							<th field="el" width="80">Elevation</th>
+
+							<th field="range" width="80" align="right">Range</th>
+
+							<th field="footprint" width="80" align="right">Footprint</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+
+			<div title="Polar View" style="padding: 1px;" id="polar">
+				<!--  <canvas id="polarcanvas" width=1000 height=600></canvas> -->
+
+				<div id="polarview"></div>
+			</div>
+
+			<div title="Sky View" style="padding: 1px;" width="1000" height="600"
+				id="sky">
+				<!-- <canvas id="skyviewcanvas" width=1000 height=600></canvas> -->
+			</div>
+		</div>
+	</div>
+</body>
+</html>

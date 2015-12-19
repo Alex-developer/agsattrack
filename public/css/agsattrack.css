@@ -1,0 +1,316 @@
+body {
+	font-family: sans-serif;
+	overflow: hidden;
+}
+
+.cookiepolicy {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+.cookiepolicy a {
+    text-decoration: none;
+    border-bottom: 1px dashed #333;
+    color: black;    
+}
+
+#pagecontainer {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+.cb {
+    clear: both;
+}
+.fullsize {
+	display: block;
+	top: 0;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 100%;
+    position: relative;
+}
+
+#menu {
+	height: 42px;
+}
+
+#jqxMainMenu {
+	visibility: hidden;
+}
+
+#canvas {
+	background: #000;
+}
+
+#horizoncanvas1 {
+	background: #000;
+}
+
+.satinfo th {
+	text-align: left;
+	font-size: 1.2em;
+	font-weight: bold;
+	padding-top: 10px;
+}
+
+#listviewtable th {
+	text-align: left;
+}
+
+.green {
+	color: green;
+}
+
+.bold {
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.highlighted {
+    background: #001224;
+    color: white;
+}
+#toolbar {
+	padding: 4px 1px;
+	clear: both;
+	margin-top: 2px;
+	display: none;
+}
+
+#videwtabs.easyui-tabs div.tabs-header div.tabs-wrap {
+	display: none;
+}
+
+.layout-panel-north .panel-header {
+    background: none;
+    border: 0px solid #D3D3D3;
+    color: #3F3F3F;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 15px;
+    padding: 5px;
+    position: relative;
+    z-index: 99999;
+    width: 25px !important;
+    float:right;
+}
+
+#satselector {
+
+}
+
+.satwrapper {
+	width:170px;
+	height: 40px;
+	font-size: 12px;
+	float: left;
+	margin: 5px;
+	text-align: left;
+	border: 1px solid transparent;
+}
+
+.satwrapper:hover {
+	border: 1px solid #F1C43F;
+	background: #fdeeb3;
+	cursor: pointer;	
+}
+
+.satname {
+ 	font-size: 0.8em;
+    font-weight: bold;
+    height: 14px;
+    overflow: hidden;
+    width: 150px;
+}
+
+.satinfo {
+	font-size: 1em;
+}
+
+
+.imageanchor {
+	vertical-align: text-bottom;
+}
+
+img {
+    border: none;
+}
+
+
+#ribbon.backstage .logo {
+    float: left;
+}
+
+#ribbon.backstage {
+    font-family: verdana;
+}
+#ribbon.backstage table {
+    clear: both;
+}
+
+
+
+#window-preferences-tabs h2 {
+    font-size: 23px;
+    line-height: 29px;
+    padding: 9px 15px 4px 0;
+}
+#window-preferences-tabs h2, .subtitle {
+    font-weight: normal;
+    margin: 0;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+
+ #icon-options-general {
+    background-image: url("/images/icons32.png");
+}
+
+.icon32 {
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+.icon32 {
+    float: left;
+    height: 34px;
+    margin: 7px 8px 0 0;
+    width: 36px;
+}
+
+.icon32.icon-settings, #icon-options-general {
+    background-position: -492px -5px;
+}
+
+.form-table {
+    border-collapse: collapse;
+    clear: both;
+    margin-bottom: -8px;
+    margin-top: 0.5em;
+    width: 100%;
+}
+
+.form-table th, .form-wrap label {
+    color: #222222;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+.form-table th {
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+    width: 200px;
+}
+.form-table th, .form-wrap label {
+    font-weight: normal;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.form-table td {
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 9px;
+    padding: 8px 10px;
+}
+p.description {
+    font-family: sans-serif;
+    font-size: 12px;
+    font-style: italic;
+}
+
+#listviewtable tr, #listviewtable th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;    
+}
+
+#listviewtable th.right {
+    text-align: right;
+}
+
+.listviewsat {
+    cursor: pointer;
+}
+
+#passestable th {
+    text-align: left;
+}
+
+.helpwrapper {
+    display:none;
+}
+
+.helptext ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 10px 10px;;   
+}
+
+.helptext li {
+    margin-bottom: 10px; 
+}
+
+.helptext li img {
+    float: left;
+    margin-right: 5px;
+}
+    
+.helptext h2 {
+    font-size: 1.9em;
+    margin-bottom: 5px;
+    margin-top: 5px;    
+}
+.helptext h2 span {
+    margin-right: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+#pass-info-geostationary p {
+    font-size: 1.2em;
+    margin: 10px;    
+}
+
+.icon-sum {
+    background: url('/images/sum-16.png') no-repeat;  
+}
+
+.icon-info {
+    background: url('/images/info-16.png') no-repeat !important;  
+}
+
+.backblack {
+    background: black;
+}
+
+#home {
+    padding: 10px;
+}
+
+#home h2 {
+    margin-top: 2px;
+}
+
+#home .heading {
+    font-size: 2em;
+}
+
+#home p {
+    line-height: 1.5em;    
+}
+
+#home li {
+    line-height: 1.4em;
+    margin-bottom: 5px;    
+}
+
+#home .vertical {
+    vertical-align:middle;        
+}
