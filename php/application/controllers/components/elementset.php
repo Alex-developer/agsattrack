@@ -40,6 +40,7 @@ class AGSATTRACK_ELEMENTSET {
                         
             }
         }
+
         $averageAge = ceil($total / $totalSets);
         return $averageAge;
     }    

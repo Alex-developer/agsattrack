@@ -4,6 +4,6 @@ class AGSATTRACK_CONFIG {
         'host' => 'localhost',
         'db' => 'alex_agsattrack',
         'user' => 'alex_agsattrack',
-        'pass' => 'Xac06T9TQe'
+        'pass' => 'changeme'
     );    
 }

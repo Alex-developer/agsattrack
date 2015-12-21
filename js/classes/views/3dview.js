@@ -572,9 +572,9 @@ var AG3DVIEW = function(element) {
             }    
         }
         
-        _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-            Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-            Cesium.Cartesian3.ZERO);
+     //   _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+      //      Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+     //       Cesium.Cartesian3.ZERO);
                 
         _satNameLabels.removeAll();
         if (okToCreate) {
@@ -590,6 +590,9 @@ var AG3DVIEW = function(element) {
                     cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
                     cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 1000, cpos);               
                     cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 30/1000+1, cpos); 
+cpos = Cesium.Cartesian3.fromDegrees(satellites[i].get('longitude'), satellites[i].get('latitude'), satellites[i].get('altitude')*1000);
+                    cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 30/1000+1, cpos); 
+
                                 
                     var satLabel = _satNameLabels.add({
                       show : labelVisible,
@@ -663,13 +666,15 @@ var AG3DVIEW = function(element) {
         satBillboards.removeAll();
 
         if (okToCreate) {
-            satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-                    Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                    Cesium.Cartesian3.ZERO);        
+     //       satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+     //               Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+    //                Cesium.Cartesian3.ZERO);        
 
             for (i = 0; i < satellites.length; i++) {
                 if (satellites[i].isDisplaying()) {
                     cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));              
+cpos = Cesium.Cartesian3.fromDegrees(satellites[i].get('longitude'), satellites[i].get('latitude'), satellites[i].get('altitude')*1000);
+
                     cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 1000, cpos);               
                     if (satellites[i].getCatalogNumber() === '25544') {
                         billboard = satBillboards.add({
@@ -714,14 +719,14 @@ var AG3DVIEW = function(element) {
             }
         }
 
+    //    satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+    //        Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+   //         Cesium.Cartesian3.ZERO);
+    //    _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+    //        Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+    //        Cesium.Cartesian3.ZERO);        
         for ( var i = 0; i < satBillboards.length; i++) {
-            satBillboards.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-                Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                Cesium.Cartesian3.ZERO);
-            _satNameLabels.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-                Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                Cesium.Cartesian3.ZERO);
-   
+
             bb = satBillboards.get(i);
      
             var offset = 4;
@@ -744,15 +749,19 @@ var AG3DVIEW = function(element) {
                 }   
             }
                         
-            newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
-            newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 1000, newpos);
+    //        newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
+
+newpos = Cesium.Cartesian3.fromDegrees(satellites[bb.satelliteindex].get('longitude'), satellites[bb.satelliteindex].get('latitude'), satellites[bb.satelliteindex].get('altitude')*1000);
+
+          //  newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 1000, newpos);
             
-//newpos = Cesium.Cartesian3.fromDegrees(satellites[bb.satelliteindex].get('longitude'), satellites[bb.satelliteindex].get('latitude'), satellites[bb.satelliteindex].get('altitude')*1000);
+
             
             bb.position = newpos;
            
-            newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 30/1000+1, newpos);            
-            var satLabel = _satNameLabels.get(i);
+          //  newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 30/1000+1, newpos);            
+      
+      /*      var satLabel = _satNameLabels.get(i);
             if (satellites[bb.satelliteindex].getSelected()) {
                 satLabel.font = _settings.selectedLabelSize + 'px sans-serif';
                 satLabel.fillColor = Cesium.Color.fromCssColorString('#'+_settings.selectedLabelColour);
@@ -760,7 +769,7 @@ var AG3DVIEW = function(element) {
                 satLabel.font = _settings.unselectedLabelSize + 'px sans-serif';
                 satLabel.fillColor = Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour);
             }
-            satLabel.position = newpos;
+            satLabel.position = newpos;      */
 
         }
         
@@ -852,9 +861,9 @@ var AG3DVIEW = function(element) {
 
                 
                 var circleOutlineGeometry = new Cesium.CircleOutlineGeometry({
-//                    center : Cesium.Cartesian3.fromDegrees(selected[i].get('longitude'), selected[i].get('latitude')),
-                    center:  new Cesium.Cartesian3(selected[i].get('x'), selected[i].get('y'), selected[i].get('z')),
-                    radius : selected[i].get('footprint') * 1000
+                    center : Cesium.Cartesian3.fromDegrees(selected[i].get('longitude'), selected[i].get('latitude')),
+//                    center:  new Cesium.Cartesian3(selected[i].get('x'), selected[i].get('y'), selected[i].get('z')),
+                    radius : (selected[i].get('footprint') * 1000) / 2
                 });
                 var circleOutlineInstance = new Cesium.GeometryInstance({
                     geometry : circleOutlineGeometry,
@@ -862,10 +871,11 @@ var AG3DVIEW = function(element) {
                         color : Cesium.ColorGeometryInstanceAttribute.fromColor(color)
                     }
                 });
-                
-    //    var mm = Cesium.Matrix4.fromRotationTranslation(
-      //          Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-        //        Cesium.Cartesian3.ZERO);
+       
+      // var now = new Cesium.JulianDate();         
+       // var mm = Cesium.Matrix4.fromRotationTranslation(
+        //        Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+         //       Cesium.Cartesian3.ZERO);
                                 
                 circle = new Cesium.Primitive({
                     geometryInstances : [circleOutlineInstance],
@@ -958,16 +968,18 @@ var AG3DVIEW = function(element) {
         var target;
         var _material = null;
         
-        polylineCollection.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
-                Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
-                Cesium.Cartesian3.ZERO);
+    //    polylineCollection.modelMatrix = Cesium.Matrix4.fromRotationTranslation(
+    //            Cesium.Transforms.computeTemeToPseudoFixedMatrix(now),
+    //            Cesium.Cartesian3.ZERO);
       
 
         lastPos = cartPoints[0];
         for ( var i = 0; i < cartPoints.length; i++) {    
             if (checkOkToPlot(lastPos, cartPoints[i])) {
                 pos = new Cesium.Cartesian3(cartPoints[i].x, cartPoints[i].y, cartPoints[i].z);
-                pos = Cesium.Cartesian3.multiplyByScalar(pos, 1000, pos);
+pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPoints[i].alt*1000);
+
+       //         pos = Cesium.Cartesian3.multiplyByScalar(pos, 1000, pos);
                 points.push(pos);
                 
                 switch (colour) {
