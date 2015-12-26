@@ -39,6 +39,8 @@ var AG3DVIEW = function(element) {
     
     
     var _satImages;             // Array of satellite images
+    
+    var _orbitPrimitives = [];  // YUK !!!
         
     var _homeModelPath = '/models/CesiumAir/Cesium_Air.bgltf';    
     //var _homeModelPath = '/models/tiefighter/tie_fighter.gltf';    
@@ -53,6 +55,23 @@ var AG3DVIEW = function(element) {
         resize();
     });
 
+    
+    jQuery(document).bind('agsattrack.setssp',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _settings.showGroundSSP = state;
+                    plotOrbits();
+                }
+            }); 
+                
+    jQuery(document).bind('agsattrack.setfootprinttype',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _settings.fillFootprints = state;
+                    plotFootprints();
+                }
+            }); 
+                
     jQuery(document).bind('agsattrack.showfps',
         function(e, state) {
             if (AGSETTINGS.getHaveWebGL()) {
@@ -106,6 +125,7 @@ var AG3DVIEW = function(element) {
                 _show3dmodels = state;
                 _viewer.entities.removeAll();
                 plotSatellites();
+                plotFootprints();
             }
         }); 
             
@@ -114,6 +134,8 @@ var AG3DVIEW = function(element) {
             if (_render) {
                 if (AGSETTINGS.getHaveWebGL()) { 
                     plotSatellites();
+                    plotFootprints();
+                    plotOrbits();
                 }
             }
         });
@@ -198,18 +220,17 @@ var AG3DVIEW = function(element) {
             var satellites = AGSatTrack.getSatellites();
             for (i = 0; i < satellites.length; i++) {
                 if (satellites[i].isDisplaying()) {
-
-                    var cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));              
-                    cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 1000, cpos);                 
+        
+                    var cpos = Cesium.Cartesian3.fromDegrees(satellites[i].get('longitude'), satellites[i].get('latitude'), satellites[i].get('altitude')*1000);
 
                     var noradId = satellites[i].getCatalogNumber();
                     var entity = _viewer.entities.getById(noradId);
-                     //_show3dmodels
+
                     if (typeof entity === 'undefined') {
                             
                         var newEntity = {
                             id: noradId,
-                            name : noradId,
+                            name : satellites[i].getName(),
                             position : cpos,
                             billboard : {
                                 image : _satImages[0]
@@ -229,7 +250,7 @@ var AG3DVIEW = function(element) {
                                 model : {
                                     uri : model,
                                     minimumPixelSize : 64,
-                                    scale: 1
+                                    scale: 5
                                 }
                             };
                         }
@@ -243,10 +264,132 @@ var AG3DVIEW = function(element) {
     }
     
     function plotOrbits() {
-        var satellites = AGSatTrack.getSatellites();
-        for (i = 0; i < satellites.length; i++) {
-            if (satellites[i].isDisplaying()) {
+        var pos;
+        var points = [];
+        var colors = [];
+        var wallPoints = [];
+        var wallHeights = [];
+               
+        var selected = AGSatTrack.getTles().getSelected();
+        for (var i=0; i < selected.length; i++) {
+            var sat = selected[i];
+            var orbit = sat.getOrbitData();
+            var noradId = sat.getCatalogNumber();
+            wallPoints = [];
+            wallHeights = [];
+            if (typeof orbit !== 'undefined' && typeof orbit.points[0] !== 'undefined') {
+                var lastPos = orbit.points[0];
+                for ( var i = 0; i < orbit.points.length; i++) {    
+                    if (checkOkToPlot(lastPos, orbit.points[i])) {
+                        pos = Cesium.Cartesian3.fromDegrees(orbit.points[i].lon, orbit.points[i].lat, orbit.points[i].alt*1000);
+                        points.push(pos);
+                        
+                        if (orbit.points[i].el >= AGSETTINGS.getAosEl()) {
+                            colors.push(Cesium.Color.GREEN);
+                            wallPoints.push(Cesium.Cartesian3.fromDegrees(orbit.points[i].lon, orbit.points[i].lat));
+                            wallHeights.push(orbit.points[i].alt*1000);
+                        } else {                         
+                            colors.push(Cesium.Color.RED);                    
+                        }
+                    }
+                    lastPos = orbit.points[i];
+                }
+
+                for (i=0;i<_orbitPrimitives.length;i++) {
+                    _viewer.scene.primitives.remove(_orbitPrimitives[i]);    
+                }
+                _orbitPrimitives = [];
+                
+                var primitive = new Cesium.Primitive({
+                    id: noradId+'orbit',
+                  geometryInstances : new Cesium.GeometryInstance({
+                    geometry : new Cesium.PolylineGeometry({
+                      positions : points,
+                      width : 2.0,
+                      vertexFormat : Cesium.PolylineColorAppearance.VERTEX_FORMAT,
+                      colors: colors,
+                      colorsPerVertex: true
+                    })
+                  }),
+                  appearance : new Cesium.PolylineColorAppearance({
+                    translucent : false
+                  })
+                });
+                
+                _orbitPrimitives.push(primitive); 
+                _viewer.scene.primitives.add(primitive);
+
+            }                
+
+            if (_settings.showGroundSSP) {
+                if (wallPoints.length > 0) {
+                    _viewer.entities.removeById(noradId+'pass');
+                    _viewer.entities.add({
+                        id: noradId+'pass', 
+                        wall : {
+                            positions : wallPoints,
+                            minimumHeights : wallHeights,
+                            material : Cesium.Color.GREEN.withAlpha(0.5)
+                        }
+                    });            
+                }
+            } else {
+                _viewer.entities.removeById(noradId+'pass');    
+            }        
+        
+        }
+           
+    }
+    
+    /**
+    * Check a point is ok to plot, i.e. its more than 'range' units away from the last point
+    */
+    function checkOkToPlot(lastPos, pos) {
+        var result = false;
+        var range = 5;
+        
+        if (Math.abs(lastPos.x - pos.x) > range || Math.abs(lastPos.y - pos.y) > range || Math.abs(lastPos.z - pos.z) > range ) {
+            result = true;
+        }
+        return result;  
+    }
+        
+    function plotFootprints() { 
+        var selected = AGSatTrack.getTles().getSelected();
+        for (i = 0; i < selected.length; i++) {
+            var noradId = selected[i].getCatalogNumber();
+            var entity = _viewer.entities.getById(noradId+'footprint');            
+       
+            if (typeof entity === 'undefined') {      
+                var radius = (selected[i].get('footprint') * 1000) / 2;
+                entity = _viewer.entities.add({
+                    id: noradId+'footprint',
+                    position: Cesium.Cartesian3.fromDegrees(selected[i].get('longitude'), selected[i].get('latitude'),10000),
+                    ellipse : {
+                        semiMinorAxis : radius,
+                        semiMajorAxis : radius,
+                        outline : true             
+                    }
+                });
+                
             }
+            if (selected[i].get('elevation') >= AGSETTINGS.getAosEl()) {
+                if (entity.ellipse.outlineColor !== Cesium.Color.GREEN) {
+                    entity.ellipse.material = Cesium.Color.GREEN.withAlpha(0.2);
+                    entity.ellipse.outlineColor = Cesium.Color.GREEN;
+                }
+            } else {
+                if (entity.ellipse.outlineColor !== Cesium.Color.RED) {
+                    entity.ellipse.material = Cesium.Color.RED.withAlpha(0.2);
+                    entity.ellipse.outlineColor = Cesium.Color.RED;               
+                }
+            }
+            if (entity.ellipse.fill !== _settings.fillFootprints) {
+                entity.ellipse.fill = _settings.fillFootprints;
+            }
+               
+            entity.position = Cesium.Cartesian3.fromDegrees(selected[i].get('longitude'), selected[i].get('latitude'),0);
+            
         }        
     }
     
@@ -300,12 +443,43 @@ var AG3DVIEW = function(element) {
             _viewer.entities.removeAll()
             _render = true;
             plotSatellites();
+            plotFootprints();
         }); 
         
+        var handler = new Cesium.ScreenSpaceEventHandler(_scene.canvas);
+        handler.setInputAction(function(mouseEvent) {
+            var pickedObject = _scene.pick(mouseEvent.position);
+            if (Cesium.defined(pickedObject)) {
+                var item = Cesium.defaultValue(pickedObject.id, pickedObject.primitive.id);
+                if (item instanceof Cesium.Entity) {
+                    var selected = item.id;
+                    jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: selected});
+                }
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK );
+        
+        handler = new Cesium.ScreenSpaceEventHandler(_scene.canvas);
+        handler.setInputAction(function(movement) {
+            ShowCameraPosition();
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE );        
+        
+        handler.setInputAction(function(movement) {
+            ShowCameraPosition();
+        }, Cesium.ScreenSpaceEventType.WHEEL); 
+                    
         plotObservers();
         //_viewer.extend(Cesium.viewerCesiumInspectorMixin);                         
     }
     
+    function ShowCameraPosition() {
+        var cameraCartographic = _scene.camera.positionCartographic;            
+        var cameraAlt = cameraCartographic.height;                
+        cameraAlt = (cameraAlt / 1000).toFixed(0);
+        var cameraLon = Cesium.Math.toDegrees(cameraCartographic.longitude).toFixed(2);
+        var cameraLat = Cesium.Math.toDegrees(cameraCartographic.latitude).toFixed(2);
+        jQuery('#camera-pos').html('<strong>Lat:</strong>&nbsp;' + AGUTIL.convertDecDegLat(cameraLat, false) + '&nbsp;&nbsp;<strong>Lon:</strong>&nbsp;' + AGUTIL.convertDecDegLon(cameraLon, false) + '&nbsp;&nbsp;<strong>Alt:</strong>&nbsp;' + cameraAlt + 'Km');
+    }
+        
     /**
     * Disable 3d view if there is no WebGL support
     */
