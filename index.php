@@ -6,6 +6,8 @@ try {
     echo 'Error: ',  $e->getMessage(), "\n";
 }
 
+die();
+
 function prd($data) {
     pr($data); 
     die();   

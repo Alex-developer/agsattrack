@@ -19,26 +19,25 @@ class AGSATTRACK_SATCAT extends APPCONTROLLER {
             $satData = SATCAT::find('first', array('conditions' => array('norad = ?', $satId)));
             
             if ($satData == null) {                
-                $satData = new SATCAT();
+                $satData = new SATCAT();        
+                $satData->id = $this->getChunk($entry, 1,11);
+                $satData->norad = $satId;
+                $satData->multiple = $this->getChunk($entry, 20,20);
+                $satData->payload = $this->getChunk($entry, 21,21);
+                $satData->operationalstatus = $this->getChunk($entry, 22,22);
+                $satData->name = $this->getChunk($entry, 24,47);
+                $satData->owner = $this->getChunk($entry, 50,54);
+                $satData->launchdate = $this->getChunk($entry, 57,66);
+                $satData->site_id = $this->getChunk($entry, 69,73);
+                $satData->decaydate = $this->getChunk($entry, 76,85);
+                $satData->period = $this->getChunk($entry, 88,94);
+                $satData->inclination = $this->getChunk($entry, 97,101);
+                $satData->apogee = $this->getChunk($entry, 104,109);
+                $satData->perigee = $this->getChunk($entry, 112,117);
+                $satData->radarcrosssection = $this->getChunk($entry, 120,127);
+                $satData->status = $this->getChunk($entry, 130,132);
+                $satData->save();
             }
-            
-            $satData->id = $this->getChunk($entry, 1,11);
-            $satData->norad = $satId;
-            $satData->multiple = $this->getChunk($entry, 20,20);
-            $satData->payload = $this->getChunk($entry, 21,21);
-            $satData->operationalstatus = $this->getChunk($entry, 22,22);
-            $satData->name = $this->getChunk($entry, 24,47);
-            $satData->owner = $this->getChunk($entry, 50,54);
-            $satData->launchdate = $this->getChunk($entry, 57,66);
-            $satData->site_id = $this->getChunk($entry, 69,73);
-            $satData->decaydate = $this->getChunk($entry, 76,85);
-            $satData->period = $this->getChunk($entry, 88,94);
-            $satData->inclination = $this->getChunk($entry, 97,101);
-            $satData->apogee = $this->getChunk($entry, 104,109);
-            $satData->perigee = $this->getChunk($entry, 112,117);
-            $satData->radarcrosssection = $this->getChunk($entry, 120,127);
-            $satData->status = $this->getChunk($entry, 130,132);
-            $satData->save();
         }
         die('done');
     }  
