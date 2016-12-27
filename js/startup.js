@@ -53,34 +53,32 @@ $.delayedEvents = {};
 jQuery(document).ready(function() {
     'use strict';    
     
-
     var googleAPIKey = AGUTIL.getGoogleAPIKey();
-requirejs(['http://maps.googleapis.com/maps/api/js?libraries=places&key=' + googleAPIKey,'/js/geocomplete/jquery.geocomplete.min.js'], function(util) {
-debugger;
-});    
-    
-    Modernizr.load({
-      test: AGUTIL.webGlTest(),
-      yep : 'js/cesium/CesiumUnminified/Cesium.js',
-      complete : function() {
-          AGSETTINGS.setHaveWebGL(AGUTIL.webGlTest());
-          AGSETTINGS.setHaveCanvas(Modernizr.canvas);          
+    requirejs(['http://maps.googleapis.com/maps/api/js?libraries=places&key=' + googleAPIKey,'/js/geocomplete/jquery.geocomplete.min.js'], function(util) {
+        Modernizr.load({
+          test: AGUTIL.webGlTest(),
+          yep : 'js/cesium/CesiumUnminified/Cesium.js',
+          complete : function() {
+              AGSETTINGS.setHaveWebGL(AGUTIL.webGlTest());
+              AGSETTINGS.setHaveCanvas(Modernizr.canvas);          
+              
+              AGSPMENGINE.loadSPMEngine(function(){
+                AGSatTrack = new Agsattrack();
+                AGSatTrack.init();      
+                
+                if (AGSETTINGS.getRequireEUCookieLaw()) {
+                    jQuery.cookieCuttr({
+                        cookieDeclineButton: true,
+                        cookieAnalytics: false,
+                        cookiePolicyLink: 'privacy_policy.html'
+                    });
+                }
           
-          AGSPMENGINE.loadSPMEngine(function(){
-            AGSatTrack = new Agsattrack();
-            AGSatTrack.init();      
-            
-            if (AGSETTINGS.getRequireEUCookieLaw()) {
-                jQuery.cookieCuttr({
-                    cookieDeclineButton: true,
-                    cookieAnalytics: false,
-                    cookiePolicyLink: 'privacy_policy.html'
-                });
-            }
-      
-          });
-      }
-    });
+              });
+          }
+        });    
+    });    
+    
 });
 
 var AGSatTrack;

@@ -335,6 +335,7 @@ var AGUTIL = (function() {
                     break;
 
                 case 'agsattrack.com':
+                case 'www.agsattrack.com':
                         bingAPIKey = 'AkU8YjZ3dvP_fyNkibv_UYfvvlfjuXYzVsWe9ccbYiSy8xXMrroZsq0YQJnGbrFG';
                     break;                    
             }
@@ -353,6 +354,7 @@ var AGUTIL = (function() {
                     break;
 
                 case 'agsattrack.com':
+                case 'www.agsattrack.com':
                         googleAPIKey = 'AIzaSyCi-oli_O0tYnN0bAGlNpPIjtPOr4pvLx8';
                     break;                    
             }
