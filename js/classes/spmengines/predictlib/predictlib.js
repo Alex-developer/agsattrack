@@ -1923,7 +1923,6 @@ var PLib =
             var orbitNumber = 0;
             var durationStartTime = null;
             var durationEndTime = null;
-            debugger;
             var startTime = PLib.DaynumFromDate(start);
             var endTime = PLib.DaynumFromDate(end);
 
