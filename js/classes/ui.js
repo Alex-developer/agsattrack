@@ -44,6 +44,36 @@ var AGUI = function() {
     jQuery("#sat-info-selector").jqxDropDownList({width: '200', height: '25', animationType: 'none', autoOpen: true});
     jQuery("#sat-info-selector").hide();
     
+    jQuery('#bmopacityslider').jqxSlider({ 
+        min: 1,
+        max: 10,
+        value: 7,
+        width: 300
+    });
+    
+    jQuery('#bmopacityslider').on('change', function (event) {
+        var value = event.args.value;  
+        var type = event.args.type; // keyboard, mouse or null depending on how the value was changed.
+        jQuery(document).trigger('agsattrack.blackmarbleopacity', {
+            value : value
+        });        
+    });
+      
+      jQuery('#bmbrightnessslider').jqxSlider({ 
+        min: 1,
+        max: 10,
+        value: 7,
+        width: 300
+    });    
+     
+    jQuery('#bmbrightnessslider').on('change', function (event) {
+        var value = event.args.value;  
+        var type = event.args.type; // keyboard, mouse or null depending on how the value was changed.
+        jQuery(document).trigger('agsattrack.blackmarblebrightness', {
+            value : value
+        });        
+    });      
+      
     /**
     * Satellite ribbon section
     */

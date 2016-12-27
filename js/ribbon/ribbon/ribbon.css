@@ -414,13 +414,16 @@ body
 }
 
 
-#ribbon .ribbon-menu {
+#ribbon .ribbon-menu, #ribbon .ribbon-panel {
 	position: absolute;
 	background: white;
 
 	min-width:150px;
 	z-index: 999;
 	border: 1px solid #8492A6;
+}
+#ribbon .ribbon-panel-body {
+    padding: 5px;    
 }
 
 #ribbon .ribbon-menu-wide {
@@ -444,7 +447,7 @@ body
 	border: 1px solid transparent;
 }
 
-#ribbon .ribbon-menu div.title {
+#ribbon .ribbon-menu div.title, #ribbon .ribbon-panel div.title {
 	background: linear-gradient(#FFFFFF, #EAEDF1) repeat scroll 0 0 transparent !important;
 	font-size:1.3em;
 	padding: 5px;

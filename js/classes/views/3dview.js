@@ -59,6 +59,10 @@ var AG3DVIEW = function(element) {
     var _mode;
     var _settings = AGSETTINGS.getViewSettings('threed');
     var _currentProvider = 'staticimage';
+    var _showBlackMarble = false;
+    var _blackMarble = null;
+    var _blackMarbleOpacity = 2;
+    var _blackMarbleBrightness = 2;
     
     var _homeLocationCircle = null;
     var _mutualLocationCircle = null;
@@ -168,7 +172,34 @@ var AG3DVIEW = function(element) {
                     }
                 }
             }); 
+
+
+
+    jQuery(document).bind('agsattrack.blackmarbleopacity',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _blackMarbleOpacity = parseInt(state.value,10);
+                    setBlackMarbleOpacity();
+                }
+            }); 
                 
+     jQuery(document).bind('agsattrack.blackmarblebrightness',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _blackMarbleBrightness = parseInt(state.value,10);
+                    setBlackMarbleBrightness();
+                }
+            });               
+                
+                        
+    jQuery(document).bind('agsattrack.showblackmarble',
+            function(e, state) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    _showBlackMarble = state;
+                    setProvider(_currentProvider);
+                }
+            }); 
+                            
     jQuery(document).bind('agsattrack.showsatlabels',
             function(e, state) {
                 if (AGSETTINGS.getHaveWebGL()) {
@@ -383,8 +414,30 @@ var AG3DVIEW = function(element) {
             jQuery('#3d-provider').setTitle('Provider', '<br />' + TILE_PROVIDERS[provider].toolbarTitle );
             _currentProvider = provider;        
         }
+        
+        if (_showBlackMarble) {
+            _blackMarble = cb.imageryLayers.addImageryProvider(new Cesium.TileMapServiceImageryProvider({
+                url : '//cesiumjs.org/tilesets/imagery/blackmarble',
+                maximumLevel : 8,
+                credit : 'Black Marble imagery courtesy NASA Earth Observatory'
+            }));
+            _blackMarble.alpha = _blackMarbleOpacity / 10; // 0.0 is transparent.  1.0 is opaque.
+            _blackMarble.brightness = _blackMarbleBrightness;
+        }
     } 
     
+    function setBlackMarbleOpacity() {
+        if (_blackMarble !== null) {
+            _blackMarble.alpha = _blackMarbleOpacity / 10;
+        }
+    }
+
+    function setBlackMarbleBrightness() {
+        if (_blackMarble !== null) {        
+            _blackMarble.brightness = _blackMarbleBrightness;
+        }
+    }
+                        
     function clearCities() {
         _cityBillboards.removeAll();    
         _cityLabels.removeAll();    
@@ -543,7 +596,7 @@ var AG3DVIEW = function(element) {
                     _debugCounter++;
                     if (_debugCounter > 100) {
                         _debugCounter = 0;
-                        console.log('3d Animate');
+                        //console.log('3d Animate');
                     }
                 }                 
                 scene.initializeFrame();
@@ -587,10 +640,20 @@ var AG3DVIEW = function(element) {
                             labelVisible = true;    
                         }
                     }
+                    
+                    var lat = satellites[i].get('latitude');
+                    var lon = satellites[i].get('longitude');
+                    var alt = satellites[i].get('altitude');
+                    
+                    if (lat === undefined) {
+                        lat = 0;
+                        lon = 0;
+                        alt = 0;
+                    }
                     cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));
                     cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 1000, cpos);               
                     cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 30/1000+1, cpos); 
-cpos = Cesium.Cartesian3.fromDegrees(satellites[i].get('longitude'), satellites[i].get('latitude'), satellites[i].get('altitude')*1000);
+                    cpos = Cesium.Cartesian3.fromDegrees(lon, lat, alt*1000);
                     cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 30/1000+1, cpos); 
 
                                 
@@ -673,7 +736,17 @@ cpos = Cesium.Cartesian3.fromDegrees(satellites[i].get('longitude'), satellites[
             for (i = 0; i < satellites.length; i++) {
                 if (satellites[i].isDisplaying()) {
                     cpos = new Cesium.Cartesian3(satellites[i].get('x'), satellites[i].get('y'), satellites[i].get('z'));              
-cpos = Cesium.Cartesian3.fromDegrees(satellites[i].get('longitude'), satellites[i].get('latitude'), satellites[i].get('altitude')*1000);
+
+                    var lon = satellites[i].get('longitude');
+                    var lat = satellites[i].get('latitude');
+                    var alt = satellites[i].get('altitude');
+
+                    if (lon === undefined) {
+                        lon = 0;
+                        lat = 0;
+                        alt = 0;
+                    }
+                    cpos = Cesium.Cartesian3.fromDegrees(lon, lat, alt*1000);
 
                     cpos = Cesium.Cartesian3.multiplyByScalar(cpos, 1000, cpos);               
                     if (satellites[i].getCatalogNumber() === '25544') {
@@ -751,7 +824,7 @@ cpos = Cesium.Cartesian3.fromDegrees(satellites[i].get('longitude'), satellites[
                         
     //        newpos = new Cesium.Cartesian3(satellites[bb.satelliteindex].get('x'), satellites[bb.satelliteindex].get('y'), satellites[bb.satelliteindex].get('z'));
 
-newpos = Cesium.Cartesian3.fromDegrees(satellites[bb.satelliteindex].get('longitude'), satellites[bb.satelliteindex].get('latitude'), satellites[bb.satelliteindex].get('altitude')*1000);
+            newpos = Cesium.Cartesian3.fromDegrees(satellites[bb.satelliteindex].get('longitude'), satellites[bb.satelliteindex].get('latitude'), satellites[bb.satelliteindex].get('altitude')*1000);
 
           //  newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 1000, newpos);
             
@@ -759,9 +832,9 @@ newpos = Cesium.Cartesian3.fromDegrees(satellites[bb.satelliteindex].get('longit
             
             bb.position = newpos;
            
-          //  newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 30/1000+1, newpos);            
+            newpos = Cesium.Cartesian3.multiplyByScalar(newpos, 30/1000+1, newpos);            
       
-      /*      var satLabel = _satNameLabels.get(i);
+            var satLabel = _satNameLabels.get(i);
             if (satellites[bb.satelliteindex].getSelected()) {
                 satLabel.font = _settings.selectedLabelSize + 'px sans-serif';
                 satLabel.fillColor = Cesium.Color.fromCssColorString('#'+_settings.selectedLabelColour);
@@ -769,7 +842,7 @@ newpos = Cesium.Cartesian3.fromDegrees(satellites[bb.satelliteindex].get('longit
                 satLabel.font = _settings.unselectedLabelSize + 'px sans-serif';
                 satLabel.fillColor = Cesium.Color.fromCssColorString('#'+_settings.unselectedLabelColour);
             }
-            satLabel.position = newpos;      */
+            satLabel.position = newpos; 
 
         }
         
@@ -1190,12 +1263,6 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
                 }),
                 toolbarTitle : 'Bing Maps'                       
             },
-            'osm' : {
-                provider : new Cesium.OpenStreetMapImageryProvider({
-                    url : 'http://otile1.mqcdn.com/tiles/1.0.0/osm'
-                }),
-                toolbarTitle : 'Open Street maps'                
-            },
             'staticimage' : { 
                 provider : new Cesium.SingleTileImageryProvider({
                     url : 'images/maps/' + _settings.staticimage
@@ -1208,8 +1275,20 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
                   //  proxy: new Cesium.DefaultProxy('http://cesium.agi.com/proxy/')
                 }),
                 toolbarTitle : 'Arc Gis'                
-            }            
-        };
+            },
+            'naturalearth' : {
+                provider : new Cesium.TileMapServiceImageryProvider(
+                    {url: '//cesiumjs.org/tilesets/imagery/naturalearthii'
+                }),
+                toolbarTitle : 'Natural Earth'                  
+            },
+            'blackmarble' : {
+                provider : new Cesium.TileMapServiceImageryProvider(
+                    {url: '//cesiumjs.org/tilesets/imagery/blackmarble'
+                }),
+                toolbarTitle : 'Black Marble'                  
+            }             
+        };         
            
         canvas = jQuery('<canvas/>', {
             'id' : 'glCanvas'+_element,
@@ -1237,7 +1316,8 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
         }        
         */
 
-        cb.imageryLayers.addImageryProvider(TILE_PROVIDERS[_settings.provider].provider);
+        setProvider(_settings.provider);
+
         cb.showSkyAtmosphere = true;
         
         cb.enableLighting  = true;
@@ -1319,6 +1399,9 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
             }
         });
         
+        jQuery('#bmopacityslider').jqxSlider('setValue', _blackMarbleOpacity);
+        jQuery('#bmbrightnessslider').jqxSlider('setValue', _blackMarbleBrightness);
+            
        // var inspector = new Cesium.CesiumInspector('inspector', scene);
         
     }

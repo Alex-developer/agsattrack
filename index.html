@@ -76,6 +76,7 @@
 <script type="text/javascript" src="/js/jqwidgets/jqxmenu.js"></script>
 <script type="text/javascript" src="/js/jqwidgets/jqxpanel.js"></script>
 <script type="text/javascript" src="/js/jqwidgets/jqxwindow.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxslider.js"></script>
 <link rel="stylesheet" href="/js/jqwidgets/styles/jqx.base.css" type="text/css" />
 
 <script src="/js/jscolor/jscolor.js" type="text/javascript"></script>
@@ -144,7 +145,7 @@
                             </td>
                             <td valign="top">
                                 <h2>Licence</h2>
-                                <p>Copyright 2012-2013 Alex Greenland</p>
+                                <p>Copyright 2012-2017 Alex Greenland</p>
                                 <p>Licensed under the Apache License, Version 2.0 (the "License");<br /> you may not use this file except in compliance with the License. You may obtain a copy of the License at</p>
                                 <a target="_blank" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
                                 <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>                                
@@ -367,12 +368,12 @@
                                 <ul>
                                     <li class="tile" data-options="staticimage"><img src="js/ribbon/icons/normal/image.png"><span>Static Image</span></li>
                                     <li class="tile" data-options="bing"><img src="js/ribbon/icons/normal/bing.png"><span>Bing maps</span></li>
-                                    <li class="tile" data-options="osm"><img src="js/ribbon/icons/normal/openstreetmap.png"><span>Open StreetMap</span></li>
                                     <li class="tile" data-options="arcgis"><img src="js/ribbon/icons/normal/arcgis.png"><span>Arc Gis</span></li>
-
+                                    <li class="tile" data-options="naturalearth"><img src="js/ribbon/icons/normal/world.png"><span>Natural Earth</span></li>
+                                    <li class="tile" data-options="blackmarble"><img src="js/ribbon/icons/normal/world.png"><span>Black Marble</span></li>
                                 </ul>
                             </div>
-                        </div>                    
+                        </div>                                                                                                        
                                             
                         <div class="ribbon-button ribbon-button-large view-reset" id="3d-view-reset" style="width:60px;">
                             <span class="button-title">Reset</span> 
@@ -383,6 +384,65 @@
                         </div>
                                             
                     </div>
+                    
+
+                    
+                    
+                    
+                    
+                    <div style="width: 120px; float:left;">
+                        <table width="100%">
+                            <tr>
+                                <td colspan="3" style="border:1px solid #ccc" align="center">Black Marble</td>
+                            </tr>
+                            <tr>
+                                <td>                                
+                                    <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showblackmarble" id="blackmarble">
+                                        <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/world.png" />
+                                        <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/world.png" />
+                                        <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/world.png" />
+                                        <span class="button-title" unselectable="on"></span>
+                                        <span class="button-help"><strong>Show Black Marble.</strong><br /><br />Toggle displaying the Black Marble Image Layer.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for mor information</span></span>                        
+                                    </div>                                
+                                </td>
+                                <td style="border:1px solid #ccc">
+                                    <div class="ribbon-button ribbon-button-small" id="bm-opacity" data-type="dropdownpanel">
+                                        <span class="button-title"><img src="/js/ribbon/arrow_down-16.png"></span> 
+                                        <img class="ribbon-icon ribbon-normal" src="/images/ribbon/sky.png" /> 
+                                        <img class="ribbon-icon ribbon-hot" src="/images/ribbon/sky.png" /> 
+                                        <img class="ribbon-icon ribbon-disabled" src="/images/ribbon/sky.png" />
+                                        <div class="ribbon-panel ribbon-menu-wide ribbon-menu-closed">
+                                            <div class="title">Select Black Marble Opacity</div>
+                                            <div class="ribbon-panel-body">
+                                                <div id='bmopacityslider'></div>
+                                            </div>
+                                        </div>
+                                    </div>                                 
+                                </td>
+                                <td style="border:1px solid #ccc">
+                                    <div class="ribbon-button ribbon-button-small" id="bm-brightness" data-type="dropdownpanel">
+                                        <span class="button-title"><img src="/js/ribbon/arrow_down-16.png"></span> 
+                                        <img class="ribbon-icon ribbon-normal" src="/images/ribbon/brightness.png" /> 
+                                        <img class="ribbon-icon ribbon-hot" src="/images/ribbon/brightness.png" /> 
+                                        <img class="ribbon-icon ribbon-disabled" src="/images/ribbon/brightness.png" />
+                                        <div class="ribbon-panel ribbon-menu-wide ribbon-menu-closed">
+                                            <div class="title">Select Black Marble Brightness</div>
+                                            <div class="ribbon-panel-body">
+                                                <div id='bmbrightnessslider'></div>
+                                            </div>
+                                        </div>
+                                    </div>                                 
+                                </td>                                
+                            </tr>
+                        </table>
+                    </div>                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     <div class="ribbon-fl" style="width:30px;">
                         <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.showatmosphere" id="3d-atmosphere">
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/atmoshpere-16.png" />
@@ -1224,8 +1284,9 @@
                                             <select class="options-cb" id="options-3d-provider">
                                                 <option value="staticimage">Static Image</option>
                                                 <option value="bing">Bing Maps</option>
-                                                <option value="osm">Open Street Map</option>
                                                 <option value="arcgis">Arc Gis</option>
+                                                <option value="naturalearth">Natural Earth</option>
+                                                <option value="blackmarble">Black marble</option>
                                             </select>                                            
                                         </td>                                        
                                     </tr>

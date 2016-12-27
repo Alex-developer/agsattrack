@@ -34,9 +34,9 @@ class AGSATTRACK_SATELLITE extends APPCONTROLLER {
         $data = Array();
         foreach ($locData as $location) {
             $data[] = Array(
-                'prefix' => $location->prefix,
-                'shortname' => $location->name,
-                'name' => $location->name . ', ' . $location->country,
+                'prefix' => utf8_encode($location->prefix),
+                'shortname' => utf8_encode($location->name),
+                'name' => utf8_encode($location->name . ', ' . $location->country),
                 'lat' => $location->lat,
                 'lon' => $location->lon,
                 'pop' => $location->population

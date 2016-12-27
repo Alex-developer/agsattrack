@@ -86,12 +86,22 @@
 						var title = el.find('.button-title');
 						title.detach();
 						
-						if (buttonType === 'dropdownmenu' || buttonType === 'dropdownmenustay') {
-							var menu = el.find('.ribbon-menu');
-							$(title).insertBefore(menu);
-						} else {
-							el.append(title);
-						}
+                        switch (buttonType) {
+                            case 'dropdownmenu':
+                            case 'dropdownmenustay':
+                                var menu = el.find('.ribbon-menu');
+                                $(title).insertBefore(menu);                            
+                                break;
+
+                            case 'dropdownpanel':
+                                var panel = el.find('.ribbon-panel');
+                                $(title).insertBefore(panel);                              
+                                break;
+                                                                
+                            default:
+                                el.append(title);
+                                break;
+                        }
 
 						this.enable = function() {
 							el.removeClass('disabled');
@@ -115,32 +125,53 @@
 						}
 
                         $(this).tooltip({
-                                bodyHandler: function () {
-                                    if (!$(this).isEnabled()) { 
-                                        $('#tooltip').css('visibility', 'hidden');
-                                        return '';
-                                    }
+                            bodyHandler: function () {
+                                if (!$(this).isEnabled()) { 
+                                    $('#tooltip').css('visibility', 'hidden');
+                                    return '';
+                                }
 
-                                    var tor = '';
+                                var tor = '';
 
-                                    if (jQuery(this).children('.button-help').size() > 0)
-                                        tor = (jQuery(this).children('.button-help').html());
-                                    else
-                                        tor = '';
+                                if (jQuery(this).children('.button-help').size() > 0)
+                                    tor = (jQuery(this).children('.button-help').html());
+                                else
+                                    tor = '';
 
-                                    if (tor == '') {
-                                        $('#tooltip').css('visibility', 'hidden');
-                                        return '';
-                                    }
+                                if (tor == '') {
+                                    $('#tooltip').css('visibility', 'hidden');
+                                    return '';
+                                }
 
-                                    $('#tooltip').css('visibility', 'visible');
+                                $('#tooltip').css('visibility', 'visible');
 
-                                    return tor;
-                                },
-                                delay: 1000,
-                                extraClass: 'ribbon-tooltip'
+                                return tor;
+                            },
+                            delay: 1000,
+                            extraClass: 'ribbon-tooltip'
+                        });
+                        
+                        if (buttonType === 'dropdownpanel') {
+                            var panel = el.find('.ribbon-panel');
+                            el.click(function(e){
+                                if (!el.hasClass('disabled')) {                                   
+                                    $(panel).toggleClass('ribbon-menu-closed');
+                                    $(panel).toggleClass('ribbon-menu-open');
+                                }
                             });
-                                        
+                            
+                            panel.click(function(e){
+                                e.stopImmediatePropagation();
+                            }); 
+                            
+                            panel.on('mouseleave', function(){
+                                if (!el.hasClass('disabled')) {                                    
+                                    $(panel).addClass('ribbon-menu-closed');
+                                    $(panel).removeClass('ribbon-menu-open');
+                                }                                
+                            });                                                       
+                        }   
+                                     
 						if (buttonType == 'dropdownmenu' || buttonType == 'dropdownmenustay') {
 							el.click(function(e){
                                 if (!el.hasClass('disabled')) {                                   

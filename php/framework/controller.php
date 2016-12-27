@@ -43,7 +43,7 @@ class AGSATTRACKCONTROLLER {
 
         $output = $this->output;
         $found = false;
-        
+    
         foreach($viewPaths as $path) {
             if (@include_once($path)) {
                 $found = true;
