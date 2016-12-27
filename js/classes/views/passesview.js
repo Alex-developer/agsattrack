@@ -376,7 +376,7 @@ var AGPASSESVIEW = function() {
             });           
             setTimeFrameTo24Hours();
       
-            jQuery('.datebox-ok, .datebox-close, .datebox-current').on('click', function() {
+            jQuery(document).on('click', '.datebox-button-a', function() {
                 jQuery('#passes-view-start').closeMenu();    
                 jQuery('#passes-view-end').closeMenu();    
                 var start = jQuery('#passes-view-start-cal').datetimebox('getValue');
