@@ -1179,16 +1179,8 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
         _cityBillboards = new Cesium.BillboardCollection();
         _cityLabels = new Cesium.LabelCollection();
         
-        var url = jQuery(location).attr('href');
-        var bingAPIKey = '';
-        if (url.indexOf('ag.local') === -1 && url.indexOf('agsattrack.com') === -1) {
-        } else {
-            if (url.indexOf('agsattrack.com') === -1) {
-                bingAPIKey = 'Ak1cHw0o6SGIUYUR2khejaEc1ttaB9tsrSaq7rPxOUOkE4oVTuQchtZFEciJHRH_';    
-            } else {
-                bingAPIKey = 'AkU8YjZ3dvP_fyNkibv_UYfvvlfjuXYzVsWe9ccbYiSy8xXMrroZsq0YQJnGbrFG';    
-            }            
-        }                
+        var bingAPIKey = AGUTIL.getBingAPIKey();
+
         TILE_PROVIDERS = {
             'bing' : {
                 provider : new Cesium.BingMapsImageryProvider({

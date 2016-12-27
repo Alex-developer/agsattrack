@@ -53,6 +53,12 @@ $.delayedEvents = {};
 jQuery(document).ready(function() {
     'use strict';    
     
+
+    var googleAPIKey = AGUTIL.getGoogleAPIKey();
+requirejs(['http://maps.googleapis.com/maps/api/js?libraries=places&key=' + googleAPIKey,'/js/geocomplete/jquery.geocomplete.min.js'], function(util) {
+debugger;
+});    
+    
     Modernizr.load({
       test: AGUTIL.webGlTest(),
       yep : 'js/cesium/CesiumUnminified/Cesium.js',

@@ -28,6 +28,20 @@ var AGUTIL = (function() {
 	
     var _elementCounter = 0;
     
+    function extractDomain(url) {
+        var domain;
+        if (url.indexOf("://") > -1) {
+            domain = url.split('/')[2];
+        }
+        else {
+            domain = url.split('/')[0];
+        }
+
+        domain = domain.split(':')[0];
+
+        return domain;
+    }
+    
 	function convertDecDeg(v,tipo, html) {
         
         if ( v < -180) {
@@ -308,7 +322,47 @@ var AGUTIL = (function() {
         
         getId : function() {
             return 'agel' + ++_elementCounter;
-        }
+        },
+        
+        getBingAPIKey: function() {
+            var url = jQuery(location).attr('href');
+            var domain = extractDomain(url);
+            var bingAPIKey = '';
+            
+            switch (domain) {
+                case 'agsattrack.local':
+                        bingAPIKey = 'AoHuWQz4dkEfjs9GIOYCRDM7_qyrOdxXmauJ6VAKEIbKKAAq-qJ5abmczHUzNFpb';
+                    break;
+
+                case 'agsattrack.com':
+                        bingAPIKey = 'AkU8YjZ3dvP_fyNkibv_UYfvvlfjuXYzVsWe9ccbYiSy8xXMrroZsq0YQJnGbrFG';
+                    break;                    
+            }
+            
+            return bingAPIKey;           
+        },
+        
+        getGoogleAPIKey: function() {
+            var url = jQuery(location).attr('href');
+            var domain = extractDomain(url);
+            var googleAPIKey = '';
+            
+            switch (domain) {
+                case 'agsattrack.local':
+                        googleAPIKey = 'AIzaSyD7f7EL14920SOzJuYlDF4uNwEH96ZgkI8';
+                    break;
+
+                case 'agsattrack.com':
+                        googleAPIKey = 'AIzaSyCi-oli_O0tYnN0bAGlNpPIjtPOr4pvLx8';
+                    break;                    
+            }
+            
+            return googleAPIKey;           
+        }        
+        
+        
+        
+        
 	};
 	
 })();

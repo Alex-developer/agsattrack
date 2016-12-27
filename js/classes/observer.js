@@ -47,21 +47,24 @@ var AGOBSERVER = function(index) {
                     jQuery(document).trigger('agsattrack.locationAvailable',that);
                 },
                 function (error) {
-                    _lat = 0;
-                    _lon = 0;
-                    _alt = 0;
-                    _ready = true;                        
-                    jQuery(document).trigger('agsattrack.locationAvailable',that);            
-                    var el = AGUTIL.getId();
-                    jQuery('body').append('<div id="'+el+'" />');
-                    jQuery('#'+el).dialog({  
-                        title: 'Geo Coding Error',  
-                        width: 500,  
-                        height: 270,
-                        cache: false,  
-                        content: '<div id="geoerror"><h2>Sorry we were unable to set your location</h2><p>Auto geo locating your position failed. Your location has been set to 0 Degrees, 0 Degrees</p><p>Please select the options button on the Home ribbon tab. From there you can disable auto geo locating and manually enter your location.</p><p>If you do not disable auto geo locating then this error will be displayed each time you visit this site.</p><p><span class="errorcode">Error Code:</span> '+error.code+' ('+error.message+')</p></div>',  
-                        modal: true  
-                    });
+                    
+                    switch (error.code) {
+                        case error.TIMEOUT:
+                            showError(error.message);
+                            break;
+                            
+                        case error.PERMISSION_DENIED:
+                            tryMaps();
+                            break;
+                            
+                        case error.POSITION_UNAVAILABLE:
+                            tryMaps();
+                            break;
+                            
+                        default:
+                            showError(error.message);                        
+                            break;
+                    }
                 }, {
                     timeout: 10000
                 }            
@@ -74,7 +77,38 @@ var AGOBSERVER = function(index) {
             jQuery(document).trigger('agsattrack.locationAvailable',that);        
         }        
     } 
+    
+    function tryMaps() {
+        var googleAPIKey = AGUTIL.getGoogleAPIKey();
         
+        jQuery.post('https://www.googleapis.com/geolocation/v1/geolocate?key=' + googleAPIKey, function(success) {
+            _lat = success.location.lat;
+            _lon = success.location.lng;
+            _alt = 0
+            _ready = true;            
+        }).fail(function(err) {
+            showError('');
+        });
+    }
+    
+    function showError(error) {
+        _lat = 0;
+        _lon = 0;
+        _alt = 0;
+        _ready = true;                        
+        jQuery(document).trigger('agsattrack.locationAvailable',that);            
+        var el = AGUTIL.getId();
+        jQuery('body').append('<div id="'+el+'" />');
+        jQuery('#'+el).dialog({  
+            title: 'Geo Coding Error',  
+            width: 500,  
+            height: 270,
+            cache: false,  
+            content: '<div id="geoerror"><h2>Sorry we were unable to set your location</h2><p>Auto geo locating your position failed. Your location has been set to 0 Degrees, 0 Degrees</p><p>Please select the options button on the Home ribbon tab. From there you can disable auto geo locating and manually enter your location.</p><p>If you do not disable auto geo locating then this error will be displayed each time you visit this site.</p><p><span class="errorcode">Error Code:</span> '+error.code+' ('+error+')</p></div>',  
+            modal: true  
+        });        
+    }
+     
 	return {
 	
 		init : function(settings) {

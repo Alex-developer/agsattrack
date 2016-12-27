@@ -381,7 +381,6 @@ var AGOPTIONS = function() {
            lat: jQuery('#observerlatitude').val(),
            lon: jQuery('#observerlongitude').val(),
            success: function(lat, lon) {
-               debugger;
                jQuery('#observerlatitude').val(lat);
                jQuery('#observerlongitude').val(lon);
                jQuery('#options-save').enable();               
