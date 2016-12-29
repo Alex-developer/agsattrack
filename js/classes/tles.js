@@ -76,11 +76,13 @@ var AGTLES = function() {
 	});
 
     jQuery(document).bind('agsattrack.updategroup', function() {
+        jQuery('#home-update-elements').setTitle('UPDATING');
         jQuery('#home-update-elements').disable();
         jQuery('#home-update-elements').stop();  
         var url = updateUrl + _group;
 
         jQuery.getJSON(url, function(data) {
+            jQuery('#home-update-elements').setTitle('Update <br />Elements');
             loadElements(_group);    
         });
     

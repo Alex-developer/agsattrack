@@ -24,7 +24,7 @@ Copyright 2013 Alex Greenland
 *
 */
 /*jshint bitwise: true*/
-/*global AGVIEWS,AGIMAGES,AGSatTrack,AGUTIL,AGSETTINGS,Kinetic,requestAnimFrame */
+/*global AGVIEWS,AGIMAGES,AGSatTrack,AGUTIL,AGSETTINGS,Konva,requestAnimFrame */
 
 var AGSKYVIEW = function(element) {
 	'use strict';
@@ -73,7 +73,8 @@ var AGSKYVIEW = function(element) {
         }
 
         if (width !== 0 && height !== 0) {
-            _stage.setSize(width, height);
+            _stage.width(width);
+            _stage.height(height);
             drawBackground();
         }          
     }
@@ -132,7 +133,7 @@ var AGSKYVIEW = function(element) {
 
         _backgroundLayer.removeChildren();
 		_cityLayer.removeChildren();
-        _backgroundLayer.add(new Kinetic.Rect({
+        _backgroundLayer.add(new Konva.Rect({
             x: 0,
             y: 0,
             width: _width,
@@ -140,7 +141,7 @@ var AGSKYVIEW = function(element) {
             fill: '#001224'
         }));
 
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
 			x : 0,
 			y : 2,
 			text : 'N',
@@ -149,7 +150,7 @@ var AGSKYVIEW = function(element) {
 			fill : 'white'
 		}));
 		
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
 			x : ((0.5 + (90 * _xstep)) | 0) - 5,
 			y : 2,
 			text : 'E',
@@ -158,7 +159,7 @@ var AGSKYVIEW = function(element) {
 			fill : 'white'
 		}));
 		
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
 			x : ((0.5 + (180 * _xstep)) | 0) - 5,
 			y : 2,
 			text : 'S',
@@ -167,7 +168,7 @@ var AGSKYVIEW = function(element) {
 			fill : 'white'
 		}));
 		
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
 			x : ((0.5 + (270 * _xstep)) | 0) - 5,
 			y : 2,
 			text : 'W',
@@ -187,7 +188,7 @@ var AGSKYVIEW = function(element) {
 				_start = 0;
 			}
 			
-			_backgroundLayer.add(new Kinetic.Line({
+			_backgroundLayer.add(new Konva.Line({
 				points : [ xPos, _start, xPos, _height ],
 				stroke : _stroke,
 				strokeWidth : 1,
@@ -198,14 +199,14 @@ var AGSKYVIEW = function(element) {
 
 		for (i = 15; i <= 90; i+=15) {
 			var yPos = (0.5 + (i * _ystep)) | 0;
-			_backgroundLayer.add(new Kinetic.Line({
+			_backgroundLayer.add(new Konva.Line({
 				points : [ 0, yPos, _width, yPos ],
 				stroke : '#333',
 				strokeWidth : 1,
 				opacity: 0.5				
 			}));
             
-            _backgroundLayer.add(new Kinetic.Text({
+            _backgroundLayer.add(new Konva.Text({
                 x : 5,
                 y : yPos,
                 text : (90-i) + 'º',
@@ -217,7 +218,7 @@ var AGSKYVIEW = function(element) {
 		}
 
         if (_showCity) {
-            var cityImage = new Kinetic.Image({
+            var cityImage = new Konva.Image({
               x: 0,
               y: _height - 109,
               image: AGIMAGES.getImage('city'),
@@ -273,7 +274,7 @@ var AGSKYVIEW = function(element) {
                     }
 
                                        
-                    _planetLayer.add(new Kinetic.Image({
+                    _planetLayer.add(new Konva.Image({
                         x : pos.x - 8,
                         y : pos.y - 8,
                         image : image,
@@ -282,7 +283,7 @@ var AGSKYVIEW = function(element) {
                         id : -1
                     }));
                     
-                    _planetLayer.add(new Kinetic.Text({
+                    _planetLayer.add(new Konva.Text({
                         x : pos.x,
                         y : pos.y - 20,
                         text : planet.name,
@@ -323,7 +324,7 @@ var AGSKYVIEW = function(element) {
                 var satLabel = satellite.getName();
 
 
-                _satLayer.add(new Kinetic.Text({
+                _satLayer.add(new Konva.Text({
                     x : pos.x - 8,
                     y : pos.y - 20,
                     text : satLabel,
@@ -333,7 +334,7 @@ var AGSKYVIEW = function(element) {
                     fill : 'white'
                 }));
    
-                var newSat = new Kinetic.Image({
+                var newSat = new Konva.Image({
                     x : pos.x - 8,
                     y : pos.y - 8,
                     image : AGIMAGES.getImage('satellite116'),
@@ -406,7 +407,7 @@ var AGSKYVIEW = function(element) {
                     * For Debugging  ONLY
                     */
                     /*
-                    _orbitLayer.add(new Kinetic.Circle({
+                    _orbitLayer.add(new Konva.Circle({
                         x : pos.x,
                         y : pos.y,
                         radius : 2,
@@ -446,7 +447,7 @@ var AGSKYVIEW = function(element) {
             * Plot any points below the AoS setting
             */
             if (prePoints.length > 0) {
-                _orbitLayer.add(new Kinetic.Line({
+                _orbitLayer.add(new Konva.Line({
                         points: prePoints,
                         stroke: 'red',
                         strokeWidth: 1,
@@ -473,7 +474,7 @@ var AGSKYVIEW = function(element) {
                     lastX = points[i];
                 }
                 if (points1.length !== 0) {
-                    _orbitLayer.add(new Kinetic.Line({
+                    _orbitLayer.add(new Konva.Line({
                             points: points1,
                             stroke: 'green',
                             strokeWidth: 2,
@@ -482,7 +483,7 @@ var AGSKYVIEW = function(element) {
                         })
                     );                        
                 }
-                _orbitLayer.add(new Kinetic.Line({
+                _orbitLayer.add(new Konva.Line({
                         points: points,
                         stroke: 'green',
                         strokeWidth: 2,
@@ -496,7 +497,7 @@ var AGSKYVIEW = function(element) {
             * Plot any points after Los.
             */
             if (postPoints.length > 0) {
-                _orbitLayer.add(new Kinetic.Line({
+                _orbitLayer.add(new Konva.Line({
                         points: postPoints,
                         stroke: 'red',
                         strokeWidth: 1,
@@ -510,7 +511,7 @@ var AGSKYVIEW = function(element) {
             if (el < AGSETTINGS.getAosEl() && aostime !== null) {
                 pos = convertAzEltoScreen(max.az, max.el);
                 var label = '(AOS: '+AGUTIL.shortdatetime(aostime, true)+')';
-                _orbitLayer.add(new Kinetic.Text({
+                _orbitLayer.add(new Konva.Text({
                     x : pos.x,
                     y : pos.y,
                     text : satellite.getName(),
@@ -518,7 +519,7 @@ var AGSKYVIEW = function(element) {
                     fontFamily : 'Verdana',
                     fill : '#eee'
                 }));
-                _orbitLayer.add(new Kinetic.Text({
+                _orbitLayer.add(new Konva.Text({
                     x : pos.x,
                     y : pos.y + 10,
                     text : label,
@@ -608,35 +609,35 @@ var AGSKYVIEW = function(element) {
             }
             _mode = mode;
                     
-			_stage = new Kinetic.Stage({
+			_stage = new Konva.Stage({
 				container : _element,
 				width : jQuery('#viewtabs').tabs('getTab', 0).width(),
 				height : jQuery('#viewtabs').tabs('getTab', 0).height()
 			});
                         
-			_backgroundLayer = new Kinetic.Layer();
+			_backgroundLayer = new Konva.Layer();
 			_stage.add(_backgroundLayer);
 
-			_mousePosLayer = new Kinetic.Layer();
+			_mousePosLayer = new Konva.Layer();
 			_stage.add(_mousePosLayer);
 
-			_planetLayer = new Kinetic.Layer();
+			_planetLayer = new Konva.Layer();
 			_stage.add(_planetLayer);
 
-			_satLayer = new Kinetic.Layer();
+			_satLayer = new Konva.Layer();
 			_stage.add(_satLayer);
 
-            _orbitLayer = new Kinetic.Layer();
+            _orbitLayer = new Konva.Layer();
             _stage.add(_orbitLayer);
              
-            _cityLayer = new Kinetic.Layer();
+            _cityLayer = new Konva.Layer();
             _stage.add(_cityLayer);
                                                 
-			_infoGroup = new Kinetic.Group({
+			_infoGroup = new Konva.Group({
                 draggable: true
             });
 			
-			_infoGroup.add(new Kinetic.Rect({
+			_infoGroup.add(new Konva.Rect({
                 x: 20,
                 y: 5,
                 width: 120,
@@ -647,7 +648,7 @@ var AGSKYVIEW = function(element) {
                 opacity: 0.2
             }));
 			
-			_infoGroup.add(new Kinetic.Text({
+			_infoGroup.add(new Konva.Text({
 				x : 30,
 				y : 10,
 				text : 'Mouse Position',
@@ -656,7 +657,7 @@ var AGSKYVIEW = function(element) {
 				fill : 'white'
 			}));
 
-			_infoGroup.add(new Kinetic.Text({
+			_infoGroup.add(new Konva.Text({
 				x : 25,
 				y : 30,
 				text : 'Azimuth',
@@ -665,7 +666,7 @@ var AGSKYVIEW = function(element) {
 				fill : 'white'
 			}));
 
-			_infoGroup.add(new Kinetic.Text({
+			_infoGroup.add(new Konva.Text({
 				x : 25,
 				y : 45,
 				text : 'Elevation',
@@ -674,7 +675,7 @@ var AGSKYVIEW = function(element) {
 				fill : 'white'
 			}));
 
-			_mousePosAz = new Kinetic.Text({
+			_mousePosAz = new Konva.Text({
 				x : 105,
 				y : 30,
 				text : 'N/A',
@@ -685,7 +686,7 @@ var AGSKYVIEW = function(element) {
 			});
 			_infoGroup.add(_mousePosAz);
 
-			_mousePosEl = new Kinetic.Text({
+			_mousePosEl = new Konva.Text({
 				x : 105,
 				y : 45,
 				text : 'N/A',
@@ -698,7 +699,7 @@ var AGSKYVIEW = function(element) {
 			_mousePosLayer.add(_infoGroup);
 			
 			_stage.on('mousemove', function() {
-				_mousePos = _stage.getMousePosition();
+				_mousePos = _stage.getPointerPosition();
 				_mousePos.show = true;
 			});
 

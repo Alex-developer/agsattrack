@@ -14,7 +14,7 @@ Copyright 2012 Alex Greenland
    limitations under the License.
  */
  
-/*global AGSatTrack, AGIMAGES, AGVIEWS, AGSETTINGS, AGUTIL, Kinetic, requestAnimFrame */
+/*global AGSatTrack, AGIMAGES, AGVIEWS, AGSETTINGS, AGUTIL, Konva, requestAnimFrame */
   
 var AGDXVIEW = function(element) {
     'use strict';

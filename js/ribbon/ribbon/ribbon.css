@@ -470,7 +470,11 @@ body
 }
 
 #ribbon .ribbon-menu-closed {
-	display: none;
+	visibility: hidden;
+}
+
+.jqx-slider-tickscontainer {
+	visibility: hidden !important;
 }
 
 #ribbon .ribbon-menu-open {

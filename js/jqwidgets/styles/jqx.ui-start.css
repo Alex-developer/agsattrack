@@ -8,16 +8,16 @@
 .jqx-rc-l-ui-start{border-bottom-left-radius:5px; border-top-left-radius:5px; moz-border-radius-bottomleft:5px; moz-border-radius-topleft:5px; webkit-border-bottom-left-radius:5px; webkit-border-top-left-radius:5px}
 .jqx-rc-all-ui-start{border-radius:5px; moz-border-radius:5px; webkit-border-radius:5px}
 /*Grid*/
-.jqx-grid-column-sortascbutton-ui-start{background-position:-96px -192px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png); margin-top:5px}
-.jqx-grid-column-sortdescbutton-ui-start{margin-top:5px; background-position:-64px -192px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
-.jqx-grid-column-menubutton-ui-start{margin-top:5px; background-position:-65px -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png); border-width:0px}
+.jqx-grid-column-sortascbutton-ui-start{background-position:-96px -192px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png);position: relative; max-height: 16px; height: 16px !important; top:50%; margin-top:-8px;}
+.jqx-grid-column-sortdescbutton-ui-start{position: relative; max-height: 16px; height: 16px !important; top:50%; margin-top:-8px; background-position:-64px -192px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
+.jqx-grid-column-menubutton-ui-start{position: relative; max-height: 16px; height: 16px !important; top:50%; margin-top:-8px; background-position:-65px -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png); border-width:0px}
 .jqx-grid-cell-sort-ui-start, .jqx-grid-cell-filter-ui-start, .jqx-grid-cell-pinned-ui-start{background: #ecf2f2; color: #1482b4;} 
 .jqx-grid-cell-sort-alt-ui-start, .jqx-grid-cell-filter-alt-ui-start, .jqx-grid-cell-alt-ui-start{background: #ecf2f2;}
 /*Tree*/
 .jqx-tree-item-arrow-expand-ui-start, .jqx-tree-item-arrow-expand-hover-ui-start{background-position:-65px -16px; background-image:url(images/start/ui-icons_222222_256x240.png)}
 .jqx-tree-item-arrow-collapse-ui-start, .jqx-tree-item-arrow-collapse-hover-ui-start{background-position:-32px -16px; background-image:url(images/start/ui-icons_222222_256x240.png)}
 .jqx-menu-item-arrow-right-ui-start, .jqx-menu-item-arrow-right-selected-ui-start{background-position:-32px -16px; background-image:url(images/start/ui-icons_222222_256x240.png)}
-.jqx-menu-item-arrow-left-ui-start, .jqx-menu-item-arrow-left-selected-ui-start{background-position:-96px -16px; background-image:url(images/start/ui-icons_222222_256x240.png)}
+.jqx-menu-item-arrow-left-ui-start, .jqx-menu-item-arrow-left-selected-ui-start, .jqx-tree-item-arrow-collapse-rtl-ui-start, .jqx-tree-item-arrow-collapse-hover-rtl-ui-start{background-position:-96px -16px; background-image:url(images/start/ui-icons_222222_256x240.png)}
 /*Tabs*/
 .jqx-tabs-title-ui-start{border-color:#77d5f7; border-bottom-color: transparent; background: #0078ae url(images/start/ui-bg_glass_45_0078ae_1x400.png) 50% 50% repeat-x;}
 .jqx-tabs-header-ui-start{border-width: 1px; padding-bottom: 0px; margin:2px; border-radius:5px; moz-border-radius:5px; webkit-border-radius:5px}
@@ -27,13 +27,27 @@
 .jqx-radiobutton-ui-start .jqx-fill-state-pressed-ui-start{background:#fdfefe; border:1px solid #fdfefe}
 /*Calendar*/
 .jqx-calendar-cell-ui-start{font-size: 11px; color: #fff; border-color: #77d5f7; background: #0078ae url(images/start/ui-bg_glass_45_0078ae_1x400.png) 50% 50% repeat-x; padding:.2em; text-align:right; text-decoration:none; moz-border-radius:0px !important; webkit-border-radius:0px !important; border-radius:0px !important}
-.jqx-calendar-cell-today-ui-start{background:#ffe45c url(images/start/ui-bg_highlight-soft_75_ffe45c_1x100.png) 50% top repeat-x; border:1px solid #fed22f; color:#363636}
+.jqx-calendar-cell-today-ui-start{background:#ffe45c; border:1px solid #fed22f; color:#363636}
 .jqx-calendar-title-container-ui-start{border: 1px solid #77d5f7; border-bottom-width: 0px; border-radius:5px; moz-border-radius:5px; webkit-border-radius:5px; font-weight: bold;}
 .jqx-calendar-month-container-ui-start{border:none !important}
 .jqx-calendar-ui-start{padding:2px}
 .jqx-calendar-column-cell-ui-start{font-size: 11px; font-weight: bold;}
-.jqx-calendar-ui-start .icon-arrow-left-ui-start{background-image:url(images/start/ui-icons_d8e7f3_256x240.png); background-position: -80px -192px; width:16px; height:16px; left:5px; position:relative}
-.jqx-calendar-ui-start .icon-arrow-right-ui-start{background-image:url(images/start/ui-icons_d8e7f3_256x240.png); background-position: -48px -192px; width:16px; height:16px; right:5px; position:relative}
+.jqx-calendar-ui-start .jqx-icon-arrow-left-ui-start{background-image:url(images/start/ui-icons_d8e7f3_256x240.png); background-position: -80px -192px; width:16px; height:16px; left:5px; position:relative}
+.jqx-calendar-ui-start .jqx-icon-arrow-right-ui-start{background-image:url(images/start/ui-icons_d8e7f3_256x240.png); background-position: -48px -192px; width:16px; height:16px; right:5px; position:relative}
+
+/*Icons*/
+.jqx-icon-arrow-up-ui-start{background-position:0 -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
+.jqx-icon-arrow-down-ui-start{background-position:-65px -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
+.jqx-icon-arrow-left-ui-start{background-position:-96px -17px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
+.jqx-icon-arrow-right-ui-start{background-position:-32px -17px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
+.jqx-icon-arrow-up-hover-ui-start{background-position:0 -16px; background-image:url(images/start/ui-icons_0078ae_256x240.png)}
+.jqx-icon-arrow-down-hover-ui-start{background-position:-65px -16px; background-image:url(images/start/ui-icons_0078ae_256x240.png)}
+.jqx-icon-arrow-left-selected-ui-start{background-position:-96px -17px; background-image:url(images/start/ui-icons_fcd113_256x240.png)}
+.jqx-icon-arrow-right-selected-ui-start{background-position:-32px -17px; background-image:url(images/start/ui-icons_fcd113_256x240.png)}
+.jqx-icon-arrow-up-selected-ui-start{background-position:0 -16px; background-image:url(images/start/ui-icons_fcd113_256x240.png)}
+.jqx-icon-arrow-down-selected-ui-start{background-position:-65px -16px; background-image:url(images/start/ui-icons_fcd113_256x240.png)}
+.jqx-icon-close-ui-start{background-image:url(images/start/ui-icons_d8e7f3_256x240.png); background-position:-80px -128px; cursor:pointer}
+.jqx-icon-close-hover-ui-start{background-image:url(images/start/ui-icons_0078ae_256x240.png); background-position:-80px -128px; cursor:pointer}
 /*Window*/
 .jqx-window-ui-start{padding: 2px;}
 .jqx-window-header-ui-start{border: 1px solid #77d5f7; font-weight: bold; font-size: 11px; moz-border-radius:5px; border-radius:5px; webkit-border-radius:5px}
@@ -42,24 +56,8 @@
 .jqx-window-collapse-button-ui-start{background-position:0 -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
 .jqx-window-collapse-button-hover-ui-start{background-image:url(images/start/ui-icons_d8e7f3_256x240.png); background-color:#fff; border-radius:5px; moz-border-radius:5px; webkit-border-radius:5px}
 .jqx-window-collapse-button-collapsed-ui-start, .jqx-window-collapse-button-collapsed-hover-ui-start{background-position:-65px -16px}
-.jqx-window-modal-ui-start{background-image:url(images/start/ui-bg_diagonals-thick_20_666666_40x40.png)}
+.jqx-window-modal-ui-start{}
 .jqx-window-close-button-hover-ui-start{background-color:#fff; background-position:-96px -128px; background-image:url(images/start/ui-icons_056b93_256x240.png); cursor:pointer; width:16px; height:16px}
-/*Splitter*/
-.jqx-splitter-ui-start .jqx-widget-content-ui-start{border-width:0px; background: #fff;}
-
-/*Icons*/
-.icon-arrow-up-ui-start{background-position:0 -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
-.icon-arrow-down-ui-start{background-position:-65px -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
-.icon-arrow-left-ui-start{background-position:-96px -17px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
-.icon-arrow-right-ui-start{background-position:-32px -17px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
-.icon-arrow-up-hover-ui-start{background-position:0 -16px; background-image:url(images/start/ui-icons_0078ae_256x240.png)}
-.icon-arrow-down-hover-ui-start{background-position:-65px -16px; background-image:url(images/start/ui-icons_0078ae_256x240.png)}
-.icon-arrow-left-selected-ui-start{background-position:-96px -17px; background-image:url(images/start/ui-icons_fcd113_256x240.png)}
-.icon-arrow-right-selected-ui-start{background-position:-32px -17px; background-image:url(images/start/ui-icons_fcd113_256x240.png)}
-.icon-arrow-up-selected-ui-start{background-position:0 -16px; background-image:url(images/start/ui-icons_fcd113_256x240.png)}
-.icon-arrow-down-selected-ui-start{background-position:-65px -16px; background-image:url(images/start/ui-icons_fcd113_256x240.png)}
-.icon-close-ui-start{background-image:url(images/start/ui-icons_d8e7f3_256x240.png); background-position:-80px -128px; cursor:pointer}
-.icon-close-hover-ui-start{background-image:url(images/start/ui-icons_0078ae_256x240.png); background-position:-80px -128px; cursor:pointer}
 
 /*Common Settings*/
 .jqx-widget-ui-start{ border-color: #a6c9e2; font-size:12px; font-style:normal;}
@@ -76,7 +74,7 @@
 
 .jqx-input-button-content-ui-start{font-size:10px}
 .jqx-input-icon-ui-start{margin-left:2px; margin-top:-1px}
-.jqx-checkbox-check-checked-ui-start{margin-top:1px; background-position:-65px -147px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
+.jqx-checkbox-check-checked-ui-start{margin-top:0px; background-position:-65px -147px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
 /*Progress Bar*/
 .jqx-progressbar-ui-start .jqx-fill-state-pressed-ui-start{background: #7bbdd9; border-bottom: none;}
 .jqx-progressbar-value-vertical-ui-start{background: #7bbdd9; border-right: none; border-bottom: 1px solid #77d5f7;}
@@ -147,7 +145,83 @@
 .jqx-tabs-arrow-right-ui-start{background-position:-32px -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
 .jqx-tabs-arrow-left-ui-start{background-position:-96px -16px; background-image:url(images/start/ui-icons_d8e7f3_256x240.png)}
 /*Scroll Bar*/
-.jqx-scrollbar-ui-start .icon-arrow-up-ui-start{width: 16px; height: 16px; margin-left: auto;}
-.jqx-scrollbar-ui-start .icon-arrow-down-ui-start{width: 16px; height: 16px; margin-left: auto;}
-.jqx-scrollbar-ui-start .icon-arrow-left-ui-start{width: 16px; height: 16px; position: relative; top: 50%; margin-top: -8px;}
-.jqx-scrollbar-ui-start .icon-arrow-right-ui-start{width: 16px; height: 16px; position: relative; top: 50%; margin-top: -8px;}
+.jqx-scrollbar-ui-start .jqx-icon-arrow-up-ui-start{width: 16px; height: 16px; margin-left: auto;}
+.jqx-scrollbar-ui-start .jqx-icon-arrow-down-ui-start{width: 16px; height: 16px; margin-left: auto;}
+.jqx-scrollbar-ui-start .jqx-icon-arrow-left-ui-start{width: 16px; height: 16px; position: relative; top: 50%; margin-top: -8px;}
+.jqx-scrollbar-ui-start .jqx-icon-arrow-right-ui-start{width: 16px; height: 16px; position: relative; top: 50%; margin-top: -8px;}
+.jqx-icon-arrow-first-ui-start
+{
+    background-image: url('images/icon-first-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-icon-arrow-last-ui-start
+{
+    background-image: url('images/icon-last-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-grid-cell-ui-start.jqx-grid-cell-selected-ui-start>.jqx-grid-group-expand-ui-start,
+.jqx-grid-cell-ui-start.jqx-grid-cell-hover-ui-start>.jqx-grid-group-expand-ui-start {
+    background-image: url('images/icon-down-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-grid-cell-ui-start.jqx-grid-cell-selected-ui-start>.jqx-grid-group-collapse-ui-start,
+.jqx-grid-cell-ui-start.jqx-grid-cell-hover-ui-start>.jqx-grid-group-collapse-ui-start {
+    background-image: url('images/icon-right-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-grid-cell-ui-start.jqx-grid-cell-selected-ui-start>.jqx-grid-group-collapse-rtl-ui-start,
+.jqx-grid-cell-ui-start.jqx-grid-cell-hover-ui-start>.jqx-grid-group-collapse-rtl-ui-start {
+    background-image: url('images/icon-left-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-grid-cell-ui-start.jqx-grid-cell-selected-ui-start>.jqx-grid-group-expand-rtl-ui-start,
+.jqx-grid-cell-ui-start.jqx-grid-cell-hover-ui-start>.jqx-grid-group-expand-rtl-ui-start {
+    background-image: url('images/icon-down-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-icon-search-ui-start
+{
+    background-image: url(images/search_white.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-icon-calendar-ui-start, .jqx-icon-calendar-hover-ui-start, .jqx-icon-calendar-pressed-ui-start {
+    background-image: url('images/icon-calendar-white.png');
+}
+.jqx-icon-time-ui-start, .jqx-icon-time-hover-ui-start, .jqx-icon-time-pressed-ui-start {
+    background-image: url('images/icon-time-white.png');
+}
+.jqx-editor-toolbar-icon-ui-start {
+    background: url('images/html_editor_white.png') no-repeat;
+}
+.jqx-layout-ui-start
+{
+    background-color: #4297d7;
+    background-image: none;
+}
+.jqx-layout-pseudo-window-pin-icon-ui-start
+{
+    background-image: url("images/pin-lightblue.png");
+}
+.jqx-layout-pseudo-window-pinned-icon-ui-start
+{
+    background-image: url("images/pinned-lightblue.png");
+}
+.jqx-scheduler-month-cell-ui-start, .jqx-scheduler-time-column-ui-start, .jqx-scheduler-toolbar-ui-start
+{
+    background: #4297d7 !important;
+    color: #fff  !important;
+}
+.jqx-widget-ui-start .jqx-scheduler-middle-cell-ui-start, .jqx-scheduler-middle-cell-ui-start {
+    border-bottom-color: #4297d7 !important;
+}
+.jqx-docking-layout-group-floating-ui-start .jqx-window-header-ui-start
+{
+    background-image: none;
+}

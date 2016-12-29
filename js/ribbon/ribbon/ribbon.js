@@ -133,7 +133,7 @@
 
                                 var tor = '';
 
-                                if (jQuery(this).children('.button-help').size() > 0)
+                                if (jQuery(this).children('.button-help').length > 0)
                                     tor = (jQuery(this).children('.button-help').html());
                                 else
                                     tor = '';

@@ -8,7 +8,10 @@ background: -o-linear-gradient(top, #ffffff 0%,#efeff1 1%,#ededf0 4%,#d2d2d8 100
 background: -ms-linear-gradient(top, #ffffff 0%,#efeff1 1%,#ededf0 4%,#d2d2d8 100%);
 background: linear-gradient(top, #ffffff 0%,#efeff1 1%,#ededf0 4%,#d2d2d8 100%);
 }
-.jqx-fill-state-hover-fresh{ border-color:#5a5e64; color:#000; text-shadow:0 1px 0 #aaa;
+.jqx-widget-fresh .jqx-grid-cell-fresh, .jqx-widget-fresh .jqx-grid-column-header-fresh, .jqx-widget-fresh .jqx-grid-group-cell-fresh {border-color: #8e8e97; background-color: #f7f7f7;}
+.jqx-widget-fresh .jqx-grid-cell-sort-fresh, .jqx-widget-fresh .jqx-grid-cell-filter-fresh, .jqx-widget-fresh .jqx-grid-cell-alt-fresh, .jqx-widget-fresh .jqx-grid-cell-pinned-fresh{background-color:#d7d9df}
+.jqx-widget-fresh, .jqx-widget-header-fresh, .jqx-widget-content-fresh{-webkit-background-clip: padding-box; background-clip: padding-box;}
+.jqx-fill-state-hover-fresh, .jqx-widget-fresh .jqx-grid-cell-hover-fresh{ border-color:#5a5e64; color:#000; text-shadow:0 1px 0 #aaa;
 background: #cacdd5;
 background: -moz-linear-gradient(top, #cacdd5 0%, #a3a7b4 93%, #a6aab7 100%);
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cacdd5), color-stop(93%,#a3a7b4), color-stop(100%,#a6aab7));
@@ -17,7 +20,8 @@ background: -o-linear-gradient(top, #cacdd5 0%,#a3a7b4 93%,#a6aab7 100%);
 background: -ms-linear-gradient(top, #cacdd5 0%,#a3a7b4 93%,#a6aab7 100%);
 background: linear-gradient(top, #cacdd5 0%,#a3a7b4 93%,#a6aab7 100%);
 }
-.jqx-fill-state-pressed-fresh{ background: #058cf5;
+.jqx-fill-state-pressed-fresh, .jqx-widget-fresh .jqx-grid-cell-selected-fresh{
+background: #058cf5;
 background: -moz-linear-gradient(top, #058cf5 0%, #0385f3 19%, #0167e9 72%, #015de6 100%);
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#058cf5), color-stop(19%,#0385f3), color-stop(72%,#0167e9), color-stop(100%,#015de6));
 background: -webkit-linear-gradient(top, #058cf5 0%,#0385f3 19%,#0167e9 72%,#015de6 100%);
@@ -67,10 +71,10 @@ background: -ms-linear-gradient(left, #9cbbed 0%,#3a78dc 1%,#1543bb 100%);
 background: linear-gradient(left, #9cbbed 0%,#3a78dc 1%,#1543bb 100%);
  border:1px solid #014ab8}
 
-.jqx-expander-arrow-expanded-fresh, .icon-arrow-up-selected-fresh{background-image:url('images/icon-up-white.png'); background-repeat:no-repeat; background-position:center}
-.icon-arrow-down-selected-fresh{background-image:url('images/icon-down-white.png'); background-repeat:no-repeat; background-position:center}
-.icon-arrow-left-selected-fresh{background-image:url('images/icon-left-white.png'); background-repeat:no-repeat; background-position:center}
-.icon-arrow-right-selected-fresh{background-image:url('images/icon-right-white.png');background-repeat:no-repeat; background-position:center}
+.jqx-expander-arrow-expanded-fresh, .jqx-icon-arrow-up-selected-fresh{background-image:url('images/icon-up-white.png'); background-repeat:no-repeat; background-position:center}
+.jqx-icon-arrow-down-selected-fresh{background-image:url('images/icon-down-white.png'); background-repeat:no-repeat; background-position:center}
+.jqx-icon-arrow-left-selected-fresh{background-image:url('images/icon-left-white.png'); background-repeat:no-repeat; background-position:center}
+.jqx-icon-arrow-right-selected-fresh{background-image:url('images/icon-right-white.png');background-repeat:no-repeat; background-position:center}
 .jqx-slider-track-horizontal-fresh, .jqx-slider-track-vertical-fresh{border-color: #e8e8e8; background: #e8e8e8;}
 .jqx-grid-column-sortdescbutton-fresh, jqx-grid-column-filterbutton-fresh, .jqx-grid-column-sortascbutton-fresh{ background-color:transparent;  border-style:solid;  border-width:0px 0px 0px 0px;  border-color:#8e8e97}
 
@@ -86,7 +90,49 @@ background: linear-gradient(left, #9cbbed 0%,#3a78dc 1%,#1543bb 100%);
 .jqx-splitter-splitbar-horizontal-fresh, .jqx-splitter-splitbar-vertical-fresh, .jqx-splitter-splitbar-hover-fresh, .jqx-splitter-splitbar-hover-horizontal-fresh{background: #a5a9b6;}
 .jqx-splitter-collapse-button-horizontal-fresh, .jqx-splitter-collapse-button-vertical-fresh{background: #1847bd;}
 .jqx-slider-tick-horizontal-black, .jqx-slider-tick-vertical-black{background: #1847bd; border-color: #1847bd;}
-.jqx-widget-fresh .jqx-grid-cell-fresh, .jqx-widget-fresh .jqx-grid-column-header-fresh, .jqx-widget-fresh .jqx-grid-group-cell-fresh {border-color: #8e8e97; background-color: #f7f7f7;}
-.jqx-widget-fresh .jqx-grid-cell-sort-fresh, .jqx-widget-fresh .jqx-grid-cell-filter-fresh, .jqx-widget-fresh .jqx-grid-cell-alt-fresh, .jqx-widget-fresh .jqx-grid-cell-pinned-fresh{background-color:#d7d9df}
-.jqx-widget-fresh, .jqx-widget-header-fresh, .jqx-widget-content-fresh{-webkit-background-clip: padding-box; background-clip: padding-box;}
 .jqx-menu-vertical-fresh{ background:#d2d2d8; filter: none;}
+.jqx-grid-cell-fresh.jqx-grid-cell-selected-fresh>.jqx-grid-group-expand-fresh {
+    background-image: url('images/icon-down-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-grid-cell-fresh.jqx-grid-cell-selected-fresh>.jqx-grid-group-collapse-fresh
+{
+    background-image: url('images/icon-right-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-grid-cell-fresh.jqx-grid-cell-selected-fresh>.jqx-grid-group-collapse-rtl-fresh
+{
+    background-image: url('images/icon-left-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-grid-cell-fresh.jqx-grid-cell-selected-fresh>.jqx-grid-group-expand-rtl-fresh
+{
+    background-image: url('images/icon-down-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-icon-arrow-first-selected-fresh
+{
+    background-image: url('images/icon-first-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-icon-arrow-last-selected-fresh
+{
+    background-image: url('images/icon-last-white.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.jqx-icon-calendar-pressed-fresh {
+    background-image: url('images/icon-calendar-white.png');
+}
+.jqx-icon-time-pressed-fresh {
+    background-image: url('images/icon-time-white.png');
+}
+.jqx-layout-fresh
+{
+    background-color: #8e8e97;
+}

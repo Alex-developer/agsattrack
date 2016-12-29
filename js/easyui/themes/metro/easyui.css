@@ -263,10 +263,29 @@
   position: relative;
   top: -1px;
 }
+.window-thinborder {
+  padding: 0;
+}
+.window-thinborder .window-header {
+  padding: 5px 5px 6px 5px;
+}
+.window-thinborder .window-body {
+  border-width: 0px;
+}
+.window-thinborder .window-header .panel-icon,
+.window-thinborder .window-header .panel-tool {
+  margin-top: -9px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.window-noborder {
+  border: 0;
+}
 .dialog-content {
   overflow: auto;
 }
 .dialog-toolbar {
+  position: relative;
   padding: 2px 5px;
 }
 .dialog-tool-separator {
@@ -277,6 +296,8 @@
   margin: 2px 1px;
 }
 .dialog-button {
+  position: relative;
+  top: -1px;
   padding: 5px;
   text-align: right;
 }
@@ -294,6 +315,18 @@
 }
 .dialog-button {
   border-color: #ddd #ddd #ddd #ddd;
+}
+.window-thinborder .dialog-toolbar {
+  border-left: transparent;
+  border-right: transparent;
+  border-top-color: #fff;
+}
+.window-thinborder .dialog-button {
+  top: 0px;
+  padding: 5px 8px 8px 8px;
+  border-left: transparent;
+  border-right: transparent;
+  border-bottom: transparent;
 }
 .l-btn {
   text-decoration: none;
@@ -525,12 +558,20 @@
   -webkit-border-radius: 0px 0px 0px 0px;
   border-radius: 0px 0px 0px 0px;
 }
+.textbox .textbox-text::-ms-clear,
+.textbox .textbox-text::-ms-reveal {
+  display: none;
+}
 .textbox textarea.textbox-text {
   white-space: pre-wrap;
 }
 .textbox .textbox-prompt {
   font-size: 12px;
   color: #aaa;
+}
+.textbox .textbox-bgicon {
+  background-position: 3px center;
+  padding-left: 21px;
 }
 .textbox .textbox-button,
 .textbox .textbox-button:hover {
@@ -542,17 +583,57 @@
   -webkit-border-radius: 0 0 0 0;
   border-radius: 0 0 0 0;
 }
-.textbox-button-right,
-.textbox-button-right:hover {
+.textbox .textbox-button-right,
+.textbox .textbox-button-right:hover {
+  right: 0;
   border-width: 0 0 0 1px;
 }
-.textbox-button-left,
-.textbox-button-left:hover {
+.textbox .textbox-button-left,
+.textbox .textbox-button-left:hover {
+  left: 0;
   border-width: 0 1px 0 0;
+}
+.textbox .textbox-button-top,
+.textbox .textbox-button-top:hover {
+  left: 0;
+  border-width: 0 0 1px 0;
+}
+.textbox .textbox-button-bottom,
+.textbox .textbox-button-bottom:hover {
+  top: auto;
+  bottom: 0;
+  left: 0;
+  border-width: 1px 0 0 0;
 }
 .textbox-addon {
   position: absolute;
   top: 0;
+}
+.textbox-label {
+  display: inline-block;
+  width: 80px;
+  height: 22px;
+  line-height: 22px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  padding-right: 5px;
+}
+.textbox-label-after {
+  padding-left: 5px;
+  padding-right: 0;
+}
+.textbox-label-top {
+  display: block;
+  width: auto;
+  padding: 0;
+}
+.textbox-disabled,
+.textbox-label-disabled {
+  opacity: 0.6;
+  filter: alpha(opacity=60);
 }
 .textbox-icon {
   display: inline-block;
@@ -580,6 +661,7 @@
   filter: alpha(opacity=60);
 }
 .textbox-focused {
+  border-color: #c4c4c4;
   -moz-box-shadow: 0 0 3px 0 #ddd;
   -webkit-box-shadow: 0 0 3px 0 #ddd;
   box-shadow: 0 0 3px 0 #ddd;
@@ -587,6 +669,12 @@
 .textbox-invalid {
   border-color: #ffa8a8;
   background-color: #fff3f3;
+}
+.passwordbox-open {
+  background: url('images/passwordbox_open.png') no-repeat center center;
+}
+.passwordbox-close {
+  background: url('images/passwordbox_close.png') no-repeat center center;
 }
 .filebox .textbox-value {
   vertical-align: top;
@@ -607,23 +695,6 @@
 }
 .l-btn-disabled .filebox-label {
   cursor: default;
-}
-.combo {
-  display: inline-block;
-  white-space: nowrap;
-  margin: 0;
-  padding: 0;
-  border-width: 1px;
-  border-style: solid;
-  overflow: hidden;
-  vertical-align: middle;
-}
-.combo .combo-text {
-  font-size: 12px;
-  border: 0px;
-  margin: 0;
-  padding: 0px 2px;
-  vertical-align: baseline;
 }
 .combo-arrow {
   width: 18px;
@@ -648,10 +719,6 @@
 .combo-panel {
   background-color: #fff;
 }
-.combo {
-  border-color: #ddd;
-  background-color: #fff;
-}
 .combo-arrow {
   background-color: #ffffff;
 }
@@ -664,15 +731,11 @@
 .combo .textbox-icon-disabled:hover {
   cursor: default;
 }
-.textbox-invalid {
-  border-color: #ffa8a8;
-  background-color: #fff3f3;
-}
 .combobox-item,
-.combobox-group {
+.combobox-group,
+.combobox-stick {
   font-size: 12px;
   padding: 3px;
-  padding-right: 0px;
 }
 .combobox-item-disabled {
   opacity: 0.5;
@@ -681,8 +744,16 @@
 .combobox-gitem {
   padding-left: 10px;
 }
-.combobox-group {
+.combobox-group,
+.combobox-stick {
   font-weight: bold;
+}
+.combobox-stick {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  background: inherit;
 }
 .combobox-item-hover {
   background-color: #E6E6E6;
@@ -691,6 +762,57 @@
 .combobox-item-selected {
   background-color: #CCE6FF;
   color: #000;
+}
+.combobox-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+.tagbox {
+  cursor: text;
+}
+.tagbox .textbox-text {
+  float: left;
+}
+.tagbox-label {
+  position: relative;
+  display: block;
+  margin: 4px 0 0 4px;
+  padding: 0 20px 0 4px;
+  float: left;
+  vertical-align: top;
+  text-decoration: none;
+  -moz-border-radius: 0px 0px 0px 0px;
+  -webkit-border-radius: 0px 0px 0px 0px;
+  border-radius: 0px 0px 0px 0px;
+  background: #E6E6E6;
+  color: #444;
+}
+.tagbox-remove {
+  background: url('images/tagbox_icons.png') no-repeat -16px center;
+  position: absolute;
+  display: block;
+  width: 16px;
+  height: 16px;
+  right: 2px;
+  top: 50%;
+  margin-top: -8px;
+  opacity: 0.6;
+  filter: alpha(opacity=60);
+}
+.tagbox-remove:hover {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.textbox-disabled .tagbox-label {
+  cursor: default;
+}
+.textbox-disabled .tagbox-remove:hover {
+  cursor: default;
+  opacity: 0.6;
+  filter: alpha(opacity=60);
 }
 .layout {
   position: relative;
@@ -730,6 +852,44 @@
 }
 .layout-expand .panel-header {
   border-bottom-width: 0px;
+}
+.layout-expand .panel-body {
+  position: relative;
+}
+.layout-expand .panel-body .panel-icon {
+  margin-top: 0;
+  top: 0;
+  left: 50%;
+  margin-left: -8px;
+}
+.layout-expand-west .panel-header .panel-icon,
+.layout-expand-east .panel-header .panel-icon {
+  display: none;
+}
+.layout-expand-title {
+  position: absolute;
+  top: 0;
+  left: 21px;
+  white-space: nowrap;
+  word-wrap: normal;
+  -webkit-transform: rotate(90deg);
+  -webkit-transform-origin: 0 0;
+  -moz-transform: rotate(90deg);
+  -moz-transform-origin: 0 0;
+  -o-transform: rotate(90deg);
+  -o-transform-origin: 0 0;
+  transform: rotate(90deg);
+  transform-origin: 0 0;
+}
+.layout-expand-with-icon {
+  top: 18px;
+}
+.layout-expand .panel-body-noheader .layout-expand-title,
+.layout-expand .panel-body-noheader .panel-icon {
+  top: 5px;
+}
+.layout-expand .panel-body-noheader .layout-expand-with-icon {
+  top: 23px;
 }
 .layout-split-proxy-h,
 .layout-split-proxy-v {
@@ -1205,6 +1365,15 @@
   border-style: solid;
   display: none;
 }
+.datagrid-empty {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+}
 .datagrid-sort-icon {
   padding: 0;
   display: none;
@@ -1353,6 +1522,14 @@
   -moz-border-radius: 0 0 0 0;
   -webkit-border-radius: 0 0 0 0;
   border-radius: 0 0 0 0;
+}
+.datagrid-view .validatebox-invalid {
+  border-color: #ffa8a8;
+}
+.datagrid-sort .datagrid-sort-icon {
+  display: inline;
+  padding: 0 13px 0 0;
+  background: url('images/datagrid_icons.png') no-repeat -64px center;
 }
 .datagrid-sort-desc .datagrid-sort-icon {
   display: inline;
@@ -1735,14 +1912,19 @@
   padding-bottom: 5px;
 }
 .calendar-menu-year {
-  width: 40px;
+  width: 50px;
   text-align: center;
   border-width: 1px;
   border-style: solid;
+  outline-style: none;
+  resize: none;
   margin: 0;
   padding: 2px;
   font-weight: bold;
   font-size: 12px;
+  -moz-border-radius: 0px 0px 0px 0px;
+  -webkit-border-radius: 0px 0px 0px 0px;
+  border-radius: 0px 0px 0px 0px;
 }
 .calendar-menu-prev,
 .calendar-menu-next {
@@ -1824,11 +2006,11 @@
   height: 180px;
 }
 .datebox-button {
-  height: 18px;
-  padding: 2px 5px;
+  padding: 0 5px;
   text-align: center;
 }
 .datebox-button a {
+  line-height: 22px;
   font-size: 12px;
   font-weight: bold;
   text-decoration: none;
@@ -1855,32 +2037,6 @@
 }
 .datebox-button a {
   color: #777;
-}
-.numberbox {
-  border: 1px solid #ddd;
-  margin: 0;
-  padding: 0 2px;
-  vertical-align: middle;
-}
-.textbox {
-  padding: 0;
-}
-.spinner {
-  display: inline-block;
-  white-space: nowrap;
-  margin: 0;
-  padding: 0;
-  border-width: 1px;
-  border-style: solid;
-  overflow: hidden;
-  vertical-align: middle;
-}
-.spinner .spinner-text {
-  font-size: 12px;
-  border: 0px;
-  margin: 0;
-  padding: 0 2px;
-  vertical-align: baseline;
 }
 .spinner-arrow {
   background-color: #ffffff;
@@ -1934,8 +2090,11 @@
 .spinner-arrow-down {
   background: url('images/spinner_arrows.png') no-repeat -15px center;
 }
-.spinner {
-  border-color: #ddd;
+.spinner-button-up {
+  background: url('images/spinner_arrows.png') no-repeat -32px center;
+}
+.spinner-button-down {
+  background: url('images/spinner_arrows.png') no-repeat -48px center;
 }
 .progressbar {
   border-width: 1px;
@@ -1968,27 +2127,6 @@
 .progressbar-value .progressbar-text {
   background-color: #CCE6FF;
   color: #000;
-}
-.searchbox {
-  display: inline-block;
-  white-space: nowrap;
-  margin: 0;
-  padding: 0;
-  border-width: 1px;
-  border-style: solid;
-  overflow: hidden;
-  vertical-align: middle;
-}
-.searchbox .searchbox-text {
-  font-size: 12px;
-  border: 0;
-  margin: 0;
-  padding: 0 2px;
-  vertical-align: top;
-}
-.searchbox .searchbox-prompt {
-  font-size: 12px;
-  color: #ccc;
 }
 .searchbox-button {
   width: 18px;
@@ -2043,10 +2181,6 @@
 .searchbox-button {
   background: url('images/searchbox_button.png') no-repeat center center;
 }
-.searchbox {
-  border-color: #ddd;
-  background-color: #fff;
-}
 .searchbox .l-btn-plain {
   background: #ffffff;
 }
@@ -2054,10 +2188,6 @@
 .searchbox .l-btn-plain-disabled:hover {
   opacity: 0.5;
   filter: alpha(opacity=50);
-}
-.textbox-invalid {
-  border-color: #ffa8a8;
-  background-color: #fff3f3;
 }
 .slider-disabled {
   opacity: 0.5;
@@ -2386,12 +2516,12 @@
   border-width: 0 0 0 1px;
 }
 .messager-body {
-  padding: 10px;
-  overflow: hidden;
+  padding: 10px 10px 30px 10px;
+  overflow: auto;
 }
 .messager-button {
   text-align: center;
-  padding-top: 10px;
+  padding: 5px;
 }
 .messager-button .l-btn {
   width: 70px;
@@ -2422,8 +2552,12 @@
 }
 .messager-body .messager-input {
   width: 100%;
-  padding: 1px 0;
+  padding: 4px 0;
+  outline-style: none;
   border: 1px solid #ddd;
+}
+.window-thinborder .messager-button {
+  padding-bottom: 8px;
 }
 .tree {
   margin: 0;
@@ -2559,13 +2693,14 @@
   border: 1px dotted red;
 }
 .tree-editor {
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   font-size: 12px;
-  height: 14px !important;
-  height: 18px;
-  line-height: 14px;
-  padding: 1px 2px;
+  line-height: 16px;
+  padding: 0 4px;
+  margin: 0;
   width: 80px;
+  outline-style: none;
+  vertical-align: top;
   position: absolute;
   top: 0;
 }
@@ -2620,6 +2755,9 @@
   border-color: transparent;
   _border-color: tomato;
   _filter: chroma(color=tomato);
+}
+.tooltip-arrow {
+  display: none \9;
 }
 .tooltip-right .tooltip-arrow-outer {
   left: 0;

@@ -1,10 +1,10 @@
 /**
- * jQuery EasyUI 1.4.3
+ * jQuery EasyUI 1.5.1
  * 
- * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2016 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
- * To use it on other terms please contact us at info@jeasyui.com
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
  *
  */
 /**
@@ -198,7 +198,7 @@
 		var header = pp.panel('header');
 		var tool = header.children('div.panel-tool');
 		tool.children('a.panel-tool-collapse').hide();	// hide the old collapse button
-		var t = $('<a href="javascript:void(0)"></a>').addClass('accordion-collapse accordion-expand').appendTo(tool);
+		var t = $('<a href="javascript:;"></a>').addClass('accordion-collapse accordion-expand').appendTo(tool);
 		t.bind('click', function(){
 			togglePanel(pp);
 			return false;

@@ -855,12 +855,20 @@ var AG3DVIEW = function(element) {
                 up = Cesium.Cartesian3.normalize(eye, up);              
             } else {
                 if (_followFromObserver) {
+                    var height = AGSETTINGS.getViewSettings('threed').followHeightObs;
+                    if (height === undefined) {
+                        height = 50;
+                    }
                     eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
-                    target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), following.get('altitude')*1000));   
+                    target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)+parseInt(height,10)));
                     up = Cesium.Cartesian3.normalize(eye, up);                                
                 } else {
-                    target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));   
-                    eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)+50));
+                    var height = AGSETTINGS.getViewSettings('threed').followHeight;
+                    if (height === undefined) {
+                        height = 50;
+                    }
+                    target = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(observer.getLon(), observer.getLat(), 100));
+                    eye = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(following.get('longitude'), following.get('latitude'), (following.get('altitude')*1000)+parseInt(height,10)));
                     up = Cesium.Cartesian3.normalize(eye, up);
                 }
             }
@@ -1013,7 +1021,7 @@ var AG3DVIEW = function(element) {
         cameraAlt = (cameraAlt / 1000).toFixed(0);
         var cameraLon = Cesium.Math.toDegrees(cameraCartographic.longitude).toFixed(2);
         var cameraLat = Cesium.Math.toDegrees(cameraCartographic.latitude).toFixed(2);
-        jQuery('#camera-pos').html('<strong>Lat:</strong>&nbsp;' + AGUTIL.convertDecDegLat(cameraLat, false) + '&nbsp;&nbsp;<strong>Lon:</strong>&nbsp;' + AGUTIL.convertDecDegLon(cameraLon, false) + '&nbsp;&nbsp;<strong>Alt:</strong>&nbsp;' + cameraAlt + 'Km');
+        jQuery('#camera-pos').html('<strong>Lat:</strong>&nbsp;' + AGUTIL.convertDecDegLat(cameraLat, false) + '<br><strong>Lon:</strong>&nbsp;' + AGUTIL.convertDecDegLon(cameraLon, false) + '<br><strong>Alt:</strong>&nbsp;' + cameraAlt + 'Km');
     }
         
     function resetOrbit() {
@@ -1399,8 +1407,8 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
             }
         });
         
-        jQuery('#bmopacityslider').jqxSlider('setValue', _blackMarbleOpacity);
-        jQuery('#bmbrightnessslider').jqxSlider('setValue', _blackMarbleBrightness);
+      //  jQuery('#bmopacityslider').jqxSlider('setValue', _blackMarbleOpacity);
+      //  jQuery('#bmbrightnessslider').jqxSlider('setValue', _blackMarbleBrightness);
             
        // var inspector = new Cesium.CesiumInspector('inspector', scene);
         

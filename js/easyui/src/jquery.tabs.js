@@ -1,10 +1,10 @@
 /**
- * jQuery EasyUI 1.4.3
+ * jQuery EasyUI 1.5.1
  * 
- * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2016 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
- * To use it on other terms please contact us at info@jeasyui.com
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
  *
  */
 /**
@@ -109,7 +109,7 @@
 				var tr = tools.find('tr');
 				for(var i=0; i<opts.tools.length; i++){
 					var td = $('<td></td>').appendTo(tr);
-					var tool = $('<a href="javascript:void(0);"></a>').appendTo(td);
+					var tool = $('<a href="javascript:;"></a>').appendTo(td);
 					tool[0].onclick = eval(opts.tools[i].handler || function(){});
 					tool.linkbutton($.extend({}, opts.tools[i], {
 						plain: true
@@ -146,7 +146,7 @@
 		if (opts.tabPosition == 'left' || opts.tabPosition == 'right'){
 			header._outerWidth(opts.showHeader ? opts.headerWidth : 0);
 			panels._outerWidth(cc.width() - header.outerWidth());
-			header.add(panels)._outerHeight(opts.height);
+			header.add(panels)._size('height', isNaN(parseInt(opts.height)) ? '' : cc.height());
 			wrap._outerWidth(header.width());
 			ul._outerWidth(wrap.width()).css('height','');
 		} else {
@@ -163,8 +163,8 @@
 			ul._outerHeight(opts.tabHeight).css('width','');
 			ul._outerHeight(ul.outerHeight()-ul.height()-1+opts.tabHeight).css('width','');
 			
-			panels._size('height', isNaN(opts.height) ? '' : (opts.height-header.outerHeight()));
-			panels._size('width', isNaN(opts.width) ? '' : opts.width);
+			panels._size('height', isNaN(parseInt(opts.height)) ? '' : (cc.height()-header.outerHeight()));
+			panels._size('width', cc.width());
 		}
 
 		if (state.tabs.length){
@@ -237,6 +237,7 @@
 		
 		cc.children('div.tabs-panels').children('div').each(function(i){
 			var opts = $.extend({}, $.parser.parseOptions(this), {
+				disabled: ($(this).attr('disabled') ? true : undefined),
 				selected: ($(this).attr('selected') ? true : undefined)
 			});
 			createTab(container, opts, $(this));
@@ -353,7 +354,7 @@
 		var panels = $(container).children('div.tabs-panels');
 		var tab = $(
 				'<li>' +
-				'<a href="javascript:void(0)" class="tabs-inner">' +
+				'<a href="javascript:;" class="tabs-inner">' +
 				'<span class="tabs-title"></span>' +
 				'<span class="tabs-icon"></span>' +
 				'</a>' +
@@ -368,7 +369,7 @@
 			pp.insertBefore(panels.children('div.panel:eq('+options.index+')'));
 			tabs.splice(options.index, 0, pp);
 		}
-		
+
 		// create panel
 		pp.panel($.extend({}, options, {
 			tab: tab,
@@ -495,7 +496,7 @@
 				tab.find('a.tabs-close').remove();
 				if (opts.closable){
 					s_title.addClass('tabs-closable');
-					$('<a href="javascript:void(0)" class="tabs-close"></a>').appendTo(tab);
+					$('<a href="javascript:;" class="tabs-close"></a>').appendTo(tab);
 				} else{
 					s_title.removeClass('tabs-closable');
 				}
@@ -513,7 +514,7 @@
 					if ($.isArray(opts.tools)){
 						p_tool.empty();
 						for(var i=0; i<opts.tools.length; i++){
-							var t = $('<a href="javascript:void(0)"></a>').appendTo(p_tool);
+							var t = $('<a href="javascript:;"></a>').appendTo(p_tool);
 							t.addClass(opts.tools[i].iconCls);
 							if (opts.tools[i].handler){
 								t.bind('click', {handler:opts.tools[i].handler}, function(e){
@@ -528,6 +529,7 @@
 					var pr = p_tool.children().length * 12;
 					if (opts.closable) {
 						pr += 8;
+						p_tool.css('right', '');
 					} else {
 						pr -= 3;
 						p_tool.css('right','5px');
@@ -545,6 +547,11 @@
 					}
 				}
 			}
+		}
+		if (opts.disabled){
+			opts.tab.addClass('tabs-disabled');
+		} else {
+			opts.tab.removeClass('tabs-disabled');
 		}
 		
 		setSize(container);
@@ -599,27 +606,30 @@
 	 */
 	function getTab(container, which, removeit){
 		var tabs = $.data(container, 'tabs').tabs;
+		var tab = null;
 		if (typeof which == 'number'){
-			if (which < 0 || which >= tabs.length){
-				return null;
-			} else {
-				var tab = tabs[which];
-				if (removeit) {
+			if (which >=0 && which < tabs.length){
+				tab = tabs[which];
+				if (removeit){
 					tabs.splice(which, 1);
 				}
-				return tab;
 			}
-		}
-		for(var i=0; i<tabs.length; i++){
-			var tab = tabs[i];
-			if (tab.panel('options').title == which){
-				if (removeit){
-					tabs.splice(i, 1);
+		} else {
+			var tmp = $('<span></span>');
+			for(var i=0; i<tabs.length; i++){
+				var p = tabs[i];
+				tmp.html(p.panel('options').title);
+				if (tmp.text() == which){
+					tab = p;
+					if (removeit){
+						tabs.splice(i, 1);
+					}
+					break;
 				}
-				return tab;
 			}
+			tmp.remove();
 		}
-		return null;
+		return tab;
 	}
 	
 	function getTabIndex(container, tab){
@@ -650,14 +660,12 @@
 		var state = $.data(container, 'tabs')
 		var tabs = state.tabs;
 		for(var i=0; i<tabs.length; i++){
-			if (tabs[i].panel('options').selected){
+			var opts = tabs[i].panel('options');
+			if (opts.selected && !opts.disabled){
 				selectTab(container, i);
 				return;
 			}
 		}
-//		if (tabs.length){
-//			selectTab(container, 0);
-//		}
 		selectTab(container, state.options.selected);
 	}
 	
@@ -665,7 +673,9 @@
 		var p = getTab(container, which);
 		if (p && !p.is(':visible')){
 			stopAnimate(container);
-			p.panel('open');
+			if (!p.panel('options').disabled){
+				p.panel('open');				
+			}
 		}
 	}
 	
@@ -788,12 +798,16 @@
 		},
 		enableTab: function(jq, which){
 			return jq.each(function(){
-				$(this).tabs('getTab', which).panel('options').tab.removeClass('tabs-disabled');
+				var opts = $(this).tabs('getTab', which).panel('options');
+				opts.tab.removeClass('tabs-disabled');
+				opts.disabled = false;
 			});
 		},
 		disableTab: function(jq, which){
 			return jq.each(function(){
-				$(this).tabs('getTab', which).panel('options').tab.addClass('tabs-disabled');
+				var opts = $(this).tabs('getTab', which).panel('options');
+				opts.tab.addClass('tabs-disabled');
+				opts.disabled = true;
 			});
 		},
 		showHeader: function(jq){

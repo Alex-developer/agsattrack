@@ -1,10 +1,10 @@
 /**
- * jQuery EasyUI 1.4.3
+ * jQuery EasyUI 1.5.1
  * 
- * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2016 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
- * To use it on other terms please contact us at info@jeasyui.com
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
  *
  */
 /**
@@ -93,7 +93,7 @@
 			for(var i=0; i<opts.buttons.length; i++){
 				var td = $('<td></td>').appendTo(tr);
 				var btn = opts.buttons[i];
-				var t = $('<a class="datebox-button-a" href="javascript:void(0)"></a>').html($.isFunction(btn.text) ? btn.text(target) : btn.text).appendTo(td);
+				var t = $('<a class="datebox-button-a" href="javascript:;"></a>').html($.isFunction(btn.text) ? btn.text(target) : btn.text).appendTo(td);
 				t.attr('datebox-button-index', i);
 			}
 			tr.find('td').css('width', (100/opts.buttons.length)+'%');

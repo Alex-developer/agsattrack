@@ -1727,7 +1727,9 @@ var PLib =
         {
             PLib.aostime = 0.0;
             var counter = 0;
-            
+
+            indx = 0;
+
             if (PLib.AosHappens(indx) && PLib.Geostationary(indx) == 0 && PLib.Decayed(indx, PLib.daynum) == 0)
             {
                 PLib.Calc();

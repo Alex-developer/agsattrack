@@ -36,10 +36,10 @@ var AGSETTINGS = (function() {
     var _spm = 'predictlib';
     var _debugLevel = 1;
     var _calculateEvents = true;
-    var _requireEUCookieLaw = true;
+    var _requireEUCookieLaw = false;
     var _defaultView = 'home';
     var _defaultSats = '';
-    var _cookieVersion = 3.0;
+    var _cookieVersion = 5.0;
     
     var _defaultSettings = {
         version: _cookieVersion,
@@ -108,7 +108,9 @@ var AGSETTINGS = (function() {
                 showCities: false,
                 cityPopulation: 2,
                 cityFontSize: 12,
-                cityLabelColour: 'ffffff' 
+                cityLabelColour: 'ffffff',
+                followHeight: 50,
+                followHeightObs: 50
             }
         }
     };

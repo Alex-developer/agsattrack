@@ -17,15 +17,15 @@
 
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/gray/easyui.css">
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css">
-<link rel="stylesheet" type="text/css" href="/js/jqueryui/smoothness/jquery-ui-1.10.2.custom.min.css">
+<link rel="stylesheet" type="text/css" href="/js/jqueryui/smoothness/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="/js/agchecklist/checkList.css">
 
 <script type="text/javascript" src="/js/jquery.js"></script>
-<script type="text/javascript" src="/js/jqueryui/jquery-ui-1.10.2.custom.min.js"></script>
+<script type="text/javascript" src="/js/jqueryui/jquery-ui.js"></script>
 <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
 
+    <script type="text/javascript" src="/js/konva/konva.js"></script>
 
-<script type="text/javascript" src="/js/kinetic/kinetic.js"></script>
 <script type="text/javascript" src="/js/agsattrack.js"></script>
 <script type="text/javascript" src="/js/cookies/jquery.cookies.js"></script>
 <script type="text/javascript" src="/js/classes/querystring.js"></script>
@@ -78,8 +78,9 @@
 <script type="text/javascript" src="/js/jqwidgets/jqxwindow.js"></script>
 <script type="text/javascript" src="/js/jqwidgets/jqxslider.js"></script>
 <link rel="stylesheet" href="/js/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <link rel="stylesheet" href="/js/jqwidgets/styles/jqx.dark.css" type="text/css" />
 
-<script src="/js/jscolor/jscolor.js" type="text/javascript"></script>
+<script src="/js/jscolor/jscolor.min.js" type="text/javascript"></script>
 
 <script type="text/javascript" src="/js/joyride/jquery.joyride-2.0.2.js"></script>
 <link href="/js/joyride/joyride-2.0.2.css" rel="stylesheet" type="text/css" />
@@ -119,10 +120,10 @@
                                 
                                 Without the excellent work being done on this project <em>AgSatTrack - Online</em> would not exists. The SOT project provided the initial code to build a test version of <em>AgSatTrack - Online</em> prior to starting development on the full blown version. 
             
-                                <h3>Cesium <a target="_blank" href="http://cesium.agi.com/">Visit Cesium Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
+                                <h3>Cesium <a target="_blank" href="https://cesiumjs.org/">Visit Cesium Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
 
 <div style="float:left;">                                
-    <a href="http://cesium.agi.com/" target="_blank"><img src="/images/cesium_logo.svg" width="100" /></a>
+    <a href="https://cesiumjs.org/" target="_blank"><img src="/images/cesium_logo.svg" width="100" /></a>
 </div>
 
                                 Cesium is a JavaScript library for creating 3D globes and 2D maps in a web browser without a plugin. It uses WebGL for hardware-accerlated graphics, and is cross-platform, cross-browser, and tuned for dynamic-data visualization. Cesium is open source under the Apache 2.0 license. It is free for commercial and non-commercial use.
@@ -331,11 +332,7 @@
 
             <div class="ribbon-tab" id="3d-tab">
                 <span class="ribbon-title" data-tab="3d">3D View</span>
-                
-                <div class="ribbon-section">                
 
-                </div>
-                                                    
                 <div class="ribbon-section">
                     <span class="section-title">View Options</span>
 
@@ -375,7 +372,7 @@
                             </div>
                         </div>                                                                                                        
                                             
-                        <div class="ribbon-button ribbon-button-large view-reset" id="3d-view-reset" style="width:60px;">
+                        <div class="ribbon-button ribbon-button-large view-reset" id="3d-view-reset" style="width:40px;">
                             <span class="button-title">Reset</span> 
                             <span class="button-help"><strong>Reset view.</strong><br /><br />Resets the 3d view to its defaults.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                        
                             <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
@@ -570,12 +567,13 @@
                     <span class="section-title">Select And Fly To Satellite</span>
                     <select class="easyui-combobox" id="3d-sat-finder" style="width:200px;">
                     </select>                    
-                </div>                
-                
-                <div style="float:right;">
-                    <a href="http://cesium.agi.com/" target="_blank"><img src="/images/cesium_logo.svg" width="300" /></a>
-                    <div id="camera-pos">POS</div>
                 </div>
+
+                <div style="float:left;">
+                    <a href="https://cesiumjs.org/" target="_blank"><img src="/images/cesium_logo.svg" width="100" /></a>
+                    <div id="camera-pos"></div>
+                </div>
+
                 
             </div>
 
@@ -1016,8 +1014,8 @@
 			<div title="Sky View" id="sky" style="overflow: hidden;"></div>
 			
             <div title="Timeline View" id="timeline" style="overflow: hidden;">
-                <div id="timelinelegend" style="float: left;width:200px"></div>                
-                <div id="timelineview" style="float: left;overflow: auto;"></div>                
+                <div id="timelinelegend" style="float: left;width:200px"></div>
+                <div id="timelineview" style="float: left;overflow: auto;"></div>
             </div>			
 			
             <div title="Settings" width=1000 height=600 id="options">
@@ -1171,31 +1169,31 @@
                                             <table width="100%">
                                                 <tr>
                                                     <th width="50%">Background Colour</th>
-                                                    <td width="50%"><input class="color polarcolour" id="polar-background-color" type="text" value="" /></td>
+                                                    <td width="50%"><input class="jscolor polarcolour" id="polar-background-color" type="text" value="" /></td>
                                                 </tr>
                                                 <tr>
                                                     <th width="50%">Border Colour</th>
-                                                    <td width="50%"><input class="color polarcolour" id="polar-border-color" type="text" value="" /></td>
+                                                    <td width="50%"><input class="jscolor polarcolour" id="polar-border-color" type="text" value="" /></td>
                                                 </tr>                                                
                                                 <tr>
                                                     <th width="50%">Gradient Start</th>
-                                                    <td width="50%"><input class="color polarcolour" id="polar-gradient-start" type="text" value="" /></td>
+                                                    <td width="50%"><input class="jscolor polarcolour" id="polar-gradient-start" type="text" value="" /></td>
                                                 </tr>
                                                 <tr>
                                                     <th width="50%">Gradient End</th>
-                                                    <td width="50%"><input class="color polarcolour" id="polar-gradient-end" type="text" value="" /></td>
+                                                    <td width="50%"><input class="jscolor polarcolour" id="polar-gradient-end" type="text" value="" /></td>
                                                 </tr>
                                                 <tr>
                                                     <th width="50%">Grid Colour</th>
-                                                    <td width="50%"><input class="color polarcolour" id="polar-grid" type="text" value="" /></td>
+                                                    <td width="50%"><input class="jscolor polarcolour" id="polar-grid" type="text" value="" /></td>
                                                 </tr>
                                                 <tr>
                                                     <th width="50%">Text Colour</th>
-                                                    <td width="50%"><input class="color polarcolour" id="polar-text" type="text" value="" /></td>
+                                                    <td width="50%"><input class="jscolor polarcolour" id="polar-text" type="text" value="" /></td>
                                                 </tr>
                                                 <tr>
                                                     <th width="50%">Degree Text Colour</th>
-                                                    <td width="50%"><input class="color polarcolour" id="polar-degrees-text" type="text" value="" /></td>
+                                                    <td width="50%"><input class="jscolor polarcolour" id="polar-degrees-text" type="text" value="" /></td>
                                                 </tr>
                                                 <tr>
                                                     <th width="50%">Reset Colours To Defaults</th>
@@ -1377,8 +1375,8 @@
                                     </tr>
                                     <tr valign="top">
                                         <th>Label Colour</th>
-                                        <td><input class="color polarcolour" id="3d-label-colour-unselected" type="text" value="" /></td>
-                                        <td><input class="color polarcolour" id="3d-label-colour-selected" type="text" value="" /></td>
+                                        <td><input class="jscolor polarcolour" id="3d-label-colour-unselected" type="text" value="" /></td>
+                                        <td><input class="jscolor polarcolour" id="3d-label-colour-selected" type="text" value="" /></td>
                                     </tr>
                                 </table>  
                                 
@@ -1418,12 +1416,12 @@
                                     <tr valign="top">
                                         <th>Population Limit</th>
                                         <td>
-                                            <input id="options-3d-view-city-pop-limit" class="easyui-numberspinner" style="width: 30px;" required="required" data-options="min:0,max:10,increment:0.1,editable:true"> Million                                      
+                                            <input id="options-3d-view-city-pop-limit" class="easyui-numberspinner" style="width: 60px;" required="required" data-options="min:0,max:10,increment:1,editable:false"> Million
                                             <p class="description">Cities will only be displayed if their population is above or equal to this limit.</p>
                                         </td>
                                         <th>Label Colour</th>
                                         <td>
-                                            <input id="options-3d-view-city-font-colour" type="text" class="color">                                      
+                                            <input id="options-3d-view-city-font-colour" type="text" class="jscolor">
                                             <p class="description">The label colour</p>
                                         </td>                                         
                                     </tr>                                                                                         

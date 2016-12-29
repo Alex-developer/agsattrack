@@ -1,10 +1,10 @@
 /**
- * jQuery EasyUI 1.4.3
+ * jQuery EasyUI 1.5.1
  * 
- * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2016 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
- * To use it on other terms please contact us at info@jeasyui.com
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
  *
  */
 /**
@@ -77,8 +77,8 @@
 		
 		var state = $.data(e.data.target, 'draggable');
 		var opts = state.options;
-		
-		var droppables = $('.droppable').filter(function(){
+
+		var droppables = $('.droppable:visible').filter(function(){
 			return e.data.target != this;
 		}).filter(function(){
 			var accept = $.data(this, 'droppable').options.accept;
@@ -304,6 +304,8 @@
 					top: position.top,
 					startX: e.pageX,
 					startY: e.pageY,
+					width: $(e.data.target).outerWidth(),
+					height: $(e.data.target).outerHeight(),
 					offsetWidth: (e.pageX - offset.left),
 					offsetHeight: (e.pageY - offset.top),
 					target: e.data.target,

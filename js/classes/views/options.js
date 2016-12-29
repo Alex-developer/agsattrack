@@ -117,8 +117,8 @@ var AGOPTIONS = function() {
         jQuery('#options-3d-sat-label-unselected-size option[value="' + AGSETTINGS.getViewSettings('threed').unselectedLabelSize + '"]').attr('selected', true);
         jQuery('#options-3d-sat-label-selected-size option[value="' + AGSETTINGS.getViewSettings('threed').selectedLabelSize + '"]').attr('selected', true);    
                 
-        jQuery('#3d-label-colour-unselected')[0].color.fromString(AGSETTINGS.getViewSettings('threed').unselectedLabelColour);
-        jQuery('#3d-label-colour-selected')[0].color.fromString(AGSETTINGS.getViewSettings('threed').selectedLabelColour);
+        jQuery('#3d-label-colour-unselected')[0].jscolor.fromString(AGSETTINGS.getViewSettings('threed').unselectedLabelColour);
+        jQuery('#3d-label-colour-selected')[0].jscolor.fromString(AGSETTINGS.getViewSettings('threed').selectedLabelColour);
 
         jQuery('#options-3d-view option[value="' + AGSETTINGS.getViewSettings('threed').view + '"]').attr('selected', true);
         jQuery('#options-3d-provider option[value="' + AGSETTINGS.getViewSettings('threed').provider + '"]').attr('selected', true);
@@ -134,11 +134,13 @@ var AGOPTIONS = function() {
         } else {
             jQuery('#options-3d-view-show-cities').prop('checked', false);
         }
-        jQuery('#options-3d-view-city-pop-limit').val(AGSETTINGS.getViewSettings('threed').cityPopulation);
+        jQuery('#options-3d-view-city-pop-limit').numberspinner('setValue',AGSETTINGS.getViewSettings('threed').cityPopulation);
         jQuery('#options-3d-view-city-font-size').val(AGSETTINGS.getViewSettings('threed').cityFontSize);
-        jQuery('#options-3d-view-city-font-colour')[0].color.fromString(AGSETTINGS.getViewSettings('threed').cityLabelColour);
+        jQuery('#options-3d-view-city-font-colour')[0].jscolor.fromString(AGSETTINGS.getViewSettings('threed').cityLabelColour);
 
-                       
+        jQuery('#options-3d-view-followsat-height').numberspinner('setValue',AGSETTINGS.getViewSettings('threed').followHeight);
+        jQuery('#options-3d-view-followobs-height').numberspinner('setValue',AGSETTINGS.getViewSettings('threed').followHeightObs);
+
         /**
         * Disable the save button - Just in case any of the above enabled it.
         */
@@ -203,24 +205,24 @@ var AGOPTIONS = function() {
     */
     
     function setPolarColours(colours) {
-        jQuery('#polar-background-color')[0].color.fromString(colours.background);
-        jQuery('#polar-border-color')[0].color.fromString(colours.border);
-        jQuery('#polar-gradient-start')[0].color.fromString(colours.gradientstart);
-        jQuery('#polar-gradient-end')[0].color.fromString(colours.gradientend);
-        jQuery('#polar-grid')[0].color.fromString(colours.grid);
-        jQuery('#polar-text')[0].color.fromString(colours.text);
-        jQuery('#polar-degrees-text')[0].color.fromString(colours.degcolour);        
+        jQuery('#polar-background-color')[0].jscolor.fromString(colours.background);
+        jQuery('#polar-border-color')[0].jscolor.fromString(colours.border);
+        jQuery('#polar-gradient-start')[0].jscolor.fromString(colours.gradientstart);
+        jQuery('#polar-gradient-end')[0].jscolor.fromString(colours.gradientend);
+        jQuery('#polar-grid')[0].jscolor.fromString(colours.grid);
+        jQuery('#polar-text')[0].jscolor.fromString(colours.text);
+        jQuery('#polar-degrees-text')[0].jscolor.fromString(colours.degcolour);
     }
     
     jQuery('.polarcolour').on('change', function(e){
         var colours = {
-            background: jQuery('#polar-background-color')[0].color.toString(),
-            border: jQuery('#polar-border-color')[0].color.toString(),
-            grid: jQuery('#polar-grid')[0].color.toString(),
-            text: jQuery('#polar-text')[0].color.toString(),
-            degcolour: jQuery('#polar-degrees-text')[0].color.toString(),
-            gradientstart: jQuery('#polar-gradient-start')[0].color.toString(),
-            gradientend: jQuery('#polar-gradient-end')[0].color.toString()
+            background: jQuery('#polar-background-color')[0].jscolor.toString(),
+            border: jQuery('#polar-border-color')[0].jscolor.toString(),
+            grid: jQuery('#polar-grid')[0].jscolor.toString(),
+            text: jQuery('#polar-text')[0].jscolor.toString(),
+            degcolour: jQuery('#polar-degrees-text')[0].jscolor.toString(),
+            gradientstart: jQuery('#polar-gradient-start')[0].jscolor.toString(),
+            gradientend: jQuery('#polar-gradient-end')[0].jscolor.toString()
         }
         _polarPreview.setPreviewColours(colours);            
         enableSave();        
@@ -253,14 +255,28 @@ var AGOPTIONS = function() {
         enableSave();        
     });
     
-    jQuery('.color').on('change', function(e){
+    jQuery('.jscolor').on('change', function(e){
         enableSave();        
     });
 
-    jQuery('.easyui-numberspinner').on('change', function(e){
-        enableSave();        
+    jQuery('#options-3d-view-followsat-height').numberspinner({
+        onChange : function() {
+            enableSave();
+        }
     });
-   
+
+    jQuery('#options-3d-view-followobs-height').numberspinner({
+        onChange : function() {
+            enableSave();
+        }
+    });
+
+    jQuery('#options-3d-view-city-pop-limit').numberspinner({
+        onChange : function() {
+            enableSave();
+        }
+    });
+
 	jQuery('#window-preferences-calc-timer').numberspinner({
 		onSpinUp : function() {
 			enableSave();
@@ -335,13 +351,13 @@ var AGOPTIONS = function() {
         
         
         var colours = {
-            background: jQuery('#polar-background-color')[0].color.toString(),
-            border: jQuery('#polar-border-color')[0].color.toString(),
-            grid: jQuery('#polar-grid')[0].color.toString(),
-            text: jQuery('#polar-text')[0].color.toString(),
-            degcolour: jQuery('#polar-degrees-text')[0].color.toString(),
-            gradientstart: jQuery('#polar-gradient-start')[0].color.toString(),
-            gradientend: jQuery('#polar-gradient-end')[0].color.toString()
+            background: jQuery('#polar-background-color')[0].jscolor.toString(),
+            border: jQuery('#polar-border-color')[0].jscolor.toString(),
+            grid: jQuery('#polar-grid')[0].jscolor.toString(),
+            text: jQuery('#polar-text')[0].jscolor.toString(),
+            degcolour: jQuery('#polar-degrees-text')[0].jscolor.toString(),
+            gradientstart: jQuery('#polar-gradient-start')[0].jscolor.toString(),
+            gradientend: jQuery('#polar-gradient-end')[0].jscolor.toString()
         }        
         AGSETTINGS.setViewColours('polar', colours);
         AGVIEWS.optionsUpdated('polar');
@@ -359,16 +375,19 @@ var AGOPTIONS = function() {
         settings.selectedIconSize = jQuery('#options-3d-sat-icon-selected-size').find(":selected").val();
         settings.unselectedLabelSize = jQuery('#options-3d-sat-label-unselected-size').find(":selected").val();
         settings.selectedLabelSize = jQuery('#options-3d-sat-label-selected-size').find(":selected").val();
-        settings.unselectedLabelColour = jQuery('#3d-label-colour-unselected')[0].color.toString();     
-        settings.selectedLabelColour = jQuery('#3d-label-colour-selected')[0].color.toString();     
+        settings.unselectedLabelColour = jQuery('#3d-label-colour-unselected')[0].jscolor.toString();
+        settings.selectedLabelColour = jQuery('#3d-label-colour-selected')[0].jscolor.toString();
         settings.view = jQuery('#options-3d-view').find(":selected").val();
         settings.provider = jQuery('#options-3d-provider').find(":selected").val();
         
         settings.useTerrainProvider = jQuery('#options-3d-terrainprovider').prop('checked');                
         settings.showCities = jQuery('#options-3d-view-show-cities').prop('checked');
-        settings.cityLabelColour = jQuery('#options-3d-view-city-font-colour')[0].color.toString();     
+        settings.cityLabelColour = jQuery('#options-3d-view-city-font-colour')[0].jscolor.toString();
         settings.cityFontSize = jQuery('#options-3d-view-city-font-size').val();
         settings.cityPopulation = jQuery('#options-3d-view-city-pop-limit').val();
+        settings.followHeight = jQuery('#options-3d-view-followsat-height').val();
+        settings.followHeightObs = jQuery('#options-3d-view-followobs-height').val();
+
         AGSETTINGS.setViewSettings('threed', settings);
              
              

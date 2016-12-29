@@ -1,4 +1,4 @@
-# $.geocomplete() - Version 1.4
+# $.geocomplete() - Version 1.7.0
 ## jQuery Geocoding and Places Autocomplete Plugin
 
 An advanced jQuery plugin that wraps the Google Maps API's [Geocoding](https://code.google.com/apis/maps/documentation/javascript/geocoding.html) and [Places Autocomplete](https://code.google.com/apis/maps/documentation/javascript/places.html#places_autocomplete) services. You simply provide an input that lets you search for locations with a nice autocomplete dropdown. Optionally add a container to show an interactive map and a form that will be populated with the address details.
@@ -25,13 +25,14 @@ Here is a list of basic uses:
 * [Attribute](http://ubilabs.github.com/geocomplete/examples/custom_attribute.html) - Using custom attributes to populate data.
 * [Multiple results](http://ubilabs.github.com/geocomplete/examples/multiple_results.html) - Handling multiple results from the geocoder.
 * [Draggable](http://ubilabs.github.com/geocomplete/examples/draggable.html) -  A draggable marker to redefine the position.
+* [Styled](http://ubilabs.github.com/geocomplete/examples/styled.html) -  A styled map example.
 
 ## Requirements
 
-Make sure you include the Google Maps API with the Places Library before loading this plugin as described [here](http://code.google.com/intl/de-DE/apis/maps/documentation/javascript/places.html#loading_the_library).
+Make sure you include the Google Maps API with the Places Library before loading this plugin as described [here](https://developers.google.com/maps/documentation/javascript/places#loading_the_library).
 
 ````html
-<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
+<script src="http://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 <script src="jquery.geocomplete.js"></script>
 ```
 
@@ -64,13 +65,15 @@ The `map` option might be a selector, a jQuery object or a DOM element.
 
 ## Populate Form Data
 
-You can pass `details` as an option to specify a cointainer that will be populated when a geocoding request was successfull.
+You can pass `details` as an option to specify a container that will be populated when a geocoding request was successful.
 
 By default the plugin analyses the `name` attribute of the containers child nodes and replaces the content. You can override the `detailsAttribute` to use another attribute such as `data-geo`.
 
 If the element is an input, the value will be replaced otherwise the plugin overrides the current text.
 
-**Note**: Some address compontents such as "country" return an additional `short_name`. You can access them by simply adding `_short` at the end of the type.
+If you have multiple geocomplete fields on a page, use `detailsScope` option scope your 'details' container.
+
+**Note**: Some address components such as "country" return an additional `short_name`. You can access them by simply adding `_short` at the end of the type.
 
 Simple Example:
 
@@ -94,7 +97,7 @@ Advanced Example:
   Longitude:    <span data-geo="lng" />
   Address:      <span data-geo="formatted_address" />
   Country Code: <span data-geo="country_short" />
-</form>
+</div>
 ```
 
 ```javascript
@@ -125,6 +128,7 @@ $("#my_input").geocomplete({
 
 * `map` - Might be a selector, a jQuery object or a DOM element. Default is `false` which shows no map.
 * `details` - The container that should be populated with data. Defaults to `false` which ignores the setting.
+* 'detailsScope' - Allows you to scope the 'details' container and have multiple geocomplete fields on one page. Must be a parent of the input. Default is 'null'
 * `location` - Location to initialize the map on. Might be an address `string` or an `array` with [latitude, longitude] or a `google.maps.LatLng`object. Default is `false` which shows a blank map.
 * `bounds` - Whether to snap geocode search to map bounds. Default: `true` if false search globally. Alternatively pass a custom LatLngBounds object
 * `detailsAttribute` - The attribute's name to use as an indicator. Default: `"name"`
@@ -138,6 +142,7 @@ $("#my_input").geocomplete({
 * `maxZoom` - The maximum zoom level to zoom in after a geocoding response. Default: `16`
 * `componentRestrictions` - Option for Google Places Autocomplete to restrict results by country. See the [docs](https://developers.google.com/maps/documentation/javascript/places#places_autocomplete)
 * `types` - An array containing one or more of the supported types for the places request. Default: `['geocode']` See the full list [here](http://code.google.com/apis/maps/documentation/javascript/places.html#place_search_requests).
+* `blur` - Defaults to `false`. When enabled it will trigger the geocoding request whenever the geofield is blured. (See jQuery `.blur()`)
 
 ## Events
 
@@ -157,6 +162,9 @@ The following events are supported:
 * `"geocode:error"` - Fired when the geocode returns an error. Passes the current status as listed [here](http://code.google.com/apis/maps/documentation/javascript/geocoding.html#GeocodingStatusCodes).
 * `"geocode:multiple"` - Fired immediately after the "result" event if multiple results were found. Passes an array of all results.
 * `"geocode:dragged"` - Fired when the marker's position was modified manually. Passes the updated location.
+* `"geocode:click"` - Fired when 'click' event occurs on the map. Passes the location where the click had place.
+* `"geocode:mapdragged"` - Fired when the map bounds are modified by dragging manually. Passes the location of the current map center.
+* `"geocode:idle"` - Fired when the map becomes idle after panning or zooming. Passes the location of the current map center.
 
 ## Methods and Properties
 
@@ -168,7 +176,7 @@ Example:
 // Initialize the plugin.
 $("input").geocomplete({ map: ".map_canvas" });
 
-// Call the find method with the paramenter "NYC".
+// Call the find method with the parameter "NYC".
 $("input").geocomplete("find", "NYC");
 
 // Get the map and set a new zoom level.

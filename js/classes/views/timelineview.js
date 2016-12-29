@@ -24,7 +24,7 @@ Copyright 2012 Alex Greenland
 *
 */
 /*jshint bitwise: true, loopfunc: true*/
-/*global AGSatTrack, AGUTIL, AGSETTINGS, AGOBSERVER, Kinetic, requestAnimFrame, console */ 
+/*global AGSatTrack, AGUTIL, AGSETTINGS, AGOBSERVER, Konva, requestAnimFrame, console */
 
 var AGTIMELINE = function() {
 	'use strict';
@@ -102,7 +102,7 @@ var AGTIMELINE = function() {
         }
         
         var stageWidth = _fixedStageWidth + _viewLeftMargin-20;
-        
+
         if (width !== 0 && height !== 0) {
             
             jQuery('#timelinelegend').width(200);
@@ -110,9 +110,12 @@ var AGTIMELINE = function() {
 
             jQuery('#timelineview').width(width - 220);
             jQuery('#timelineview').height(height);
-                        
-            _viewStage.setSize(stageWidth, height-25);
-            _legendStage.setSize(200, height-25);
+
+            _viewStage.setWidth(stageWidth);
+            _viewStage.setHeight(height-25);
+
+            _legendStage.setWidth(200);
+            _legendStage.setHeight(height);
             
             _mousePosTimeLayer.setX(0);
             _mousePosTimeLayer.setY(height-50);
@@ -135,9 +138,9 @@ var AGTIMELINE = function() {
         _legendBackgroundLayer.removeChildren();
 		_backgroundLayer.removeChildren();
 		
-		_backgroundLayer.add(new Kinetic.Rect({
-            fillLinearGradientStartPoint: [0, 0],
-            fillLinearGradientEndPoint: [0, _height / 2],
+		_backgroundLayer.add(new Konva.Rect({
+            fillLinearGradientStartPoint: { x: 0, y: 0},
+            fillLinearGradientEndPoint: {x: 0, y: _height / 2},
             fillLinearGradientColorStops: [0, '#374553', 1, '#001224'], 
 			x : 0,
 			y : 0,
@@ -145,7 +148,7 @@ var AGTIMELINE = function() {
 			height : _height - _legendHeight
 		}));
 		
-        _legendBackgroundLayer.add(new Kinetic.Rect({
+        _legendBackgroundLayer.add(new Konva.Rect({
             fill: '#001224', 
             x : 0,
             y : 0,
@@ -153,7 +156,7 @@ var AGTIMELINE = function() {
             height : _height + 25
         }));
                 
-		_backgroundLayer.add(new Kinetic.Rect({
+		_backgroundLayer.add(new Konva.Rect({
             fill: '#374553',
 			x : 0,
 			y : _height - _legendHeight,
@@ -193,7 +196,7 @@ var AGTIMELINE = function() {
                     break;
             }
             
-            _backgroundLayer.add(new Kinetic.Line({
+            _backgroundLayer.add(new Konva.Line({
                 points : [ i + _viewLeftMargin, _height - _legendHeight, i + _viewLeftMargin, _height - _legendHeight + length ],
                 stroke : '#777',
                 strokeWidth : 1
@@ -208,7 +211,7 @@ var AGTIMELINE = function() {
                 } else {
                     xTextPos = i + _viewLeftMargin - (hour < 10?3:7);
                 }
-                _backgroundLayer.add(new Kinetic.Text({
+                _backgroundLayer.add(new Konva.Text({
                     x : xTextPos,
                     y : _height - 70,
                     text : hour,
@@ -236,7 +239,7 @@ var AGTIMELINE = function() {
         var selectedSats = AGSatTrack.getTles().getSelected();
         var yPos = _topMargin;
         if (selectedSats.length === 0) {
-            _legendLayer.add(new Kinetic.Text({
+            _legendLayer.add(new Konva.Text({
                 x : 10 ,
                 y : (_height - _legendHeight) / 2,
                 width: _satLegendWidth - 10,
@@ -252,7 +255,7 @@ var AGTIMELINE = function() {
         var tooltipPos = 0;
         jQuery.each(selectedSats, function(index, sat) {
 
-            _legendLayer.add(new Kinetic.Text({
+            _legendLayer.add(new Konva.Text({
                 x : _leftMargin,
                 y : yPos,
                 width: _satLegendWidth,
@@ -265,14 +268,14 @@ var AGTIMELINE = function() {
 
             if (sat.isGeostationary()) {
                 if (sat.get('elevation') > 0) {
-                    _timelineLayer.add(new Kinetic.Rect({
+                    _timelineLayer.add(new Konva.Rect({
                         fill: 'white',
                         x : _viewLeftMargin,
                         y : yPos,
                         width : _fixedStageWidth-_viewLeftMargin,
                         height : 20
                     }));
-                    _timelineLayer.add(new Kinetic.Text({
+                    _timelineLayer.add(new Konva.Text({
                         x : _viewLeftMargin + 10,
                         y : yPos + 5,
                         width: 400,
@@ -283,7 +286,7 @@ var AGTIMELINE = function() {
                         fill : 'black'
                     }));                                         
                 } else {
-                    _timelineLayer.add(new Kinetic.Text({
+                    _timelineLayer.add(new Konva.Text({
                         x : _viewLeftMargin + 10,
                         y : yPos + 5,
                         width: 400,
@@ -296,7 +299,7 @@ var AGTIMELINE = function() {
                 }
             } else {
             
-                _timelineLayer.add(new Kinetic.Line({
+                _timelineLayer.add(new Konva.Line({
                     points : [ _viewLeftMargin, yPos+10, _fixedStageWidth-_viewLeftMargin, yPos+10 ],
                     stroke : '#777',
                     strokeWidth : 1
@@ -309,7 +312,7 @@ var AGTIMELINE = function() {
                     for (var i=0; i<passes.length;i++) {
                         var startPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeStart) * _pixelsPerMin) + _viewLeftMargin;
                         var endPos = (Date.DateDiff('n', _startDate, passes[i].dateTimeEnd) * _pixelsPerMin) + _viewLeftMargin;
-                        var rect = new Kinetic.Rect({
+                        var rect = new Konva.Rect({
                             fill: '#3D9EFF',
                             x : startPos,
                             y : yPos,
@@ -335,7 +338,8 @@ var AGTIMELINE = function() {
                         _tooltipText[tooltipPos] = text;
                                               
                         rect.on('mousemove', function(){
-                            _toolTip.setPosition(_mousePos.x + 5, _mousePos.y + 5);
+                            _toolTip.x(_mousePos.x + 5);
+                            _toolTip.y(_mousePos.y + 5);
                             _toolTip.setText(_tooltipText[this._id]);
                             _toolTip.show();
                             _toolTipLayer.draw();
@@ -368,9 +372,7 @@ var AGTIMELINE = function() {
                                     }
                                 }
                             }
-                            /**
-                            * If we ran off of the end of the pass array add the mutual pass
-                            */
+
                             if (mutualStart !== null && mutualEnd === null) {
                                 mutualEnd = passData.pass[len-1].date;
                                 addMutual(_startDate, mutualStart, mutualEnd, yPos, tooltipPos);                              
@@ -391,9 +393,9 @@ var AGTIMELINE = function() {
     function addMutual(_startDate, mutualStart, mutualEnd, yPos, tooltipPos) {
         var startPos = (Date.DateDiff('n', _startDate, mutualStart) * _pixelsPerMin) + _viewLeftMargin;
         var endPos = (Date.DateDiff('n', _startDate, mutualEnd) * _pixelsPerMin) + _viewLeftMargin;
-        var mutualRect = new Kinetic.Rect({
-            fillLinearGradientStartPoint: [0, 0],
-            fillLinearGradientEndPoint: [20, 20],
+        var mutualRect = new Konva.Rect({
+            fillLinearGradientStartPoint: {x: 0, y: 0},
+            fillLinearGradientEndPoint: {x: 20, y: 20},
             fillLinearGradientColorStops: [0, '#001E3D', 1, '#005EBC'],
             x : startPos,
             y : yPos,
@@ -407,7 +409,8 @@ var AGTIMELINE = function() {
         _tooltipText[tipPos] = text;
                               
         mutualRect.on('mousemove', function(){
-            _toolTip.setPosition(_mousePos.x + 5, _mousePos.y + 5);
+            _toolTip.x(_mousePos.x + 5);
+            _toolTip.y(_mousePos.y + 5);
             _toolTip.setText(_tooltipText[this._id]);
             _toolTip.show();
             _toolTipLayer.draw();
@@ -426,7 +429,7 @@ var AGTIMELINE = function() {
         _mousePosTimeLayer.clear();
         
         if (_mousePos.x >= _viewLeftMargin) {
-            _mousePosLayer.add(new Kinetic.Line({
+            _mousePosLayer.add(new Konva.Line({
                 points : [ _mousePos.x, 0, _mousePos.x, _height ],
                 stroke : '#777',
                 strokeWidth : 1,
@@ -500,7 +503,7 @@ var AGTIMELINE = function() {
 			_render = true;
             resize();
             setupToolbar();
-            animate();            
+            animate();
 		},
 
 		stopRender : function() {
@@ -512,27 +515,25 @@ var AGTIMELINE = function() {
         },
         
 		init : function() {
-			_viewStage = new Kinetic.Stage({
+			_viewStage = new Konva.Stage({
 				container : 'timelineview',
 				width : jQuery('#viewtabs').tabs('getTab', 0).width(),
 				height : jQuery('#viewtabs').tabs('getTab', 0).height()
 			});
-                        
+
 			_viewStage.on('mousemove', function() {
-				_mousePos = _viewStage.getMousePosition();
+				_mousePos = _viewStage.getPointerPosition ();
 				_mousePos.show = true;
 			});
 			
-			_backgroundLayer = new Kinetic.Layer();
+			_backgroundLayer = new Konva.Layer();
 			_viewStage.add(_backgroundLayer);
 			
-			_timelineLayer = new Kinetic.Layer({
-                width: _satLegendWidth
-            });
+			_timelineLayer = new Konva.Layer();
 			_viewStage.add(_timelineLayer);			
             
-            _toolTipLayer = new Kinetic.Layer();
-            _toolTip = new Kinetic.Text({
+            _toolTipLayer = new Konva.Layer();
+            _toolTip = new Konva.Text({
                 text: '',
                 fontFamily: 'Calibri',
                 fontSize: 10,
@@ -544,21 +545,21 @@ var AGTIMELINE = function() {
             _toolTipLayer.add(_toolTip);            
             _viewStage.add(_toolTipLayer);            
             
-            _legendStage = new Kinetic.Stage({
+            _legendStage = new Konva.Stage({
                 container : 'timelinelegend',
                 width : 200,
                 height : jQuery('#viewtabs').tabs('getTab', 0).height() + 25
             });            
-            _legendBackgroundLayer = new Kinetic.Layer();
+            _legendBackgroundLayer = new Konva.Layer();
             _legendStage.add(_legendBackgroundLayer);
-            _legendLayer = new Kinetic.Layer();
+            _legendLayer = new Konva.Layer();
             _legendStage.add(_legendLayer);                        
                   
-            _mousePosLayer = new Kinetic.Layer();
+            _mousePosLayer = new Konva.Layer();
             _viewStage.add(_mousePosLayer);                
-            _mousePosTimeLayer = new Kinetic.Layer();
+            _mousePosTimeLayer = new Konva.Layer();
             _legendStage.add(_mousePosTimeLayer);                         
-            _mousePosTime = new Kinetic.Text({
+            _mousePosTime = new Konva.Text({
                 x : 5,
                 y : 0,
                 text : 'N/A',
@@ -567,7 +568,7 @@ var AGTIMELINE = function() {
                 fill : 'white'
             });
             _mousePosTimeLayer.add(_mousePosTime);
-                                    
+
 			drawBackground();
 		},
         

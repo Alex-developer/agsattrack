@@ -13,11 +13,13 @@
 	<h2>Fluid NumberBox</h2>
 	<p>This example shows how to set the width of NumberBox to a percentage of its parent container.</p>
 	<div style="margin:20px 0;"></div>
-	<div class="easyui-panel" style="width:500px;padding:20px 100px 60px 100px;">
-		<p>width: 100%</p>
-		<input class="easyui-numberbox" precision="2" value="234.56" style="width:100%">
-		<p>width: 50%</p>
-		<input class="easyui-numberbox" value="100" style="width:50%">
+	<div class="easyui-panel" style="width:100%;max-width:400px;padding:30px 60px;">
+		<div style="margin-bottom:20px">
+			<input class="easyui-numberbox" label="width: 100%" labelPosition="top" precision="2" value="234.56" style="width:100%;">
+		</div>
+		<div style="margin-bottom:20px">
+			<input class="easyui-numberbox" label="width: 50%" labelPosition="top" value="100" style="width:50%;">
+		</div>
 	</div>
 	
 </body>

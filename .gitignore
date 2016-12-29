@@ -1,6 +1,8 @@
 *.pydevproject
 .project
 .metadata
+.idea/*
+.idea/vcs.xml
 bin/**
 tmp/**
 tmp/**/*

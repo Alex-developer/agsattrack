@@ -19,7 +19,7 @@ Copyright 2013 Alex Greenland
 * Last Checked: 19/01/2013
 * 
 */
-/*global AGVIEWS,AGSatTrack,AGUTIL,AGSETTINGS,Kinetic,requestAnimFrame */
+/*global AGVIEWS,AGSatTrack,AGUTIL,AGSETTINGS,Konva,requestAnimFrame */
  
 var AGAZELVIEW = function(element) {
     'use strict';
@@ -68,7 +68,8 @@ var AGAZELVIEW = function(element) {
         }
 
         if (width !== 0 && height !== 0) {
-            _stage.setSize(width, height);
+            _stage.width(width);
+            _stage.height(height);
             drawAzElView();
         }          
     }
@@ -100,7 +101,7 @@ var AGAZELVIEW = function(element) {
         _backgroundLayer.removeChildren();
         _timeLayer.removeChildren();
         _mouseLayer.removeChildren();
-        _backgroundLayer.add(new Kinetic.Rect({
+        _backgroundLayer.add(new Konva.Rect({
             x: 0,
             y: 0,
             width: _width,
@@ -108,19 +109,19 @@ var AGAZELVIEW = function(element) {
             fill: '#001224'
         }));
         
-        _backgroundLayer.add(new Kinetic.Line({
+        _backgroundLayer.add(new Konva.Line({
             points : [ _margin, _margin, _margin, _height - _margin],
             stroke : '#ccc',
             strokeWidth : 1
         }));
 
-        _backgroundLayer.add(new Kinetic.Line({
+        _backgroundLayer.add(new Konva.Line({
             points : [ _width - _margin, _margin, _width - _margin, _height - _margin],
             stroke : '#ccc',
             strokeWidth : 1
         }));
         
-        _backgroundLayer.add(new Kinetic.Line({
+        _backgroundLayer.add(new Konva.Line({
             points : [ _margin, _height - _margin, _width - _margin, _height - _margin],
             stroke : '#ccc',
             strokeWidth : 1
@@ -134,18 +135,18 @@ var AGAZELVIEW = function(element) {
         var okToDraw = true;
         
         for (var i=1; i < 7; i++) {
-            _backgroundLayer.add(new Kinetic.Line({
+            _backgroundLayer.add(new Konva.Line({
                 points : [ _margin, ypos, _margin+10, ypos],
                 stroke : '#ccc',
                 strokeWidth : 1
             }));
-            _backgroundLayer.add(new Kinetic.Line({
+            _backgroundLayer.add(new Konva.Line({
                 points : [ _width - _margin, ypos, _width - _margin - 10, ypos],
                 stroke : '#ccc',
                 strokeWidth : 1
             }));
                                    
-            _backgroundLayer.add(new Kinetic.Text({
+            _backgroundLayer.add(new Konva.Text({
                 x : _margin - 30,
                 y : ypos - 2,
                 text : ((7-i)*60) + 'º',
@@ -155,7 +156,7 @@ var AGAZELVIEW = function(element) {
                 fill : 'green'
             }));
               
-            _backgroundLayer.add(new Kinetic.Text({
+            _backgroundLayer.add(new Konva.Text({
                 x : _width - _margin + 3,
                 y : ypos - 2,
                 text : (90 / 6) * (7-i) + 'º',
@@ -184,7 +185,7 @@ var AGAZELVIEW = function(element) {
                 var dateLabel = AGUTIL.date(date);             
                 for (i=0; i < 7; i++) {
                     if (i !== 0 && i !== 6) {  
-                        _timeLayer.add(new Kinetic.Line({
+                        _timeLayer.add(new Konva.Line({
                             points : [ xpos, _height - _margin, xpos, _height - _margin - 10],
                             stroke : '#ccc',
                             strokeWidth : 1
@@ -192,7 +193,7 @@ var AGAZELVIEW = function(element) {
                     }
                     if (_passToShow !== 0) {
                         var formattedDate = AGUTIL.shortTime(date);
-                        _timeLayer.add(new Kinetic.Text({
+                        _timeLayer.add(new Konva.Text({
                             x : xpos - 17,
                             y : _height - _margin + 7,
                             text : formattedDate,
@@ -207,7 +208,7 @@ var AGAZELVIEW = function(element) {
                     xpos += _xstep;
                 }
                 
-                _timeLayer.add(new Kinetic.Text({
+                _timeLayer.add(new Konva.Text({
                     x : 0,
                     y : _height - _margin + 25,
                     width: _width,
@@ -220,7 +221,7 @@ var AGAZELVIEW = function(element) {
             }           
         }
         
-        _backgroundLayer.add(new Kinetic.Text({
+        _backgroundLayer.add(new Konva.Text({
             x : _margin - 30,
             y : _margin - 30,
             text : 'Az',
@@ -230,7 +231,7 @@ var AGAZELVIEW = function(element) {
             fill : 'white'
         }));        
 
-        _backgroundLayer.add(new Kinetic.Text({
+        _backgroundLayer.add(new Konva.Text({
             x : _width - _margin + 3,
             y : _margin - 30,
             text : 'El',
@@ -240,7 +241,7 @@ var AGAZELVIEW = function(element) {
             fill : 'white'
         }));
         
-        _mousePosText = new Kinetic.Text({
+        _mousePosText = new Konva.Text({
             x : 0,
             y : 10,
             width: _width,
@@ -288,19 +289,20 @@ var AGAZELVIEW = function(element) {
                 }
                 
                 if (elPoints.length > 0) {
-                    _plotLayer.add(new Kinetic.Polygon({
+                    _plotLayer.add(new Konva.Line({
                             points: elPoints,
-                            fillLinearGradientStartPoint: [0, -10],
-                            fillLinearGradientEndPoint: [0, _height],
+                            fillLinearGradientStartPoint: {x: 0, y: -10},
+                            fillLinearGradientEndPoint: {x: 0, y: _height},
                             fillLinearGradientColorStops: [0, '#374553', 1, '#001224'],                            
                             lineCap: 'round',
-                            lineJoin: 'round'
+                            lineJoin: 'round',
+                            closed : true
                         })
                     );
                 }
                 
                 if (azPoints.length > 0) {
-                    _plotLayer.add(new Kinetic.Line({
+                    _plotLayer.add(new Konva.Line({
                             points: azPoints,
                             stroke: 'green',
                             strokeWidth: 1,
@@ -411,26 +413,26 @@ var AGAZELVIEW = function(element) {
                            
         init : function(mode) {
             
-            _stage = new Kinetic.Stage({
+            _stage = new Konva.Stage({
                 container : _element,
                 width : jQuery('#'+_element).width(),
                 height : jQuery('#'+_element).height()
             }); 
                   
-            _backgroundLayer = new Kinetic.Layer();
+            _backgroundLayer = new Konva.Layer();
             _stage.add(_backgroundLayer);
 
-            _plotLayer = new Kinetic.Layer();
+            _plotLayer = new Konva.Layer();
             _stage.add(_plotLayer);                                  
 
-            _timeLayer = new Kinetic.Layer();
+            _timeLayer = new Konva.Layer();
             _stage.add(_timeLayer);            
 
-            _mouseLayer = new Kinetic.Layer();
+            _mouseLayer = new Konva.Layer();
             _stage.add(_mouseLayer);            
             
             _stage.on('mousemove', function() {
-                var mousePos = _stage.getMousePosition();
+                var mousePos = _stage.getPointerPosition();
                 _mousePos.x = mousePos.x;
                 _mousePos.y = mousePos.y;
                 convertMousePos();

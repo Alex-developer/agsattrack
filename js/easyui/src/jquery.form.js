@@ -1,10 +1,10 @@
 /**
- * jQuery EasyUI 1.4.3
+ * jQuery EasyUI 1.5.1
  * 
- * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2016 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
- * To use it on other terms please contact us at info@jeasyui.com
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
  *
  */
 /**
@@ -21,8 +21,51 @@
 		
 		var param = $.extend({}, opts.queryParams);
 		if (opts.onSubmit.call(target, param) == false){return;}
-		$(target).find('.textbox-text:focus').blur();
-		
+
+		// $(target).find('.textbox-text:focus').blur();
+		var input = $(target).find('.textbox-text:focus');
+		input.triggerHandler('blur');
+		input.focus();
+
+		var disabledFields = null;	// the fields to be disabled
+		if (opts.dirty){
+			var ff = [];	// all the dirty fields
+			$.map(opts.dirtyFields, function(f){
+				if ($(f).hasClass('textbox-f')){
+					$(f).next().find('.textbox-value').each(function(){
+						ff.push(this);
+					});
+				} else {
+					ff.push(f);
+				}
+			});
+			disabledFields = $(target).find('input[name]:enabled,textarea[name]:enabled,select[name]:enabled').filter(function(){
+				return $.inArray(this, ff) == -1;
+			});
+			disabledFields.attr('disabled', 'disabled');
+		}
+
+		if (opts.ajax){
+			if (opts.iframe){
+				submitIframe(target, param);
+			} else {
+				if (window.FormData !== undefined){
+					submitXhr(target, param);
+				} else {
+					submitIframe(target, param);
+				}
+			}
+		} else {
+			$(target).submit();
+		}
+
+		if (opts.dirty){
+			disabledFields.removeAttr('disabled');
+		}
+	}
+
+	function submitIframe(target, param){
+		var opts = $.data(target, 'form').options;
 		var frameId = 'easyui_frame_' + (new Date().getTime());
 		var frame = $('<iframe id='+frameId+' name='+frameId+'></iframe>').appendTo('body')
 		frame.attr('src', window.ActiveXObject ? 'javascript:false' : 'about:blank');
@@ -96,13 +139,48 @@
 				}
 			} catch(e){
 			}
-			opts.success(data);
+			opts.success.call(target, data);
 			setTimeout(function(){
 				f.unbind();
 				f.remove();
 			}, 100);
 		}
 	}
+
+	function submitXhr(target, param){
+		var opts = $.data(target, 'form').options;
+		var formData = new FormData($(target)[0]);
+		for(var name in param){
+			formData.append(name, param[name]);
+		}
+		$.ajax({
+			url: opts.url,
+			type: 'post',
+			xhr: function(){
+				var xhr = $.ajaxSettings.xhr();
+				if (xhr.upload) {
+					xhr.upload.addEventListener('progress', function(e){
+						if (e.lengthComputable) {
+							var total = e.total;
+							var position = e.loaded || e.position;
+							var percent = Math.ceil(position * 100 / total);
+							opts.onProgress.call(target, percent);
+						}
+					}, false);
+				}
+				return xhr;
+			},
+			data: formData,
+			dataType: 'html',
+			cache: false,
+			contentType: false,
+			processData: false,
+			complete: function(res){
+				opts.success.call(target, res.responseText);
+			}
+		});
+	}
+	
 	
 	/**
 	 * load form data
@@ -206,6 +284,7 @@
 	 */
 	function clear(target){
 		$('input,select,textarea', target).each(function(){
+			if ($(this).hasClass('textbox-value')){return;}
 			var t = this.type, tag = this.tagName.toLowerCase();
 			if (t == 'text' || t == 'hidden' || t == 'password' || tag == 'textarea'){
 				this.value = '';
@@ -229,13 +308,15 @@
 			
 		});
 		
+		var tmp = $();
 		var form = $(target);
 		var opts = $.data(target, 'form').options;
-		for(var i=opts.fieldTypes.length-1; i>=0; i--){
+		for(var i=0; i<opts.fieldTypes.length; i++){
 			var type = opts.fieldTypes[i];
-			var field = form.find('.'+type+'-f');
+			var field = form.find('.'+type+'-f').not(tmp);
 			if (field.length && field[type]){
 				field[type]('clear');
+				tmp = tmp.add(field);
 			}
 		}
 		form.form('validate');
@@ -270,10 +351,16 @@
 			});
 		}
 		$(target).bind('_change.form', function(e, t){
+			if ($.inArray(t, options.dirtyFields) == -1){
+				options.dirtyFields.push(t);
+			}
 			options.onChange.call(this, t);
 		}).bind('change.form', function(e){
 			var t = e.target;
 			if (!$(t).hasClass('textbox-text')){
+				if ($.inArray(t, options.dirtyFields) == -1){
+					options.dirtyFields.push(t);
+				}
 				options.onChange.call(this, t);
 			}
 		});
@@ -359,25 +446,41 @@
 			return jq.each(function(){
 				setValidation(this, false);
 			});
+		},
+		resetValidation: function(jq){
+			return jq.each(function(){
+				$(this).find('.validatebox-text:not(:disabled)').validatebox('resetValidation');
+			});
+		},
+		resetDirty: function(jq){
+			return jq.each(function(){
+				$(this).form('options').dirtyFields = [];
+			});
 		}
 	};
 	
 	$.fn.form.parseOptions = function(target){
 		var t = $(target);
-		return $.extend({}, $.parser.parseOptions(target, [{ajax:'boolean'}]), {
+		return $.extend({}, $.parser.parseOptions(target, [
+			{ajax:'boolean',dirty:'boolean'}
+		]), {
 			url: (t.attr('action') ? t.attr('action') : undefined)
 		});
 	};
 	
 	$.fn.form.defaults = {
-		fieldTypes: ['combobox','combotree','combogrid','datetimebox','datebox','combo',
+		fieldTypes: ['combobox','combotree','combogrid','combotreegrid','datetimebox','datebox','combo',
 		        'datetimespinner','timespinner','numberspinner','spinner',
-		        'slider','searchbox','numberbox','textbox','switchbutton'],
+		        'slider','searchbox','numberbox','passwordbox','filebox','textbox','switchbutton'],
 		novalidate: false,
 		ajax: true,
+		iframe: true,
+		dirty: false,
+		dirtyFields: [],
 		url: null,
 		queryParams: {},
 		onSubmit: function(param){return $(this).form('validate');},
+		onProgress: function(percent){},
 		success: function(data){},
 		onBeforeLoad: function(param){},
 		onLoadSuccess: function(data){},

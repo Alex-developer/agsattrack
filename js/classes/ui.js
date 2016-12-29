@@ -29,7 +29,7 @@ var AGUI = function() {
     * element from the ribbon bar.
     */
     var url = jQuery(location).attr('href');
-    if (url.indexOf('ag.local') === -1 && url.indexOf('agsattrack.com') === -1) {
+    if (url.indexOf('agsattrack.local') === -1 && url.indexOf('agsattrack.com') === -1) {
         jQuery('#social-twitter').remove();    
         jQuery('#social-fb').remove();    
     }

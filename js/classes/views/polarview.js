@@ -24,7 +24,7 @@ Copyright 2012 Alex Greenland
 *
 */
 /*jshint bitwise: true*/
-/*global AGSatTrack, AGIMAGES, AGVIEWS, AGSETTINGS, AGUTIL, Kinetic, requestAnimFrame */
+/*global AGSatTrack, AGIMAGES, AGVIEWS, AGSETTINGS, AGUTIL, Konva, requestAnimFrame */
   
 var AGPOLARVIEW = function(element) {
 	'use strict';
@@ -93,7 +93,8 @@ var AGPOLARVIEW = function(element) {
         }
 
         if (width !== 0 && height !== 0) {
-            _stage.setSize(width, height);
+            _stage.width(width);
+            _stage.height(height);
             drawBackground();
             drawPolarView();
         }          
@@ -233,7 +234,7 @@ var AGPOLARVIEW = function(element) {
 		setDimensions();
 		_backgroundLayer.removeChildren();
 
-       var res =  _backgroundLayer.add(new Kinetic.Rect({
+       var res =  _backgroundLayer.add(new Konva.Rect({
             x: 0,
             y: 0,
             width: _width,
@@ -241,7 +242,7 @@ var AGPOLARVIEW = function(element) {
             fill: '#' + _colours.background
         }));
 
-        _backgroundLayer.add(new Kinetic.Circle({
+        _backgroundLayer.add(new Konva.Circle({
             x : _cx,
             y : _cy,
             radius : _radius + _halfMargin,
@@ -250,12 +251,12 @@ var AGPOLARVIEW = function(element) {
             fill: '#' + _colours.background 
         })); 
         
-		_circle = new Kinetic.Circle({
+		_circle = new Konva.Circle({
 			x : _cx,
 			y : _cy,
 			radius : _radius,
-            fillLinearGradientStartPoint: [0, -10],
-            fillLinearGradientEndPoint: [0, 100],
+            fillLinearGradientStartPoint: {x: 0, y: -10},
+            fillLinearGradientEndPoint: {x: 0, y: 100},
             fillLinearGradientColorStops: [0, '#' + _colours.gradientstart, 1, '#' + _colours.gradientend],
 		});
                     
@@ -267,7 +268,7 @@ var AGPOLARVIEW = function(element) {
         
         for (var i=0; i<90; i+=15) {
             radius = (0.5 + (_radius * (i/90))) | 0;
-            _backgroundLayer.add(new Kinetic.Circle({
+            _backgroundLayer.add(new Konva.Circle({
                 x : _cx,
                 y : _cy,
                 radius : radius,
@@ -286,7 +287,7 @@ var AGPOLARVIEW = function(element) {
         }
         for (i=15; i<90; i+=15) {
             radius = (0.5 + (_radius * (i/90))) | 0;
-            _backgroundLayer.add(new Kinetic.Text({
+            _backgroundLayer.add(new Konva.Text({
                 x : _cx - radius - 7,
                 y : _cy + 5,
                 text : (90-i) + 'º',
@@ -294,7 +295,7 @@ var AGPOLARVIEW = function(element) {
                 fontFamily : 'Verdana',
                 fill : '#' + _colours.degcolour
             }));
-            _backgroundLayer.add(new Kinetic.Text({
+            _backgroundLayer.add(new Konva.Text({
                 x : _cx + radius - 7,
                 y : _cy + 5,
                 text : (90-i) + 'º',
@@ -323,28 +324,28 @@ var AGPOLARVIEW = function(element) {
             var endX =  (_cx + (_radius + 15) * Math.cos( rad )) | 0;  
             var endY =  (_cy + (_radius + 15) * Math.sin( rad )) | 0;
             
-            _backgroundLayer.add(new Kinetic.Line({
+            _backgroundLayer.add(new Konva.Line({
                 points : [ startX, startY, endX, endY ],
                 stroke : '#' + _colours.grid,
                 strokeWidth : 1
             }));           
         }      
 
-		_backgroundLayer.add(new Kinetic.Line({
+		_backgroundLayer.add(new Konva.Line({
             points : [ _cx - _radius - _halfMargin + 5, _cy,
                     _cx + _radius + _halfMargin - 5, _cy ],
             stroke : '#' + _colours.grid,
             strokeWidth : 1
         }));
 
-		_backgroundLayer.add(new Kinetic.Line({
+		_backgroundLayer.add(new Konva.Line({
             points : [ _cx, _cy - _radius - _halfMargin + 5, _cx,
                     _cy + _radius + _halfMargin - 5 ],
             stroke : '#' + _colours.grid,
             strokeWidth : 1
         }));
 
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
             x : _cx + 5,
             y : 30,
             text : 'N',
@@ -353,7 +354,7 @@ var AGPOLARVIEW = function(element) {
             fill : '#' + _colours.text
         }));
 
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
             x : _cx + _radius ,
             y : _radius + _halfMargin,
             text : 'E',
@@ -362,7 +363,7 @@ var AGPOLARVIEW = function(element) {
             fill : '#' + _colours.text
         }));
 
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
             x : _cx - _radius - 10,
             y : _radius + _halfMargin,
             text : 'W',
@@ -371,7 +372,7 @@ var AGPOLARVIEW = function(element) {
             fill : '#' + _colours.text
         }));
 
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
             x : _cx + 8,
             y : _height - _halfMargin - 30,
             text : 'S',
@@ -384,7 +385,7 @@ var AGPOLARVIEW = function(element) {
         if (_mode === AGVIEWS.modes.SINGLE) {
             elFontSize = 10;    
         }        
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
             x : 10,
             y : 5,
             text : 'Mouse Position',
@@ -393,7 +394,7 @@ var AGPOLARVIEW = function(element) {
             fill : '#' + _colours.text
         }));
         
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
             x : 10,
             y : 30,
             text : 'Azimuth:',
@@ -402,7 +403,7 @@ var AGPOLARVIEW = function(element) {
             fill : '#' + _colours.text
         }));
         
-		_backgroundLayer.add(new Kinetic.Text({
+		_backgroundLayer.add(new Konva.Text({
             x : 10,
             y : 50,
             text : 'Elevation:',
@@ -420,14 +421,14 @@ var AGPOLARVIEW = function(element) {
             
             var az = AGUTIL.getBearing(observer.getLat(),observer.getLon(), mutualObserver.getLat(), mutualObserver.getLon());
             var pos = convertAzEltoXY(az, 0);
-            _mutualLayer.add(new Kinetic.Circle({
+            _mutualLayer.add(new Konva.Circle({
                 x : pos.x,
                 y : pos.y,
                 radius : 5,
                 stroke : 'red',
                 strokeWidth : 1
             }));             
-            _mutualLayer.add(new Kinetic.Text({
+            _mutualLayer.add(new Konva.Text({
                 x : pos.x,
                 y : pos.y,
                 text : mutualObserver.getName(),
@@ -627,7 +628,7 @@ var AGPOLARVIEW = function(element) {
                     }
 
                     if (prePoints.length > 0) {
-                        _orbitLayer.add(new Kinetic.Line({
+                        _orbitLayer.add(new Konva.Line({
                                 points: prePoints,
                                 stroke: 'red',
                                 strokeWidth: 1,
@@ -638,7 +639,7 @@ var AGPOLARVIEW = function(element) {
                     }
                                                                     
                     if (points.length > 0) {
-                        _orbitLayer.add(new Kinetic.Line({
+                        _orbitLayer.add(new Konva.Line({
                                 points: points,
                                 stroke: 'green',
                                 strokeWidth: 2,
@@ -649,7 +650,7 @@ var AGPOLARVIEW = function(element) {
                     }
                     
                     if (postPoints.length > 0) {
-                        _orbitLayer.add(new Kinetic.Line({
+                        _orbitLayer.add(new Konva.Line({
                                 points: postPoints,
                                 stroke: 'red',
                                 strokeWidth: 1,
@@ -677,7 +678,7 @@ var AGPOLARVIEW = function(element) {
                 if (el < AGSETTINGS.getAosEl()) {
                     if (aostime !== null) {
                         pos = convertAzEltoXY(max.az, max.el);
-                        _orbitLayer.add(new Kinetic.Text({
+                        _orbitLayer.add(new Konva.Text({
                             x : pos.x + 5,
                             y : pos.y + 5,
                             text : satellite.getName(),
@@ -689,7 +690,7 @@ var AGPOLARVIEW = function(element) {
                 } 
                 if (max.az !== 0 && max.el !== 0 && okToDraw) {
                     pos = convertAzEltoXY(max.az, max.el);
-                    _orbitLayer.add(new Kinetic.Circle({
+                    _orbitLayer.add(new Konva.Circle({
                         x : pos.x,
                         y : pos.y,
                         radius : 2,
@@ -701,7 +702,7 @@ var AGPOLARVIEW = function(element) {
 
                 
                 if (aosPos.x !== 0 && aosPos.y !== 0) {
-                    _orbitLayer.add(new Kinetic.Text({
+                    _orbitLayer.add(new Konva.Text({
                         x : aosPos.x,
                         y : aosPos.y,
                         text : 'AoS: ' + AGUTIL.shortdatetime(passData.aosTime),
@@ -712,7 +713,7 @@ var AGPOLARVIEW = function(element) {
                 }
                 
                 if (postPoints.length !== 0) {
-                    _orbitLayer.add(new Kinetic.Text({
+                    _orbitLayer.add(new Konva.Text({
                         x : postPoints[0],
                         y : postPoints[1],
                         text : 'LoS: ' + AGUTIL.shortdatetime(passData.losTime),
@@ -732,7 +733,7 @@ var AGPOLARVIEW = function(element) {
                     _style = 'bold';
                 }
 
-                _satLayer.add(new Kinetic.Text({
+                _satLayer.add(new Konva.Text({
                     x : pos.x - 8,
                     y : pos.y - 20,
                     text : satellite.getName(),
@@ -743,7 +744,7 @@ var AGPOLARVIEW = function(element) {
                 }));
 
                 var sat;
-                sat = new Kinetic.Image({
+                sat = new Konva.Image({
                     x : pos.x - 8,
                     y : pos.y - 8,
                     image : AGIMAGES.getImage('satellite116'),
@@ -773,7 +774,7 @@ var AGPOLARVIEW = function(element) {
         var headlen = 10;
         var angle = Math.atan2(toy-fromy,tox-fromx);
 
-        var line = new Kinetic.Line({
+        var line = new Konva.Line({
             points: [fromx, fromy, tox, toy, tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6),tox, toy, tox-headlen*Math.cos(angle+Math.PI/6),toy-headlen*Math.sin(angle+Math.PI/6)],
             stroke: colour
         });
@@ -808,7 +809,7 @@ var AGPOLARVIEW = function(element) {
                 elFontSize = 8;    
             }
             if (_mode !== AGVIEWS.modes.SINGLE) {             
-                 _infoLayer.add(new Kinetic.Text({
+                 _infoLayer.add(new Konva.Text({
                     x : 10,
                     y : _height-50,
                     text : 'Information for ' + following.getName(),
@@ -817,7 +818,7 @@ var AGPOLARVIEW = function(element) {
                     fill : '#ccc'
                  }));
             }
-             _infoLayer.add(new Kinetic.Text({
+             _infoLayer.add(new Konva.Text({
                 x : 10,
                 y : _height-35,
                 text : 'Next Event: ' + nextEvent.eventlong,
@@ -826,7 +827,7 @@ var AGPOLARVIEW = function(element) {
                 fill : '#ccc'
              }));
              
-             _infoLayer.add(new Kinetic.Text({
+             _infoLayer.add(new Konva.Text({
                 x : 10,
                 y : _height-21,
                 text : 'Event Time: ' + nextEvent.time,
@@ -855,7 +856,7 @@ var AGPOLARVIEW = function(element) {
                         image = AGIMAGES.getImage(planet.name.toLowerCase(),'generic');
                     }
 
-                    _planetLayer.add(new Kinetic.Image({
+                    _planetLayer.add(new Konva.Image({
                         x : pos.x - 8,
                         y : pos.y - 8,
                         image : image,
@@ -864,7 +865,7 @@ var AGPOLARVIEW = function(element) {
                         id : -1
                     }));
                     
-                    _planetLayer.add(new Kinetic.Text({
+                    _planetLayer.add(new Konva.Text({
                         x : pos.x,
                         y : pos.y - 20,
                         text : planet.name,
@@ -925,38 +926,38 @@ var AGPOLARVIEW = function(element) {
             }
             _mode = mode;
             
-            _stage = new Kinetic.Stage({
+            _stage = new Konva.Stage({
                 container : _element,
                 width : 1000,
                 height : 600
             });
 
-            _backgroundLayer = new Kinetic.Layer();
+            _backgroundLayer = new Konva.Layer();
             _stage.add(_backgroundLayer);
 
-            _objectLayer = new Kinetic.Layer();
+            _objectLayer = new Konva.Layer();
             _stage.add(_objectLayer);
 
-            _satLayer = new Kinetic.Layer();
+            _satLayer = new Konva.Layer();
             _stage.add(_satLayer);
 
-            _planetLayer = new Kinetic.Layer();
+            _planetLayer = new Konva.Layer();
             _stage.add(_planetLayer);
 
-            _arrowLayer = new Kinetic.Layer();
+            _arrowLayer = new Konva.Layer();
             _stage.add(_arrowLayer); 
                         
-            _orbitLayer = new Kinetic.Layer();
+            _orbitLayer = new Konva.Layer();
             _stage.add(_orbitLayer);
 
-            _infoLayer = new Kinetic.Layer();
+            _infoLayer = new Konva.Layer();
             _stage.add(_infoLayer);
                 
-            _mutualLayer = new Kinetic.Layer();
+            _mutualLayer = new Konva.Layer();
             _stage.add(_mutualLayer);
                 
             _stage.on('mousemove', function() {
-                _mousePos = _stage.getMousePosition();
+                _mousePos = _stage.getPointerPosition();
                 convertMousePos();
             });
             
@@ -964,7 +965,7 @@ var AGPOLARVIEW = function(element) {
             if (_mode === AGVIEWS.modes.SINGLE) {
                 elFontSize = 10;    
             }               
-            _mousePosTextAz = new Kinetic.Text({
+            _mousePosTextAz = new Konva.Text({
                 x : 80,
                 y : 30,
                 text : 'N/A',
@@ -974,7 +975,7 @@ var AGPOLARVIEW = function(element) {
             });
             _objectLayer.add(_mousePosTextAz);
 
-            _mousePosTextEl = new Kinetic.Text({
+            _mousePosTextEl = new Konva.Text({
                 x : 80,
                 y : 50,
                 text : 'N/A',

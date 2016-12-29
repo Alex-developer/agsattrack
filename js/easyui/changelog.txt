@@ -1,3 +1,84 @@
+Version 1.5.1
+-------------
+* Bug
+ * datagrid: The selecting and checking flags will lose after calling 'updateRow' method. fixed.
+ * tabs: The trip tools have a wrong position when calling 'update' method. fixed.
+ * window: When the height is set to 'auto', it will disappear after moving the window. fixed.
+ * messager: When display the progress message window and then close it immediately, an exception occurs. fixed.
+ * form: The 'clear' method does not clear the selected drop-down items of the combobox. fixed.
+* Improvement
+ * textbox: The 'cls' property is available to add a custom style to textbox.
+ * numberbox: Allow the user to format currency in Italian.
+ * combo: Add 'multivalue' property that allows the user to determine how to submit the multiple values.
+ * combobox: Add 'reversed' property.
+ * combobox: Add 'onClick' event.
+ * combogrid: Add 'reversed' property.
+ * treegrid: Enable multiple selection with the shift key.
+* New Plugins
+ * tagbox: Allows the user to add tags to a form field.
+
+Version 1.5
+-------------
+* Bug
+ * combobox: The 'onSelect' event does not fire when load data that contains the selected item. fixed.
+ * datagrid: The 'updateRow' method sometimes does not work properly when the field is set to a blank value. fixed.
+* Improvement
+ * A label can be associated to any form fields.
+ * combobox: Enhance the 'select' and 'unselect' rules on the drop-down items.
+ * combobox: Add 'limitToList' property to limit the inputed values to the listed items.
+ * combogrid: Allow the user to clone the component quickly.
+ * form: Add the 'dirty' property that allows the user to submit the only changed fields.
+ * form: Add 'resetDirty' method.
+ * datagrid: Allow the user to display a message when there are no records to be shown.
+ * textbox: Add 'label','labelWidth','labelPosition' and 'labelAlign' properties.
+ * spinner: Add 'spinAlign' property.
+ * calendar: Allow the user to display week number of the year.
+ * window: Add 'constrain' property.
+* New Plugins
+ * passwordbox: The plugin that allows the user to input passwords with nice feedback.
+ * combotreegrid: Combines combobox with drop-down treegrid component.
+
+Version 1.4.5
+-------------
+* Bug
+ * datagrid: The 'getChanges' method does not return the updated rows after calling 'updateRow' method. fixed.
+ * treegrid: The 'onLoadSuccess' event fires when append or insert a row. fixed.
+ * tree: The 'onLoadSuccess' event fires when append or insert a node. fixed.
+* Improvement
+ * window: The displaying style can be customized.
+ * window: The 'border' property allows the user to set different border style.
+ * navpanel: The 'href' property is enabled to load content from remote server.
+ * combotree: The 'setValue' and 'setValues' methods accept the paremter values in 'id' and 'text' pairs
+ * combobox: Add 'showItemIcon' property.
+ * combobox: Set 'groupPosition' property to 'sticky' to stick the item group to the top of drop-down panel.
+ * messager: Pressing ENTER key on input box will trigger click event of the first button.
+ * validatebox: Add 'editable',disabled' and 'readonly' properties.
+ * validatebox: Add 'enable','disable','readonly' methods.
+ * validatebox: Allow the user to determine how to display the error message.
+ * filebox: Add 'accept' and 'multiple' properties.
+ * form: Add 'iframe' property and 'onProgress' event.
+ * treegrid: Add cascade checkbox selection.
+ * treegrid: Add 'getCheckedNodes','checkNode' and 'uncheckNode' methods.
+
+Version 1.4.4
+-------------
+* Bug
+ * filebox: The 'clear' and 'reset' methods do not work properly in IE9. fixed.
+ * messager: After calling $.messager.progress() with no arguments, the $.messager.progress('close') does not work properly. fixed.
+ * timespinner: The value does not display properly in IE8 while clicking the spin buttons. fixed.
+ * window: The window does not display when calling 'options' method in 'onMove' event. fixed.
+ * treegrid: The 'getLevel' method does not accept the parameter value of 0. fixed.
+* Improvement
+ * layout: The 'collapsedContent','expandMode' and 'hideExpandTool' properties are supported in region panel.
+ * layout: The 'hideCollapsedContent' property can be set to display the vertical title bar on collapsed panel.
+ * layout: Add 'onCollapse','onExpand','onAdd','onRemove' events.
+ * datagrid: Display the 'up-down' icon on the sortable columns.
+ * datagrid: Add 'gotoPage' method.
+ * propertygrid: Add 'groups' method that allows to get all the data groups.
+ * messager: Auto scroll feature is supported when displaying long messages.
+ * tabs: The 'disabled' property is supported when defining a disabled tab panel.
+ * tabs: The percentange size is supported now.
+
 Version 1.4.3
 -------------
 * Bug
