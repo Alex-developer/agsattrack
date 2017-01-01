@@ -413,7 +413,6 @@ var AGOPTIONS = function() {
            lat: jQuery('#mutualobserverlatitude').val(),
            lon: jQuery('#mutualobserverlongitude').val(),
            success: function(lat, lon) {
-               debugger;
                jQuery('#mutualobserverlatitude').val(lat);
                jQuery('#mutualobserverlongitude').val(lon);
                jQuery('#options-save').enable();               

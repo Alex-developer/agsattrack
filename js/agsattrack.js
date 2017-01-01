@@ -227,7 +227,11 @@ var Agsattrack = function() {
         getUI : function() {
             return _ui;    
         },
-        
+
+        getClock : function() {
+		    return _clock;
+        },
+
 		init : function() {
 			var _active = 0;
 			
