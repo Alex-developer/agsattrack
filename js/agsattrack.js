@@ -34,7 +34,15 @@ var Agsattrack = function() {
 	var _initComplete = false; // Don't like this
 	var _speed = 1;
 	var _following = null;
-    
+    var _clock = null;
+
+    function setupClock() {
+        _clock = new Cesium.Clock({
+            startTime: Cesium.JulianDate.now(),
+            stopTime: Cesium.JulianDate.fromIso8601('2060-12-29')
+        });
+    }
+
 	function bindEvents() {	
 
         jQuery(document).bind('agsattrack.tlesloaded', function() {
@@ -122,26 +130,18 @@ var Agsattrack = function() {
 	}
 
     function updateTimeInToolbar() {
-        var julianDate;
-        
-        if (AGSETTINGS.getHaveWebGL()) {
-            jQuery('#currenttime').html(Cesium.JulianDate.toDate(Cesium.JulianDate.now()).toString());      
-        }
- 
+        _clock.tick();
+        jQuery('#currenttime').html(_clock.currentTime.toString());
+
     }
     
 	function calculate(forceRefresh) {
 		var julianDate;
 
         _ui.updateStatus('Calculating');
-        
-        if (AGSETTINGS.getHaveWebGL()) {
-            var cDate = Cesium.JulianDate.now()
-            julianDate = cDate.dayNumber + cDate.secondsOfDay;            
-        } else {
-            julianDate = Date.Date2Julian(new Date());
-        }
-		
+
+        julianDate = _clock.currentTime.dayNumber + _clock.currentTime.secondsOfDay;
+
 		_planets.update(julianDate, _observers[0]);
 		
 		if (_tles.getTotalDisplaying() > 0) {
@@ -232,7 +232,9 @@ var Agsattrack = function() {
 			var _active = 0;
 			
             bindEvents();
-            
+
+            setupClock();
+
             /**
              * Fire up the user Inerface
              */
