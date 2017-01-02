@@ -45,6 +45,10 @@ var AG3DVIEW = function(element) {
     var _blackMarbleBrightness = 2;
     var _observerBillboardsCollection = null;
     var _observerLabelCollection = null;
+    var _mode = null;
+
+    var _footprintPolygons = [];
+    var _orbitPolylines = [];
 
     function resize(width, height) {
         if (typeof width === 'undefined' || typeof height === 'undefined') {
@@ -267,11 +271,121 @@ var AG3DVIEW = function(element) {
     }
 
     /**
+     * Create satellite footprints
+     */
+    function initFootprints() {
+        for (var i = 0; i < _footprintPolygons.length; i++) {
+            _viewer.entities.remove(_footprintPolygons[i]);
+        }
+
+        _footprintPolygons = [];
+
+        var selected = AGSatTrack.getTles().getSelected();
+        for (var i = 0; i < selected.length; i++) {
+
+            var pos = getCartesian3Pos(selected[i], true);
+
+            _footprintPolygons[i] = _viewer.entities.add({
+                position: pos,
+                ellipse: {
+                    semiMinorAxis: selected[i].get('footprint') * 1000 / 2,
+                    semiMajorAxis: selected[i].get('footprint') * 1000 / 2,
+                    fill: false,
+                    outline: true,
+                    outlineColor : new Cesium.CallbackProperty(fooprintColorCallbackFunction(selected[i]), false)
+                }
+            });
+            _footprintPolygons[i].satellite = selected[i];
+        }
+    }
+
+    /**
+     * Calback funtion to get the footprint colour
+     *
+     * @param satellite
+     * @returns {callbackFunction}
+     */
+    function fooprintColorCallbackFunction(satellite) {
+        return function callbackFunction(time, color) {
+            color = Cesium.Color.RED;
+
+            if (satellite.get('elevation') >= AGSETTINGS.getAosEl()) {
+                color = Cesium.Color.GREEN;
+            }
+            return color;
+        };
+    }
+
+    /**
+     * Update the satellite foorprints
+     */
+    function updateFootprints() {
+        for (var i = 0; i < _footprintPolygons.length; i++) {
+            var pos = getCartesian3Pos(_footprintPolygons[i].satellite, false, true);
+            _footprintPolygons[i].position = pos;
+        }
+    }
+
+    /**
+     * Setup the selected satellites orbit
+     */
+    function initOrbit() {
+        var points = [];
+
+        for (var i = 0; i < _orbitPolylines.length; i++) {
+            console.log(_viewer.entities.remove(_orbitPolylines[i]));
+        }
+
+        var selected = AGSatTrack.getTles().getSelected();
+
+        for (var i=0; i < selected.length; i++) {
+            var orbit = selected[i].getOrbitData();
+
+            points = [];
+
+            for (var j=0;j<orbit.points.length; j++) {
+                var pos = new Cesium.Cartesian3.fromDegrees(orbit.points[j].lon, orbit.points[j].lat, orbit.points[j].alt*1000);
+                points.push(pos);
+            }
+
+            _orbitPolylines[i] = _viewer.entities.add({
+                polyline : {
+                    positions : points,
+                    width : 5,
+                    material : new Cesium.PolylineOutlineMaterialProperty({
+                        color : Cesium.Color.ORANGE,
+                        outlineWidth : 2,
+                        outlineColor : Cesium.Color.BLACK
+                    })
+                }
+            });
+        }
+    }
+
+    function updateOrbit() {
+
+    }
+
+    /**
+     * Helper funtion to update all satellite related data
+     */
+    function update() {
+        updateSatellites();
+        updateFootprints();
+    }
+
+    /**
      * Get a Cesium Cartesian 3 point for the satellite
      *
      * @param satellite an AGStTrack satobject
+     * @param forceToGround true to force the altitude to 0
+     * @param center true to return half the altitude height
      */
-    function getCartesian3Pos(satellite) {
+    function getCartesian3Pos(satellite, forceToGround, center) {
+
+        if (typeof forceToGround === undefined) {
+            forceToGround = false;
+        }
 
         var lon = satellite.get('longitude');
         var lat = satellite.get('latitude');
@@ -285,6 +399,13 @@ var AG3DVIEW = function(element) {
 
         alt = alt * 1000;
 
+        if (forceToGround) {
+            alt = 0;
+        }
+
+        if (center) {
+            alt = alt * 0.5;
+        }
         var catrtesian3Pos = new Cesium.Cartesian3.fromDegrees(lon, lat, alt);
 
         return catrtesian3Pos;
@@ -489,6 +610,7 @@ var AG3DVIEW = function(element) {
 
         setupSatelliteImages();
         initSatellites();
+        initFootprints();
 
         initObservers();
 
@@ -502,7 +624,16 @@ var AG3DVIEW = function(element) {
         jQuery(document).bind('agsattrack.updatesatdata', function (event, selected) {
             if (_render) {
                 if (AGSETTINGS.getHaveWebGL()) {
-                    updateSatellites();
+                    update();
+                }
+            }
+        });
+
+        jQuery(document).bind('agsattrack.satclicked', function() {
+            if (_render && _mode !== AGVIEWS.modes.SINGLE) {
+                if (AGSETTINGS.getHaveWebGL()) {
+                    initFootprints();
+                    initOrbit();
                 }
             }
         });
@@ -510,7 +641,7 @@ var AG3DVIEW = function(element) {
         jQuery(document).bind('agsattrack.showsatlabels', function(e, state) {
             if (AGSETTINGS.getHaveWebGL()) {
                 _showSatLabels = state;
-                updateSatellites();
+                update();
             }
         });
 
@@ -643,6 +774,7 @@ var AG3DVIEW = function(element) {
         },
 
         init : function(mode) {
+            _mode = mode;
             init();
         },
 
