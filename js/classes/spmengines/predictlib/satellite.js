@@ -210,7 +210,6 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         _satOrbit.configureMutualGroundStation(mutualObserver.getLat(), mutualObserver.getLon(), mutualObserver.getEnabled());
         time = (date.getTime() - 315446400000) / 86400000;
 
-
         _satOrbit.doCalc(time);
         var thisOrbit = _satOrbit.orbitNumber;
         var period = _satOrbit.period;
@@ -235,6 +234,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         */
         var temporbitData = null;
         while (thisOrbit === _satOrbit.orbitNumber) {
+ 
             temporbitData = addPoint(time, orbitPoints);
             time += increment;
         }
@@ -243,10 +243,10 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         * FUDGE: No idea why but the orbits are not closed. A few additional points are
         * required to complete the orbit.
         */
-     //   for (i=i;i<20;i++) {
-       //     addPoint(time, orbitPoints);
-         //   time += increment;
-      //  }
+        for (i=i;i<20;i++) {
+            addPoint(time, orbitPoints);
+            time += increment;
+        }
         _orbitAge = new Date();
         var endDate = new Date();
         
