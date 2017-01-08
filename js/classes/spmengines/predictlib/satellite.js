@@ -192,7 +192,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         var orbitPoints = [];
         var increment = 0.00035;
         var i;
-        
+        var isGeoStationary = isGeostationary();
+
         increment = increment * 3;
                 
         /**
@@ -212,6 +213,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 
         _satOrbit.doCalc(time);
         var thisOrbit = _satOrbit.orbitNumber;
+        var period = _satOrbit.period;
+        increment = ((period) / 360) / 1000;
 
         /**
         * Jump back to the end of the previous orbit
@@ -232,22 +235,18 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         */
         var temporbitData = null;
         while (thisOrbit === _satOrbit.orbitNumber) {
-            temporbitData = addPoint(time, orbitPoints);   
-            if (temporbitData.el > -1) {
-                time += increment / 4;
-            } else {
-                time += increment;
-            }
+            temporbitData = addPoint(time, orbitPoints);
+            time += increment;
         }
         
         /**
         * FUDGE: No idea why but the orbits are not closed. A few additional points are
         * required to complete the orbit.
         */
-        for (i=i;i<20;i++) {
-            addPoint(time, orbitPoints);   
-            time += increment;            
-        }                    
+     //   for (i=i;i<20;i++) {
+       //     addPoint(time, orbitPoints);
+         //   time += increment;
+      //  }
         _orbitAge = new Date();
         var endDate = new Date();
         
@@ -258,7 +257,25 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         };
 
     }
-    
+
+    /**
+     * Determine if the satellite is geostationary
+     *
+     * @returns {boolean}
+     */
+    function isGeostationary() {
+        var result = false;
+        var date = new Date();
+
+        var time = (date.getTime() - 315446400000) / 86400000;
+        if (_sat.AosHappens(0) && _sat.Geostationary(0) === 0 && _sat.Decayed(0, time) === 0) {
+            result = false;
+        } else {
+            result = true;
+        }
+        return result;
+    }
+
     /**
     * Add a point to the orbit data
     */
@@ -473,16 +490,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         },
         
         isGeostationary: function() {
-            var result = false;
-            var date = new Date();
-            
-            var time = (date.getTime() - 315446400000) / 86400000;  
-            if (_sat.AosHappens(0) && _sat.Geostationary(0) === 0 && _sat.Decayed(0, time) === 0) {
-                result = false;
-            } else {
-                result = true;
-            }
-            return result;
+            return isGeostationary();
         },
         
         getLastcalcTime : function() {

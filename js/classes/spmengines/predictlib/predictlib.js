@@ -426,6 +426,8 @@ var PLib =
             delo = temp / (ao * ao);
             xnodp = tle.xno / (delo + 1.0);
 
+            PLib.period = PLib.twopi / xnodp;
+
 //            if (PLib.twopi / PLib.xnodp / PLib.xmnpda >= 0.15625)
             if (PLib.twopi / xnodp / PLib.xmnpda >= 0.15625)
                 PLib.SetFlag(PLib.DEEP_SPACE_EPHEM_FLAG);
