@@ -426,6 +426,8 @@ var PLib =
             delo = temp / (ao * ao);
             xnodp = tle.xno / (delo + 1.0);
 
+            PLib.period = PLib.twopi / xnodp;
+
 //            if (PLib.twopi / PLib.xnodp / PLib.xmnpda >= 0.15625)
             if (PLib.twopi / xnodp / PLib.xmnpda >= 0.15625)
                 PLib.SetFlag(PLib.DEEP_SPACE_EPHEM_FLAG);
@@ -1714,10 +1716,9 @@ var PLib =
                 return 0;
         },
     
-        Geostationary: function(x)
-        {
+        Geostationary: function(x) {
             x = 0;
-            if (Math.abs(PLib.sat[x].meanmo - 1.0027) < 0.0002) 
+            if (Math.abs(PLib.sat[x].meanmo - 1.0) < 0.05) 
                 return 1;
             else
                 return 0;

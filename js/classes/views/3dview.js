@@ -1055,7 +1055,7 @@ var AG3DVIEW = function(element) {
       
 
         lastPos = cartPoints[0];
-        for ( var i = 0; i < cartPoints.length; i++) {    
+        for ( var i = 0; i < cartPoints.length; i++) {
             if (checkOkToPlot(lastPos, cartPoints[i])) {
                 pos = new Cesium.Cartesian3(cartPoints[i].x, cartPoints[i].y, cartPoints[i].z);
 pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPoints[i].alt*1000);
