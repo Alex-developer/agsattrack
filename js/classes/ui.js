@@ -24,6 +24,9 @@ Copyright 2013 Alex Greenland
 var AGUI = function() {
 	'use strict';
     
+    var _satSource;
+    var _ignoreSourceEvents = false;
+    
     /**
     * If we are not running on any of my domains then delete the social media
     * element from the ribbon bar.
@@ -91,9 +94,8 @@ var AGUI = function() {
         });
     }
        
-    var source =
-    {
-        datatype: "json",
+    var source ={
+        datatype: 'json',
         datafields: [
             { name: 'id' },
             { name: 'name' }
@@ -102,13 +104,11 @@ var AGUI = function() {
         url: 'index.php?controller=elements&method=getGroups'
     };
     
-    var dataAdapter = new jQuery.jqx.dataAdapter(source,
-        {
-            loadComplete: function (records) {
-                loadAvailablesatellites(AGSETTINGS.getDefaultTLEgroup());    
-            }
+    var dataAdapter = new jQuery.jqx.dataAdapter(source,{
+        loadComplete: function (records) {
+            loadAvailablesatellites(AGSETTINGS.getDefaultTLEgroup());    
         }
-    );
+    });
         
     jQuery('#sat-group-selector-listbox').jqxListBox({
         source: dataAdapter,
@@ -139,8 +139,23 @@ var AGUI = function() {
     * End satellite ribbon section
     */    
       
-    jQuery('#quick-sat-selector').agcheckList();       
-           
+  //  jQuery('#quick-sat-selector').agcheckList();    
+
+    jQuery('#quick-sat-selector').datagrid({  
+        rownumbers:true,
+        autoRowHeight:false, 
+        pagination:true, 
+        pageSize:20, 
+        fitColumns: true, 
+        fit:true,  
+        columns:[[  
+            {field:'ck',checkbox:true},
+            {field:'name',title:'Name',width:200},  
+            {field:'lon',title:'Lon',width:95,align:'right'}
+        ]]  
+    });
+              
+                   
 	jQuery('.view-reset').click(function() {
 		jQuery(document).trigger('agsattrack.resetview');
 	});
@@ -229,16 +244,17 @@ var AGUI = function() {
                     jQuery(document).trigger('agsattrack.satsselected', {
                         selections : foundSats
                     }); 
-                    jQuery(document).trigger('agsattrack.forceupdate', {});                        
+                    jQuery(document).trigger('agsattrack.forceupdate', {});  
+                                         
                 }
             }
-                        
+            
             jQuery('#statustotalloaded').html(tles.getCount() + ' Satellites Loaded');
             jQuery('#sat-info-selector').jqxDropDownList('clear');
             clearDataPane();
             jQuery('#ag-satselector').agsatbox('setData', tles);
             AGVIEWS.sendViewReset();
-            jQuery('#quick-sat-selector').agcheckList('clear');
+            //jQuery('#quick-sat-selector').agcheckList('clear');
                                 
             if (AGSETTINGS.getAutoAddSats() && doAutoLoad) {
                 jQuery('#ag-satselector').agsatbox('moveAllSats','right');        
@@ -246,7 +262,7 @@ var AGUI = function() {
             var groupName = AGSatTrack.getTles().getGroupName();
             jQuery('#statusgroup').html('<strong>Group:</strong> ' + groupName); 
 	});
-
+                
 	/**
 	 * Listen for events to update the data grid
 	 */
@@ -256,7 +272,6 @@ var AGUI = function() {
             var selectedSatellite = AGSatTrack.getSatelliteByName(selectedItem.value);    
 			updateSatelliteInfo(selectedSatellite);
         }
-
 	});
 
     /**
@@ -332,6 +347,7 @@ var AGUI = function() {
         jQuery('#sat-info-selector').jqxListBox('endUpdate');        
     });    
 
+    
     function updateSatelliteData(satellite) {
         var catalogNumber = satellite.getCatalogNumber();
         var url = 'index.php?controller=satellite&method=getSatelliteData&id=' + catalogNumber;
