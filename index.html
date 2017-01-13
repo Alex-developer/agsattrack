@@ -23,6 +23,7 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/jqueryui/jquery-ui.js"></script>
 <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/extensions/datagrid-filter/datagrid-filter.js"></script>
 
     <script type="text/javascript" src="/js/konva/konva.js"></script>
 
@@ -833,11 +834,11 @@
         </div>
 	</div>
     
-	<div data-options="region:'west',split:true" title="Selector" style="width: 250px;">
+	<div data-options="region:'west',split:true,hideCollapsedContent:false" title="Selector" style="width: 250px;">
         <div id="quick-sat-selector"></div>
 	</div>
 
-    <div data-options="region:'east',split:true,collapsed:true" title="Information" style="width: 250px;">
+    <div data-options="region:'east',split:true,collapsed:true,hideCollapsedContent:false" title="Information" style="width: 250px;">
         <div title="Satellite Info." style="overflow: auto; padding: 5px;">
             <div id="sat-info-selector"></div>
             <div id="satinfo-message">
