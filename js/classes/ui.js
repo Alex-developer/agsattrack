@@ -413,7 +413,7 @@ var AGUI = function() {
     });        
 
     if (AGSETTINGS.getDebugView() === false) {
-        jQuery('#ribbon-tab-header-9').hide();         
+        jQuery('#ribbon-tab-header-10').hide();         
     }
     
     
@@ -421,11 +421,10 @@ var AGUI = function() {
     jQuery(document.body).show();
     jQuery('#status').html('Idle');
 
+
+    AGWINDOWMANAGER.showWindow('info');
                 
 	return {
-        updateInfo : function(text) {
-            jQuery('#info').html(text);            
-        },
         updateStatus : function(text) {
             jQuery('#status').html(text);            
         },

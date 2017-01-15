@@ -18,6 +18,12 @@ var AGWINDOWMANAGER = (function() {
     "use strict" ;
     
     var _windows = {
+        'info' : {
+            classname : 'AGINFOWINDOW',
+            loaded: false,
+            instance: null,
+            element : null
+        },
         'dx' : {
             classname : 'AGDXWINDOW',
             loaded: false,

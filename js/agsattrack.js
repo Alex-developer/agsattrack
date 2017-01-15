@@ -86,7 +86,6 @@ var Agsattrack = function() {
                 if (sat.getSelected()) {
                     sat.requestOrbit();
                     var name = sat.getName();
-                    _ui.updateInfo('Orbit Requested For ' + name);
                 }
                 
                 var _selected = _tles.getSelected();

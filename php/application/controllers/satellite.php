@@ -27,6 +27,22 @@ class AGSATTRACK_SATELLITE extends APPCONTROLLER {
         $this->output[] = Array('field'=>'inclination', 'value'=>$satData->inclination);
         $this->output[] = Array('field'=>'apogee', 'value'=>$satData->apogee);
         $this->output[] = Array('field'=>'perigee', 'value'=>$satData->perigee);
+        
+        $frequencies = Frequency::find('all', array('conditions' => array('norad = ?', $satId)));
+        $freqInfo = array();
+        if (!empty($frequencies)) {
+            foreach ($frequencies as $frequency) {
+                $freqInfo[] = array(
+                    'uplink' => $frequency->uplink,
+                    'downlink' => $frequency->downlink,
+                    'beacon' => $frequency->beacon,
+                    'mode' => $frequency->mode,
+                    'callsign' => $frequency->callsign,
+                    'type' => $frequency->type
+                );
+            }
+        }
+        $this->output[] = Array('field'=>'frequencies', 'value'=>$freqInfo);        
     }
 
     public function getLocationDatabase() {

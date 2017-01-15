@@ -67,6 +67,12 @@ var AGVIEWS = (function(element) {
             index: 'Timeline View',
             tabIndex: 7              
         },
+        'info' : {
+            classname : 'AGINFOVIEW',
+            active : false,
+            index: 'Info View',
+            tabIndex: 9              
+        },        
         'options' : {
             classname : 'AGOPTIONS',
             active : false,
