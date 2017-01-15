@@ -165,91 +165,60 @@ var AGLISTVIEW = function() {
         var satellite;
         var dataGrid = jQuery('#sat-list-grid');
         var theNextEvent = '';
-        var rows = dataGrid.datagrid('getRows');
-        
-        for (var i=0; i<rows.length; i++) {
-            catalogNumber = rows[i].catalognumber;
-            satellite = AGSatTrack.getSatelliteByName(catalogNumber);
-            if (AGSETTINGS.getCalculateEvents()) {
-                if (satellite.isGeostationary()) {
-                    theNextEvent = 'Geostationary';
+        var satellites = AGSatTrack.getSatellites();
+
+        for (var i=0; i<satellites.length; i++) {
+            catalogNumber = satellites[i].getCatalogNumber();
+
+            var row = dataGrid.datagrid('getRowIndex', catalogNumber);
+
+            if (row !== -1) {
+                if (AGSETTINGS.getCalculateEvents()) {
+                    if (satellites[i].isGeostationary()) {
+                        theNextEvent = 'Geostationary';
+                    } else {
+                        theNextEvent = satellites[i].getNextEvent();
+                    }
                 } else {
-                    theNextEvent = satellite.getNextEvent();
+                    theNextEvent = 'Disabled';
                 }
-            } else {
-                theNextEvent = 'Disabled';
+                var mutualVisible = 'Disabled';
+                if (AGSETTINGS.getMutualObserverEnabled()) {
+                    if (satellites[i].get('mutualvisible') && (satellites[i].get('elevation') >= AGSETTINGS.getAosEl())) {
+                        mutualVisible = 'Yes';
+                    } else {
+                        mutualVisible = 'No';
+                    }
+                }
+
+                dataGrid.datagrid('updateRow', {
+                    index: row,
+                    row: {
+                        viz: satellites[i].get('visibility').substring(0, 3),
+                        az: satellites[i].get('azimuth').toFixed(2) + '&deg;',
+                        el: satellites[i].get('elevation').toFixed(2) + '&deg;',
+                        lat: AGUTIL.convertDecDegLat(satellites[i].get('latitude')),
+                        lon: AGUTIL.convertDecDegLon(satellites[i].get('longitude')),
+                        alt: satellites[i].get('altitude').toFixed(0),
+                        vel: satellites[i].get('velocity').toFixed(0),
+                        nextevent: theNextEvent,
+                        mv: mutualVisible
+                    }
+                });
+                if (satellites[i].getSelected()) {
+                    _ignoreEvents = true;
+                    dataGrid.datagrid('checkRow', row);
+                    _ignoreEvents = false;
+                } else {
+                    _ignoreEvents = true;
+                    dataGrid.datagrid('uncheckRow', row);
+                    _ignoreEvents = false;
+                }
             }
-            var mutualVisible = 'Disabled';
-            if (AGSETTINGS.getMutualObserverEnabled()) {
-                if (satellite.get('mutualvisible') && (satellite.get('elevation') >= AGSETTINGS.getAosEl()) ) {
-                    mutualVisible = 'Yes'; 
-                } else {
-                    mutualVisible = 'No';    
-                }
-            }                              
-            dataGrid.datagrid('updateRow',{
-                index: i,
-                row: {
-                    viz: satellite.get('visibility').substring(0,3),
-                    az: satellite.get('azimuth').toFixed(2) + '&deg;',
-                    el: satellite.get('elevation').toFixed(2) + '&deg;',
-                    lat: AGUTIL.convertDecDegLat(satellite.get('latitude')),
-                    lon: AGUTIL.convertDecDegLon(satellite.get('longitude')),
-                    alt: satellite.get('altitude').toFixed(0),
-                    vel: satellite.get('velocity').toFixed(0),
-                    nextevent: theNextEvent,
-                    mv: mutualVisible                  
-                }
-            });
-            if (satellite.getSelected()) {
-                _ignoreEvents = true;
-                dataGrid.datagrid('checkRow',i);    
-                _ignoreEvents = false;
-            } else {
-                _ignoreEvents = true;
-                dataGrid.datagrid('uncheckRow',i);    
-                _ignoreEvents = false;                
-            }                 
         }
     }
     
-    /**
-    * Handle paging in the grid
-    *  
-    * @param {Object} data
-    * 
-    * @returns {Object}
-    */
-    function pagerFilter(data){
-        if (typeof data.length === 'number' && typeof data.splice === 'function'){    // is array
-            data = {
-                total: data.length,
-                rows: data
-            };
-        }
-        var dg = jQuery(this); // JSHint - This is fine.
-        var opts = dg.datagrid('options');
-        var pager = dg.datagrid('getPager');
-        pager.pagination({
-            onSelectPage:function(pageNum, pageSize){
-                opts.pageNumber = pageNum;
-                opts.pageSize = pageSize;
-                pager.pagination('refresh',{
-                    pageNumber:pageNum,
-                    pageSize:pageSize
-                });
-                dg.datagrid('loadData',data);
-            }
-        });
-        if (!data.originalRows){
-            data.originalRows = (data.rows);
-        }
-        var start = (opts.pageNumber-1)*parseInt(opts.pageSize,10);
-        var end = start + parseInt(opts.pageSize,10);
-        data.rows = (data.originalRows.slice(start, end));
-        return data;
-    } 
-    
+
     /**
     * Sets up the view when switched to.
     */
@@ -281,12 +250,13 @@ var AGLISTVIEW = function() {
             jQuery('#sat-list-grid').datagrid({  
                 rownumbers:true,
                 autoRowHeight:false, 
-                pagination:true, 
-                pageSize:20, 
+                pagination:false,
+                view: scrollview,
+                pageSize:50,
                 fitColumns: true, 
-                fit:true,  
-                loadFilter: pagerFilter,
-                columns:[[  
+                fit:true,
+                idField: 'catalognumber',
+                columns:[[
                     {field:'ck',checkbox:true},
                     {field:'name',title:'Name',width:200},  
                     {field:'type',title:'Type',width:55},  
@@ -298,8 +268,8 @@ var AGLISTVIEW = function() {
                     {field:'alt',title:'Altitude',width:60,align:'right'},  
                     {field:'vel',title:'Velocity',width:55,align:'right'},  
                     {field:'nextevent',title:'Next Event',width:150,align:'right'},
-                    {field:'mv',title:'Mutual Visible',width:80,align:'right'}
-         
+                    {field:'mv',title:'Mutual Visible',width:80,align:'right'},
+                    {field:'catalognumber',title:'',hidden: true}
                 ]]  
             });
             setGridColumns();                                    

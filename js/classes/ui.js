@@ -25,7 +25,6 @@ var AGUI = function() {
 	'use strict';
     
     var _satSource;
-    var _ignoreSelectorEvents = false;
     
     /**
     * If we are not running on any of my domains then delete the social media
@@ -139,46 +138,9 @@ var AGUI = function() {
     * End satellite ribbon section
     */    
       
-  //  jQuery('#quick-sat-selector').agcheckList();    
 
-    var selectorGrid = jQuery('#quick-sat-selector').datagrid({
-        autoRowHeight:false,
-        pagination:true, 
-        pageSize:20, 
-        fitColumns: true, 
-        fit:true,
-        remoteSort: false,
-        loadFilter: pagerFilter,
-  //      showHeader: false,
-        columns:[[
-            {field:'ck',checkbox:true},
-            {field:'name',title:'Name',width:200},  
-            {field:'lon',title:'Lon',width:95,align:'right',sortable: true,
-                formatter: function(value,row,index){
-                    return AGUTIL.convertDecDegLonShort(row.lon);
-                }
-            }
-        ]],
-        onLoadSuccess: function(){
-            jQuery('#quick-sat-selector').datagrid().datagrid('getPager').pagination({
-                showRefresh: false,
-                displayMsg: '',
-                layout:['first','prev','manual','next','last']
-            });
-        },
-        onCheck: function(index,data){
-            if (!_ignoreSelectorEvents) {
-                jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber, state: true});
-            }
-        },
-        onUncheck: function(index,data){
-            if (!_ignoreSelectorEvents) {
-                jQuery(document).trigger('agsattrack.satclicked', {catalogNumber: data.catalognumber, state: false});
-            }
-        }
-    });
+    jQuery('#quick-sat-selector').agSelector();
 
-                   
 	jQuery('.view-reset').click(function() {
 		jQuery(document).trigger('agsattrack.resetview');
 	});
@@ -277,15 +239,9 @@ var AGUI = function() {
             clearDataPane();
             jQuery('#ag-satselector').agsatbox('setData', tles);
             AGVIEWS.sendViewReset();
-            //jQuery('#quick-sat-selector').agcheckList('clear');
 
-            var dataGrid = jQuery('#quick-sat-selector');
-            if (group === 'geo') {
-                dataGrid.datagrid('showColumn','lon');
-            } else {
-                dataGrid.datagrid('hideColumn','lon');
-            }
-            buildSelector();
+            jQuery('#quick-sat-selector').agSelector('groupUpdated', group);
+            jQuery('#quick-sat-selector').agSelector('setup');
 
             if (AGSETTINGS.getAutoAddSats() && doAutoLoad) {
                 jQuery('#ag-satselector').agsatbox('moveAllSats','right');        
@@ -303,8 +259,8 @@ var AGUI = function() {
             var selectedSatellite = AGSatTrack.getSatelliteByName(selectedItem.value);    
 			updateSatelliteInfo(selectedSatellite);
         }
-        updateSelector();
-	});
+        jQuery('#quick-sat-selector').agSelector('update');
+    });
 
     /**
     * When a satellite is selected in the drop down go get its details from the server.
@@ -378,87 +334,6 @@ var AGUI = function() {
         }
         jQuery('#sat-info-selector').jqxListBox('endUpdate');        
     });
-
-
-    function pagerFilter(data){
-        if (typeof data.length === 'number' && typeof data.splice === 'function'){    // is array
-            data = {
-                total: data.length,
-                rows: data
-            };
-        }
-        var dg = jQuery(this); // JSHint - This is fine.
-        var opts = dg.datagrid('options');
-        var pager = dg.datagrid('getPager');
-        pager.pagination({
-            onSelectPage:function(pageNum, pageSize){
-                opts.pageNumber = pageNum;
-                opts.pageSize = pageSize;
-                pager.pagination('refresh',{
-                    pageNumber:pageNum,
-                    pageSize:pageSize
-                });
-                dg.datagrid('loadData',data);
-            }
-        });
-        if (!data.originalRows){
-            data.originalRows = (data.rows);
-        }
-        var start = (opts.pageNumber-1)*parseInt(opts.pageSize,10);
-        var end = start + parseInt(opts.pageSize,10);
-        data.rows = (data.originalRows.slice(start, end));
-        return data;
-    }
-
-    function updateSelector() {
-        var catalogNumber;
-        var satellite;
-        var dataGrid = jQuery('#quick-sat-selector');
-        var theNextEvent = '';
-        var rows = dataGrid.datagrid('getRows');
-
-        for (var i=0; i<rows.length; i++) {
-            catalogNumber = rows[i].catalognumber;
-            satellite = AGSatTrack.getSatelliteByName(catalogNumber);
-            dataGrid.datagrid('updateRow',{
-                index: i,
-                row: {
-                    lon: satellite.get('longitude')
-                }
-            });
-
-            if (satellite.getSelected()) {
-                _ignoreSelectorEvents = true;
-                dataGrid.datagrid('checkRow',i);
-                _ignoreSelectorEvents = false;
-            } else {
-                _ignoreSelectorEvents = true;
-                dataGrid.datagrid('uncheckRow',i);
-                _ignoreSelectorEvents = false;
-            }
-        }
-    }
-
-    function buildSelector() {
-        var data = [];
-        var satellites = AGSatTrack.getSatellites();
-
-        jQuery('#quick-sat-selector').datagrid('loadData', {"total":0,"rows":[]});
-
-        for ( var i = 0; i < satellites.length; i++) {
-            var sat = satellites[i];
-            data.push({
-                ck: true,
-                name: sat.getName(),
-                lon: AGUTIL.convertDecDegLon(sat.get('longitude')),
-                catalognumber: sat.getCatalogNumber()
-            });
-        }
-        jQuery('#quick-sat-selector').datagrid('loadData',data);
-        jQuery('#quick-sat-selector').datagrid('enableFilter');
-
-
-    }
 
     function updateSatelliteData(satellite) {
         var catalogNumber = satellite.getCatalogNumber();
