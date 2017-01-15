@@ -4,10 +4,62 @@
         <title>AGSatTrack - Online</title>
 
         <script type="text/javascript" src="/js/jquery.js"></script>
+    
+<script type="text/javascript" src="/js/jqwidgets/jqxcore.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxdata.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxbuttons.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxscrollbar.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxlistbox.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxcheckbox.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxdragdrop.js"></script>  
+<script type="text/javascript" src="/js/jqwidgets/jqxdropdownlist.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxmenu.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxpanel.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxwindow.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxslider.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.sort.js"></script> 
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.pager.js"></script> 
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.selection.js"></script> 
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.edit.js"></script> 
+
+<script type="text/javascript" src="/js/jqwidgets/jqxribbon.js"></script>
+ <script type="text/javascript" src="/js/jqwidgets/jqxlayout.js"></script>
+     
+<link rel="stylesheet" href="/js/jqwidgets/styles/jqx.base.css" type="text/css" />
+<link rel="stylesheet" href="/js/jqwidgets/styles/jqx.dark.css" type="text/css" />
+
         <script type="text/javascript" src="./test.js"></script>
     
     </head>
     <body>
 
+    <div id="jqxLayout">
+        <!--The panel content divs can have a flat structure-->
+        <!--autoHideGroup-->
+        <div data-container="ToolboxPanel">
+            List of tools</div>
+        <div data-container="HelpPanel">
+            Help topics</div>
+        <!--documentGroup-->
+        <div data-container="Document1Panel">
+            Document 1 content</div>
+        <div data-container="Document2Panel">
+            Document 2 content</div>
+        <!--bottom tabbedGroup-->
+        <div data-container="ErrorListPanel">
+            List of errors</div>
+        <div data-container="OutputPanel">
+            Output</div>
+        <!--right tabbedGroup-->
+        <div data-container="SolutionExplorerPanel">
+            <div id="solutionExplorerTree" style="border: none;">
+            </div>
+        </div>
+        <div data-container="PropertiesPanel">
+            List of properties</div>
+    </div>
+    
+    
     </body>
 </html>

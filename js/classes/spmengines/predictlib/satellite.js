@@ -34,7 +34,7 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     var _calcOrbitEvery = 50;
     var _orbitCalcCounter = _calcOrbitEvery;
     var _selected = false;
-    var _isDisplaying = false;
+    var _isDisplaying = true;
     var _orbitrequested = false;
     var _satmap = {
         'elevation' : 'sat_ele',
@@ -499,7 +499,12 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
         
         convertDate : function(date) {
             return _sat.Daynum2Date(date);
+        },
+
+        getSatObject : function() {
+            return _sat;
         }
+
 	};
 };
 
