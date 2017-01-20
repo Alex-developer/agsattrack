@@ -78,6 +78,10 @@
             }
         }
 
+        plugin.clear = function() {
+            _dataGrid.datagrid('loadData', {"total":0,"rows":[]});
+        }
+        
         var setupGrid = function() {
             _dataGrid = jQuery('#quick-sat-selector').datagrid({
                 autoRowHeight:false,

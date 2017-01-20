@@ -240,6 +240,7 @@ var AGUI = function() {
             jQuery('#ag-satselector').agsatbox('setData', tles);
             AGVIEWS.sendViewReset();
 
+            jQuery('#quick-sat-selector').agSelector('clear');            
             jQuery('#quick-sat-selector').agSelector('groupUpdated', group);
             jQuery('#quick-sat-selector').agSelector('setup');
 
