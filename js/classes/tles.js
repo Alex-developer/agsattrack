@@ -52,7 +52,7 @@ var AGTLES = function() {
                 tle[0] = name;
             }
         }
-        AGSatTrack.calculate(true);
+       // AGSatTrack.calculate(true);
         AGVIEWS.tlesLoaded();
         jQuery(document).trigger('agsattrack.tlesloaded', _group);
 	}
