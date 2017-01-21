@@ -238,7 +238,6 @@ var AGUI = function() {
             jQuery('#sat-info-selector').jqxDropDownList('clear');
             clearDataPane();
             jQuery('#ag-satselector').agsatbox('setData', tles);
-            AGVIEWS.sendViewReset();
 
             jQuery('#quick-sat-selector').agSelector('clear');            
             jQuery('#quick-sat-selector').agSelector('groupUpdated', group);
@@ -248,7 +247,9 @@ var AGUI = function() {
                 jQuery('#ag-satselector').agsatbox('moveAllSats','right');        
             }
             var groupName = AGSatTrack.getTles().getGroupName();
-            jQuery('#statusgroup').html('<strong>Group:</strong> ' + groupName); 
+            jQuery('#statusgroup').html('<strong>Group:</strong> ' + groupName);
+            AGVIEWS.sendViewReset();
+
 	});
                 
 	/**
