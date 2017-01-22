@@ -703,7 +703,7 @@ var AG3DVIEW = function(element) {
         var billboard;
         var now = new Cesium.JulianDate();
         var cpos = 0;
-        var satellites;
+        var satellites = [];
         var okToCreate = false;
         
         if (_mode !== AGVIEWS.modes.SINGLE) {

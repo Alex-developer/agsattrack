@@ -35,14 +35,7 @@ var Agsattrack = function() {
 	var _speed = 1;
 	var _following = null;
     
-	function bindEvents() {	
-
-        jQuery(document).bind('agsattrack.tlesloaded', function() {
-            _ui.updateInfoPane();
-        });
-        jQuery(document).bind('agsattrack.satsselected', function() {
-            _ui.updateInfoPane();
-        });        
+	function bindEvents() {
         
 		/**
 		 * Listen for an event to load a new set of elements
@@ -91,7 +84,6 @@ var Agsattrack = function() {
                 var _selected = _tles.getSelected();
 			    calculate(true);
 			    jQuery(document).trigger('agsattrack.newsatselected', {satellites: _selected});
-                _ui.updateInfoPane();
             }
 		});
 
@@ -134,13 +126,8 @@ var Agsattrack = function() {
 
         _ui.updateStatus('Calculating');
         
-        if (AGSETTINGS.getHaveWebGL()) {
-            var cDate = Cesium.JulianDate.now()
-            julianDate = cDate.dayNumber + cDate.secondsOfDay;            
-        } else {
-            julianDate = Date.Date2Julian(new Date());
-        }
-		
+        julianDate = Date.Date2Julian(new Date());
+
 		_planets.update(julianDate, _observers[0]);
 		
 		if (_tles.getTotalDisplaying() > 0) {

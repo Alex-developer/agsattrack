@@ -42,7 +42,21 @@ class AGSATTRACK_SATELLITE extends APPCONTROLLER {
                 );
             }
         }
-        $this->output[] = Array('field'=>'frequencies', 'value'=>$freqInfo);        
+
+        $data = array(
+            'catalognumber' => $satData->norad,
+            'name' => $satData->name,
+            'owner' => $satData->owner,
+            'launchdate' => $satData->launchdate,
+            'period' => $satData->period,
+            'inclination' => $satData->inclination,
+            'apogee' => $satData->apogee,
+            'perigee' => $satData->perigee,
+            'frequencies' => $freqInfo
+
+        );
+        $this->output[] = Array('field'=>'frequencies', 'value'=>$freqInfo);
+        $this->output = $data;
     }
 
     public function getLocationDatabase() {

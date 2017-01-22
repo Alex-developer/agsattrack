@@ -74,6 +74,9 @@ var AGWINDOWMANAGER = (function() {
         destroyWindow : function(name) {
             if (typeof _windows[name] !== 'undefined') {
                 if (_windows[name].instance !== null) {
+                    if (typeof _windows[name].instance.destroy === 'function') {
+                        _windows[name].instance.destroy();
+                    }
                     jQuery(_windows[name].element).window('destroy', false);
                     jQuery(_windows[name].element).remove();
                     _windows[name].instance = null;

@@ -65,7 +65,8 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
     var _passes = null;
     var _passesCache;
     var _duration = 0;
-   
+    var _extraData = null;
+
     /**
     * Calculate and cache the next pass for this satellite
     */
@@ -503,6 +504,14 @@ var AGSATELLITE = function(tle0, tle1, tle2) {
 
         getSatObject : function() {
             return _sat;
+        },
+
+        setExtraData : function(data) {
+            _extraData = data;
+        },
+
+        getExtraData : function() {
+            return _extraData;
         }
 
 	};
