@@ -42,8 +42,16 @@ var AGUTIL = (function() {
         return domain;
     }
     
-	function convertDecDeg(v,tipo, html) {
-        
+	function convertDecDeg(v,tipo, html, short) {
+
+        if (html === undefined) {
+            html = false;
+        }
+        if (short === undefined) {
+            short = false;
+        }
+
+
         if ( v < -180) {
             return v;
         } 
@@ -69,7 +77,7 @@ var AGUTIL = (function() {
             return "";
         } else if (deg > 180 || deg < 0){
             // convert coordinate from north to south or east to west if wrong tipo
-            return convertDecDeg(-v,(tipo==='N'?'S': (tipo==='E'?'W':tipo) ), html);
+            return convertDecDeg(-v,(tipo==='N'?'S': (tipo==='E'?'W':tipo) ), html, short);
         } else {
             var gpsdeg = parseInt(deg,10);
             var remainder = deg - (gpsdeg * 1.0);
@@ -78,7 +86,12 @@ var AGUTIL = (function() {
             var M = parseInt(gpsmin, 10);
             var remainder2 = gpsmin - (parseInt(gpsmin, 10)*1.0);
             var S = parseInt(remainder2*60.0,10);
-            return pad(D,3)+symbol+' '+pad(M,2)+"' "+pad(S,2)+"'' "+tipo;
+
+            if (short) {
+                return pad(D,3) + symbol + ' ' + tipo;
+            } else {
+                return pad(D, 3) + symbol + ' ' + pad(M, 2) + "' " + pad(S, 2) + "'' " + tipo;
+            }
         }
     }                   
     
@@ -135,6 +148,12 @@ var AGUTIL = (function() {
             lon = convertDecDeg(lon,dir,html);
             return lon;
 		},
+
+        convertDecDegLonShort: function(lon) {
+            var dir = (lon>0?'E':'W');
+            lon = convertDecDeg(lon,dir,false,true);
+            return lon;
+        },
 
         date : function(date) {
             if (date === '') {

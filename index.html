@@ -22,6 +22,9 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/jqueryui/jquery-ui.js"></script>
 <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/extensions/datagrid-filter/datagrid-filter.js"></script>
+    <script type="text/javascript" src="/js/easyui/extensions/datagrid-scrollview/datagrid-scrollview.js"></script>
+
 
     <script type="text/javascript" src="/js/konva/konva.js"></script>
 
@@ -30,7 +33,7 @@
 <script type="text/javascript" src="/js/classes/querystring.js"></script>
 <script type="text/javascript" src="/js/classes/settings.js"></script>
 <script type="text/javascript" src="/js/classes/datamanager.js"></script>
-<script type="text/javascript" src="/js/agchecklist/jquery.ui.agcheckList.js"></script>
+<script type="text/javascript" src="/js/agselector/agselector.js"></script>
 
 <script type="text/javascript" src="/js/classes/views/passesview.js"></script>
 <script type="text/javascript" src="/js/classes/views/3dview.js"></script>
@@ -76,8 +79,14 @@
 <script type="text/javascript" src="/js/jqwidgets/jqxpanel.js"></script>
 <script type="text/javascript" src="/js/jqwidgets/jqxwindow.js"></script>
 <script type="text/javascript" src="/js/jqwidgets/jqxslider.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.js"></script>
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.sort.js"></script> 
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.pager.js"></script> 
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.selection.js"></script> 
+<script type="text/javascript" src="/js/jqwidgets/jqxgrid.edit.js"></script> 
+    
 <link rel="stylesheet" href="/js/jqwidgets/styles/jqx.base.css" type="text/css" />
-    <link rel="stylesheet" href="/js/jqwidgets/styles/jqx.dark.css" type="text/css" />
+<link rel="stylesheet" href="/js/jqwidgets/styles/jqx.dark.css" type="text/css" />
 
 <script src="/js/jscolor/jscolor.min.js" type="text/javascript"></script>
 
@@ -93,10 +102,6 @@
 
 <script src="/js/requirejs/require.js"></script>
 
-<!--<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
-<script src="/js/geocomplete/jquery.geocomplete.min.js"></script>-->
-
-
 <script src="/js/imagecombo/ddslick.js"></script>
 
 
@@ -105,40 +110,44 @@
 </head>
 <body class='easyui-layout default' style="display: none" id="body">
 	<div data-options="region:'north', title:'&nbsp;'" style="height: 120px;">
-
-
-
         <div id="ribbon">
             <span class="ribbon-window-title"></span>
 
             <div class="ribbon-tab file" id="info-tab">
-                <span class="ribbon-title">Info</span>
+                <span class="ribbon-title">Credits</span>
                 <div class="ribbon-backstage">
                     <table with="100%">
                         <tr>
                             <td width="50%" valign="top">
                                 <h2>Credits</h2>
-                                <h3>Satellite Orbit tracked (iSat) <a target="_blank" href="https://github.com/koansys/isat">Visit on GitHub<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
+
+                                <div style="float:left;">                                
+                                    <a href="https://cesiumjs.org/" target="_blank"><img src="/images/cesium_logo.svg" width="200" /></a>
+                                </div>
+
+                                <p>Cesium is a JavaScript library for creating 3D globes and 2D maps in a web browser without a plugin. It uses WebGL for hardware-accerlated graphics, and is cross-platform, cross-browser, and tuned for dynamic-data visualization. Cesium is open source under the Apache 2.0 license. It is free for commercial and non-commercial use. <a target="_blank" href="https://cesiumjs.org/">Visit Cesium Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></p>
+
+                                <div style="clear: both"><br /></div>                                
+                                <div style="float:left; padding-right:10px">                                
+                                    <a href="http://www.jeasyui.com/" target="_blank"><img src="/images/easyui.png" width="200" /></a>
+                                </div>
+                                <p>jQuery EasyUI provides easy to use components for web developers, which is built on the popular jQuery core and HTML5. These make your applications suitable for today's web. </p>
+                                                                
+                                <div style="clear: both"><br /></div>                                
+                                <div style="float:left; padding-right:10px">                                
+                                    <a href="http://www.jqwidgets.com/" target="_blank"><img src="/images/jqwidgets.png" width="200" /></a>
+                                </div>
+                                <p>jQWidgets provides a comprehensive solution for building professional web sites and mobile apps. It is built entirely on open standards and technologies like HTML5, CSS, JavaScript and jQuery. jQWidgets enables responsive web development and helps you create apps and websites that look beautiful on desktops, tablets and smart phones. You can use jQWidgets with TypeScript, popular frameworks like Angular 2, KnockoutJS and server-side technologies like ASP.NET MVC, PHP, JSP and Node.js </p>
+
+                                <div style="clear: both"><br /></div>                                  
                                 
-                                Without the excellent work being done on this project <em>AgSatTrack - Online</em> would not exists. The SOT project provided the initial code to build a test version of <em>AgSatTrack - Online</em> prior to starting development on the full blown version. 
-            
-                                <h3>Cesium <a target="_blank" href="https://cesiumjs.org/">Visit Cesium Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
-
-<div style="float:left;">                                
-    <a href="https://cesiumjs.org/" target="_blank"><img src="/images/cesium_logo.svg" width="100" /></a>
-</div>
-
-                                Cesium is a JavaScript library for creating 3D globes and 2D maps in a web browser without a plugin. It uses WebGL for hardware-accerlated graphics, and is cross-platform, cross-browser, and tuned for dynamic-data visualization. Cesium is open source under the Apache 2.0 license. It is free for commercial and non-commercial use.
-
                                 <h2>Other Libraries used</h2>
                                 <h3>jQuery <a target="_blank" href="http://jquery.com/">Visit jQuery Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
                                 <h3>jQuery UI <a target="_blank" href="http://jqueryui.com/">Visit jQuery UI Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
-                                <h3>EasyUI <a target="_blank" href="http://www.jeasyui.com/">Visit EasyUI Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
-                                <h3>jQWidgets <a target="_blank" href="http://www.jqwidgets.com/">Visit jQWidgets Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
                                 <h3>Joyride <a target="_blank" href="http://www.zurb.com/playground/jquery-joyride-feature-tour-plugin">Visit Joyride Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
                                 <h3>Kinetic <a target="_blank" href="http://kineticjs.com/">Visit Kinetic Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
                                 <h3>Modernizer <a target="_blank" href="http://modernizr.com/">Visit Modernizer Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
-
+                                <h3>Satellite Orbit tracked (iSat) <a target="_blank" href="https://github.com/koansys/isat">Visit on GitHub<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
                                 <h3>Gpredict <a target="_blank" href="http://gpredict.oz9aec.net/">Visit Gpredict Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
                                 <h3>PredictLib <a target="_blank" href="http://andrewtwest.com/orbtrak/">Visit PredictLib Home<span class="imageanchor"><img src="/images/external_link.gif"></span></a></h3>
                                 
@@ -512,13 +521,13 @@
                             <span class="button-help"><strong>Show Satellite Labels.</strong><br /><br />Toggle displaying the name of the satellites.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>                                 </div>                    
                     </div>
                     <div class="ribbon-fl" style="width:30px;">
-                        <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.setfootprinttype">
+                    <!--    <div class="ribbon-button ribbon-button-small ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.setfootprinttype">
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/filledfootprint.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/filledfootprint.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-disabled" src="js/ribbon/icons/normal/filledfootprint.png" />
                             <span class="button-title" unselectable="on"></span>
                             <span class="button-help"><strong>Show footprints as filled circles.</strong><br /><br />Toggle displaying the  footprint as a filled circle.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>
-                        </div>  
+                        </div>  -->
                         <div class="ribbon-button ribbon-button-small ribbon-button-small-active ribbon-fl" unselectable="on" data-type="togglebutton" data-event="agsattrack.setssp">
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-normal" src="js/ribbon/icons/normal/ssp.png" />
                             <img class="ribbon-icon ribbon-button-small-no-title ribbon-hot" src="js/ribbon/icons/normal/ssp.png" />
@@ -832,156 +841,153 @@
             </div>
                                    
         </div>
-
-
-
-
 	</div>
-	<div data-options="region:'west',split:true" title="Information" style="width: 270px;">
-		<div id="satinfot" class="easyui-tabs" data-options="fit:true">
-			<div title="Satellite Info." style="overflow: auto; padding: 5px;">
-                <div id="sat-info-selector"></div>
-                <div id="satinfo-message">
-                    <h2><center>No Satellite Selected</center></h2>
-                    <p><center>Please select a satellite to display its information.</center></p>
-                </div>
+    
+	<div data-options="region:'west',split:true,hideCollapsedContent:false" title="Selector" style="width: 250px;">
+        <div id="quick-sat-selector"></div>
+	</div>
+
+    <div data-options="region:'east',split:true,collapsed:true,hideCollapsedContent:false" title="Information" style="width: 250px;">
+        <div title="Satellite Info." style="overflow: auto; padding: 5px;">
+            <div id="sat-info-selector"></div>
+            <div id="satinfo-message">
+                <h2><center>No Satellite Selected</center></h2>
+                <p><center>Please select a satellite to display its information.</center></p>
+            </div>
+            
+            <table width="100%" class="satinfo" style="display:none">
+                <tr>
+                    <th colspan="2">Element Values</th>
+                </tr>
+                <tr>
+                    <td width="50%">Cat Num</td>
+                    <td id="noradid" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td id="name" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Owner</td>
+                    <td id="owner" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Period</td>
+                    <td id="period" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Inclination</td>
+                    <td id="inclination" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Apogee</td>
+                    <td id="apogee" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Perigee</td>
+                    <td id="perigee" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <th colspan="2">Calculated Values</th>
+                </tr>
+                <tr>
+                    <td>Latitude</td>
+                    <td id="latitude" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Longitude</td>
+                    <td id="longitude" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Latitude</td>
+                    <td id="latitudedec" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Longitude</td>
+                    <td id="longitudedec" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Locator</td>
+                    <td id="locator" class="sat-info"></td>
+                </tr>                    
+                <tr>
+                    <td>Altitude</td>
+                    <td id="altitude" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Orbit Number</td>
+                    <td id="orbitnumber" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Visible</td>
+                    <td id="visible" class="sat-info"></td>
+                </tr>
                 
-				<table width="100%" class="satinfo" style="display:none">
-					<tr>
-						<th colspan="2">Element Values</th>
-					</tr>
-					<tr>
-						<td width="50%">Cat Num</td>
-						<td id="noradid" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Name</td>
-						<td id="name" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Owner</td>
-						<td id="owner" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Period</td>
-						<td id="period" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Inclination</td>
-						<td id="inclination" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Apogee</td>
-						<td id="apogee" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Perigee</td>
-						<td id="perigee" class="sat-info"></td>
-					</tr>
-					<tr>
-						<th colspan="2">Calculated Values</th>
-					</tr>
-					<tr>
-						<td>Latitude</td>
-						<td id="latitude" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Longitude</td>
-						<td id="longitude" class="sat-info"></td>
-					</tr>
-                    <tr>
-                        <td>Latitude</td>
-                        <td id="latitudedec" class="sat-info"></td>
-                    </tr>
-                    <tr>
-                        <td>Longitude</td>
-                        <td id="longitudedec" class="sat-info"></td>
-                    </tr>
-                    <tr>
-                        <td>Locator</td>
-                        <td id="locator" class="sat-info"></td>
-                    </tr>                    
-					<tr>
-						<td>Altitude</td>
-						<td id="altitude" class="sat-info"></td>
-					</tr>
-                    <tr>
-                        <td>Orbit Number</td>
-                        <td id="orbitnumber" class="sat-info"></td>
-                    </tr>
-                    <tr>
-                        <td>Visible</td>
-                        <td id="visible" class="sat-info"></td>
-                    </tr>
-                    
-					<tr>
-						<td>Velocity</td>
-						<td id="velocity" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Footprint</td>
-						<td id="footprint" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Range</td>
-						<td id="range" class="sat-info"></td>
-					</tr>
-                    <tr>
-                        <td>Range rate</td>
-                        <td id="rangerate" class="sat-info"></td>
-                    </tr>
-                    <tr>
-                        <td>Doppler Shift (Hz)</td>
-                        <td id="doppler" class="sat-info"></td>
-                    </tr>
-                    <tr>
-                        <td>Signal Loss (dB)</td>
-                        <td id="loss" class="sat-info"></td>
-                    </tr>
-                    <tr>
-                        <td>Signal Delay (ms)</td>
-                        <td id="delay" class="sat-info"></td>
-                    </tr>                                                               
-					<tr>
-						<td>Elevation</td>
-						<td id="elevation" class="sat-info"></td>
-					</tr>
-					<tr>
-						<td>Azimuth</td>
-						<td id="azimuth" class="sat-info"></td>
-					</tr>
-                    <tr>
-                        <td>Orbital Phase</td>
-                        <td id="orbitalphase" class="sat-info"></td>
-                    </tr>
-                    <tr>
-                        <td>Geostationary</td>
-                        <td id="geostationary" class="sat-info"></td>
-                    </tr>                    
-				</table>
-			</div>
-
-            <div title="Satellite Selector" style="padding: 5px;">
-                <div id="quick-sat-selector"></div>
-            </div>            
-		</div>
-	</div>
-
+                <tr>
+                    <td>Velocity</td>
+                    <td id="velocity" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Footprint</td>
+                    <td id="footprint" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Range</td>
+                    <td id="range" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Range rate</td>
+                    <td id="rangerate" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Doppler Shift (Hz)</td>
+                    <td id="doppler" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Signal Loss (dB)</td>
+                    <td id="loss" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Signal Delay (ms)</td>
+                    <td id="delay" class="sat-info"></td>
+                </tr>                                                               
+                <tr>
+                    <td>Elevation</td>
+                    <td id="elevation" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Azimuth</td>
+                    <td id="azimuth" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Orbital Phase</td>
+                    <td id="orbitalphase" class="sat-info"></td>
+                </tr>
+                <tr>
+                    <td>Geostationary</td>
+                    <td id="geostationary" class="sat-info"></td>
+                </tr>                    
+            </table>
+        </div>  
+    </div>
+        
 	<div data-options="region:'center'" id="center-panel">
 		<div id="viewtabs" class="easyui-tabs" data-options="fit:true">
 			<div title="List" style="overflow: hidden;" id="list">
                 <table id="sat-list-grid"></table>
 			</div>
+
 			<div title="3D View" id="3d"></div>
+
 			<div title="Passes" style="overflow: hidden" id="passes">
-                
-                <div id="pass-info-geostationary" class="hidden">
+                <div>    
+                    <div id="pass-info-geostationary" class="hidden">
                     <h1>The selected satellite is Geostationary</h1>
                     <p>A geostationary orbit, or Geostationary Earth Orbit (GEO), is a circular orbit 35,786 kilometres (22,236 mi) above the Earth's equator and following the direction of the Earth's rotation. An object in such an orbit has an orbital period equal to the Earth's rotational period (one sidereal day), and thus appears motionless, at a fixed position in the sky, to ground observers. Communications satellites and weather satellites are often given geostationary orbits, so that the satellite antennas that communicate with them do not have to move to track them, but can be pointed permanently at the position in the sky where they stay.</p>
                     <img src="/images/orbits.png "/>
                 </div>
 
-                <table width="98%" height="100%" id="pass-info-table">
+                    <table width="98%" height="100%" id="pass-info-table">
                     <tr>
                         <td height="50%" width="100%" colspan="2" valign="top">                    
                             <table id="passesgrid" class="easyui-datagrid" title="Passes" data-options="rownumbers:true, singleSelect:true, autoRowHeight:false, pagination:true, pageSize:20">
@@ -1007,17 +1013,18 @@
                         <td height="50" width="50%" class="backblack"><div id="passbottomright"></div></td>
                     </tr>                    
                 </table>
-
-
-
-
+                </div>
 			</div>
+
 			<div title="Polar View" id="polar" style="overflow: hidden;"></div>
+
 			<div title="Sky View" id="sky" style="overflow: hidden;"></div>
 			
             <div title="Timeline View" id="timeline" style="overflow: hidden;">
-                <div id="timelinelegend" style="float: left;width:200px"></div>
-                <div id="timelineview" style="float: left;overflow: auto;"></div>
+                <div>
+                    <div id="timelinelegend" style="float: left;width:200px"></div>
+                    <div id="timelineview" style="float: left;overflow: auto;"></div>
+                </div>
             </div>			
 			
             <div title="Settings" width=1000 height=600 id="options">
@@ -1455,26 +1462,28 @@
             </div>    
             
             <div title="Home View" id="home">   
-                <div><img src="/images/logo-128-noborder.png" class="vertical" /><span class="heading">Welcome to AGSatTrack - Online</span></div>
-                
-                <h2>Basic Concepts</h2>
-                <p><strong>Your Location.</strong> When first started the browser will ask you if the site is allowed to use your location. if you answer yes then the browser will attempt to determine your approximate location. <strong>note</strong> this is not generally that accurate. Under options->observer you can select your exact location.</p>
-                <p><strong>Satellites</strong> are loaded from groups, these match the standard groups available on sites like celestrak. A default group is loaded at startup, unless you have changed this the 'amateur' group is loaded. To load a group select the 'Groups' dropdown from the Home ribbon menu. You can also specify the default group to load in the options, under satellites.</p>
-                <p>Once a group is loaded you need to add satellites to display. When a satellite is displayed its data is calculated. Those satellites not being displayed will not have any data calculated for them. By default all satellites in the loaded group are automatically added. You can disable this in Options->satellites.</p>
-                <p>Satellites can be 'selected', this can be done from the list viewe, Satellite Selector or generally by clicking on a satellite in any view. Once a satellite is selected more data will be displayed, generally its orbit and passes. The Satellite info pannel on the left will also show more information. If multiple satellites are selected then a drop down will appear allowing you to select the satellite to show more detailed information for.</p>
-                <h2>Views</h2>
-                <p>There are 7 main views available.</p>
-                <ul>
-                    <li><strong>List View.</strong> This is a basic list of all satellites loaded and is updated to reflect current data. For large groups of satellites the list is paged. The page size can be set at the botom of the view.</li>
-                    <li><strong>3D View.</strong> This is a rotatable, zoomable view of the earth. satellites will be displayed, along with their orbits of there are selected. if the current orbit has a pass over your location this will be shown in green on the orbit path. The imagry for the earth can be selected in the 'provider' drop down. You can follow a selected satellite either from your location or from the satellite. The 'View' option also allows for a 2D and 2.5D view.</li>
-                    <li><strong>Passes View.</strong> This view displays pass information for a satellite. The satellite and pass can be selected in the ribbon menu. The two bottom views can be selected in the ribbon menu. the default for these two views can be specified in the options.</li>
-                    <li><strong>Polar View.</strong> This displays a Polar, or radar, view.</li>
-                    <li><strong>Sky View.</strong> This displays a view looking South from your location. This can be handy for visual satellite observation. The horizon image can be dragged up and down if its in the way or turned off in the ribbon menu.</li>
-                    <li><strong>Timeline View.</strong> This will show all passes for the selectedd satellites within the next 24 hours.</li>
-                    <li><strong>Az/El View.</strong> This is <strong>only</strong> available in the passes view. It shows a graph of Azimuth and elevation for a selected pass.</li>
-                </ul>
-                <h4>Debug View</h4>
-                <p>This must be enabled in the options. This view is primarily intended to debug issues. It shows all of the available satellites along with information about the internal calculation engine.</p>
+                <div>
+                    <div><img src="/images/logo-128-noborder.png" class="vertical" /><span class="heading">Welcome to AGSatTrack - Online</span></div>
+                    
+                    <h2>Basic Concepts</h2>
+                    <p><strong>Your Location.</strong> When first started the browser will ask you if the site is allowed to use your location. if you answer yes then the browser will attempt to determine your approximate location. <strong>note</strong> this is not generally that accurate. Under options->observer you can select your exact location.</p>
+                    <p><strong>Satellites</strong> are loaded from groups, these match the standard groups available on sites like celestrak. A default group is loaded at startup, unless you have changed this the 'amateur' group is loaded. To load a group select the 'Groups' dropdown from the Home ribbon menu. You can also specify the default group to load in the options, under satellites.</p>
+                    <p>Once a group is loaded you need to add satellites to display. When a satellite is displayed its data is calculated. Those satellites not being displayed will not have any data calculated for them. By default all satellites in the loaded group are automatically added. You can disable this in Options->satellites.</p>
+                    <p>Satellites can be 'selected', this can be done from the list viewe, Satellite Selector or generally by clicking on a satellite in any view. Once a satellite is selected more data will be displayed, generally its orbit and passes. The Satellite info pannel on the left will also show more information. If multiple satellites are selected then a drop down will appear allowing you to select the satellite to show more detailed information for.</p>
+                    <h2>Views</h2>
+                    <p>There are 7 main views available.</p>
+                    <ul>
+                        <li><strong>List View.</strong> This is a basic list of all satellites loaded and is updated to reflect current data. For large groups of satellites the list is paged. The page size can be set at the botom of the view.</li>
+                        <li><strong>3D View.</strong> This is a rotatable, zoomable view of the earth. satellites will be displayed, along with their orbits of there are selected. if the current orbit has a pass over your location this will be shown in green on the orbit path. The imagry for the earth can be selected in the 'provider' drop down. You can follow a selected satellite either from your location or from the satellite. The 'View' option also allows for a 2D and 2.5D view.</li>
+                        <li><strong>Passes View.</strong> This view displays pass information for a satellite. The satellite and pass can be selected in the ribbon menu. The two bottom views can be selected in the ribbon menu. the default for these two views can be specified in the options.</li>
+                        <li><strong>Polar View.</strong> This displays a Polar, or radar, view.</li>
+                        <li><strong>Sky View.</strong> This displays a view looking South from your location. This can be handy for visual satellite observation. The horizon image can be dragged up and down if its in the way or turned off in the ribbon menu.</li>
+                        <li><strong>Timeline View.</strong> This will show all passes for the selectedd satellites within the next 24 hours.</li>
+                        <li><strong>Az/El View.</strong> This is <strong>only</strong> available in the passes view. It shows a graph of Azimuth and elevation for a selected pass.</li>
+                    </ul>
+                    <h4>Debug View</h4>
+                    <p>This must be enabled in the options. This view is primarily intended to debug issues. It shows all of the available satellites along with information about the internal calculation engine.</p>
+                </div>
             </div>
             
             <div title="DX View" id="dx">
@@ -1586,83 +1595,21 @@
       <li data-id="options" data-button="Close" data-options="tipLocation:top;tipAnimation:fade">
         <h2>Program Options</h2>
         <p>Setup Agsattrack how you like it :-)</p>
-      </li>  
-           
+      </li>         
     </ol>
     
- <--   
-    <div id='jqxListViewMenu'>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li>About Us
-                <ul>
-                    <li><a href="#">History</a></li>
-                    <li><a href="#">Our Vision</a></li>
-                    <li><a href="#">The Team</a>
-                        <ul>
-                            <li><a href="#">Brigita</a></li>
-                            <li><a href="#">John</a></li>
-                            <li><a href="#">Michael</a></li>
-                            <li><a href="#">Peter</a></li>
-                            <li><a href="#">Sarah</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Clients</a></li>
-                    <li><a href="#">Testimonials</a></li>
-                    <li><a href="#">Press</a></li>
-                    <li><a href="#">FAQs</a></li>
-                </ul>
-            </li>
-            <li>Services
-                <ul>
-                    <li><a href="#">Product Development</a></li>
-                    <li><a href="#">Delivery</a></li>
-                    <li><a href="#">Shop Online</a></li>
-                    <li><a href="#">Support</a></li>
-                    <li><a href="#">Training &amp; Consulting</a></li>
-                </ul>
-            </li>
-            <li>Products
-                <ul>
-                    <li><a href="#">New</a>
-                        <ul>
-                            <li><a href="#">Corporate Use</a></li>
-                            <li><a href="#">Private Use</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Used</a>
-                        <ul>
-                            <li><a href="#">Corporate Use</a></li>
-                            <li><a href="#">Private Use</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Featured</a></li>
-                    <li><a href="#">Top Rated</a></li>
-                    <li><a href="#">Prices</a></li>
-                </ul>
-            </li>
-            <li><a href="#">Contact Us</a>
-                <ul>
-                    <li><a href="#">Enquiry Form</a></li>
-                    <li><a href="#">Map &amp; Driving Directions</a></li>
-                    <li><a href="#">Your Feedback</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
- -->                   
 
- <div id="help-1" class="helpwrapper">
-     <div style="width: 220px" class="helptext">       
-     <h2><span><img src="/images/info.png" width=32 /></span>Information</h2>
-     <p>There are {tlecount} satellites loaded but none are current being displayed.</p>
-     <p>before satellites are displayed you need to add them. There are two ways to add satellites.</p>
-     <ul>
-        <li><img src="/js/ribbon/icons/hot/satellite.png"><span>Use the satellite selector on the home ribbon tab</span></li>
-        <li><img src="/js/ribbon/icons/hot/satellite_all.png"><span>Use the add all satellites button on the home ribbon tab</span></li>
-     </ul>
+     <div id="help-1" class="helpwrapper">
+         <div style="width: 220px" class="helptext">       
+         <h2><span><img src="/images/info.png" width=32 /></span>Information</h2>
+         <p>There are {tlecount} satellites loaded but none are current being displayed.</p>
+         <p>before satellites are displayed you need to add them. There are two ways to add satellites.</p>
+         <ul>
+            <li><img src="/js/ribbon/icons/hot/satellite.png"><span>Use the satellite selector on the home ribbon tab</span></li>
+            <li><img src="/js/ribbon/icons/hot/satellite_all.png"><span>Use the add all satellites button on the home ribbon tab</span></li>
+         </ul>
+         </div>
      </div>
- </div>
                 
 	<script type="text/javascript">
         var href = document.location.href;

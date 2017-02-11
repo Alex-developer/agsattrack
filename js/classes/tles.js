@@ -52,6 +52,7 @@ var AGTLES = function() {
                 tle[0] = name;
             }
         }
+       // AGSatTrack.calculate(true);
         AGVIEWS.tlesLoaded();
         jQuery(document).trigger('agsattrack.tlesloaded', _group);
 	}
@@ -189,7 +190,6 @@ var AGTLES = function() {
 		calcAll: function(date, observer, mutualObserver) {
             AGSatTrack.getUI().updateStatus('Updating All Satellites ...');
 			for (var i=0; i < satellites.length; i++) {
-
 				if (satellites[i].isDisplaying()) {
 					satellites[i].calc(date, observer, mutualObserver);
 				}
