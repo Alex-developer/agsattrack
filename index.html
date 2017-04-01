@@ -17,7 +17,6 @@
 
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/gray/easyui.css">
 <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css">
-<link rel="stylesheet" type="text/css" href="/js/agchecklist/checkList.css">
 
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/jqueryui/jquery-ui.js"></script>
@@ -45,6 +44,7 @@
 <script type="text/javascript" src="/js/classes/views/debug.js"></script>
 <script type="text/javascript" src="/js/classes/views/home.js"></script>
 <script type="text/javascript" src="/js/classes/views/azelview.js"></script>
+<script type="text/javascript" src="/js/classes/views/info.js"></script>
 <script type="text/javascript" src="/js/classes/views/dx.js"></script>
 <script type="text/javascript" src="/js/classes/observer.js"></script>
 <script type="text/javascript" src="/js/classes/spmengine.js"></script>
@@ -103,17 +103,14 @@
 <script src="/js/requirejs/require.js"></script>
 
 <script src="/js/imagecombo/ddslick.js"></script>
-
-
-    <link href="/js/cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet" type="text/css" />
-
+   
 </head>
 <body class='easyui-layout default' style="display: none" id="body">
 	<div data-options="region:'north', title:'&nbsp;'" style="height: 120px;">
         <div id="ribbon">
             <span class="ribbon-window-title"></span>
 
-            <div class="ribbon-tab file" id="info-tab">
+            <div class="ribbon-tab file" id="credits-tab">
                 <span class="ribbon-title">Credits</span>
                 <div class="ribbon-backstage">
                     <table with="100%">
@@ -188,6 +185,7 @@
                                 <li class="satview" data-options="sky"><img src="images/ribbon/sky.png"><span>Sky View</span></li>
                                 <li class="satview" data-options="timeline"><img src="images/ribbon/timeline.png"><span>Timeline View</span></li>
                                 <li class="satview" data-options="dx"><img src="/js/ribbon/icons/normal/dx-16.png"><span>Dx View</span></li>
+                                <li class="satview" data-options="info"><img src="/js/ribbon/icons/normal/dx-16.png"><span>Info View</span></li>
                             </ul>
                         </div>
                     </div>
@@ -339,6 +337,20 @@
                         </div>                                                 
                     </div>
                 </div>
+
+                <div class="ribbon-section">
+                    <span class="section-title">Satellite</span>
+
+                    <div class="ribbon-button ribbon-button-large show-info-window" data-type="togglebutton" data-event="agsattrack.showinfowindow">
+                        <span class="button-title">Show<br/>Info</span>
+                        <span class="button-help"><strong>Show Info Window.</strong><br /><br />Show satellite information window.<br /><hr><img src="js/ribbon/help-16.png" class="ribbon-help-small"/><span> See Help for more information</span></span>
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/info.png" />
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/info.png" />
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/info.png" />
+                    </div>
+
+                </div>
+
             </div>
 
             <div class="ribbon-tab" id="3d-tab">
@@ -816,7 +828,21 @@
                  </div>              
                 
             </div>
-                            
+             
+            <div class="ribbon-tab" id="info-tab">
+                <span class="ribbon-title" data-tab="info">Info View</span>
+                <div class="ribbon-section">
+                    <span class="section-title">View Options</span>
+                    <div class="ribbon-button ribbon-button-large view-reset">
+                        <span class="button-title">Reset</span> 
+                        <span class="button-help"></span> 
+                        <img class="ribbon-icon ribbon-normal" src="js/ribbon/icons/normal/reset.png" /> 
+                        <img class="ribbon-icon ribbon-hot" src="js/ribbon/icons/hot/reset.png" /> 
+                        <img class="ribbon-icon ribbon-disabled" src="js/ribbon/icons/disabled/reset.png" />
+                    </div>  
+                 </div>                             
+            </div>
+                                        
             <div class="ribbon-tab" id="debug-tab">
                 <span class="ribbon-title" data-tab="debug">Debug View</span>
                 <div class="ribbon-section">
@@ -839,7 +865,6 @@
                     </div>
                  </div>                                      
             </div>
-                                   
         </div>
 	</div>
     
@@ -848,127 +873,8 @@
 	</div>
 
     <div data-options="region:'east',split:true,collapsed:true,hideCollapsedContent:false" title="Information" style="width: 250px;">
-        <div title="Satellite Info." style="overflow: auto; padding: 5px;">
-            <div id="sat-info-selector"></div>
-            <div id="satinfo-message">
-                <h2><center>No Satellite Selected</center></h2>
-                <p><center>Please select a satellite to display its information.</center></p>
-            </div>
-            
-            <table width="100%" class="satinfo" style="display:none">
-                <tr>
-                    <th colspan="2">Element Values</th>
-                </tr>
-                <tr>
-                    <td width="50%">Cat Num</td>
-                    <td id="noradid" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Name</td>
-                    <td id="name" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Owner</td>
-                    <td id="owner" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Period</td>
-                    <td id="period" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Inclination</td>
-                    <td id="inclination" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Apogee</td>
-                    <td id="apogee" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Perigee</td>
-                    <td id="perigee" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <th colspan="2">Calculated Values</th>
-                </tr>
-                <tr>
-                    <td>Latitude</td>
-                    <td id="latitude" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Longitude</td>
-                    <td id="longitude" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Latitude</td>
-                    <td id="latitudedec" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Longitude</td>
-                    <td id="longitudedec" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Locator</td>
-                    <td id="locator" class="sat-info"></td>
-                </tr>                    
-                <tr>
-                    <td>Altitude</td>
-                    <td id="altitude" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Orbit Number</td>
-                    <td id="orbitnumber" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Visible</td>
-                    <td id="visible" class="sat-info"></td>
-                </tr>
-                
-                <tr>
-                    <td>Velocity</td>
-                    <td id="velocity" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Footprint</td>
-                    <td id="footprint" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Range</td>
-                    <td id="range" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Range rate</td>
-                    <td id="rangerate" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Doppler Shift (Hz)</td>
-                    <td id="doppler" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Signal Loss (dB)</td>
-                    <td id="loss" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Signal Delay (ms)</td>
-                    <td id="delay" class="sat-info"></td>
-                </tr>                                                               
-                <tr>
-                    <td>Elevation</td>
-                    <td id="elevation" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Azimuth</td>
-                    <td id="azimuth" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Orbital Phase</td>
-                    <td id="orbitalphase" class="sat-info"></td>
-                </tr>
-                <tr>
-                    <td>Geostationary</td>
-                    <td id="geostationary" class="sat-info"></td>
-                </tr>                    
-            </table>
-        </div>  
+        <div id="sat-info-selector"></div>
+        <div id="sat-info-east"></div>
     </div>
         
 	<div data-options="region:'center'" id="center-panel">
@@ -1443,6 +1349,10 @@
                     
 				</div>
 			</div>
+
+            <div title="Info View" width=1000 height=600 id="info">   
+                <div id="info-layout"></div>
+            </div>
             
             <div title="Debug View" width=1000 height=600 id="debug">   
                 <table id="debuggrid" class="easyui-treegrid" style="width:600px;height:400px"  

@@ -19,13 +19,15 @@ Copyright 2013 Alex Greenland
 * Last Checked: 19/01/2013
 * 
 */
-/*global AGSatTrack, AGSETTINGS, AGVIEWS, AGUTIL, AGLOCATION, ctrl */ 
+/*global AGSatTrack, AGSETTINGS, AGVIEWS, AGUTIL, AGLOCATION, ctrl, jQuery, AGWINDOWMANAGER */
 
 var AGUI = function() {
 	'use strict';
     
     var _satSource;
-    
+    var _infoGrid;
+    var _infoWindow = null;
+
     /**
     * If we are not running on any of my domains then delete the social media
     * element from the ribbon bar.
@@ -257,11 +259,13 @@ var AGUI = function() {
 	 */
 	jQuery(document).bind('agsattrack.updatesatdata', function(e) {
         var selectedItem = jQuery('#sat-info-selector').jqxDropDownList('getSelectedItem');
+        var selectedSatellite = null;
         if (selectedItem !== null) {
-            var selectedSatellite = AGSatTrack.getSatelliteByName(selectedItem.value);    
-			updateSatelliteInfo(selectedSatellite);
+            selectedSatellite = AGSatTrack.getSatelliteByName(selectedItem.value);
         }
         jQuery('#quick-sat-selector').agSelector('update');
+        AGVIEWS.sendViewUpdate(selectedSatellite);
+        _infoGrid.dataUpdated(selectedSatellite);
     });
 
     /**
@@ -341,50 +345,16 @@ var AGUI = function() {
         var catalogNumber = satellite.getCatalogNumber();
         var url = 'index.php?controller=satellite&method=getSatelliteData&id=' + catalogNumber;
         jQuery.getJSON(url, function(data) {
-            for ( var i = 0; i < data.length; i++) {
-                jQuery('#' + data[i].field).html(data[i].value);
-            }
+            satellite.setExtraData(data);
+            AGVIEWS.newSatSelected(satellite);
+            _infoGrid.satSelected(satellite);
         });
-        updateSatelliteInfo(satellite);
     }
     
     function clearDataPane() {
         jQuery('.sat-info').html('');      
     }
-    
-    function updateSatelliteInfo(satellite) {
-        try { // TODO: Fix dopploer error
-            jQuery('#latitude').html(AGUTIL.convertDecDegLat(satellite.get('latitude')));
-            jQuery('#longitude').html(AGUTIL.convertDecDegLon(satellite.get('longitude')));
-            jQuery('#latitudedec').html(satellite.get('latitude').toFixed(3));
-            jQuery('#longitudedec').html(satellite.get('longitude').toFixed(3));
-            jQuery('#locator').html(satellite.get('locator'));
-            jQuery('#altitude').html(satellite.get('altitude').toFixed(3));
-            jQuery('#visible').html(satellite.get('visibility'));
-            jQuery('#orbitnumber').html(satellite.get('orbitnumber'));
-            jQuery('#velocity').html(satellite.get('velocity').toFixed(3));
-            jQuery('#range').html(satellite.get('range').toFixed(3));
-            jQuery('#doppler').html(satellite.get('dopplershift').toFixed(0));
-            jQuery('#loss').html(satellite.get('signalloss').toFixed(0));
-            jQuery('#delay').html(satellite.get('signaldelay').toFixed(0));
-            jQuery('#rangerate').html(satellite.get('rangerate').toFixed(3));
-            jQuery('#footprint').html(satellite.get('footprint').toFixed(3));
-            jQuery('#elevation').html(satellite.get('elevation').toFixed(3));
-            jQuery('#azimuth').html(satellite.get('azimuth').toFixed(3));      
-            jQuery('#orbitalphase').html(satellite.get('orbitalphase').toFixed(3));
-            if (satellite.isGeostationary()) {
-                if (satellite.get('elevation') > 0) {
-                    jQuery('#geostationary').html('Yes - Visible');
-                } else {
-                    jQuery('#geostationary').html('Yes - Not Visible');
-                }
-            } else {
-                jQuery('#geostationary').html('No');
-            }   
-        } catch(err) {
-            
-        }     
-    }
+
     
 /*    
     jQuery('#sat-display-all').pulse({
@@ -415,7 +385,7 @@ var AGUI = function() {
     });        
 
     if (AGSETTINGS.getDebugView() === false) {
-        jQuery('#ribbon-tab-header-9').hide();         
+        jQuery('#ribbon-tab-header-10').hide();         
     }
     
     
@@ -423,11 +393,19 @@ var AGUI = function() {
     jQuery(document.body).show();
     jQuery('#status').html('Idle');
 
-                
-	return {
-        updateInfo : function(text) {
-            jQuery('#info').html(text);            
-        },
+
+    _infoGrid = AGVIEWS.getNewView('info','sat-info-east');
+    _infoGrid.init(AGVIEWS.modes.SHORT);
+
+    jQuery(document).bind('agsattrack.showinfowindow', function(e,state) {
+        if (state) {
+            AGWINDOWMANAGER.showWindow('info');
+        } else {
+            AGWINDOWMANAGER.destroyWindow('info');
+        }
+    });
+
+    return {
         updateStatus : function(text) {
             jQuery('#status').html(text);            
         },
@@ -436,17 +414,6 @@ var AGUI = function() {
         },                
         updateStatusFollowing : function(text) {
             jQuery('#statusfollowing').html(text);            
-        },
-		updateSatelliteInfo : function(catalogNumber) {
-			var url = 'index.php?controller=satellite&method=getSatelliteData&id=' + catalogNumber;
-			jQuery.getJSON(url, function(data) {
-				for ( var i = 0; i < data.length; i++) {
-					jQuery('#' + data[i].field).html(data[i].value);
-				}
-			});
-		},
-        
-        updateInfoPane : function() {
         }
 	};
 };

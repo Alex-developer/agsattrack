@@ -67,6 +67,12 @@ var AGVIEWS = (function(element) {
             index: 'Timeline View',
             tabIndex: 7              
         },
+        'info' : {
+            classname : 'AGINFOVIEW',
+            active : false,
+            index: 'Info View',
+            tabIndex: 9              
+        },        
         'options' : {
             classname : 'AGOPTIONS',
             active : false,
@@ -227,12 +233,33 @@ var AGVIEWS = (function(element) {
         
         resizeLayout : function() {
             jQuery('body').layout('resize');
-        }  
+        },
+
+        sendViewUpdate : function(selectedSatellite) {
+            jQuery.each(_views, function(_view, _options) {
+                if (_options.active) {
+                    if (typeof _options.instance !== 'undefined' && typeof _options.instance.dataUpdated === 'function') {
+                        _options.instance.dataUpdated(selectedSatellite);
+                    }
+                }
+            });
+        },
+
+        newSatSelected : function(selectedSatellite) {
+            jQuery.each(_views, function(_view, _options) {
+                if (_options.active) {
+                    if (typeof _options.instance !== 'undefined' && typeof _options.instance.satSelected === 'function') {
+                        _options.instance.satSelected(selectedSatellite);
+                    }
+                }
+            });
+        }
     };
 })();
 
 AGVIEWS.modes = {
     DEFAULT : 1,
     SINGLE : 2,
-    PREVIEW : 3
+    PREVIEW : 3,
+    SHORT: 4
 };

@@ -18,6 +18,12 @@ var AGWINDOWMANAGER = (function() {
     "use strict" ;
     
     var _windows = {
+        'info' : {
+            classname : 'AGINFOWINDOW',
+            loaded: false,
+            instance: null,
+            element : null
+        },
         'dx' : {
             classname : 'AGDXWINDOW',
             loaded: false,
@@ -68,6 +74,9 @@ var AGWINDOWMANAGER = (function() {
         destroyWindow : function(name) {
             if (typeof _windows[name] !== 'undefined') {
                 if (_windows[name].instance !== null) {
+                    if (typeof _windows[name].instance.destroy === 'function') {
+                        _windows[name].instance.destroy();
+                    }
                     jQuery(_windows[name].element).window('destroy', false);
                     jQuery(_windows[name].element).remove();
                     _windows[name].instance = null;
