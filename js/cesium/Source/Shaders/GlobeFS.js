@@ -15,6 +15,10 @@ uniform bool u_dayTextureUseWebMercatorT[TEXTURE_UNITS];\n\
 uniform float u_dayTextureAlpha[TEXTURE_UNITS];\n\
 #endif\n\
 \n\
+#ifdef APPLY_SPLIT\n\
+uniform float u_dayTextureSplit[TEXTURE_UNITS];\n\
+#endif\n\
+\n\
 #ifdef APPLY_BRIGHTNESS\n\
 uniform float u_dayTextureBrightness[TEXTURE_UNITS];\n\
 #endif\n\
@@ -75,7 +79,8 @@ vec4 sampleAndBlend(\n\
     float textureContrast,\n\
     float textureHue,\n\
     float textureSaturation,\n\
-    float textureOneOverGamma)\n\
+    float textureOneOverGamma,\n\
+    float split)\n\
 {\n\
     // This crazy step stuff sets the alpha to 0.0 if this following condition is true:\n\
     //    tileTextureCoordinates.s < textureCoordinateRectangle.s ||\n\
@@ -96,6 +101,18 @@ vec4 sampleAndBlend(\n\
     vec4 value = texture2D(texture, textureCoordinates);\n\
     vec3 color = value.rgb;\n\
     float alpha = value.a;\n\
+\n\
+#ifdef APPLY_SPLIT\n\
+    float splitPosition = czm_imagerySplitPosition * czm_viewport.z;\n\
+    // Split to the left\n\
+    if (split < 0.0 && gl_FragCoord.x > splitPosition) {\n\
+       alpha = 0.0;\n\
+    }\n\
+    // Split to the right\n\
+    else if (split > 0.0 && gl_FragCoord.x < splitPosition) {\n\
+       alpha = 0.0;\n\
+    }\n\
+#endif\n\
 \n\
 #ifdef APPLY_BRIGHTNESS\n\
     color = mix(vec3(0.0), color, textureBrightness);\n\

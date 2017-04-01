@@ -6,7 +6,7 @@ define(function() {
 attribute vec2 direction;\n\
 #endif\n\
 attribute vec4 positionHighAndScale;\n\
-attribute vec4 positionLowAndRotation;   \n\
+attribute vec4 positionLowAndRotation;\n\
 attribute vec4 compressedAttribute0;        // pixel offset, translate, horizontal origin, vertical origin, show, direction, texture coordinates (texture offset)\n\
 attribute vec4 compressedAttribute1;        // aligned axis, translucency by distance, image width\n\
 attribute vec4 compressedAttribute2;        // image height, color, pick color, size in meters, valid aligned axis, 13 bits free\n\
@@ -48,7 +48,7 @@ vec4 computePositionWindowCoordinates(vec4 positionEC, vec2 imageSize, float sca
     halfSize *= ((direction * 2.0) - 1.0);\n\
 \n\
     vec2 originTranslate = origin * abs(halfSize);\n\
-    \n\
+\n\
 #if defined(ROTATION) || defined(ALIGNED_AXIS)\n\
     if (validAlignedAxis || rotation != 0.0)\n\
     {\n\
@@ -61,7 +61,7 @@ vec4 computePositionWindowCoordinates(vec4 positionEC, vec2 imageSize, float sca
             tangent = czm_modelViewProjection * tangent;\n\
             angle += sign(-tangent.x) * acos(tangent.y / length(tangent.xy));\n\
         }\n\
-        \n\
+\n\
         float cosTheta = cos(angle);\n\
         float sinTheta = sin(angle);\n\
         mat2 rotationMatrix = mat2(cosTheta, sinTheta, -sinTheta, cosTheta);\n\
@@ -86,22 +86,22 @@ vec4 computePositionWindowCoordinates(vec4 positionEC, vec2 imageSize, float sca
     {\n\
         positionWC.xy += halfSize;\n\
     }\n\
-    \n\
+\n\
     positionWC.xy += translate;\n\
     positionWC.xy += (pixelOffset * czm_resolutionScale);\n\
-    \n\
+\n\
     return positionWC;\n\
 }\n\
 \n\
-void main() \n\
+void main()\n\
 {\n\
     // Modifying this shader may also require modifications to Billboard._computeScreenSpacePosition\n\
-    \n\
+\n\
     // unpack attributes\n\
     vec3 positionHigh = positionHighAndScale.xyz;\n\
     vec3 positionLow = positionLowAndRotation.xyz;\n\
     float scale = positionHighAndScale.w;\n\
-    \n\
+\n\
 #if defined(ROTATION) || defined(ALIGNED_AXIS)\n\
     float rotation = positionLowAndRotation.w;\n\
 #else\n\
@@ -109,21 +109,21 @@ void main() \n\
 #endif\n\
 \n\
     float compressed = compressedAttribute0.x;\n\
-    \n\
+\n\
     vec2 pixelOffset;\n\
     pixelOffset.x = floor(compressed * SHIFT_RIGHT7);\n\
     compressed -= pixelOffset.x * SHIFT_LEFT7;\n\
     pixelOffset.x -= UPPER_BOUND;\n\
-    \n\
+\n\
     vec2 origin;\n\
     origin.x = floor(compressed * SHIFT_RIGHT5);\n\
     compressed -= origin.x * SHIFT_LEFT5;\n\
-    \n\
+\n\
     origin.y = floor(compressed * SHIFT_RIGHT3);\n\
     compressed -= origin.y * SHIFT_LEFT3;\n\
-    \n\
+\n\
     origin -= vec2(1.0);\n\
-    \n\
+\n\
     float show = floor(compressed * SHIFT_RIGHT2);\n\
     compressed -= show * SHIFT_LEFT2;\n\
 \n\
@@ -138,30 +138,30 @@ void main() \n\
 \n\
     vec2 textureCoordinates = czm_decompressTextureCoordinates(compressedAttribute0.w);\n\
 #endif\n\
-    \n\
+\n\
     float temp = compressedAttribute0.y  * SHIFT_RIGHT8;\n\
     pixelOffset.y = -(floor(temp) - UPPER_BOUND);\n\
-    \n\
+\n\
     vec2 translate;\n\
     translate.y = (temp - floor(temp)) * SHIFT_LEFT16;\n\
-    \n\
+\n\
     temp = compressedAttribute0.z * SHIFT_RIGHT8;\n\
     translate.x = floor(temp) - UPPER_BOUND;\n\
-    \n\
+\n\
     translate.y += (temp - floor(temp)) * SHIFT_LEFT8;\n\
     translate.y -= UPPER_BOUND;\n\
 \n\
     temp = compressedAttribute1.x * SHIFT_RIGHT8;\n\
-    \n\
+\n\
     vec2 imageSize = vec2(floor(temp), compressedAttribute2.w);\n\
-    \n\
+\n\
 #ifdef EYE_DISTANCE_TRANSLUCENCY\n\
     vec4 translucencyByDistance;\n\
     translucencyByDistance.x = compressedAttribute1.z;\n\
     translucencyByDistance.z = compressedAttribute1.w;\n\
-    \n\
+\n\
     translucencyByDistance.y = ((temp - floor(temp)) * SHIFT_LEFT8) / 255.0;\n\
-    \n\
+\n\
     temp = compressedAttribute1.y * SHIFT_RIGHT8;\n\
     translucencyByDistance.w = ((temp - floor(temp)) * SHIFT_LEFT8) / 255.0;\n\
 #endif\n\
@@ -174,7 +174,7 @@ void main() \n\
     vec3 alignedAxis = vec3(0.0);\n\
     bool validAlignedAxis = false;\n\
 #endif\n\
-    \n\
+\n\
 #ifdef RENDER_FOR_PICK\n\
     temp = compressedAttribute2.y;\n\
 #else\n\
@@ -187,11 +187,11 @@ void main() \n\
     temp = floor(temp) * SHIFT_RIGHT8;\n\
     color.g = (temp - floor(temp)) * SHIFT_LEFT8;\n\
     color.r = floor(temp);\n\
-    \n\
+\n\
     temp = compressedAttribute2.z * SHIFT_RIGHT8;\n\
     bool sizeInMeters = floor((temp - floor(temp)) * SHIFT_LEFT7) > 0.0;\n\
     temp = floor(temp) * SHIFT_RIGHT8;\n\
-    \n\
+\n\
 #ifdef RENDER_FOR_PICK\n\
     color.a = (temp - floor(temp)) * SHIFT_LEFT8;\n\
     vec4 pickColor = color / 255.0;\n\
@@ -199,15 +199,15 @@ void main() \n\
     color.a = floor(temp);\n\
     color /= 255.0;\n\
 #endif\n\
-    \n\
+\n\
     ///////////////////////////////////////////////////////////////////////////\n\
-    \n\
+\n\
     vec4 p = czm_translateRelativeToEye(positionHigh, positionLow);\n\
     vec4 positionEC = czm_modelViewRelativeToEye * p;\n\
     positionEC = czm_eyeOffset(positionEC, eyeOffset.xyz);\n\
     positionEC.xyz *= show;\n\
-    \n\
-    ///////////////////////////////////////////////////////////////////////////     \n\
+\n\
+    ///////////////////////////////////////////////////////////////////////////\n\
 \n\
 #if defined(EYE_DISTANCE_SCALING) || defined(EYE_DISTANCE_TRANSLUCENCY) || defined(EYE_DISTANCE_PIXEL_OFFSET) || defined(DISTANCE_DISPLAY_CONDITION)\n\
     float lengthSq;\n\
@@ -224,7 +224,9 @@ void main() \n\
 #endif\n\
 \n\
 #ifdef EYE_DISTANCE_SCALING\n\
-    scale *= czm_nearFarScalar(scaleByDistance, lengthSq);\n\
+    float distanceScale = czm_nearFarScalar(scaleByDistance, lengthSq);\n\
+    scale *= distanceScale;\n\
+    translate *= distanceScale;\n\
     // push vertex behind near plane for clipping\n\
     if (scale == 0.0)\n\
     {\n\

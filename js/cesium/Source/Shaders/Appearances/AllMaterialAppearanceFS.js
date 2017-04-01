@@ -5,13 +5,13 @@ define(function() {
     return "varying vec3 v_positionEC;\n\
 varying vec3 v_normalEC;\n\
 varying vec3 v_tangentEC;\n\
-varying vec3 v_binormalEC;\n\
+varying vec3 v_bitangentEC;\n\
 varying vec2 v_st;\n\
 \n\
 void main()\n\
 {\n\
-    vec3 positionToEyeEC = -v_positionEC; \n\
-    mat3 tangentToEyeMatrix = czm_tangentToEyeSpaceMatrix(v_normalEC, v_tangentEC, v_binormalEC);\n\
+    vec3 positionToEyeEC = -v_positionEC;\n\
+    mat3 tangentToEyeMatrix = czm_tangentToEyeSpaceMatrix(v_normalEC, v_tangentEC, v_bitangentEC);\n\
 \n\
     vec3 normalEC = normalize(v_normalEC);\n\
 #ifdef FACE_FORWARD\n\
@@ -24,8 +24,8 @@ void main()\n\
     materialInput.positionToEyeEC = positionToEyeEC;\n\
     materialInput.st = v_st;\n\
     czm_material material = czm_getMaterial(materialInput);\n\
-    \n\
-#ifdef FLAT    \n\
+\n\
+#ifdef FLAT\n\
     gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n\
 #else\n\
     gl_FragColor = czm_phong(normalize(positionToEyeEC), material);\n\

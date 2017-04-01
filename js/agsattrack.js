@@ -34,7 +34,18 @@ var Agsattrack = function() {
 	var _initComplete = false; // Don't like this
 	var _speed = 1;
 	var _following = null;
-    
+    var _clock = null;
+
+    function createClock() {
+        _clock = new Cesium.Clock({
+            startTime : Cesium.JulianDate.now(),
+            currentTime : Cesium.JulianDate.now(),
+            stopTime : Cesium.JulianDate.fromIso8601('2030-01-01'),
+            clockRange : Cesium.ClockRange.UNBOUNDED,
+            clockStep : Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER
+        });
+    }
+
 	function bindEvents() {	
 
         jQuery(document).bind('agsattrack.tlesloaded', function() {
@@ -122,10 +133,8 @@ var Agsattrack = function() {
 	}
 
     function updateTimeInToolbar() {
-        var julianDate;
-        
         if (AGSETTINGS.getHaveWebGL()) {
-            jQuery('#currenttime').html(Cesium.JulianDate.toDate(Cesium.JulianDate.now()).toString());      
+            jQuery('#currenttime').html(Cesium.JulianDate.toDate(_clock.currentTime).toString());
         }
  
     }
@@ -135,14 +144,9 @@ var Agsattrack = function() {
 
         _ui.updateStatus('Calculating');
         
-        if (AGSETTINGS.getHaveWebGL()) {
-            var cDate = Cesium.JulianDate.now()
-            julianDate = cDate.dayNumber + cDate.secondsOfDay;            
-        } else {
-            julianDate = Date.Date2Julian(new Date());
-        }
-		
-		_planets.update(julianDate, _observers[0]);
+		julianDate = _clock.currentTime;
+
+        _planets.update(julianDate, _observers[0]);
 		
 		if (_tles.getTotalDisplaying() > 0) {
             var activeView = AGVIEWS.getCurrentView();
@@ -165,14 +169,16 @@ var Agsattrack = function() {
         _ui.updateStatus('Idle');
     
     }
-	
-	
+
     function setSelected(index) {
         _tles.getSatellite(index).setSelected(true);        
     }
     
 	return {
 
+	    getClock : function() {
+	        return _clock;
+        },
 		getPlanets: function() {
 			return _planets.getPlanets();
 		},
@@ -236,7 +242,9 @@ var Agsattrack = function() {
 			var _active = 0;
 			
             bindEvents();
-            
+
+            createClock();
+
             /**
              * Fire up the user Inerface
              */

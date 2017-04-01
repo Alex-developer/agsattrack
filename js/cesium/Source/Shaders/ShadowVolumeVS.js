@@ -4,8 +4,11 @@ define(function() {
     'use strict';
     return "attribute vec3 position3DHigh;\n\
 attribute vec3 position3DLow;\n\
+attribute vec3 extrudeDirection;\n\
 attribute vec4 color;\n\
 attribute float batchId;\n\
+\n\
+uniform float u_globeMinimumAltitude;\n\
 \n\
 // emulated noperspective\n\
 varying float v_WindowZ;\n\
@@ -21,8 +24,12 @@ vec4 depthClampFarPlane(vec4 vertexInClipCoordinates)\n\
 void main()\n\
 {\n\
     v_color = color;\n\
-    \n\
+\n\
     vec4 position = czm_computePosition();\n\
+    float delta = min(u_globeMinimumAltitude, czm_geometricToleranceOverMeter * length(position.xyz));\n\
+\n\
+    //extrudeDirection is zero for the top layer\n\
+    position = position + vec4(extrudeDirection * delta, 0.0);\n\
     gl_Position = depthClampFarPlane(czm_modelViewProjectionRelativeToEye * position);\n\
 }\n\
 ";

@@ -22,10 +22,28 @@ void main()\n\
 \n\
     vec4 color = mix(v_outlineColor, v_color, innerAlpha);\n\
     color.a *= wholeAlpha;\n\
-    if (color.a < 0.005)\n\
+\n\
+// Fully transparent parts of the billboard are not pickable.\n\
+#if defined(RENDER_FOR_PICK) || (!defined(OPAQUE) && !defined(TRANSLUCENT))\n\
+    if (color.a < 0.005)   // matches 0/255 and 1/255\n\
     {\n\
         discard;\n\
     }\n\
+#else\n\
+// The billboard is rendered twice. The opaque pass discards translucent fragments\n\
+// and the translucent pass discards opaque fragments.\n\
+#ifdef OPAQUE\n\
+    if (color.a < 0.995)   // matches < 254/255\n\
+    {\n\
+        discard;\n\
+    }\n\
+#else\n\
+    if (color.a >= 0.995)  // matches 254/255 and 255/255\n\
+    {\n\
+        discard;\n\
+    }\n\
+#endif\n\
+#endif\n\
 \n\
 #ifdef RENDER_FOR_PICK\n\
     gl_FragColor = v_pickColor;\n\

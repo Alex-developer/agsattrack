@@ -2,7 +2,33 @@
 /*global define*/
 define(function() {
     'use strict';
-    return "/**\n\
+    return " /**\n\
+  * Decodes a unit-length vector in 'oct' encoding to a normalized 3-component Cartesian vector.\n\
+  * The 'oct' encoding is described in \"A Survey of Efficient Representations of Independent Unit Vectors\",\n\
+  * Cigolle et al 2014: http://jcgt.org/published/0003/02/01/\n\
+  *\n\
+  * @name czm_octDecode\n\
+  * @param {vec2} encoded The oct-encoded, unit-length vector\n\
+  * @param {float} range The maximum value of the SNORM range. The encoded vector is stored in log2(rangeMax+1) bits.\n\
+  * @returns {vec3} The decoded and normalized vector\n\
+  */\n\
+  vec3 czm_octDecode(vec2 encoded, float range)\n\
+  {\n\
+      if (encoded.x == 0.0 && encoded.y == 0.0) {\n\
+          return vec3(0.0, 0.0, 0.0);\n\
+      }\n\
+\n\
+     encoded = encoded / range * 2.0 - 1.0;\n\
+     vec3 v = vec3(encoded.x, encoded.y, 1.0 - abs(encoded.x) - abs(encoded.y));\n\
+     if (v.z < 0.0)\n\
+     {\n\
+         v.xy = (1.0 - abs(v.yx)) * czm_signNotZero(v.xy);\n\
+     }\n\
+\n\
+     return normalize(v);\n\
+  }\n\
+\n\
+/**\n\
  * Decodes a unit-length vector in 'oct' encoding to a normalized 3-component Cartesian vector.\n\
  * The 'oct' encoding is described in \"A Survey of Efficient Representations of Independent Unit Vectors\",\n\
  * Cigolle et al 2014: http://jcgt.org/published/0003/02/01/\n\
@@ -13,14 +39,7 @@ define(function() {
  */\n\
  vec3 czm_octDecode(vec2 encoded)\n\
  {\n\
-    encoded = encoded / 255.0 * 2.0 - 1.0;\n\
-    vec3 v = vec3(encoded.x, encoded.y, 1.0 - abs(encoded.x) - abs(encoded.y));\n\
-    if (v.z < 0.0)\n\
-    {\n\
-        v.xy = (1.0 - abs(v.yx)) * czm_signNotZero(v.xy);\n\
-    }\n\
-    \n\
-    return normalize(v);\n\
+    return czm_octDecode(encoded, 255.0);\n\
  }\n\
 \n\
  /**\n\
