@@ -54,7 +54,7 @@ jQuery(document).ready(function() {
     'use strict';    
     
     var googleAPIKey = AGUTIL.getGoogleAPIKey();
-    requirejs(['http://maps.googleapis.com/maps/api/js?libraries=places&key=' + googleAPIKey,'/js/geocomplete/jquery.geocomplete.min.js'], function(util) {
+    requirejs(['https://maps.googleapis.com/maps/api/js?libraries=places&key=' + googleAPIKey,'/js/geocomplete/jquery.geocomplete.min.js'], function(util) {
         Modernizr.load({
           test: AGUTIL.webGlTest(),
           yep : 'js/cesium/CesiumUnminified/Cesium.js',
