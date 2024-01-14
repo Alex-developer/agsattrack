@@ -1,7 +1,7 @@
 <?php
 class AGSATTRACK_UPDATER {
 
-    private $baseUrl = 'http://www.celestrak.com/NORAD/elements/';
+    private $baseUrl = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=';
     
     public function updateAll() {
         $groups = Tlegroup::find('all');    
@@ -29,7 +29,7 @@ class AGSATTRACK_UPDATER {
     
     private function getTLE($fileName) {
 
-        $url = $this->baseUrl . '/' . $fileName;
+        $url = $this->baseUrl . $fileName;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_URL, $url);

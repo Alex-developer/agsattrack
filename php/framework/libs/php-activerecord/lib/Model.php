@@ -154,6 +154,20 @@ class Model
 	static $sequence;
 
 	/**
+	 * Set this to true in your subclass to use caching for this model.
+	 * Note that you must also configure a cache object.
+	 */
+	static $cache = false;
+
+	/**
+	 * Set this to specify an expiration period for this model.
+	 * If not set, the expire value you set in your cache options will be used.
+	 *
+	 * @var integer
+	 */
+	static $cache_expire;
+
+	/**
 	 * Allows you to create aliases for attributes.
 	 *
 	 * <code>
@@ -414,7 +428,7 @@ class Model
 		foreach (static::$delegate as &$item)
 		{
 			if (($delegated_name = $this->is_delegated($name,$item)))
-				return $this->$item['to']->$delegated_name = $value;
+				return $this->{$item['to']}->{$delegated_name} = $value;
 		}
 
 		throw new UndefinedPropertyException(get_called_class(),$name);
@@ -448,12 +462,19 @@ class Model
 		}
 
 		// convert php's \DateTime to ours
-		if ($value instanceof \DateTime)
-			$value = new DateTime($value->format('Y-m-d H:i:s T'));
+		if ($value instanceof \DateTime) {
+			$date_class = Config::instance()->get_date_class();
+			if (!($value instanceof $date_class))
+				$value = $date_class::createFromFormat(
+					Connection::DATETIME_TRANSLATE_FORMAT,
+					$value->format(Connection::DATETIME_TRANSLATE_FORMAT),
+					$value->getTimezone()
+				);
+		}
 
-		// make sure DateTime values know what model they belong to so
-		// dirty stuff works when calling set methods on the DateTime object
-		if ($value instanceof DateTime)
+		if ($value instanceof DateTimeInterface)
+			// Tell the Date object that it's associated with this model and attribute. This is so it
+			// has the ability to flag this model as dirty if a field in the Date object changes.
 			$value->attribute_of($this,$name);
 
 		$this->attributes[$name] = $value;
@@ -555,7 +576,7 @@ class Model
 	 */
 	public function attribute_is_dirty($attribute)
 	{
-		return $this->__dirty && $this->__dirty[$attribute] && array_key_exists($attribute, $this->attributes);
+		return $this->__dirty && isset($this->__dirty[$attribute]) && array_key_exists($attribute, $this->attributes);
 	}
 
 	/**
@@ -693,7 +714,7 @@ class Model
 	/**
 	 * Throws an exception if this model is set to readonly.
 	 *
-	 * @throws ActiveRecord\ReadOnlyException
+	 * @throws \ActiveRecord\ReadOnlyException
 	 * @param string $method_name Name of method that was invoked on model for exception message
 	 */
 	private function verify_not_readonly($method_name)
@@ -749,12 +770,13 @@ class Model
 	 *
 	 * @param array $attributes Array of the models attributes
 	 * @param boolean $validate True if the validators should be run
+	 * @param boolean $guard_attributes Set to true to guard protected/non-accessible attributes
 	 * @return Model
 	 */
-	public static function create($attributes, $validate=true)
+	public static function create($attributes, $validate=true, $guard_attributes=true)
 	{
 		$class_name = get_called_class();
-		$model = new $class_name($attributes);
+		$model = new $class_name($attributes, $guard_attributes);
 		$model->save($validate);
 		return $model;
 	}
@@ -831,8 +853,9 @@ class Model
 				$this->attributes[$pk] = static::connection()->insert_id($table->sequence);
 		}
 
-		$this->invoke_callback('after_create',false);
 		$this->__new_record = false;
+		$this->invoke_callback('after_create',false);
+		$this->expire_cache();
 		return true;
 	}
 
@@ -863,9 +886,25 @@ class Model
 			$dirty = $this->dirty_attributes();
 			static::table()->update($dirty,$pk);
 			$this->invoke_callback('after_update',false);
+			$this->expire_cache();
 		}
 
 		return true;
+	}
+
+	protected function expire_cache()
+	{
+		$table = static::table();
+		if($table->cache_individual_model)
+		{
+			Cache::delete($this->cache_key());
+		}
+	}
+
+	protected function cache_key()
+	{
+		$table = static::table();
+		return $table->cache_key_for_model($this->values_for_pk());
 	}
 
 	/**
@@ -888,7 +927,7 @@ class Model
 	 * Delete all using a string:
 	 *
 	 * <code>
-	 * YourModel::delete_all(array('conditions' => 'name = "Tito"));
+	 * YourModel::delete_all(array('conditions' => 'name = "Tito"'));
 	 * </code>
 	 *
 	 * An options array takes the following parameters:
@@ -1002,6 +1041,7 @@ class Model
 
 		static::table()->delete($pk);
 		$this->invoke_callback('after_destroy',false);
+		$this->expire_cache();
 
 		return true;
 	}
@@ -1151,7 +1191,7 @@ class Model
 	/**
 	 * Passing $guard_attributes as true will throw an exception if an attribute does not exist.
 	 *
-	 * @throws ActiveRecord\UndefinedPropertyException
+	 * @throws \ActiveRecord\UndefinedPropertyException
 	 * @param array $attributes An array in the form array(name => value, ...)
 	 * @param boolean $guard_attributes Flag of whether or not protected/non-accessible attributes should be guarded
 	 */
@@ -1242,6 +1282,7 @@ class Model
 		$this->__relationships = array();
 		$pk = array_values($this->get_values_for($this->get_primary_key()));
 
+		$this->expire_cache();
 		$this->set_attributes_via_mass_assignment($this->find($pk)->attributes, false);
 		$this->reset_dirty();
 
@@ -1547,8 +1588,8 @@ class Model
 					// fall thru
 
 			 	case 'first':
-			 		$options['limit'] = 1;
-			 		$options['offset'] = 0;
+					$options['limit'] = 1;
+					$options['offset'] = 0;
 			 		break;
 			}
 
@@ -1570,6 +1611,34 @@ class Model
 	}
 
 	/**
+	 * Will look up a list of primary keys from cache
+	 *
+	 * @param mixed $pks primary keys
+	 * @return array
+	 */
+	protected static function get_models_from_cache($pks, $options)
+	{
+		$models = array();
+		$table = static::table();
+
+		if(!is_array($pks))
+		{
+			$pks = array($pks);
+		}
+
+		foreach($pks as $pk)
+		{
+			$options['conditions'] = static::pk_conditions($pk);
+			$models[] = Cache::get($table->cache_key_for_model($pk), function() use ($table, $options)
+			{
+				$res = $table->find($options);
+				return $res ? $res[0] : null;
+			}, $table->cache_model_expire);
+		}
+		return array_filter($models);
+	}
+
+	/**
 	 * Finder method which will find by a single or array of primary keys for this model.
 	 *
 	 * @see find
@@ -1580,23 +1649,35 @@ class Model
 	 */
 	public static function find_by_pk($values, $options)
 	{
-		$options['conditions'] = static::pk_conditions($values);
-		$list = static::table()->find($options);
+		if($values===null)
+		{
+			throw new RecordNotFound("Couldn't find ".get_called_class()." without an ID");
+		}
+
+		$table = static::table();
+
+		if($table->cache_individual_model)
+		{
+			$list = static::get_models_from_cache($values, $options);
+		}
+		else
+		{
+			$options['conditions'] = static::pk_conditions($values);
+			$list = $table->find($options);
+		}
 		$results = count($list);
 
 		if ($results != ($expected = count($values)))
 		{
 			$class = get_called_class();
+			if (is_array($values))
+				$values = join(',',$values);
 
 			if ($expected == 1)
 			{
-				if (!is_array($values))
-					$values = array($values);
-
-				throw new RecordNotFound("Couldn't find $class with ID=" . join(',',$values));
+				throw new RecordNotFound("Couldn't find $class with ID=$values");
 			}
 
-			$values = join(',',$values);
 			throw new RecordNotFound("Couldn't find all $class with IDs ($values) (found $results, but was looking for $expected)");
 		}
 		return $expected == 1 ? $list[0] : $list;
@@ -1831,7 +1912,7 @@ class Model
 	 * });
 	 * </code>
 	 *
-	 * @param Closure $closure The closure to execute. To cause a rollback have your closure return false or throw an exception.
+	 * @param callable $closure The closure to execute. To cause a rollback have your closure return false or throw an exception.
 	 * @return boolean True if the transaction was committed, False if rolled back.
 	 */
 	public static function transaction($closure)
@@ -1857,5 +1938,4 @@ class Model
 		}
 		return true;
 	}
-};
-?>
+}

@@ -18,6 +18,11 @@ class AGSATTRACK_ELEMENTS extends APPCONTROLLER {
         $group = $_GET['group'];
         $keps = Kep::find('first', array('conditions' => array('kepsgroup = ?', $group)));
 
+        if (empty($keps)) {
+            $this->AGSATTRACK_UPDATER->updateGroup($group. '.txt');
+            $keps = Kep::find('first', array('conditions' => array('kepsgroup = ?', $group)));
+        }
+
         $ageData = $this->AGSATTRACK_ELEMENTSET->getAverageAge($keps->elements);
         $this->output = Array(
             'id' => $group,
@@ -47,6 +52,6 @@ class AGSATTRACK_ELEMENTS extends APPCONTROLLER {
             )
         ));
         
-        $this->output = $this->AGSATTRACK_UPDATER->updateGroup($_GET['group'] . '.txt');        
+        $this->output = $this->AGSATTRACK_UPDATER->updateGroup($_GET['group']);        
     } 
 }

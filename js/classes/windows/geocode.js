@@ -35,11 +35,13 @@ var AGGECODEWINDOW = function(element, params) {
     var _inputLon = AGUTIL.getId();
     var _okButton = AGUTIL.getId();
     var _cancelButton = AGUTIL.getId();
-    
-    var form = '<form>Enter a location: <input id="'+_inputElement+'" type="text" placeholder="Type in an address" value="" size=70 /><input id="find" type="button" value="find" /><fieldset style="display:none"><label>Latitude</label><input id="'+_inputLat+'" name="lat" type="text" value=""><label>Longitude</label><input id="'+_inputLon+'" name="lng" type="text" value=""><label>Formatted Address</label><input name="formatted_address" type="text" value=""></fieldset></form>';  
+    var _marker;
+    var _map;
+
+    var form = '<form><fieldset style="display:none"><label>Latitude</label><input id="'+_inputLat+'" name="lat" type="text" value=""><label>Longitude</label><input id="'+_inputLon+'" name="lng" type="text" value=""><label>Formatted Address</label><input name="formatted_address" type="text" value=""></fieldset></form>';  
           
-    var windowHTML = '<div class="easyui-layout" data-options="fit:true"><div data-options="region:\'north\',border:false" style="text-align:right;padding:5px 0 0;">'+form+'</div><div data-options="region:\'center\'"><div class="map_canvas"></div></div><div data-options="region:\'south\',border:false" style="text-align:right;padding:10px 10px 10px 0px;"><a id="'+_okButton+'" class="easyui-linkbutton" data-options="iconCls:\'icon-ok\'" href="">Ok</a><a id="'+_cancelButton+'" class="easyui-linkbutton" data-options="iconCls:\'icon-cancel\'" href="">Cancel</a></div></div>';
-                    
+    var windowHTML = '<div class="easyui-layout" data-options="fit:true"><div data-options="region:\'north\',border:false" style="text-align:right;padding:5px 0 0;">'+form+'</div><div data-options="region:\'center\'"><div id="map_canvas"></div></div><div data-options="region:\'south\',border:false" style="text-align:right;padding:10px 10px 10px 0px;"><a id="'+_okButton+'" class="easyui-linkbutton" data-options="iconCls:\'icon-ok\'" href="">Ok</a><a id="'+_cancelButton+'" class="easyui-linkbutton" data-options="iconCls:\'icon-cancel\'" href="">Cancel</a></div></div>';
+
     jQuery(_element).window({  
         width:800,  
         height:600,
@@ -49,27 +51,30 @@ var AGGECODEWINDOW = function(element, params) {
         maximizable : false,
         content: windowHTML  
     });
-       
-    jQuery('#' + _inputElement).geocomplete({
-        map: '.map_canvas',
-        details: 'form',
-        markerOptions: {
-            draggable: true
+
+    setupLocation();
+
+    _map = L.map('map_canvas').setView([_lat, _lon], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(_map);
+    L.Control.geocoder().addTo(_map);
+
+    _marker = L.marker({lat: _lat, lng: _lon}).addTo(_map);
+
+    function onMapClick(e) {
+        jQuery('#' + _inputLat).val(e.latlng.lat);
+        jQuery('#' + _inputLon).val(e.latlng.lng);
+
+        if(_marker) {
+            _map.removeLayer(_marker);
         }
-    });
+        _marker = L.marker(e.latlng).addTo(_map);
+
+    }
     
-    jQuery('#' + _inputElement).on('click', function(e){
-        jQuery('#' + _inputElement).val('');    
-    });
-       
-    jQuery('#' + _inputElement).bind('geocode:dragged', function(event, latLng){
-        jQuery('#' + _inputLat).val(latLng.lat());
-        jQuery('#' + _inputLon).val(latLng.lng());
-    }); 
-               
-    jQuery('#find').click(function(){
-        jQuery('#' + _inputElement).trigger('geocode');
-    }).click();
+    _map.on('click', onMapClick);
 
     jQuery('#' + _okButton).on('click', function(e){
         
@@ -88,8 +93,6 @@ var AGGECODEWINDOW = function(element, params) {
         e.preventDefault();
         jQuery(_element).window('close');    
     });
-            
-    setupLocation();
         
     function setupLocation() {
         _lat = 0;

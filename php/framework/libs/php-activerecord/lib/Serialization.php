@@ -173,7 +173,11 @@ abstract class Serialization
 				try {
 					$assoc = $this->model->$association;
 
-					if (!is_array($assoc))
+					if ($assoc === null)
+					{
+						$this->attributes[$association] = null;
+					}
+					elseif (!is_array($assoc))
 					{
 						$serialized = new $serializer_class($assoc, $options);
 						$this->attributes[$association] = $serialized->to_a();;
@@ -214,9 +218,10 @@ abstract class Serialization
 	 */
 	final public function to_a()
 	{
+		$date_class = Config::instance()->get_date_class();
 		foreach ($this->attributes as &$value)
 		{
-			if ($value instanceof \DateTime)
+			if ($value instanceof $date_class)
 				$value = $value->format(self::$DATETIME_FORMAT);
 		}
 		return $this->attributes;
@@ -369,4 +374,3 @@ class CsvSerializer extends Serialization
     return $buffer;
   }
 }
-?>

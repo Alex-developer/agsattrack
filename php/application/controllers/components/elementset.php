@@ -40,8 +40,10 @@ class AGSATTRACK_ELEMENTSET {
                         
             }
         }
-
-        $averageAge = ceil($total / $totalSets);
+        $averageAge = 999999;
+        if ($totalSets > 0) {
+            $averageAge = ceil($total / $totalSets);
+        } 
         return $averageAge;
     }    
   

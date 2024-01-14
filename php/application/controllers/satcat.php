@@ -1,7 +1,7 @@
 <?php
 class AGSATTRACK_SATCAT extends APPCONTROLLER {
     
-    private $baseUrl = 'http://www.celestrak.com/pub/satcat.txt';
+    private $baseUrl = 'https://celestrak.org/pub/satcat.txt';
     
     public function __construct($initData) {
         parent::__construct($initData);

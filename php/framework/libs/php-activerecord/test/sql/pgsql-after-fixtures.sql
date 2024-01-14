@@ -1,5 +1,6 @@
 SELECT setval('authors_author_id_seq', max(author_id)) FROM authors;
 SELECT setval('books_book_id_seq', max(book_id)) FROM books;
+SELECT setval('publishers_publisher_id_seq', max(publisher_id)) FROM publishers;
 SELECT setval('venues_id_seq', max(id)) FROM venues;
 SELECT setval('events_id_seq', max(id)) FROM events;
 SELECT setval('hosts_id_seq', max(id)) FROM hosts;
@@ -13,3 +14,4 @@ SELECT setval('property_amenities_id_seq', max(id)) FROM property_amenities;
 SELECT setval('users_id_seq', max(id)) FROM users;
 SELECT setval('newsletters_id_seq', max(id)) FROM newsletters;
 SELECT setval('user_newsletters_id_seq', max(id)) FROM user_newsletters;
+SELECT setval('valuestore_id_seq', max(id)) FROM valuestore;

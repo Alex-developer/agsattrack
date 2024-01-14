@@ -422,7 +422,7 @@ class Validations
 			$attribute = $options[0];
 			$var = $this->model->$attribute;
 
-			if (is_null($options['with']) || !is_string($options['with']) || !is_string($options['with']))
+			if (is_null($options['with']) || !is_string($options['with']))
 				throw new ValidationsArgumentError('A regular expression must be supplied as the [with] option of the configuration array.');
 			else
 				$expression = $options['with'];
@@ -494,7 +494,7 @@ class Validations
 				$range = $options[$range_options[0]];
 
 				if (!(Utils::is_a('range', $range)))
-					throw new  ValidationsArgumentError("$range_option must be an array composing a range of numbers with key [0] being less than key [1]");
+					throw new  ValidationsArgumentError("$range_options[0] must be an array composing a range of numbers with key [0] being less than key [1]");
 				$range_options = array('minimum', 'maximum');
 				$attr['minimum'] = $range[0];
 				$attr['maximum'] = $range[1];
@@ -565,12 +565,14 @@ class Validations
 		$configuration = array_merge(self::$DEFAULT_VALIDATION_OPTIONS, array(
 			'message' => Errors::$DEFAULT_ERROR_MESSAGES['unique']
 		));
+		// Retrieve connection from model for quote_name method
+		$connection = $this->klass->getMethod('connection')->invoke(null);
 
 		foreach ($attrs as $attr)
 		{
 			$options = array_merge($configuration, $attr);
 			$pk = $this->model->get_primary_key();
-			$pk_value = $this->model->$pk[0];
+			$pk_value = $this->model->{$pk[0]};
 
 			if (is_array($options[0]))
 			{
@@ -585,19 +587,20 @@ class Validations
 
 			$sql = "";
 			$conditions = array("");
-
+			$pk_quoted = $connection->quote_name($pk[0]);
 			if ($pk_value === null)
-				$sql = "{$pk[0]} is not null";
+				$sql = "{$pk_quoted} IS NOT NULL";
 			else
 			{
-				$sql = "{$pk[0]}!=?";
+				$sql = "{$pk_quoted} != ?";
 				array_push($conditions,$pk_value);
 			}
 
 			foreach ($fields as $field)
 			{
 				$field = $this->model->get_real_attribute_name($field);
-				$sql .= " and {$field}=?";
+				$quoted_field = $connection->quote_name($field);
+				$sql .= " AND {$quoted_field}=?";
 				array_push($conditions,$this->model->$field);
 			}
 
@@ -811,7 +814,7 @@ class Errors implements IteratorAggregate
 	 * # )
 	 * </code>
 	 *
-	 * @param array $closure Closure to fetch the errors in some other format (optional)
+	 * @param callable $closure Closure to fetch the errors in some other format (optional)
 	 *                       This closure has the signature function($attribute, $message)
 	 *                       and is called for each available error message.
 	 * @return array
@@ -905,5 +908,4 @@ class Errors implements IteratorAggregate
 	{
 		return new ArrayIterator($this->full_messages());
 	}
-};
-?>
+}

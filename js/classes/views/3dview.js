@@ -1225,16 +1225,17 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
     function setTerrainProvider(useTerrainProvider) {
         var terrainProvider;
         
-        if (useTerrainProvider) {
-            terrainProvider = new Cesium.CesiumTerrainProvider({
-                url : '//assets.agi.com/stk-terrain/world',
-                requestVertexNormals: true
-            });
-        } else {
+        //if (useTerrainProvider) {
+        //    terrainProvider = new Cesium.CesiumTerrainProvider({
+        //        url : '//assets.agi.com/stk-terrain/world',
+        //        requestVertexNormals: true
+        //    });
+        //} else {
             terrainProvider = new Cesium.EllipsoidTerrainProvider({
                 ellipsoid : Cesium.Ellipsoid.WGS84
             });    
-        }
+       // }
+
         var centralBody = scene.Globe;
         scene.terrainProvider = terrainProvider;
         jQuery('#3d-show-terrain').setButtonState(useTerrainProvider);
@@ -1279,11 +1280,11 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
             },
             'arcgis' : {
                 provider : new Cesium.ArcGisMapServerImageryProvider(
-                    {url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'//,
+                    {url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'//,
                   //  proxy: new Cesium.DefaultProxy('http://cesium.agi.com/proxy/')
                 }),
                 toolbarTitle : 'Arc Gis'                
-            },
+            }/*,
             'naturalearth' : {
                 provider : new Cesium.TileMapServiceImageryProvider(
                     {url: '//cesiumjs.org/tilesets/imagery/naturalearthii'
@@ -1295,7 +1296,7 @@ pos = Cesium.Cartesian3.fromDegrees(cartPoints[i].lon, cartPoints[i].lat, cartPo
                     {url: '//cesiumjs.org/tilesets/imagery/blackmarble'
                 }),
                 toolbarTitle : 'Black Marble'                  
-            }             
+            }     */        
         };         
            
         canvas = jQuery('<canvas/>', {

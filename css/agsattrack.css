@@ -314,3 +314,7 @@ p.description {
 #home .vertical {
     vertical-align:middle;        
 }
+
+#map_canvas {
+    height: 490px;
+}

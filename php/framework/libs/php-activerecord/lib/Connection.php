@@ -6,7 +6,7 @@
 
 namespace ActiveRecord;
 
-require 'Column.php';
+require_once 'Column.php';
 
 use PDO;
 use PDOException;
@@ -19,6 +19,17 @@ use Closure;
  */
 abstract class Connection
 {
+
+	/**
+	 * The DateTime format to use when translating other DateTime-compatible objects.
+	 *
+	 * NOTE!: The DateTime "format" used must not include a time-zone (name, abbreviation, etc) or offset.
+	 * Including one will cause PHP to ignore the passed in time-zone in the 3rd argument.
+	 * See bug: https://bugs.php.net/bug.php?id=61022
+	 *
+	 * @var string
+	 */
+	const DATETIME_TRANSLATE_FORMAT = 'Y-m-d\TH:i:s';
 
 	/**
 	 * The PDO connection object.
@@ -47,6 +58,16 @@ abstract class Connection
 	 * @var string
 	 */
 	public $protocol;
+	/**
+	 * Database's date format
+	 * @var string
+	 */
+	static $date_format = 'Y-m-d';
+	/**
+	 * Database's datetime format
+	 * @var string
+	 */
+	static $datetime_format = 'Y-m-d H:i:s T';
 	/**
 	 * Default PDO options to set for each connection.
 	 * @var array
@@ -292,7 +313,10 @@ abstract class Connection
 	public function query($sql, &$values=array())
 	{
 		if ($this->logging)
+		{
 			$this->logger->log($sql);
+			if ( $values ) $this->logger->log($values);
+		}
 
 		$this->last_query = $sql;
 
@@ -309,7 +333,7 @@ abstract class Connection
 			if (!$sth->execute($values))
 				throw new DatabaseException($this);
 		} catch (PDOException $e) {
-			throw new DatabaseException($sth);
+			throw new DatabaseException($e);
 		}
 		return $sth;
 	}
@@ -438,7 +462,7 @@ abstract class Connection
 	 */
 	public function date_to_string($datetime)
 	{
-		return $datetime->format('Y-m-d');
+		return $datetime->format(static::$date_format);
 	}
 
 	/**
@@ -449,14 +473,14 @@ abstract class Connection
 	 */
 	public function datetime_to_string($datetime)
 	{
-		return $datetime->format('Y-m-d H:i:s T');
+		return $datetime->format(static::$datetime_format);
 	}
 
 	/**
 	 * Converts a string representation of a datetime into a DateTime object.
 	 *
 	 * @param string $string A datetime in the form accepted by date_create()
-	 * @return DateTime
+	 * @return object The date_class set in Config
 	 */
 	public function string_to_datetime($string)
 	{
@@ -466,7 +490,13 @@ abstract class Connection
 		if ($errors['warning_count'] > 0 || $errors['error_count'] > 0)
 			return null;
 
-		return new DateTime($date->format('Y-m-d H:i:s T'));
+		$date_class = Config::instance()->get_date_class();
+
+		return $date_class::createFromFormat(
+			static::DATETIME_TRANSLATE_FORMAT,
+			$date->format(static::DATETIME_TRANSLATE_FORMAT),
+			$date->getTimezone()
+		);
 	}
 
 	/**
@@ -518,6 +548,3 @@ abstract class Connection
 	}
 
 }
-
-;
-?>

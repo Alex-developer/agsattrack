@@ -35,7 +35,15 @@ var AGOBSERVER = function(index) {
     var _enabled = false;
     var that = this;
     
-    function geoLocate() {
+    function geoLocate(force=false) {
+
+        if (!force) {
+            if (_lat !== 0 && _lon !== 0) {
+                _ready = true;
+                return;
+            }
+        }
+
         _ready = false;
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(
@@ -79,15 +87,20 @@ var AGOBSERVER = function(index) {
     } 
     
     function tryMaps() {
-        var googleAPIKey = AGUTIL.getGoogleAPIKey();
-        
-        jQuery.post('https://www.googleapis.com/geolocation/v1/geolocate?key=' + googleAPIKey, function(success) {
-            _lat = success.location.lat;
-            _lon = success.location.lng;
-            _alt = 0
-            _ready = true;            
-        }).fail(function(err) {
-            showError('');
+        jQuery.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
+            data = data.trim().split('\n').reduce(function(obj, pair) {
+              pair = pair.split('=');
+              return obj[pair[0]] = pair[1], obj;
+            }, {});
+
+            jQuery.get('http://ip-api.com/json/' + data.ip, function(success){
+                _lat = success.lat;
+                _lon = success.lon;
+                _alt = 0
+                _ready = true;               
+            }).fail(function(err) {
+                showError('');
+            });;
         });
     }
     

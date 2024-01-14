@@ -1,6 +1,7 @@
 CREATE TABLE authors(
 	author_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	parent_author_id INT,
+	publisher_id INT,
 	name VARCHAR(25) NOT NULL DEFAULT 'default_name',
 	updated_at datetime,
 	created_at datetime,
@@ -21,6 +22,11 @@ CREATE TABLE books(
 	special NUMERIC(10,2) DEFAULT 0
 );
 
+CREATE TABLE publishers(
+	publisher_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(25) NOT NULL DEFAULT 'default_name'
+) ENGINE=InnoDB;
+
 CREATE TABLE venues (
 	Id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name varchar(50),
@@ -33,7 +39,7 @@ CREATE TABLE venues (
 
 CREATE TABLE events (
 	id int NOT NULL auto_increment PRIMARY KEY,
-	venue_id int NOT NULL,
+	venue_id int NULL,
 	host_id int NOT NULL,
 	title varchar(60) NOT NULL,
 	description varchar(50),
@@ -98,4 +104,10 @@ CREATE TABLE user_newsletters (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     newsletter_id INT NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE valuestore (
+  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `key` varchar(20) NOT NULL DEFAULT '',
+  `value` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB;

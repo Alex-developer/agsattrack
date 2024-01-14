@@ -9,6 +9,12 @@
     ctrl = getBusyOverlay(document.documentElement, {color:'black', opacity:0.5, text: 'Loading Please Wait ...'});
 </script>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
 <link rel="stylesheet" href="/css/agsattrack.css">
 <link rel="stylesheet" href="/css/ribbon.css">
 <link rel="stylesheet" href="/css/statusbar.css">
@@ -23,11 +29,11 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/jqueryui/jquery-ui.js"></script>
 <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="/js/easyui/extensions/datagrid-filter/datagrid-filter.js"></script>
-    <script type="text/javascript" src="/js/easyui/extensions/datagrid-scrollview/datagrid-scrollview.js"></script>
+<script type="text/javascript" src="/js/easyui/extensions/datagrid-filter/datagrid-filter.js"></script>
+<script type="text/javascript" src="/js/easyui/extensions/datagrid-scrollview/datagrid-scrollview.js"></script>
 
 
-    <script type="text/javascript" src="/js/konva/konva.js"></script>
+<script type="text/javascript" src="/js/konva/konva.js"></script>
 
 <script type="text/javascript" src="/js/agsattrack.js"></script>
 <script type="text/javascript" src="/js/cookies/jquery.cookies.js"></script>
@@ -104,7 +110,7 @@
 <script src="/js/requirejs/require.js"></script>
 
 <script src="/js/imagecombo/ddslick.js"></script>
-   
+
 </head>
 <body class='easyui-layout default' style="display: none" id="body">
 	<div data-options="region:'north', title:'&nbsp;'" style="height: 120px;">
@@ -375,8 +381,8 @@
                                     <li class="tile" data-options="staticimage"><img src="js/ribbon/icons/normal/image.png"><span>Static Image</span></li>
                                     <li class="tile" data-options="bing"><img src="js/ribbon/icons/normal/bing.png"><span>Bing maps</span></li>
                                     <li class="tile" data-options="arcgis"><img src="js/ribbon/icons/normal/arcgis.png"><span>Arc Gis</span></li>
-                                    <li class="tile" data-options="naturalearth"><img src="js/ribbon/icons/normal/world.png"><span>Natural Earth</span></li>
-                                    <li class="tile" data-options="blackmarble"><img src="js/ribbon/icons/normal/world.png"><span>Black Marble</span></li>
+                                    <!--<li class="tile" data-options="naturalearth"><img src="js/ribbon/icons/normal/world.png"><span>Natural Earth</span></li>
+                                    <li class="tile" data-options="blackmarble"><img src="js/ribbon/icons/normal/world.png"><span>Black Marble</span></li> -->
                                 </ul>
                             </div>
                         </div>                                                                                                        

@@ -4,6 +4,9 @@ CREATE SEQUENCE authors_seq START WITH 100;
 DROP SEQUENCE books_seq;
 CREATE SEQUENCE books_seq START WITH 100;
 
+DROP SEQUENCE publishers_seq;
+CREATE SEQUENCE publishers_seq START WITH 100;
+
 DROP SEQUENCE venues_seq;
 CREATE SEQUENCE venues_seq START WITH 100;
 
@@ -30,3 +33,6 @@ CREATE SEQUENCE property_seq START WITH 100;
 
 DROP SEQUENCE property_amenities_seq;
 CREATE SEQUENCE property_amenities_seq START WITH 100;
+
+DROP SEQUENCE valuestore_seq;
+CREATE SEQUENCE valuestore_seq START WITH 100;
